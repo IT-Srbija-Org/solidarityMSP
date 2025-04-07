@@ -5,9 +5,11 @@ namespace App\Controller;
 use App\Entity\UserDonor;
 use App\Form\UserDonorType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -20,7 +22,7 @@ class DonorController extends AbstractController
     }
 
     #[Route('/postani-donator', name: 'become')]
-    public function edit(Request $request): Response
+    public function edit(Request $request, MailerInterface $mailer): Response
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -31,8 +33,18 @@ class DonorController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $isNew = !$userDonor->getId();
             $this->entityManager->persist($userDonor);
             $this->entityManager->flush();
+
+            if ($isNew) {
+                $message = (new TemplatedEmail())
+                    ->to($user->getEmail())
+                    ->subject('Potvrda registracije donora na Mrežu solidarnosti')
+                    ->htmlTemplate('donor/success_email.html.twig');
+
+                $mailer->send($message);
+            }
 
             return $this->redirectToRoute('donor_success');
         }
