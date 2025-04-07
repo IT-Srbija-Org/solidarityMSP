@@ -33,12 +33,12 @@
             {% if app.user.userDonor %}
                 <div class="alert alert-success alert-soft">
                     <span class="ti ti-user-heart text-2xl"></span>
-                    <span>Već ste se prijavili kao donor. U slučaju da želite da promenite podatke unesite nove u formu ispod.</span>
+                    <span>Već ste se prijavili na listu donatora. U slučaju da želite da promenite podatke unesite nove u formu ispod.</span>
                 </div>
 
                 <div class="alert alert-error alert-soft mb-4">
                     <span class="ti ti-x text-2xl"></span>
-                    <span>Ako želite da se odjavite sa liste donora kliknite na sledeći link: <a href="{{ path('donor_unsubscribe', { '_token': csrf_token('unsubscribe') }) }}" class="link link-primary no-underline">odjava</a></span>
+                    <span>Ako želite da se odjavite sa liste donatora kliknite na sledeći link: <a href="{{ path('donor_unsubscribe', { '_token': csrf_token('unsubscribe') }) }}" class="link link-primary no-underline">odjava</a></span>
                 </div>
             {% endif %}
 
