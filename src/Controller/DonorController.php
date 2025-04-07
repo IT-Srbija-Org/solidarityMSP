@@ -21,8 +21,8 @@ class DonorController extends AbstractController
     {
     }
 
-    #[Route('/postani-donator', name: 'become')]
-    public function edit(Request $request, MailerInterface $mailer): Response
+    #[Route('/prijava-donator', name: 'subscribe')]
+    public function subscribe(Request $request, MailerInterface $mailer): Response
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -49,7 +49,7 @@ class DonorController extends AbstractController
             return $this->redirectToRoute('donor_success');
         }
 
-        return $this->render('donor/edit.html.twig', [
+        return $this->render('donor/subscribe.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -58,5 +58,25 @@ class DonorController extends AbstractController
     public function messageSuccessSupport(): Response
     {
         return $this->render('donor/success.html.twig');
+    }
+
+    #[Route('/odjava-donora', name: 'unsubscribe')]
+    public function unsubscribe(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('unsubscribe', $request->query->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        $userDonor = $user->getUserDonor();
+
+        if ($userDonor) {
+            $this->entityManager->remove($userDonor);
+            $this->entityManager->flush();
+        }
+
+        $this->addFlash('success', 'Uspešno ste se odjavili sa liste donora');
+        return $this->redirectToRoute('donor_subscribe');
     }
 }

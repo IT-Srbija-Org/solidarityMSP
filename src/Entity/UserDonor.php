@@ -15,7 +15,7 @@ class UserDonor
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'userDonor', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'userDonor')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 

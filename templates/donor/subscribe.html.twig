@@ -8,26 +8,39 @@
                 Obrazac za donatore
             </h2>
 
-            <div class="space-y-3">
-                <p>Priključi se – Pomozimo prosvetnim radnicima sada!</p>
-                <p>Mere smanjenja plata su već stupile na snagu, što znači da moramo odmah reagovati</p>
-                <p><span class="font-bold">Hitno nam je potrebno više donatora!</span> Broj ugroženih nastavnika raste iz dana u dan, a vremena je sve manje.</p>
-                <p class="font-bold">Prijavite se odmah i pomozite da zaštitimo što veći broj prosvetnih radnika putem direktne materijalne podrške.</p>
-                <p>* Obavezno je da donatori ostave svoju mejl adresu kako bismo im mogli pravovremeno poslati tačne i personalizovane instrukcije za uplatu.</p>
-                <p><span class="font-bold">Želite više informacija?</span><br>Pripremili smo dokument koji sadrži odgovore na sva ključna pitanja vezana za ovaj model podrške. <span class="font-bold">Molimo vas da ga pažljivo pročitate</span>.</p>
+            <div class="space-y-4">
+                <div>
+                    <div>Priključi se – Pomozimo prosvetnim radnicima sada!</div>
+                    <div>Mere smanjenja plata su već stupile na snagu, što znači da moramo odmah reagovati</div>
+                </div>
 
-                <p>
-                    <span class="ti ti-paperclip"></span>
-                    <span class="font-bold">Važna pitanja i odgovori</span>: <a href="https://drive.google.com/file/d/1MEnYGGyp0wWojRV5gSPg3LC_pxBX2JLJ/view?usp=sharing" target="_blank" class="link link-primary no-underline">ovde</a>
-                </p>
+                <div>
+                    <div><span class="font-bold">Hitno nam je potrebno više donatora!</span> Broj ugroženih nastavnika raste iz dana u dan, a vremena je sve manje.</div>
+                    <div class="font-bold">Prijavite se odmah i pomozite da zaštitimo što veći broj prosvetnih radnika putem direktne materijalne podrške.</div>
+                </div>
 
-                <p>Takođe, možete se detaljnije informisati putem naših društvenih mreža.</p>
-                <p><a href="http://itsrbija.org/" target="_blank" class="link link-primary no-underline">IT Srbija</a> – Neformalna grupa IT Stručnjaka</p>
+                <div>
+                    <div class="font-bold">Želite više informacija?</div>
+                    <div>Pripremili smo dokument koji sadrži odgovore na sva ključna pitanja vezana za ovaj model podrške.</div>
+                    <div>Link do dokumenta: <a href="https://drive.google.com/file/d/1MEnYGGyp0wWojRV5gSPg3LC_pxBX2JLJ/view?usp=sharing" target="_blank" class="link link-primary no-underline">drive.google.com</a></div>
+                </div>
             </div>
 
             <div class="divider"></div>
 
             {{ include('flashes.html.twig') }}
+
+            {% if app.user.userDonor %}
+                <div class="alert alert-success alert-soft">
+                    <span class="ti ti-user-heart text-2xl"></span>
+                    <span>Već ste se prijavili kao donor. U slučaju da želite da promenite podatke unesite nove u formu ispod.</span>
+                </div>
+
+                <div class="alert alert-error alert-soft mb-4">
+                    <span class="ti ti-x text-2xl"></span>
+                    <span>Ako želite da se odjavite sa liste donora kliknite na sledeći link: <a href="{{ path('donor_unsubscribe', { '_token': csrf_token('unsubscribe') }) }}" class="link link-primary no-underline">odjava</a></span>
+                </div>
+            {% endif %}
 
             {% form_theme form 'form.html.twig' %}
             {{ form_start(form) }}
