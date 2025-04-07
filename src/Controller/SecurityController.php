@@ -62,7 +62,7 @@ class SecurityController extends AbstractController
 
                 $message = (new TemplatedEmail())
                     ->to($user->getEmail())
-                    ->subject('Link za restartovanje lozinke')
+                    ->subject('Link za promenu lozinke')
                     ->htmlTemplate('security/reset_password_email.html.twig')
                     ->context([
                         'link' => $resetLink

@@ -1,9 +1,13 @@
-<h1>Hi! Please confirm your email!</h1>
+{% extends 'base_email.html.twig' %}
 
-<p>
-    Please confirm your email address by clicking the following link: <br><br>
-    <a href="{{ signedUrl|raw }}">Confirm my Email</a>.
-    This link will expire in {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
-</p>
+{% block body %}
+    <p>Poštovani/a,</p>
 
-<p>Cheers!</p>
+    <p>Kako bismo potvrdili da je ova email adresa ispravna i da pripada Vama, molimo Vas da kliknete na link ispod:</p>
+
+    <p>
+        <a href="{{ signedUrl|raw }}">{{ signedUrl|raw }}</a>
+    </p>
+
+    <p style="color: #888;">Ako niste vi kreirali nalog, slobodno ignorišite ovu poruku.</p>
+{% endblock %}

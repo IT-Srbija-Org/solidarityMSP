@@ -43,7 +43,7 @@ class RegistrationController extends AbstractController
             $this->emailVerifier->sendEmailConfirmation('verify_email', $user,
                 (new TemplatedEmail())
                     ->to($user->getEmail())
-                    ->subject('Potvrdite svoju email adresu')
+                    ->subject('Link za verifikaciju email adrese')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
@@ -62,7 +62,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/email-verifikacija', name: 'verify_email')]
-    public function verifyUserEmail(Request $request, UserRepository $userRepository, TranslatorInterface $translator): Response
+    public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
     {
         $userId = $request->get('id');
         if (!$userId) {
@@ -77,7 +77,7 @@ class RegistrationController extends AbstractController
         try {
             $this->emailVerifier->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $exception) {
-            $this->addFlash('error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
+            $this->addFlash('error', $exception->getReason());
             return $this->redirectToRoute('register');
         }
 

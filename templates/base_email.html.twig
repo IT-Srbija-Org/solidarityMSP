@@ -1,0 +1,25 @@
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mreža Solidarnosti - IT Srbija</title>
+</head>
+<body>
+    {% block body %}{% endblock %}
+
+    <div style="margin-top: 20px;">
+        <div>Srdačan pozdrav,</div>
+
+        <div>
+            IT Srbija - <a href="https://itsrbija.org/" target="_blank">itsrbija.org</a>
+        </div>
+
+        <div>
+            Mreža Solidarnosti - <a href="https://mrezasolidarnosti.org//" target="_blank">mrezasolidarnosti.org</a>
+        </div>
+
+        <div style="background: #0065CA; margin-top: 10px;">
+            <img src="{{ absolute_url(asset('image/logo.webp')) }}" style="width: 64px; height: 64px;">
+        </div>
+    </div>
+</body>
+</html>
