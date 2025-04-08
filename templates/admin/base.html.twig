@@ -76,6 +76,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ path('admin_transaction_list') }}" class="{% if app.request.get('_route') == 'admin_transaction_list' %}menu-active{% endif %}">
+                        <span class="ti ti-credit-card-pay text-2xl"></span>
+                        Transakcije
+                    </a>
+                </li>
+                <li>
                     <a href="{{ path('admin_school_list') }}" class="{% if app.request.get('_route') == 'admin_school_list' %}menu-active{% endif %}">
                         <span class="ti ti-building text-2xl"></span>
                         Škole

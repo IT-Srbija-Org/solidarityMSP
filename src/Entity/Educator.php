@@ -3,10 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\EducatorRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: EducatorRepository::class)]
+#[UniqueEntity(fields: ['accountNumber'], message: 'Vec postoji edukator sa ovim brojem računa')]
 #[ORM\HasLifecycleCallbacks]
 class Educator
 {
@@ -25,7 +29,7 @@ class Educator
     #[ORM\Column]
     private ?int $amount = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, unique: true)]
     private ?string $accountNumber = null;
 
     #[ORM\ManyToOne(inversedBy: 'educators')]
@@ -37,6 +41,17 @@ class Educator
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
+
+    /**
+     * @var Collection<int, Transaction>
+     */
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'educator')]
+    private Collection $transactions;
+
+    public function __construct()
+    {
+        $this->transactions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -126,6 +141,36 @@ class Educator
     public function setUpdatedAt(): static
     {
         $this->updatedAt = new \DateTime();
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): static
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions->add($transaction);
+            $transaction->setEducator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): static
+    {
+        if ($this->transactions->removeElement($transaction)) {
+            // set the owning side to null (unless already changed)
+            if ($transaction->getEducator() === $this) {
+                $transaction->setEducator(null);
+            }
+        }
 
         return $this;
     }

@@ -23,7 +23,6 @@ class User implements UserInterface
         'ROLE_DELEGATE' => 'Delegat',
         'ROLE_ADMIN' => 'Administrator',
     ];
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -83,10 +82,17 @@ class User implements UserInterface
     #[ORM\OneToMany(targetEntity: Educator::class, mappedBy: 'createdBy')]
     private Collection $educators;
 
+    /**
+     * @var Collection<int, Transaction>
+     */
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'user')]
+    private Collection $transactions;
+
     public function __construct()
     {
         $this->userDelegateSchools = new ArrayCollection();
         $this->educators = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -269,5 +275,35 @@ class User implements UserInterface
     public function getEducators(): Collection
     {
         return $this->educators;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): static
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions->add($transaction);
+            $transaction->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): static
+    {
+        if ($this->transactions->removeElement($transaction)) {
+            // set the owning side to null (unless already changed)
+            if ($transaction->getUser() === $this) {
+                $transaction->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

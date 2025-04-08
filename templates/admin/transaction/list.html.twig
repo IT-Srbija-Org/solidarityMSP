@@ -1,0 +1,65 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block content %}
+    {{ include('flashes.html.twig') }}
+
+    {% form_theme form with ['form.html.twig', 'form_inline.html.twig'] %}
+    {{ form(form) }}
+
+    <div class="overflow-x-auto mt-6">
+        <div class="text-gray-500 mb-2">
+            Ukupno rezultata: <span class="font-bold">{{ transactions.total }}</span>
+        </div>
+
+        <table class="table rounded-box border border-base-200">
+            <thead>
+                <tr class="bg-base-200 text-base-content">
+                    <th>
+                        <span class="ti ti-user-heart text-xl"></span>
+                        Donator
+                    </th>
+                    <th>
+                        <span class="ti ti-school text-xl"></span>
+                        Edukator
+                    </th>
+                    <th>
+                        <span class="ti ti-credit-card text-xl"></span>
+                        Broj računa
+                    </th>
+                    <th>
+                        <span class="ti ti-cash text-xl"></span>
+                        Cifra
+                    </th>
+                    <th>Status</th>
+                    <th>
+                        <span class="ti ti-calendar-event text-xl"></span>
+                        Registrovan
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for transaction in transactions.items %}
+                <tr class="hover:bg-base-200">
+                    <td>{{ transaction.user.fullName }}</td>
+                    <td>{{ transaction.educator.name }}</td>
+                    <td>{{ transaction.educator.accountNumber }}</td>
+                    <td>{{ transaction.amount|number_format }}</td>
+                    <td>{{ transaction.status|transactionStatus }}</td>
+                    <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
+                    <td>
+                        <div class="flex gap-2 justify-end">
+                            <a href="{{ path('admin_transaction_edit', { 'id': transaction.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Izmeni">
+                                <span class="ti ti-edit text-xl"></span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% import "macro.twig" as macro %}
+    {{ macro.pagination('admin_transaction_list', transactions.total_pages, transactions.current_page) }}
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block content %}
+    <div class="text-xl">
+        <span class="ti ti-credit-card-pay text-2xl"></span>
+        Izmena transakcije
+    </div>
+
+    <div class="divider"></div>
+
+    {% form_theme form with ['form.html.twig'] %}
+    {{ form(form) }}
+{% endblock %}
