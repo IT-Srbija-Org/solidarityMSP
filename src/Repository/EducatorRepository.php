@@ -26,6 +26,11 @@ class EducatorRepository extends ServiceEntityRepository
                 ->setParameter('name', '%' . $criteria['name'] . '%');
         }
 
+        if (isset($criteria['school'])) {
+            $qb->andWhere('e.school = :school')
+                ->setParameter('school', $criteria['school']);
+        }
+
         if (isset($criteria['schools'])) {
             $qb->andWhere('e.school IN (:schools)')
                 ->setParameter('schools', $criteria['schools']);
