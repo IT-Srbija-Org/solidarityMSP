@@ -27,3 +27,4 @@ docker exec solidarity-php-container php bin/console doctrine:schema:update --fo
 docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=1 --no-interaction;
 docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=2 --append --no-interaction;
 docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=3 --append --no-interaction;
+docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=4 --append --no-interaction;

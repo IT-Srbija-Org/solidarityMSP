@@ -34,7 +34,7 @@ class Transaction
     private ?int $amount = null;
 
     #[ORM\Column]
-    private ?int $status = null;
+    private ?int $status = 1;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
