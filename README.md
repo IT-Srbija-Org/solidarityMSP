@@ -33,7 +33,7 @@ Pratite sledeće korake kako biste pokrenuli projekat lokalno:
 
 1. Klonirajte projekat
 ```bash
-$ git clone https://github.com/IT-Srbija-Org/solidaritySF; 
+$ git clone https://github.com/IT-Srbija-Org/solidaritySF;
 cd solidaritySF;
 ```
 
@@ -50,11 +50,11 @@ $ ./configureProject.sh
 
 Test korisnici se automatski kreiraju pomoću [DoctrineFixturesBundle](https://symfony.com/bundles/DoctrineFixturesBundle) tokom pokretanja skripte za konfiguraciju.
 
-| Email              | Lozinka   | Privilegije  |
-|--------------------|-----------|--------------|
-| korisnik@gmail.com | 12345678  | ROLE_USER    |
-| delegat@gmail.com  | 12345678  | ROLE_DELEGAT |
-| admin@gmail.com    | 12345678  | ROLE_ADMIN   |
+| Email              | Privilegije  |
+|--------------------|--------------|
+| korisnik@gmail.com | ROLE_USER    |
+| delegat@gmail.com  | ROLE_DELEGAT |
+| admin@gmail.com    | ROLE_ADMIN   |
 
 ---
 
