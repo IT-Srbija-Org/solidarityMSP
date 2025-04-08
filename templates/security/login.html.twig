@@ -13,35 +13,16 @@
                 <div class="divider my-10">Prijava</div>
                 {{ include('flashes.html.twig') }}
 
-                {% if error %}
-                    <div role="alert" class="alert alert-error mb-4">
-                        <span class="ti ti-circle-x text-2xl"></span>
-                        {{ error.messageKey|trans(error.messageData, 'security') }}
-                    </div>
-                {% endif %}
-
                 <form method="POST">
                     <div class="mb-2">
                         <label class="input w-full">
                             <span class="ti ti-mail text-2xl opacity-50"></span>
-                            <input type="email" class="" name="_username" placeholder="Email" value="{{ last_username }}" />
+                            <input type="email" name="email" placeholder="Email" />
                         </label>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="input w-full">
-                            <span class="ti ti-lock text-2xl opacity-50"></span>
-                            <input type="password" class="grow" name="_password" placeholder="********" />
-                        </label>
-                    </div>
-
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                     <button type="submit" class="btn btn-primary w-full">Uloguj se</button>
                 </form>
-
-                <div class="text-end mt-2">
-                    <a href="{{ path('forgot_password') }}" class="link link-primary no-underline">Zaboravili ste lozinku?</a>
-                </div>
 
                 <div class="divider my-10"></div>
 

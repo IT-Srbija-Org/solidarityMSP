@@ -39,22 +39,6 @@
                         {{ form_errors(form.email) }}
                     </div>
 
-                    <div class="mb-2">
-                        <label class="input w-full">
-                            <span class="ti ti-lock text-2xl opacity-50"></span>
-                            {{ form_widget(form.rawPassword.first) }}
-                        </label>
-
-                        {{ form_errors(form.rawPassword.first) }}
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="input w-full">
-                            <span class="ti ti-lock text-2xl opacity-50"></span>
-                            {{ form_widget(form.rawPassword.second) }}
-                        </label>
-                    </div>
-
                     <button type="submit" class="btn btn-primary w-full">Registrujte se</button>
                 {{ form_end(form) }}
 

@@ -15,7 +15,6 @@ class UserTest extends TestCase
         $this->user->setEmail('test@example.com');
         $this->user->setFirstName('Test');
         $this->user->setLastName('User');
-        $this->user->setPassword('hashed_password');
     }
 
     public function testGetEmail(): void
@@ -43,11 +42,11 @@ class UserTest extends TestCase
     {
         // Default role should be ROLE_USER
         $this->assertContains('ROLE_USER', $this->user->getRoles());
-        
+
         // Test setting roles
         $this->user->setRoles(['ROLE_ADMIN']);
         $roles = $this->user->getRoles();
-        
+
         $this->assertContains('ROLE_ADMIN', $roles);
         $this->assertContains('ROLE_USER', $roles); // ROLE_USER should always be included
         $this->assertCount(2, $roles);
@@ -58,7 +57,7 @@ class UserTest extends TestCase
         // Test PrePersist
         $this->user->setCreatedAt();
         $this->user->setUpdatedAt();
-        
+
         $this->assertInstanceOf(\DateTimeInterface::class, $this->user->getCreatedAt());
         $this->assertInstanceOf(\DateTimeInterface::class, $this->user->getUpdatedAt());
     }

@@ -1,0 +1,14 @@
+{% extends 'base_email.html.twig' %}
+
+{% block body %}
+    <p>Poštovani/a,</p>
+
+    <p>Kliknite na link ispod kako bi se prijavili na svoj nalog:</p>
+
+    <p>
+        <a href="{{ link|raw }}">Prijavi se</a>
+    </p>
+
+    <div style="color: #888;">Ovaj link važi samo jednom i ističe za 10 minuta iz bezbednosnih razloga.</div>
+    <div style="color: #888;">Ako ga niste Vi tražili, slobodno ignoriši ovu poruku.</div>
+{% endblock %}

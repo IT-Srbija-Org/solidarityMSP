@@ -17,20 +17,20 @@ class DonorControllerTest extends WebTestCase
     private KernelBrowser $client;
     private AbstractDatabaseTool $databaseTool;
     private ?UserRepository $userRepository;
-    
+
     protected function setUp(): void
     {
         $this->client = static::createClient();
         $this->client->catchExceptions(true);
-        
+
         $container = static::getContainer();
-        
+
         $this->databaseTool = $container->get(DatabaseToolCollection::class)->get();
         $this->loadFixtures();
-        
+
         $this->userRepository = $container->get(UserRepository::class);
     }
-    
+
     private function loadFixtures(): void
     {
         $this->databaseTool->loadFixtures([
@@ -38,13 +38,13 @@ class DonorControllerTest extends WebTestCase
             UserDonorFixtures::class
         ]);
     }
-    
+
     private function loginAsAdmin(): void
     {
         $adminUser = $this->userRepository->findOneBy(['email' => 'admin@gmail.com']);
         $this->client->loginUser($adminUser);
     }
-    
+
     private function loginAsUser(): void
     {
         $user = $this->userRepository->findOneBy(['email' => 'korisnik@gmail.com']);
@@ -54,7 +54,7 @@ class DonorControllerTest extends WebTestCase
     public function testRedirectToLoginWhenNotAuthenticated(): void
     {
         $this->client->request('GET', '/admin/donor/list');
-        
+
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $this->assertStringContainsString('/logovanje', $this->client->getResponse()->headers->get('Location'));
     }
@@ -67,7 +67,7 @@ class DonorControllerTest extends WebTestCase
     {
         // Get a regular user
         $user = $this->userRepository->findOneBy(['email' => 'korisnik@gmail.com']);
-        
+
         // Verify this user doesn't have admin role
         $this->assertNotContains('ROLE_ADMIN', $user->getRoles());
     }
@@ -76,7 +76,7 @@ class DonorControllerTest extends WebTestCase
     {
         $this->loginAsAdmin();
         $this->client->request('GET', '/admin/donor/list');
-        
+
         // Check that the page loads successfully
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }

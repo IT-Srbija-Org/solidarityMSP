@@ -8,17 +8,15 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(fields: ['email'], message: 'Vec postoji korisnik sa ovim emailom')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface
 {
     public const ROLES = [
         'ROLE_USER' => 'Korisnik',
@@ -41,19 +39,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private array $roles = [];
-
-    /**
-     * @var string The hashed password
-     */
-    #[ORM\Column]
-    private ?string $password = null;
-
-    #[SecurityAssert\UserPassword(['message' => 'Trenutna lozinka nije ispravna', 'groups' => ['currentRawPassword']])]
-    protected string $currentRawPassword;
-
-    #[Assert\NotBlank(['message' => 'Ovo polje je obavezno', 'groups' => ['rawPassword']])]
-    #[Assert\Length(min: 8, minMessage: 'Lozinka mora imati bar {{ limit }} karaktera', groups: ['rawPassword'])]
-    protected string $rawPassword;
 
     #[Assert\NotBlank(message: 'Ovo polje je obavezno')]
     #[Assert\Length(min: 3, max: 100, minMessage: 'Polje mora imati bar {{ limit }} karaktera', maxMessage: 'Polje ne može imati više od {{ limit }} karaktera')]
@@ -155,24 +140,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
@@ -276,26 +243,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->resetTokenCreatedAt = $resetTokenCreatedAt;
 
         return $this;
-    }
-
-    public function getCurrentRawPassword(): string
-    {
-        return $this->currentRawPassword;
-    }
-
-    public function setCurrentRawPassword(string $currentRawPassword): void
-    {
-        $this->currentRawPassword = $currentRawPassword;
-    }
-
-    public function getRawPassword(): string
-    {
-        return $this->rawPassword;
-    }
-
-    public function setRawPassword(string $rawPassword): void
-    {
-        $this->rawPassword = $rawPassword;
     }
 
     public function getFullName(): string

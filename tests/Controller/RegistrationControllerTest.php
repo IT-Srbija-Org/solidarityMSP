@@ -16,7 +16,5 @@ class RegistrationControllerTest extends WebTestCase
         $this->assertSelectorExists('input[name="registration[firstName]"]');
         $this->assertSelectorExists('input[name="registration[lastName]"]');
         $this->assertSelectorExists('input[name="registration[email]"]');
-        $this->assertSelectorExists('input[name="registration[rawPassword][first]"]');
-        $this->assertSelectorExists('input[name="registration[rawPassword][second]"]');
     }
 }
