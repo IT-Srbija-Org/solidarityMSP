@@ -19,10 +19,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/educator', name: 'admin_educator_')]
 final class EducatorController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $entityManager)
-    {
-    }
-
     #[Route('/', name: 'list')]
     public function list(Request $request, EducatorRepository $educatorRepository): Response
     {
