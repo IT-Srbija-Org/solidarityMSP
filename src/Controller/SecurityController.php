@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 
 class SecurityController extends AbstractController
@@ -21,7 +20,7 @@ class SecurityController extends AbstractController
             $email = $request->getPayload()->get('email');
             $user = $userRepository->findOneBy(['email' => $email]);
 
-            if ($user) {
+            if ($user && $user->isActive() && $user->isVerified()) {
                 $loginLinkDetails = $loginLinkHandler->createLoginLink($user);
                 $loginLink = $loginLinkDetails->getUrl();
 
@@ -32,10 +31,23 @@ class SecurityController extends AbstractController
                     ->context(['link' => $loginLink]);
 
                 $mailer->send($message);
+
                 $this->addFlash('success', 'Link za prijavu je poslat na vašu email adresu.');
-            } else {
-                $this->addFlash('error', 'Korisnik sa ovom email adresom ne postoji. Molimo da se registrujete.');
+                return $this->redirectToRoute('login');
             }
+
+            if ($user && !$user->isActive()) {
+                $this->addFlash('error', 'Korisnik sa ovom email adresom nije verifikovan. Molimo da se verifikujete.');
+                return $this->redirectToRoute('login');
+            }
+
+            if ($user && !$user->isVerified()) {
+                $this->addFlash('error', 'Korisnik sa ovom email adresom nije aktivan i ne može se prijaviti.');
+                return $this->redirectToRoute('login');
+            }
+
+            $this->addFlash('error', 'Korisnik sa ovom email adresom ne postoji. Molimo da se registrujete.');
+            return $this->redirectToRoute('login');
         }
 
         return $this->render('security/login.html.twig');

@@ -19,6 +19,7 @@ security:
             user_checker: App\Security\UserChecker
 
             login_link:
+                login_path: login
                 check_route: login_check
                 signature_properties: ['id']
                 max_uses: 1
