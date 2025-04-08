@@ -83,7 +83,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $resetTokenCreatedAt = null;
 
-    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'user')]
     private ?UserDonor $userDonor = null;
 
     /**
@@ -92,9 +92,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: UserDelegateSchool::class, mappedBy: 'user')]
     private Collection $userDelegateSchools;
 
+    /**
+     * @var Collection<int, Educator>
+     */
+    #[ORM\OneToMany(targetEntity: Educator::class, mappedBy: 'createdBy')]
+    private Collection $educators;
+
     public function __construct()
     {
         $this->userDelegateSchools = new ArrayCollection();
+        $this->educators = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -301,18 +308,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->userDonor;
     }
 
-    public function setUserDonor(UserDonor $userDonor): static
-    {
-        // set the owning side of the relation if necessary
-        if ($userDonor->getUser() !== $this) {
-            $userDonor->setUser($this);
-        }
-
-        $this->userDonor = $userDonor;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, UserDelegateSchool>
      */
@@ -321,25 +316,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->userDelegateSchools;
     }
 
-    public function addUserDelegateSchool(UserDelegateSchool $userDelegateSchool): static
+    /**
+     * @return Collection<int, Educator>
+     */
+    public function getEducators(): Collection
     {
-        if (!$this->userDelegateSchools->contains($userDelegateSchool)) {
-            $this->userDelegateSchools->add($userDelegateSchool);
-            $userDelegateSchool->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserDelegateSchool(UserDelegateSchool $userDelegateSchool): static
-    {
-        if ($this->userDelegateSchools->removeElement($userDelegateSchool)) {
-            // set the owning side to null (unless already changed)
-            if ($userDelegateSchool->getUser() === $this) {
-                $userDelegateSchool->setUser(null);
-            }
-        }
-
-        return $this;
+        return $this->educators;
     }
 }

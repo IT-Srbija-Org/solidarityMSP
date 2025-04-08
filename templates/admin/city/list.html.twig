@@ -49,6 +49,6 @@
         </table>
     </div>
 
-    {% import "macros/pagination.twig" as pagination %}
-    {{ pagination.navigation('admin_city_list', cities.total_pages, cities.current_page) }}
+    {% import "macro.twig" as macro %}
+    {{ macro.pagination('admin_city_list', cities.total_pages, cities.current_page) }}
 {% endblock %}

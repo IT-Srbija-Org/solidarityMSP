@@ -47,27 +47,52 @@
                 </div>
 
                 <div class="flex-none">
-                    <ul class="menu menu-horizontal px-1 gap-2 size-xl">
+                    <ul class="menu menu-horizontal px-1 gap-3 size-xl">
                         <li>
-                            <a href="{{ path('donor_subscribe') }}" class="link link-primary no-underline">Postani donator</a>
+                            <a href="{{ path('donor_subscribe') }}" class="link link-primary border border-red-400 text-red-400 hover:text-base-100 hover:bg-red-400 no-underline">
+                                <span class="ti ti-heart text-xl"></span>
+                                Postani donator
+                            </a>
                         </li>
 
                         {% if app.user %}
                             {% if 'ROLE_ADMIN' in app.user.getRoles %}
                                 <li>
-                                    <a href="{{ path('admin_home') }}" class="link link-primary no-underline">Admin Panel</a>
+                                    <a href="{{ path('admin_home') }}" class="link link-primary no-underline">
+                                        <span class="ti ti-settings text-xl"></span>
+                                        Admin Panel
+                                    </a>
                                 </li>
                             {% endif %}
 
+                            {% if 'ROLE_DELEGATE' in app.user.getRoles %}
+                                <li>
+                                    <a href="{{ path('delegate_educators') }}" class="link link-primary no-underline">
+                                        <span class="ti ti-school text-xl"></span>
+                                        Spisak oštećenih
+                                    </a>
+                                </li>
+                            {% endif %}
+
+
                             <li>
-                                <a href="{{ path('profile_edit') }}" class="link link-primary no-underline">Profile</a>
+                                <a href="{{ path('profile_edit') }}" class="link link-primary no-underline">
+                                    <span class="ti ti-user text-xl"></span>
+                                    Profile
+                                </a>
                             </li>
                             <li>
-                                <a href="{{ path('logout') }}" class="link link-primary no-underline">Odjavi se</a>
+                                <a href="{{ path('logout') }}" class="link link-primary no-underline">
+                                    <span class="ti ti-logout text-xl"></span>
+                                    Odjavi se
+                                </a>
                             </li>
                         {% else %}
                             <li>
-                                <a href="{{ path('login') }}" class="link link-primary no-underline">Uloguj se</a>
+                                <a href="{{ path('login') }}" class="link link-primary no-underline">
+                                    <span class="ti ti-user text-xl"></span>
+                                    Uloguj se
+                                </a>
                             </li>
                         {% endif %}
                     </ul>

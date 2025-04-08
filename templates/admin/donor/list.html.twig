@@ -58,6 +58,6 @@
         </table>
     </div>
 
-    {% import "macros/pagination.twig" as pagination %}
-    {{ pagination.navigation('admin_donor_list', donors.total_pages, donors.current_page) }}
+    {% import "macro.twig" as macro %}
+    {{ macro.pagination('admin_donor_list', donors.total_pages, donors.current_page) }}
 {% endblock %}

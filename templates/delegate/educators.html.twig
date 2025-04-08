@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% import "macro.twig" as macro %}
+    {{ macro.back('home') }}
+
+    <div class="card card-lg bg-base-100 shadow m-10 mt-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-school text-3xl"></span>
+                Oštećeni
+            </h2>
+
+            {{ include('flashes.html.twig') }}
+
+            {% form_theme form with ['form.html.twig', 'form_inline.html.twig'] %}
+            {{ form(form) }}
+
+            <div class="overflow-x-auto mt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-gray-500">
+                        Ukupno rezultata: <span class="font-bold">{{ educators.total }}</span>
+                    </div>
+
+                    <a href="{{ path('delegate_new_educator') }}" class="btn btn-primary">
+                        <span class="ti ti-plus text-xl"></span>
+                        Dodaj
+                    </a>
+                </div>
+
+                <table class="table rounded-box border border-base-200">
+                    <thead>
+                    <tr class="bg-base-200 text-base-content">
+                        <th>
+                            <span class="ti ti-user text-xl"></span>
+                            Ime
+                        </th>
+                        <th>
+                            <span class="ti ti-building text-xl"></span>
+                            Škola
+                        </th>
+                        <th>
+                            <span class="ti ti-cash text-xl"></span>
+                            Cifra
+                        </th>
+                        <th>
+                            <span class="ti ti-credit-card text-xl"></span>
+                            Broj računa
+                        </th>
+                        <th>
+                            <span class="ti ti-calendar-event text-xl"></span>
+                            Registrovan
+                        </th>
+                        <th>
+                            <span class="ti ti-user text-xl"></span>
+                            Registrovan od delegata
+                        </th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for educator in educators.items %}
+                        <tr class="hover:bg-base-200">
+                            <td>{{ educator.name }}</td>
+                            <td>{{ educator.school.name }}</td>
+                            <td>{{ educator.amount|number_format }}</td>
+                            <td>{{ educator.accountNumber }}</td>
+                            <td>{{ educator.updatedAt|date('d.m.Y.') }}</td>
+                            <td>{{ educator.createdBy.fullName }}</td>
+                            <td>
+                                <div class="flex gap-2 justify-end">
+                                    <a href="{{ path('delegate_delete_educator', { 'id': educator.id }) }}" class="btn btn-error btn-sm flex tooltip" data-tip="Brisanje">
+                                        <span class="ti ti-trash text-xl"></span>
+                                    </a>
+                                    <a href="{{ path('delegate_edit_educator', { 'id': educator.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Izmeni">
+                                        <span class="ti ti-edit text-xl"></span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

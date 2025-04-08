@@ -2,16 +2,14 @@
 
 {% block body %}
     {% import "macro.twig" as macro %}
-    {{ macro.back('profile_edit') }}
+    {{ macro.back('delegate_educators') }}
 
     <div class="card card-lg bg-base-100 shadow m-10 mt-0">
         <div class="card-body">
             <h2 class="card-title mb-4">
-                <span class="ti ti-lock text-2xl"></span>
-                Izmena lozinke
+                <span class="ti ti-school text-3xl"></span>
+                Oštećeni
             </h2>
-
-            {{ include('flashes.html.twig') }}
 
             <div>
                 {% form_theme form 'form.html.twig' %}

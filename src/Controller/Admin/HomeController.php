@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\City;
+use App\Entity\Educator;
 use App\Entity\School;
 use App\Entity\SchoolType;
 use App\Entity\User;
@@ -38,12 +39,20 @@ final class HomeController extends AbstractController
         $totalDelegatesSum = $qb->select('SUM(ud.amount)')
             ->from(UserDonor::class, 'ud')
             ->getQuery()
-            ->getSingleScalarResult();;
+            ->getSingleScalarResult();
+
+        $qb = $entityManager->createQueryBuilder();
+        $totalEducatorsSum = $qb->select('SUM(e.amount)')
+            ->from(Educator::class, 'e')
+            ->getQuery()
+            ->getSingleScalarResult();
 
         return $this->render('admin/home/index.html.twig', [
             'totalDonors' => $entityManager->getRepository(UserDonor::class)->count(),
             'totalDonorsSum' => $totalDelegatesSum,
             'totalDelegate' => $totalDelegates,
+            'totalEducators' => $entityManager->getRepository(Educator::class)->count(),
+            'totalEducatorsSum' => $totalEducatorsSum,
             'totalSchool' => $entityManager->getRepository(School::class)->count(),
             'totalCities' => $entityManager->getRepository(City::class)->count(),
             'totalUsers' => $entityManager->getRepository(User::class)->count(),

@@ -1,7 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="card card-lg bg-base-100 shadow m-10">
+    {% if backRouteName is defined %}
+        {% import "macro.twig" as macro %}
+        {{ macro.back(backRouteName) }}
+    {% endif %}
+
+    <div class="card card-lg bg-base-100 shadow m-10 {% if backRouteName is defined %}mt-0{% endif %}">
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <span class="ti ti-{{ iconClass}} text-2xl"></span>

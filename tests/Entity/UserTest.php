@@ -62,21 +62,4 @@ class UserTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $this->user->getCreatedAt());
         $this->assertInstanceOf(\DateTimeInterface::class, $this->user->getUpdatedAt());
     }
-    
-    public function testUserDonorRelationship(): void
-    {
-        // Initially, userDonor should be null
-        $this->assertNull($this->user->getUserDonor());
-        
-        // Since we need a real implementation for the two-way relationship,
-        // let's use a real UserDonor rather than a mock
-        $userDonor = new \App\Entity\UserDonor();
-        
-        // Set the userDonor
-        $this->user->setUserDonor($userDonor);
-        
-        // The relationship should be set on both sides
-        $this->assertSame($userDonor, $this->user->getUserDonor());
-        $this->assertSame($this->user, $userDonor->getUser());
-    }
 }
