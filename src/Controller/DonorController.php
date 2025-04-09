@@ -21,7 +21,7 @@ class DonorController extends AbstractController
     {
     }
 
-    #[Route('/prijava-donator', name: 'subscribe')]
+    #[Route('/postani-donator', name: 'subscribe')]
     public function subscribe(Request $request, MailerInterface $mailer): Response
     {
         /** @var \App\Entity\User $user */
@@ -54,13 +54,13 @@ class DonorController extends AbstractController
         ]);
     }
 
-    #[Route('/uspesna-registracija-donora', name: 'success')]
+    #[Route('/uspesna-registracija-donatora', name: 'success')]
     public function messageSuccessSupport(): Response
     {
         return $this->render('donor/success.html.twig');
     }
 
-    #[Route('/odjava-donora', name: 'unsubscribe')]
+    #[Route('/odjava-donatora', name: 'unsubscribe')]
     public function unsubscribe(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('unsubscribe', $request->query->get('_token'))) {

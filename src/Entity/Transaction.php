@@ -10,11 +10,16 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class Transaction
 {
+    const STATUS_NEW = 1;
+    const STATUS_VALIDATED = 2;
+    const STATUS_CONFIRMED = 3;
+    const STATUS_CANCELLED = 4;
+
     public const STATUS = [
-        1 => 'New',
-        2 => 'Validated',
-        3 => 'Confirmed',
-        4 => 'Cancelled',
+        self::STATUS_NEW => 'New',
+        self::STATUS_VALIDATED => 'Validated',
+        self::STATUS_CONFIRMED => 'Confirmed',
+        self::STATUS_CANCELLED => 'Cancelled',
     ];
 
     #[ORM\Id]
@@ -29,6 +34,9 @@ class Transaction
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Educator $educator = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $accountNumber = null;
 
     #[ORM\Column]
     private ?int $amount = null;
@@ -70,6 +78,18 @@ class Transaction
     public function setEducator(?Educator $educator): static
     {
         $this->educator = $educator;
+
+        return $this;
+    }
+
+    public function getAccountNumber(): ?string
+    {
+        return $this->accountNumber;
+    }
+
+    public function setAccountNumber(string $accountNumber): static
+    {
+        $this->accountNumber = $accountNumber;
 
         return $this;
     }

@@ -70,6 +70,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ path('admin_user_delegate_request_list') }}" class="{% if app.request.get('_route') == 'admin_user_delegate_request_list' %}menu-active{% endif %}">
+                        <span class="ti ti-checklist text-2xl"></span>
+                        Zahtevi za delegata
+                    </a>
+                </li>
+                <li>
                     <a href="{{ path('admin_educator_list') }}" class="{% if app.request.get('_route') == 'admin_educator_list' %}menu-active{% endif %}">
                         <span class="ti ti-school text-2xl"></span>
                         Edukatori

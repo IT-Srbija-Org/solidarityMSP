@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,19 +16,20 @@ class RegistrationType extends AbstractType
     {
         $builder
             ->add('firstName', TextType::class, [
-                'attr' => [
-                    'placeholder' => 'Ime',
-                ]
+                'label' => 'Ime',
             ])
             ->add('lastName', TextType::class, [
-                'attr' => [
-                    'placeholder' => 'Prezime',
-                ]
+                'label' => 'Prezime',
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
             ])
-        ;
+            ->add('submit', SubmitType::class, [
+                'label' => 'Sačuvaj',
+                'attr' => [
+                    'class' => 'btn btn-primary btn-md w-full',
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

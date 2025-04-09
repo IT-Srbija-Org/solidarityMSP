@@ -51,10 +51,17 @@ class School
     #[ORM\OneToMany(targetEntity: Educator::class, mappedBy: 'school')]
     private Collection $educators;
 
+    /**
+     * @var Collection<int, UserDelegateRequest>
+     */
+    #[ORM\OneToMany(targetEntity: UserDelegateRequest::class, mappedBy: 'school')]
+    private Collection $userDelegateRequests;
+
     public function __construct()
     {
         $this->userDelegateSchools = new ArrayCollection();
         $this->educators = new ArrayCollection();
+        $this->userDelegateRequests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -139,5 +146,13 @@ class School
     public function getEducators(): Collection
     {
         return $this->educators;
+    }
+
+    /**
+     * @return Collection<int, UserDelegateRequest>
+     */
+    public function getUserDelegateRequests(): Collection
+    {
+        return $this->userDelegateRequests;
     }
 }

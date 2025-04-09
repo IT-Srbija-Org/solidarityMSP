@@ -55,6 +55,13 @@
                             </a>
                         </li>
 
+                        <li>
+                            <a href="{{ path('delegate_request_access') }}" class="link link-primary border border-red-400 text-red-400 hover:text-base-100 hover:bg-red-400 no-underline">
+                                <span class="ti ti-user-cog text-xl"></span>
+                                Postani delegat
+                            </a>
+                        </li>
+
                         {% if app.user %}
                             {% if 'ROLE_ADMIN' in app.user.getRoles %}
                                 <li>

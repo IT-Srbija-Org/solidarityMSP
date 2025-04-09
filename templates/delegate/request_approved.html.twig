@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% import "macro.twig" as macro %}
+    {{ macro.back('home') }}
+
+    <div class="card card-lg bg-base-100 shadow m-10 mt-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-user-cog text-3xl"></span>
+                Obrazac za delegate
+            </h2>
+
+            <div>
+                Vaš zahtev za delegata je prihvaćen od strane administratora. Na dole navedenom linku možete da počnete da unosite oštećene za škole u kojima ste vi delegat.
+                U slučaju da ste delegat u više škola, slobodno nas kontaktirajte i dodaćemo Vam opciju da možete da unosite oštećene i za druge škole.
+            </div>
+
+            <div class="mt-4">
+                <a href="{{ path('delegate_educators') }}" class="link link-primary no-underline">
+                    <span class="ti ti-school text-xl"></span>
+                    Spisak oštećenih
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

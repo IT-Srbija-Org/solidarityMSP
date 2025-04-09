@@ -88,6 +88,9 @@ class User implements UserInterface
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'user')]
     private Collection $transactions;
 
+    #[ORM\OneToOne(mappedBy: 'user')]
+    private ?UserDelegateRequest $userDelegateRequest = null;
+
     public function __construct()
     {
         $this->userDelegateSchools = new ArrayCollection();
@@ -119,13 +122,13 @@ class User implements UserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
+     * @return list<string>
      * @see UserInterface
      *
-     * @return list<string>
      */
     public function getRoles(): array
     {
@@ -142,6 +145,15 @@ class User implements UserInterface
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function addRole(string $role): static
+    {
+        if (!in_array($role, $this->roles)) {
+            $this->roles[] = $role;
+        }
 
         return $this;
     }
@@ -285,25 +297,8 @@ class User implements UserInterface
         return $this->transactions;
     }
 
-    public function addTransaction(Transaction $transaction): static
+    public function getUserDelegateRequest(): ?UserDelegateRequest
     {
-        if (!$this->transactions->contains($transaction)) {
-            $this->transactions->add($transaction);
-            $transaction->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTransaction(Transaction $transaction): static
-    {
-        if ($this->transactions->removeElement($transaction)) {
-            // set the owning side to null (unless already changed)
-            if ($transaction->getUser() === $this) {
-                $transaction->setUser(null);
-            }
-        }
-
-        return $this;
+        return $this->userDelegateRequest;
     }
 }

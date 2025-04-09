@@ -43,7 +43,7 @@
                 <tr class="hover:bg-base-200">
                     <td>{{ transaction.user.fullName }}</td>
                     <td>{{ transaction.educator.name }}</td>
-                    <td>{{ transaction.educator.accountNumber }}</td>
+                    <td>{{ transaction.accountNumber }}</td>
                     <td>{{ transaction.amount|number_format }}</td>
                     <td>{{ transaction.status|transactionStatus }}</td>
                     <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>

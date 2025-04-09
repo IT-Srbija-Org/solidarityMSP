@@ -1,0 +1,70 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block content %}
+    {{ include('flashes.html.twig') }}
+
+    {% form_theme form with ['form.html.twig', 'form_inline.html.twig'] %}
+    {{ form(form) }}
+
+    <div class="overflow-x-auto mt-6">
+        <div class="flex justify-between items-center mb-4">
+            <div class="text-gray-500">
+                Ukupno rezultata: <span class="font-bold">{{ userDelegateRequests.total }}</span>
+            </div>
+        </div>
+
+        <table class="table rounded-box border border-base-200">
+            <thead>
+                <tr class="bg-base-200 text-base-content">
+                    <th>
+                        <span class="ti ti-user text-xl"></span>
+                        Ime
+                    </th>
+                    <th>
+                        <span class="ti ti-mail text-xl"></span>
+                        Email
+                    </th>
+                    <th>
+                        <span class="ti ti-phone text-xl"></span>
+                        Broj telefona
+                    </th>
+                    <th>
+                        <span class="ti ti-building-community text-xl"></span>
+                        Grad
+                    </th>
+                    <th>
+                        <span class="ti ti-school text-xl"></span>
+                        Škola
+                    </th>
+                    <th>
+                        <span class="ti ti-copy-check text-xl"></span>
+                        Status
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for userDelegateRequest in userDelegateRequests.items %}
+                <tr class="hover:bg-base-200">
+                    <td>{{ userDelegateRequest.user.fullName }}</td>
+                    <td>{{ userDelegateRequest.user.email }}</td>
+                    <td>{{ userDelegateRequest.phone }}</td>
+                    <td>{{ userDelegateRequest.city.name }}</td>
+                    <td>{{ userDelegateRequest.school.name }}</td>
+                    <td>{{ userDelegateRequest.status|userDelegateRequestStatus|raw }}</td>
+                    <td>
+                        <div class="flex gap-2 justify-end">
+                            <a href="{{ path('admin_user_delegate_request_edit', { 'id': userDelegateRequest.id }) }}" class="btn {% if userDelegateRequest.status == 1 %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Izmeni">
+                                <span class="ti ti-edit text-xl"></span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% import "macro.twig" as macro %}
+    {{ macro.pagination('admin_user_delegate_request_list', userDelegateRequests.total_pages, userDelegateRequests.current_page) }}
+{% endblock %}

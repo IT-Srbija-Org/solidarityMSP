@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Educator;
+use App\Entity\User;
+use App\Entity\UserDelegateRequest;
 use App\Form\ConfirmType;
 use App\Form\EducatorEditType;
 use App\Form\EducatorSearchType;
+use App\Form\RegistrationDelegateType;
 use App\Repository\EducatorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,14 +17,47 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_DELEGATE')]
 #[Route(name: 'delegate_')]
-final class DelegateController extends AbstractController
+class DelegateController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
     }
 
+    #[IsGranted('ROLE_USER')]
+    #[Route('/postani-delegat', name: 'request_access')]
+    public function requestAccess(Request $request): Response
+    {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if (in_array('ROLE_DELEGATE', $user->getRoles())) {
+            return $this->render('delegate/request_approved.html.twig');
+        }
+
+        if ($user->getUserDelegateRequest() && $user->getUserDelegateRequest()->getStatus() != UserDelegateRequest::STATUS_NEW) {
+            return $this->render('delegate/request_already_exist.html.twig');
+        }
+
+        $userDelegateRequest = $user->getUserDelegateRequest() ?? new UserDelegateRequest();
+        $userDelegateRequest->setUser($user);
+
+        $form = $this->createForm(RegistrationDelegateType::class, $userDelegateRequest);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($userDelegateRequest);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('delegate_request_access');
+        }
+
+        return $this->render('delegate/request_access.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[IsGranted('ROLE_DELEGATE')]
     #[Route('/osteceni', name: 'educators')]
     public function educators(Request $request, EducatorRepository $educatorRepository): Response
     {
@@ -51,6 +87,7 @@ final class DelegateController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_DELEGATE')]
     #[Route('/prijavi-ostecenog', name: 'new_educator')]
     public function newEducator(Request $request): Response
     {
@@ -75,6 +112,7 @@ final class DelegateController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_DELEGATE')]
     #[Route('/osteceni/{id}/izmeni-podatke', name: 'edit_educator')]
     public function editEducator(Request $request, Educator $educator): Response
     {
@@ -109,6 +147,7 @@ final class DelegateController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_DELEGATE')]
     #[Route('/osteceni/{id}/brisanje', name: 'delete_educator')]
     public function deleteEducator(Request $request, Educator $educator): Response
     {

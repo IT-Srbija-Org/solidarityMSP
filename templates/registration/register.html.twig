@@ -12,35 +12,9 @@
 
                 <div class="divider my-10">Registracija</div>
                 {{ include('flashes.html.twig') }}
-                {{ form_errors(form) }}
 
-                {{ form_start(form) }}
-                    <div class="mb-2">
-                        <label class="input w-full">
-                            {{ form_widget(form.firstName) }}
-                        </label>
-
-                        {{ form_errors(form.firstName) }}
-                    </div>
-                    <div class="mb-2">
-                        <label class="input w-full">
-                            {{ form_widget(form.lastName) }}
-                        </label>
-
-                        {{ form_errors(form.lastName) }}
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="input w-full">
-                            <span class="ti ti-mail text-2xl opacity-50"></span>
-                            {{ form_widget(form.email, {'attr': {'placeholder': 'Email'}}) }}
-                        </label>
-
-                        {{ form_errors(form.email) }}
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-full">Registrujte se</button>
-                {{ form_end(form) }}
+                {% form_theme form 'form.html.twig' %}
+                {{ form(form) }}
 
                 <div class="divider my-10"></div>
 
