@@ -77,6 +77,7 @@ class DonorController extends AbstractController
         }
 
         $this->addFlash('success', 'Uspešno ste se odjavili sa liste donora');
+
         return $this->redirectToRoute('donor_subscribe');
     }
 }

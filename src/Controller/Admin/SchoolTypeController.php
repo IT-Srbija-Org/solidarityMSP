@@ -21,8 +21,9 @@ final class SchoolTypeController extends AbstractController
     public function list(): Response
     {
         $items = $this->entityManager->getRepository(SchoolType::class)->findAll();
+
         return $this->render('admin/schoolType/list.html.twig', [
-            'items' => $items
+            'items' => $items,
         ]);
     }
 
@@ -38,11 +39,12 @@ final class SchoolTypeController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Dodat je novi tip škole');
+
             return $this->redirectToRoute('admin_school_type_list');
         }
 
         return $this->render('admin/schoolType/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -57,11 +59,12 @@ final class SchoolTypeController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Tip škole je izmenjen');
+
             return $this->redirectToRoute('admin_school_type_list');
         }
 
         return $this->render('admin/schoolType/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 }

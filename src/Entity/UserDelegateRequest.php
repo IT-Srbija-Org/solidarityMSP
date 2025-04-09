@@ -10,9 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class UserDelegateRequest
 {
-    const STATUS_NEW = 1;
-    const STATUS_CONFIRMED = 2;
-    const STATUS_REJECTED = 3;
+    public const STATUS_NEW = 1;
+    public const STATUS_CONFIRMED = 2;
+    public const STATUS_REJECTED = 3;
 
     public const STATUS = [
         self::STATUS_NEW => 'New',

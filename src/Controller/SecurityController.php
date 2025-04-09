@@ -33,20 +33,24 @@ class SecurityController extends AbstractController
                 $mailer->send($message);
 
                 $this->addFlash('success', 'Link za prijavu je poslat na vašu email adresu.');
+
                 return $this->redirectToRoute('login');
             }
 
             if ($user && !$user->isActive()) {
                 $this->addFlash('error', 'Korisnik sa ovom email adresom nije verifikovan. Molimo da se verifikujete.');
+
                 return $this->redirectToRoute('login');
             }
 
             if ($user && !$user->isVerified()) {
                 $this->addFlash('error', 'Korisnik sa ovom email adresom nije aktivan i ne može se prijaviti.');
+
                 return $this->redirectToRoute('login');
             }
 
             $this->addFlash('error', 'Korisnik sa ovom email adresom ne postoji. Molimo da se registrujete.');
+
             return $this->redirectToRoute('login');
         }
 

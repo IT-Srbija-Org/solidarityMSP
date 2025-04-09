@@ -27,8 +27,8 @@ class EducatorSearchType extends AbstractType
                 'label' => 'Škola',
                 'choice_value' => 'id',
                 'choice_label' => function (School $school): string {
-                    return $school->getName() . ' (' . $school->getCity()->getName() . ')';
-                }
+                    return $school->getName().' ('.$school->getCity()->getName().')';
+                },
             ])
             ->add('submit', SubmitType::class, [
                 'label' => '<i class="ti ti-search text-2xl"></i> Pretraži',

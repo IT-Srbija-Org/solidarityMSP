@@ -31,6 +31,7 @@ final class CityController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+
         return $this->render('admin/city/list.html.twig', [
             'cities' => $cityRepository->search($criteria, $page),
             'form' => $form->createView(),
@@ -49,11 +50,12 @@ final class CityController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Dodat je novi grad');
+
             return $this->redirectToRoute('admin_city_list');
         }
 
         return $this->render('admin/city/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -68,11 +70,12 @@ final class CityController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Grad je izmenjen');
+
             return $this->redirectToRoute('admin_city_list');
         }
 
         return $this->render('admin/city/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 }

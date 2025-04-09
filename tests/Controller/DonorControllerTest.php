@@ -3,7 +3,6 @@
 namespace App\Tests\Controller;
 
 use App\DataFixtures\UserFixtures;
-use App\Entity\User;
 use App\Repository\UserRepository;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
@@ -31,7 +30,7 @@ class DonorControllerTest extends WebTestCase
     private function loadFixtures(): void
     {
         $this->databaseTool->loadFixtures([
-            UserFixtures::class
+            UserFixtures::class,
         ]);
     }
 

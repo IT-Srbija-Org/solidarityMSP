@@ -5,7 +5,6 @@ namespace App\Tests\Form;
 use App\Entity\User;
 use App\Form\RegistrationType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Test\TypeTestCase;
 

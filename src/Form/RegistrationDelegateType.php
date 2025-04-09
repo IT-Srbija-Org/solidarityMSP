@@ -6,7 +6,6 @@ use App\Entity\City;
 use App\Entity\School;
 use App\Entity\SchoolType;
 use App\Entity\UserDelegateRequest;
-use App\Entity\UserDelegateSchool;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

@@ -27,6 +27,7 @@ final class UserController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+
         return $this->render('admin/user/list.html.twig', [
             'users' => $userRepository->search($criteria, $page),
             'form' => $form->createView(),
@@ -44,6 +45,7 @@ final class UserController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Korisnički podaci su izmenjeni');
+
             return $this->redirectToRoute('admin_user_list');
         }
 

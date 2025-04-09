@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\City;
 use App\Entity\Educator;
 use App\Entity\School;
-use App\Entity\SchoolType;
 use App\Entity\User;
 use App\Entity\UserDonor;
 use Doctrine\ORM\EntityManagerInterface;

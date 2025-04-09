@@ -24,6 +24,7 @@ final class EducatorController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+
         return $this->render('admin/educator/list.html.twig', [
             'educators' => $educatorRepository->search($criteria, $page),
             'form' => $form->createView(),

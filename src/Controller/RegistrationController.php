@@ -19,10 +19,9 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 class RegistrationController extends AbstractController
 {
     public function __construct(
-        private EmailVerifier          $emailVerifier,
-        private EntityManagerInterface $entityManager
-    )
-    {
+        private EmailVerifier $emailVerifier,
+        private EntityManagerInterface $entityManager,
+    ) {
     }
 
     #[Route('/registracija', name: 'register')]
@@ -76,13 +75,14 @@ class RegistrationController extends AbstractController
 
             // Login user
             $security->login($user, 'form_login');
-
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('error', $exception->getReason());
+
             return $this->redirectToRoute('register');
         }
 
         $this->addFlash('success', 'Vaša email adresa je potvrđena, možete se prijaviti.');
+
         return $this->redirectToRoute('login');
     }
 }

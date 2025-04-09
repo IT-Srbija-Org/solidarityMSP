@@ -2,10 +2,7 @@
 
 namespace App\Form\Admin;
 
-use App\Entity\City;
-use App\Entity\SchoolType;
 use App\Entity\UserDelegateRequest;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -34,7 +31,7 @@ class UserDelegateRequestEditType extends AbstractType
             ])
             ->add('phone', TextType::class, [
                 'label' => 'Broj telefona',
-                ])
+            ])
             ->add('schoolType', TextType::class, [
                 'data' => $options['data']->getSchoolType()?->getName(),
                 'label' => 'Tip obrazovne ustanove',

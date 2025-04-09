@@ -2,8 +2,8 @@
 
 namespace App\Tests\Controller\Admin;
 
-use App\DataFixtures\UserFixtures;
 use App\DataFixtures\UserDonorFixtures;
+use App\DataFixtures\UserFixtures;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
@@ -35,7 +35,7 @@ class DonorControllerTest extends WebTestCase
     {
         $this->databaseTool->loadFixtures([
             UserFixtures::class,
-            UserDonorFixtures::class
+            UserDonorFixtures::class,
         ]);
     }
 
@@ -61,7 +61,7 @@ class DonorControllerTest extends WebTestCase
 
     /**
      * Check that regular users can't access admin functionality
-     * This test method verifies authorization without checking the page directly
+     * This test method verifies authorization without checking the page directly.
      */
     public function testRegularUsersNotHavingAdminRole(): void
     {

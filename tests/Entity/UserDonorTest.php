@@ -33,7 +33,7 @@ class UserDonorTest extends TestCase
     public function testIsMonthly(): void
     {
         $this->assertTrue($this->userDonor->isMonthly());
-        
+
         $this->userDonor->setIsMonthly(false);
         $this->assertFalse($this->userDonor->isMonthly());
     }
@@ -41,7 +41,7 @@ class UserDonorTest extends TestCase
     public function testGetAmount(): void
     {
         $this->assertEquals(5000, $this->userDonor->getAmount());
-        
+
         $this->userDonor->setAmount(3000);
         $this->assertEquals(3000, $this->userDonor->getAmount());
     }
@@ -49,10 +49,10 @@ class UserDonorTest extends TestCase
     public function testGetComment(): void
     {
         $this->assertEquals('Test comment', $this->userDonor->getComment());
-        
+
         $this->userDonor->setComment(null);
         $this->assertNull($this->userDonor->getComment());
-        
+
         $this->userDonor->setComment('New comment');
         $this->assertEquals('New comment', $this->userDonor->getComment());
     }
@@ -62,7 +62,7 @@ class UserDonorTest extends TestCase
         // Test PrePersist
         $this->userDonor->setCreatedAt();
         $this->userDonor->setUpdatedAt();
-        
+
         $this->assertInstanceOf(\DateTimeInterface::class, $this->userDonor->getCreatedAt());
         $this->assertInstanceOf(\DateTimeInterface::class, $this->userDonor->getUpdatedAt());
     }

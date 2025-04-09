@@ -40,7 +40,7 @@ class EducatorFixtures extends Fixture implements FixtureGroupInterface
             $educator->setSchool($school);
 
             $educator->setAmount($item['amount']);
-            $educator->setAccountNumber((string)$item['accountNumber']);
+            $educator->setAccountNumber((string) $item['accountNumber']);
 
             $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $item['delegatEmail']]);
             $educator->setCreatedBy($user);

@@ -28,7 +28,7 @@ class RegistrationType extends AbstractType
                 'label' => 'Sačuvaj',
                 'attr' => [
                     'class' => 'btn btn-primary btn-md w-full',
-                ]
+                ],
             ]);
     }
 

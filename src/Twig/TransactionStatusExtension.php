@@ -18,6 +18,7 @@ class TransactionStatusExtension extends AbstractExtension
     public function getStatus(int $status): string
     {
         $allStatus = Transaction::STATUS;
+
         return $allStatus[$status] ?? 'None';
     }
 }

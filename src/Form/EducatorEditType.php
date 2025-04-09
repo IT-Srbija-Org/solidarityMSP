@@ -34,8 +34,8 @@ class EducatorEditType extends AbstractType
                 },
                 'choice_value' => 'id',
                 'choice_label' => function (School $school): string {
-                    return $school->getName() . ' (' . $school->getCity()->getName() . ')';
-                }
+                    return $school->getName().' ('.$school->getCity()->getName().')';
+                },
             ])
             ->add('amount', IntegerType::class, [
                 'label' => 'Cifra',
@@ -52,7 +52,7 @@ class EducatorEditType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Educator::class,
-            'user' => null
+            'user' => null,
         ]);
     }
 }

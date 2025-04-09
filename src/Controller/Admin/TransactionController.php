@@ -3,10 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Transaction;
-use App\Form\Admin\EducatorSearchType;
 use App\Form\Admin\TransactionEditType;
 use App\Form\Admin\TransactionSearchType;
-use App\Repository\EducatorRepository;
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,6 +27,7 @@ final class TransactionController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+
         return $this->render('admin/transaction/list.html.twig', [
             'transactions' => $transactionRepository->search($criteria, $page),
             'form' => $form->createView(),
@@ -46,6 +45,7 @@ final class TransactionController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Transakcija je uspešno izmenjena');
+
             return $this->redirectToRoute('admin_transaction_list');
         }
 

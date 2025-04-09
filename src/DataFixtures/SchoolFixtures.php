@@ -21,11 +21,11 @@ class SchoolFixtures extends Fixture implements FixtureGroupInterface
         $schools = [[
             'name' => 'Medicinska škola Beograd',
             'city' => 'Beograd',
-            'type' => 'Srednja škola'
+            'type' => 'Srednja škola',
         ], [
             'name' => 'Osnovna škola Oslobodioci Beograda',
             'city' => 'Beograd',
-            'type' => 'Osnovna škola'
+            'type' => 'Osnovna škola',
         ]];
 
         foreach ($schools as $schoolData) {

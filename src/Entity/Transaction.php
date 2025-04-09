@@ -10,10 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class Transaction
 {
-    const STATUS_NEW = 1;
-    const STATUS_VALIDATED = 2;
-    const STATUS_CONFIRMED = 3;
-    const STATUS_CANCELLED = 4;
+    public const STATUS_NEW = 1;
+    public const STATUS_VALIDATED = 2;
+    public const STATUS_CONFIRMED = 3;
+    public const STATUS_CANCELLED = 4;
 
     public const STATUS = [
         self::STATUS_NEW => 'New',

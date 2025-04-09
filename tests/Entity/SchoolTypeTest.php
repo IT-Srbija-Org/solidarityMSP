@@ -25,7 +25,7 @@ class SchoolTypeTest extends TestCase
         // Test PrePersist
         $this->schoolType->setCreatedAt();
         $this->schoolType->setUpdatedAt();
-        
+
         $this->assertInstanceOf(\DateTimeInterface::class, $this->schoolType->getCreatedAt());
         $this->assertInstanceOf(\DateTimeInterface::class, $this->schoolType->getUpdatedAt());
     }

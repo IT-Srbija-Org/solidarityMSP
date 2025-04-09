@@ -2,7 +2,6 @@
 
 namespace App\Twig;
 
-use App\Entity\Transaction;
 use App\Entity\UserDelegateRequest;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -29,6 +28,6 @@ class UserDelegateRequestStatusExtension extends AbstractExtension
             UserDelegateRequest::STATUS_REJECTED => 'ti-xbox-x text-error',
         };
 
-        return "<span class='ti " . $iconClass . " text-xl relative top-0.5'></span> " . $allStatus[$status];
+        return "<span class='ti ".$iconClass." text-xl relative top-0.5'></span> ".$allStatus[$status];
     }
 }

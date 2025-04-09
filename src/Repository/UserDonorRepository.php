@@ -29,19 +29,19 @@ class UserDonorRepository extends ServiceEntityRepository
         if (!empty($criteria['firstName'])) {
             $qb->innerJoin('ud.user', 'u')
                 ->andWhere('u.firstName LIKE :firstName')
-                ->setParameter('firstName', '%' . $criteria['firstName'] . '%');
+                ->setParameter('firstName', '%'.$criteria['firstName'].'%');
         }
 
         if (!empty($criteria['lastName'])) {
             $qb->innerJoin('ud.user', 'u')
                 ->andWhere('u.lastName LIKE :lastName')
-                ->setParameter('lastName', '%' . $criteria['lastName'] . '%');
+                ->setParameter('lastName', '%'.$criteria['lastName'].'%');
         }
 
         if (!empty($criteria['email'])) {
             $qb->innerJoin('ud.user', 'u')
                 ->andWhere('u.email LIKE :email')
-                ->setParameter('email', '%' . $criteria['email'] . '%');
+                ->setParameter('email', '%'.$criteria['email'].'%');
         }
 
         // Set the sorting

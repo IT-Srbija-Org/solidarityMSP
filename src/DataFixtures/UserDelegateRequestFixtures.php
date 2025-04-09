@@ -5,8 +5,6 @@ namespace App\DataFixtures;
 use App\Entity\School;
 use App\Entity\User;
 use App\Entity\UserDelegateRequest;
-use App\Entity\UserDelegateSchool;
-use App\Entity\UserDonor;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\ORM\EntityManagerInterface;

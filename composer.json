@@ -80,6 +80,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^4.1",
+        "friendsofphp/php-cs-fixer": "^3.75",
         "liip/test-fixtures-bundle": "^3.3",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^12.1",

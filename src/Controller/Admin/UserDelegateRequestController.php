@@ -28,6 +28,7 @@ final class UserDelegateRequestController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+
         return $this->render('admin/userDelegateRequest/list.html.twig', [
             'userDelegateRequests' => $userDelegateRequestRepository->search($criteria, $page),
             'form' => $form->createView(),
@@ -35,8 +36,9 @@ final class UserDelegateRequestController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'])]
-    public function edit(Request $request, UserDelegateRequest $userDelegateRequest, EntityManagerInterface $entityManager): Response {
-        if ($userDelegateRequest->getStatus() != UserDelegateRequest::STATUS_NEW) {
+    public function edit(Request $request, UserDelegateRequest $userDelegateRequest, EntityManagerInterface $entityManager): Response
+    {
+        if (UserDelegateRequest::STATUS_NEW != $userDelegateRequest->getStatus()) {
             throw $this->createAccessDeniedException();
         }
 
@@ -47,8 +49,7 @@ final class UserDelegateRequestController extends AbstractController
             $entityManager->persist($userDelegateRequest);
             $entityManager->flush();
 
-            if ($userDelegateRequest->getStatus() == UserDelegateRequest::STATUS_CONFIRMED) {
-
+            if (UserDelegateRequest::STATUS_CONFIRMED == $userDelegateRequest->getStatus()) {
                 // Add role "ROLE_DELEGATE" to user
                 $user = $userDelegateRequest->getUser();
                 $user->addRole('ROLE_DELEGATE');

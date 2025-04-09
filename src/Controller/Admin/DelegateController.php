@@ -59,6 +59,7 @@ final class DelegateController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Uspešno ste odvezali školu od delegata.');
+
             return $this->redirectToRoute('admin_delegate_connect_school', ['id' => $user->getId()]);
         }
 
@@ -101,6 +102,7 @@ final class DelegateController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Uspešno ste odvezali školu od delegata.');
+
             return $this->redirectToRoute('admin_delegate_connect_school', ['id' => $user->getId()]);
         }
 

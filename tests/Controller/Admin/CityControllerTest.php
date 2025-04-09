@@ -36,7 +36,7 @@ class CityControllerTest extends WebTestCase
     {
         $this->databaseTool->loadFixtures([
             UserFixtures::class,
-            CityFixtures::class
+            CityFixtures::class,
         ]);
     }
 
@@ -57,11 +57,11 @@ class CityControllerTest extends WebTestCase
         $this->assertNotEquals(Response::HTTP_OK, $statusCode);
 
         $this->assertTrue(
-            $response->isRedirection() ||
-            in_array($statusCode, [
+            $response->isRedirection()
+            || in_array($statusCode, [
                 Response::HTTP_UNAUTHORIZED,
                 Response::HTTP_FORBIDDEN,
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                Response::HTTP_INTERNAL_SERVER_ERROR,
             ])
         );
     }
@@ -85,11 +85,11 @@ class CityControllerTest extends WebTestCase
         $this->assertNotEquals(Response::HTTP_OK, $statusCode);
 
         $this->assertTrue(
-            $response->isRedirection() ||
-            in_array($statusCode, [
+            $response->isRedirection()
+            || in_array($statusCode, [
                 Response::HTTP_UNAUTHORIZED,
                 Response::HTTP_FORBIDDEN,
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                Response::HTTP_INTERNAL_SERVER_ERROR,
             ])
         );
     }
@@ -117,11 +117,11 @@ class CityControllerTest extends WebTestCase
         $this->assertNotEquals(Response::HTTP_OK, $statusCode);
 
         $this->assertTrue(
-            $response->isRedirection() ||
-            in_array($statusCode, [
+            $response->isRedirection()
+            || in_array($statusCode, [
                 Response::HTTP_UNAUTHORIZED,
                 Response::HTTP_FORBIDDEN,
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                Response::HTTP_INTERNAL_SERVER_ERROR,
             ])
         );
     }

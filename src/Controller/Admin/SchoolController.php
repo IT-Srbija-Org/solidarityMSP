@@ -31,6 +31,7 @@ final class SchoolController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+
         return $this->render('admin/school/list.html.twig', [
             'schools' => $schoolRepository->search($criteria, $page),
             'form' => $form->createView(),
@@ -49,11 +50,12 @@ final class SchoolController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Dodata je nova škola');
+
             return $this->redirectToRoute('admin_school_list');
         }
 
         return $this->render('admin/school/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -68,11 +70,12 @@ final class SchoolController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Škola je izmenjena');
+
             return $this->redirectToRoute('admin_school_list');
         }
 
         return $this->render('admin/school/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 }

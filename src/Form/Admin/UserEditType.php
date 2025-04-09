@@ -32,7 +32,7 @@ class UserEditType extends AbstractType
                 'multiple' => true,
                 'disabled' => false,
                 'choice_attr' => function ($choice, $key, $value) {
-                    if ($value === 'ROLE_USER') {
+                    if ('ROLE_USER' === $value) {
                         return ['disabled' => 'disabled'];
                     }
 

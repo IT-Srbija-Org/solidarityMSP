@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\Educator;
-use App\Entity\School;
 use App\Entity\Transaction;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -48,4 +47,3 @@ class TransactionFixtures extends Fixture implements FixtureGroupInterface
         return [4];
     }
 }
-

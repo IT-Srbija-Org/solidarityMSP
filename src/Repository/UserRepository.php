@@ -23,22 +23,22 @@ class UserRepository extends ServiceEntityRepository
 
         if (!empty($criteria['firstName'])) {
             $qb->andWhere('u.firstName LIKE :firstName')
-                ->setParameter('firstName', '%' . $criteria['firstName'] . '%');
+                ->setParameter('firstName', '%'.$criteria['firstName'].'%');
         }
 
         if (!empty($criteria['lastName'])) {
             $qb->andWhere('u.lastName LIKE :lastName')
-                ->setParameter('lastName', '%' . $criteria['lastName'] . '%');
+                ->setParameter('lastName', '%'.$criteria['lastName'].'%');
         }
 
         if (!empty($criteria['email'])) {
             $qb->andWhere('u.email LIKE :email')
-                ->setParameter('email', '%' . $criteria['email'] . '%');
+                ->setParameter('email', '%'.$criteria['email'].'%');
         }
 
-        if (!empty($criteria['role']) && $criteria['role'] != 'ROLE_USER') {
+        if (!empty($criteria['role']) && 'ROLE_USER' != $criteria['role']) {
             $qb->andWhere('u.roles LIKE :role')
-                ->setParameter('role', '%' . $criteria['role'] . '%');
+                ->setParameter('role', '%'.$criteria['role'].'%');
         }
 
         if (isset($criteria['isActive'])) {

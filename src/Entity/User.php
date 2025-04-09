@@ -122,13 +122,13 @@ class User implements UserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string)$this->email;
+        return (string) $this->email;
     }
 
     /**
      * @return list<string>
-     * @see UserInterface
      *
+     * @see UserInterface
      */
     public function getRoles(): array
     {
@@ -265,7 +265,7 @@ class User implements UserInterface
 
     public function getFullName(): string
     {
-        return $this->firstName . ' ' . $this->lastName;
+        return $this->firstName.' '.$this->lastName;
     }
 
     public function getUserDonor(): ?UserDonor

@@ -23,7 +23,7 @@ class SchoolRepository extends ServiceEntityRepository
 
         if (!empty($criteria['name'])) {
             $qb->andWhere('c.name LIKE :name')
-                ->setParameter('name', '%' . $criteria['name'] . '%');
+                ->setParameter('name', '%'.$criteria['name'].'%');
         }
 
         if (!empty($criteria['city'])) {

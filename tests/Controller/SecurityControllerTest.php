@@ -15,7 +15,7 @@ class SecurityControllerTest extends WebTestCase
     }
 
     /**
-     * Test that the login page loads correctly with all form elements
+     * Test that the login page loads correctly with all form elements.
      */
     public function testLoginPageLoads(): void
     {
@@ -29,7 +29,7 @@ class SecurityControllerTest extends WebTestCase
 
     /**
      * Test the logout route throws an exception (as expected)
-     * This is a valid behavior since the logout route is handled by Symfony's security system
+     * This is a valid behavior since the logout route is handled by Symfony's security system.
      */
     public function testLogoutThrowsLogicException(): void
     {

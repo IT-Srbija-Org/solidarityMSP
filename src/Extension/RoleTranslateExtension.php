@@ -18,17 +18,17 @@ class RoleTranslateExtension extends AbstractExtension
     public function roleTranslate(array $roles): string
     {
         $allRoles = User::ROLES;
-        if(empty($roles)) {
+        if (empty($roles)) {
             return $allRoles['ROLE_USER'];
         }
 
         $roleUserKey = array_search('ROLE_USER', $roles);
-        if(count($roles) == 1) {
+        if (1 == count($roles)) {
             return $allRoles['ROLE_USER'];
         }
 
         unset($roles[$roleUserKey]);
-        foreach($roles as $key => $role) {
+        foreach ($roles as $key => $role) {
             $roles[$key] = User::ROLES[$role] ?? $role;
         }
 

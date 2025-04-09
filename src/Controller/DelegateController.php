@@ -28,14 +28,14 @@ class DelegateController extends AbstractController
     #[Route('/postani-delegat', name: 'request_access')]
     public function requestAccess(Request $request): Response
     {
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         if (in_array('ROLE_DELEGATE', $user->getRoles())) {
             return $this->render('delegate/request_approved.html.twig');
         }
 
-        if ($user->getUserDelegateRequest() && $user->getUserDelegateRequest()->getStatus() != UserDelegateRequest::STATUS_NEW) {
+        if ($user->getUserDelegateRequest() && UserDelegateRequest::STATUS_NEW != $user->getUserDelegateRequest()->getStatus()) {
             return $this->render('delegate/request_already_exist.html.twig');
         }
 
@@ -72,7 +72,7 @@ class DelegateController extends AbstractController
             $criteria = $form->getData();
         }
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $criteria['schools'] = [];
@@ -81,6 +81,7 @@ class DelegateController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+
         return $this->render('delegate/educators.html.twig', [
             'educators' => $educatorRepository->search($criteria, $page),
             'form' => $form->createView(),
@@ -104,6 +105,7 @@ class DelegateController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Uspešno ste sačuvali oštećenog.');
+
             return $this->redirectToRoute('delegate_educators');
         }
 
@@ -116,7 +118,7 @@ class DelegateController extends AbstractController
     #[Route('/osteceni/{id}/izmeni-podatke', name: 'edit_educator')]
     public function editEducator(Request $request, Educator $educator): Response
     {
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $allowedSchools = [];
@@ -139,6 +141,7 @@ class DelegateController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Uspešno ste izmenili podatke od oštećenog.');
+
             return $this->redirectToRoute('delegate_educators');
         }
 
@@ -151,7 +154,7 @@ class DelegateController extends AbstractController
     #[Route('/osteceni/{id}/brisanje', name: 'delete_educator')]
     public function deleteEducator(Request $request, Educator $educator): Response
     {
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $allowedSchools = [];
@@ -164,7 +167,7 @@ class DelegateController extends AbstractController
         }
 
         $form = $this->createForm(ConfirmType::class, null, [
-            'message' => 'Potvrđujem da želim da obrišem oštećenog "' . $educator->getName() . '".',
+            'message' => 'Potvrđujem da želim da obrišem oštećenog "'.$educator->getName().'".',
             'submit_message' => 'Potvrdi',
             'submit_class' => 'btn btn-error',
         ]);
@@ -175,6 +178,7 @@ class DelegateController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Uspešno ste obrisali oštećenog.');
+
             return $this->redirectToRoute('delegate_educators');
         }
 

@@ -24,6 +24,7 @@ final class DonorController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+
         return $this->render('admin/donor/list.html.twig', [
             'donors' => $userDonorRepository->search($criteria, $page),
             'form' => $form->createView(),

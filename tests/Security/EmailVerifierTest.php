@@ -2,7 +2,6 @@
 
 namespace App\Tests\Security;
 
-use App\Entity\User;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
@@ -17,9 +16,9 @@ class EmailVerifierTest extends TestCase
         $verifyEmailHelper = $this->createMock(VerifyEmailHelperInterface::class);
         $mailer = $this->createMock(MailerInterface::class);
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        
+
         $emailVerifier = new EmailVerifier($verifyEmailHelper, $mailer, $entityManager);
-        
+
         // If we get here without exceptions, the test passes
         $this->assertInstanceOf(EmailVerifier::class, $emailVerifier);
     }

@@ -25,7 +25,7 @@ class CityTest extends TestCase
         // Test PrePersist
         $this->city->setCreatedAt();
         $this->city->setUpdatedAt();
-        
+
         $this->assertInstanceOf(\DateTimeInterface::class, $this->city->getCreatedAt());
         $this->assertInstanceOf(\DateTimeInterface::class, $this->city->getUpdatedAt());
     }
