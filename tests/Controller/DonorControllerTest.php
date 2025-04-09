@@ -43,7 +43,7 @@ class DonorControllerTest extends WebTestCase
 
     public function testRedirectToLoginWhenNotAuthenticated(): void
     {
-        $this->client->request('GET', '/prijava-donator');
+        $this->client->request('GET', '/postani-donator');
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $this->assertStringContainsString('/logovanje', $this->client->getResponse()->headers->get('Location'));
@@ -52,7 +52,7 @@ class DonorControllerTest extends WebTestCase
     public function testSubscribeDonorForm(): void
     {
         $this->loginAsUser();
-        $this->client->request('GET', '/prijava-donator');
+        $this->client->request('GET', '/postani-donator');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorExists('form[name="user_donor"]');
@@ -61,7 +61,7 @@ class DonorControllerTest extends WebTestCase
     public function testSuccessPageAccessible(): void
     {
         $this->loginAsUser();
-        $this->client->request('GET', '/uspesna-registracija-donora');
+        $this->client->request('GET', '/uspesna-registracija-donatora');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
