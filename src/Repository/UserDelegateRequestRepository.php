@@ -20,6 +20,8 @@ class UserDelegateRequestRepository extends ServiceEntityRepository
     public function search(array $criteria, int $page = 1, int $limit = 50): array
     {
         $qb = $this->createQueryBuilder('udr');
+        $qb->innerJoin('udr.user', 'u')
+            ->andWhere('u.isActive = 1');
 
         // Set the sorting
         $qb->orderBy('udr.id', 'DESC');

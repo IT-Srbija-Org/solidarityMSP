@@ -42,6 +42,11 @@ final class UserDelegateRequestController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        $user = $userDelegateRequest->getUser();
+        if (!$user->isActive()) {
+            throw $this->createAccessDeniedException();
+        }
+
         $form = $this->createForm(UserDelegateRequestEditType::class, $userDelegateRequest);
         $form->handleRequest($request);
 
@@ -51,7 +56,6 @@ final class UserDelegateRequestController extends AbstractController
 
             if (UserDelegateRequest::STATUS_CONFIRMED == $userDelegateRequest->getStatus()) {
                 // Add role "ROLE_DELEGATE" to user
-                $user = $userDelegateRequest->getUser();
                 $user->addRole('ROLE_DELEGATE');
                 $entityManager->persist($user);
 

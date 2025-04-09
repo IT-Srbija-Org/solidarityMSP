@@ -38,13 +38,13 @@ class SecurityController extends AbstractController
             }
 
             if ($user && !$user->isActive()) {
-                $this->addFlash('error', 'Korisnik sa ovom email adresom nije verifikovan. Molimo da se verifikujete.');
+                $this->addFlash('error', 'Korisnik sa ovom email adresom nije aktivan i ne može da se uloguje.');
 
                 return $this->redirectToRoute('login');
             }
 
             if ($user && !$user->isVerified()) {
-                $this->addFlash('error', 'Korisnik sa ovom email adresom nije aktivan i ne može se prijaviti.');
+                $this->addFlash('error', 'Korisnik sa ovom email adresom nije verifikovan. Molimo da se verifikujete.');
 
                 return $this->redirectToRoute('login');
             }

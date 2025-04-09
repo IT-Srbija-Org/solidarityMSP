@@ -33,6 +33,8 @@ final class DelegateController extends AbstractController
         }
 
         $criteria['role'] = 'ROLE_DELEGATE';
+        $criteria['isActive'] = false;
+
         $page = $request->query->getInt('page', 1);
 
         return $this->render('admin/delegate/list.html.twig', [
@@ -45,6 +47,10 @@ final class DelegateController extends AbstractController
     public function connectSchool(Request $request, User $user): Response
     {
         if (!in_array('ROLE_DELEGATE', $user->getRoles())) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$user->isActive()) {
             throw $this->createAccessDeniedException();
         }
 
@@ -73,6 +79,10 @@ final class DelegateController extends AbstractController
     public function unconnectSchool(Request $request, User $user): Response
     {
         if (!in_array('ROLE_DELEGATE', $user->getRoles())) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$user->isActive()) {
             throw $this->createAccessDeniedException();
         }
 

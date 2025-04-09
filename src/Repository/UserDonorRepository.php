@@ -20,6 +20,8 @@ class UserDonorRepository extends ServiceEntityRepository
     public function search(array $criteria, int $page = 1, int $limit = 50): array
     {
         $qb = $this->createQueryBuilder('ud');
+        $qb->innerJoin('ud.user', 'u')
+            ->andWhere('u.isActive = 1');
 
         if (isset($criteria['isMonthly'])) {
             $qb->andWhere('ud.isMonthly = :isMonthly')
@@ -27,20 +29,17 @@ class UserDonorRepository extends ServiceEntityRepository
         }
 
         if (!empty($criteria['firstName'])) {
-            $qb->innerJoin('ud.user', 'u')
-                ->andWhere('u.firstName LIKE :firstName')
+            $qb->andWhere('u.firstName LIKE :firstName')
                 ->setParameter('firstName', '%'.$criteria['firstName'].'%');
         }
 
         if (!empty($criteria['lastName'])) {
-            $qb->innerJoin('ud.user', 'u')
-                ->andWhere('u.lastName LIKE :lastName')
+            $qb->andWhere('u.lastName LIKE :lastName')
                 ->setParameter('lastName', '%'.$criteria['lastName'].'%');
         }
 
         if (!empty($criteria['email'])) {
-            $qb->innerJoin('ud.user', 'u')
-                ->andWhere('u.email LIKE :email')
+            $qb->andWhere('u.email LIKE :email')
                 ->setParameter('email', '%'.$criteria['email'].'%');
         }
 
