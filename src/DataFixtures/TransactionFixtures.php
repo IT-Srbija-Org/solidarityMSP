@@ -33,7 +33,7 @@ class TransactionFixtures extends Fixture implements FixtureGroupInterface
             $transaction->setEducator($educator);
 
             $transaction->setAmount($item['amount']);
-            $transaction->setAccountNumber('165000112012133333');
+            $transaction->setAccountNumber('265104031000361092');
             $manager->persist($transaction);
         }
 
