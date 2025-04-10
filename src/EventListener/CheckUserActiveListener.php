@@ -2,6 +2,7 @@
 
 namespace App\EventListener;
 
+use App\Entity\User;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -24,7 +25,8 @@ final class CheckUserActiveListener
             return;
         }
 
-        if (!$user = $token->getUser()) {
+        $user = $token->getUser();
+        if (!$user instanceof User) {
             return;
         }
 
