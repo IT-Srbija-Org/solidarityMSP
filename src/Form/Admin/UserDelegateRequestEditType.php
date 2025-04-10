@@ -30,7 +30,7 @@ class UserDelegateRequestEditType extends AbstractType
                 'mapped' => false,
             ])
             ->add('phone', TextType::class, [
-                'label' => 'Broj telefona',
+                'label' => 'Vaš broj telefona',
             ])
             ->add('schoolType', TextType::class, [
                 'data' => $options['data']->getSchoolType()?->getName(),

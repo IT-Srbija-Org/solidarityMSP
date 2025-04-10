@@ -29,7 +29,7 @@ class RegistrationDelegateType extends AbstractType
     {
         $builder
             ->add('phone', TextType::class, [
-                'label' => 'Broj telefona',
+                'label' => 'Vaš broj telefona',
             ])
             ->add('schoolType', EntityType::class, [
                 'class' => SchoolType::class,
