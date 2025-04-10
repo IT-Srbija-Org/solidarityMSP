@@ -33,7 +33,7 @@ final class DelegateController extends AbstractController
         }
 
         $criteria['role'] = 'ROLE_DELEGATE';
-        $criteria['isActive'] = false;
+        $criteria['isActive'] = true;
 
         $page = $request->query->getInt('page', 1);
 
