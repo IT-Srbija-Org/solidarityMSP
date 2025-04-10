@@ -21,7 +21,7 @@ class TransactionFixtures extends Fixture implements FixtureGroupInterface
         $items = [[
             'donorEmail' => 'korisnik@gmail.com',
             'amount' => 1200,
-        ]];
+        ], ];
 
         foreach ($items as $item) {
             $transaction = new Transaction();

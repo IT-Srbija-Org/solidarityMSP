@@ -31,7 +31,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             'lastName' => 'Knezevic',
             'email' => 'admin@gmail.com',
             'role' => ['ROLE_USER', 'ROLE_ADMIN'],
-        ]];
+        ], ];
 
         foreach ($users as $userData) {
             $user = new User();

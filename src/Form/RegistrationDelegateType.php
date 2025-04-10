@@ -81,13 +81,16 @@ class RegistrationDelegateType extends AbstractType
             ]);
         };
 
-        $builder->get('city')->addEventListener(FormEvents::POST_SUBMIT,
+        $builder->get('city')->addEventListener(
+            FormEvents::POST_SUBMIT,
             function (FormEvent $event) use ($formModifier) {
                 $city = $event->getForm()->getData();
                 $formModifier($event->getForm()->getParent(), $city);
-            });
+            }
+        );
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA,
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
             function (FormEvent $event) use ($formModifier) {
                 $data = $event->getData();
                 $city = $data->getCity() ?? null;

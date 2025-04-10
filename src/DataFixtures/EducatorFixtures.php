@@ -30,7 +30,7 @@ class EducatorFixtures extends Fixture implements FixtureGroupInterface
             'amount' => 45000,
             'accountNumber' => 160000112012132222,
             'delegatEmail' => 'delegat@gmail.com',
-        ]];
+        ], ];
 
         foreach ($items as $item) {
             $educator = new Educator();

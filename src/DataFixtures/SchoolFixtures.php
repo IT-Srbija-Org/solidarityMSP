@@ -26,7 +26,7 @@ class SchoolFixtures extends Fixture implements FixtureGroupInterface
             'name' => 'Osnovna škola Oslobodioci Beograda',
             'city' => 'Beograd',
             'type' => 'Osnovna škola',
-        ]];
+        ], ];
 
         foreach ($schools as $schoolData) {
             $school = new School();

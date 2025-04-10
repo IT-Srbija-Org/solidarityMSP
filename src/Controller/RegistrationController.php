@@ -35,7 +35,9 @@ class RegistrationController extends AbstractController
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            $this->emailVerifier->sendEmailConfirmation('verify_email', $user,
+            $this->emailVerifier->sendEmailConfirmation(
+                'verify_email',
+                $user,
                 (new TemplatedEmail())
                     ->to($user->getEmail())
                     ->subject('Link za verifikaciju email adrese')

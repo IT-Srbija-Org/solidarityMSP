@@ -27,7 +27,7 @@ class UserDonorFixtures extends Fixture implements FixtureGroupInterface
             'isMonthly' => false,
             'amount' => 3000,
             'comment' => null,
-        ]];
+        ], ];
 
         foreach ($users as $userData) {
             $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $userData['email']]);

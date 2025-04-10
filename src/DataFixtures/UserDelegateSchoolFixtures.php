@@ -21,7 +21,7 @@ class UserDelegateSchoolFixtures extends Fixture implements FixtureGroupInterfac
         $items = [[
             'email' => 'delegat@gmail.com',
             'schoolName' => 'Medicinska škola Beograd',
-        ]];
+        ], ];
 
         foreach ($items as $item) {
             $userDelegateSchool = new UserDelegateSchool();

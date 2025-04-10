@@ -21,7 +21,7 @@ class UserDelegateRequestFixtures extends Fixture implements FixtureGroupInterfa
         $items = [[
             'email' => 'korisnik2@gmail.com',
             'schoolName' => 'Medicinska škola Beograd',
-        ]];
+        ], ];
 
         foreach ($items as $item) {
             $userDelegateRequest = new UserDelegateRequest();
