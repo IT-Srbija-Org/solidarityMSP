@@ -21,7 +21,7 @@ final class DelegateController extends AbstractController
     {
     }
 
-    #[Route('/', name: 'list')]
+    #[Route('/list', name: 'list')]
     public function list(Request $request, UserRepository $userRepository): Response
     {
         $form = $this->createForm(DelegateSearchType::class);

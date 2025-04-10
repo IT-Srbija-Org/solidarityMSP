@@ -19,7 +19,7 @@ final class CityController extends AbstractController
     {
     }
 
-    #[Route('/', name: 'list')]
+    #[Route('/list', name: 'list')]
     public function list(Request $request, CityRepository $cityRepository): Response
     {
         $form = $this->createForm(CitySearchType::class);

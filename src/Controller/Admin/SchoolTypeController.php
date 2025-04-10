@@ -17,7 +17,7 @@ final class SchoolTypeController extends AbstractController
     {
     }
 
-    #[Route('/', name: 'list')]
+    #[Route('/list', name: 'list')]
     public function list(): Response
     {
         $items = $this->entityManager->getRepository(SchoolType::class)->findAll();

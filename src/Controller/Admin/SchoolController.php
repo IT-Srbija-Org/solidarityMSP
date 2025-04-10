@@ -19,7 +19,7 @@ final class SchoolController extends AbstractController
     {
     }
 
-    #[Route('/', name: 'list')]
+    #[Route('/list', name: 'list')]
     public function list(Request $request, SchoolRepository $schoolRepository): Response
     {
         $form = $this->createForm(SchoolSearchType::class);

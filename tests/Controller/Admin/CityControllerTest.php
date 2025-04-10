@@ -48,7 +48,7 @@ class CityControllerTest extends WebTestCase
 
     public function testCityListRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/admin/city/');
+        $this->client->request('GET', '/admin/city/list');
 
         $response = $this->client->getResponse();
         $statusCode = $response->getStatusCode();
@@ -69,7 +69,7 @@ class CityControllerTest extends WebTestCase
     public function testCityListAccessibleByAdmin(): void
     {
         $this->loginAsAdmin();
-        $this->client->request('GET', '/admin/city/');
+        $this->client->request('GET', '/admin/city/list');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }

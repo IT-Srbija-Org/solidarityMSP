@@ -47,7 +47,7 @@ class SchoolTypeControllerTest extends WebTestCase
 
     public function testSchoolTypeListRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/admin/school-type/');
+        $this->client->request('GET', '/admin/school-type/list');
 
         $response = $this->client->getResponse();
         $statusCode = $response->getStatusCode();
@@ -68,7 +68,7 @@ class SchoolTypeControllerTest extends WebTestCase
     public function testSchoolTypeListAccessibleByAdmin(): void
     {
         $this->loginAsAdmin();
-        $this->client->request('GET', '/admin/school-type/');
+        $this->client->request('GET', '/admin/school-type/list');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }

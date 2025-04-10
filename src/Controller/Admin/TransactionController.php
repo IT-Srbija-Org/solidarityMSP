@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/transaction', name: 'admin_transaction_')]
 final class TransactionController extends AbstractController
 {
-    #[Route('/', name: 'list')]
+    #[Route('/list', name: 'list')]
     public function list(Request $request, TransactionRepository $transactionRepository): Response
     {
         $form = $this->createForm(TransactionSearchType::class);
