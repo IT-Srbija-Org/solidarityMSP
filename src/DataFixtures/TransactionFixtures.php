@@ -52,6 +52,7 @@ class TransactionFixtures extends Fixture implements FixtureGroupInterface
             }
         }
 
+        // Flush all changes to the database
         $manager->flush();
     }
 

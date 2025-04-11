@@ -62,25 +62,29 @@ class EducatorFixtures extends Fixture implements FixtureGroupInterface
 
         $schools = $this->entityManager->getRepository(School::class)->findAll();
 
-        foreach ($schools as $school) {
-            // Generate 1-30 educators per school
-            $count = mt_rand(1, 30);
+        // Check if the schools array is not empty
+        if (!empty($schools)) {
+            foreach ($schools as $school) {
+                // Generate 1-30 educators per school
+                $count = mt_rand(1, 30);
 
-            for ($i = 0; $i < $count; ++$i) {
-                $educator = new Educator();
-                $educator->setName($this->generateName());
-                $educator->setSchool($school);
-                $educator->setAmount(Amounts::generate(30000, null, 15, 50000));
-                $educator->setAccountNumber($this->generateAccountNumber());
-                // Pick random confirmed delegate
-                $delegate = $delegates[array_rand($delegates)];
-                $educator->setCreatedBy($delegate);
+                for ($i = 0; $i < $count; ++$i) {
+                    $educator = new Educator();
+                    $educator->setName($this->generateName());
+                    $educator->setSchool($school);
+                    $educator->setAmount(Amounts::generate(30000, null, 15, 50000));
+                    $educator->setAccountNumber($this->generateAccountNumber());
+                    // Pick random confirmed delegate
+                    $delegate = $delegates[array_rand($delegates)];
+                    $educator->setCreatedBy($delegate);
 
-                $manager->persist($educator);
+                    $manager->persist($educator);
+                }
             }
-        }
 
-        $manager->flush();
+            // Flush all changes to the database
+            $manager->flush();
+        }
     }
 
     /**

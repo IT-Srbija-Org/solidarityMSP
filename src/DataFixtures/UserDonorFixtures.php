@@ -41,23 +41,27 @@ class UserDonorFixtures extends Fixture implements FixtureGroupInterface
             ->getQuery()
             ->getResult();
 
-        // Randomly select 70% of users
-        shuffle($users);
-        $selectedCount = (int) ceil(count($users) * 0.7);
-        $selectedUsers = array_slice($users, 0, $selectedCount);
+        // Check if the users array is not empty
+        if (!empty($users)) {
+            // Randomly select 70% of users
+            shuffle($users);
+            $selectedCount = (int) ceil(count($users) * 0.7);
+            $selectedUsers = array_slice($users, 0, $selectedCount);
 
-        foreach ($selectedUsers as $user) {
-            $userDonor = new UserDonor();
-            $userDonor->setUser($user);
-            $userDonor->setIsMonthly((bool) mt_rand(0, 1));
-            // Generate amount between 500 and 100000, clustering around 5000
-            $userDonor->setAmount(Amounts::generate(5000, null, 500, 100000));
-            $userDonor->setComment($this->comments[array_rand($this->comments)]);
+            foreach ($selectedUsers as $user) {
+                $userDonor = new UserDonor();
+                $userDonor->setUser($user);
+                $userDonor->setIsMonthly((bool) mt_rand(0, 1));
+                // Generate amount between 500 and 100000, clustering around 5000
+                $userDonor->setAmount(Amounts::generate(5000, null, 500, 100000));
+                $userDonor->setComment($this->comments[array_rand($this->comments)]);
 
-            $manager->persist($userDonor);
+                $manager->persist($userDonor);
+            }
+
+            // Flush all changes to the database
+            $manager->flush();
         }
-
-        $manager->flush();
     }
 
     /**

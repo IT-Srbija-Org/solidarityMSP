@@ -15,16 +15,26 @@ class CityFixtures extends Fixture implements FixtureGroupInterface
         // Get city names from Schools data class
         $cityNames = array_keys(Schools::getSchoolsMap());
 
-        // Sort cities alphabetically
-        sort($cityNames);
+        // Check if the city names array is not empty
+        if (!empty($cityNames)) {
+            // Sort cities alphabetically
+            sort($cityNames);
 
-        foreach ($cityNames as $name) {
-            $city = new City();
-            $city->setName($name);
-            $manager->persist($city);
+            foreach ($cityNames as $name) {
+                // Check if city already exists
+                $existingCity = $manager->getRepository(City::class)->findOneBy(['name' => $name]);
+
+                if (!$existingCity) {
+                    // If city doesn't exist, create and persist it
+                    $city = new City();
+                    $city->setName($name);
+                    $manager->persist($city);
+                }
+            }
+
+            // Flush all changes to the database
+            $manager->flush();
         }
-
-        $manager->flush();
     }
 
     /**

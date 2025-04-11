@@ -60,6 +60,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             $manager->persist($user);
         }
 
+        // Flush all changes to the database
         $manager->flush();
     }
 

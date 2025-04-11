@@ -13,13 +13,24 @@ class SchoolTypeFixtures extends Fixture implements FixtureGroupInterface
     public function load(ObjectManager $manager): void
     {
         $types = Schools::getSchoolTypes();
-        foreach ($types as $type) {
-            $schoolType = new SchoolType();
-            $schoolType->setName($type);
-            $manager->persist($schoolType);
-        }
 
-        $manager->flush();
+        // Check if the types array is not empty
+        if (!empty($types)) {
+            foreach ($types as $type) {
+                // Check if the school type already exists
+                $existingSchoolType = $manager->getRepository(SchoolType::class)->findOneBy(['name' => $type]);
+
+                if (!$existingSchoolType) {
+                    // If school type doesn't exist, create and persist it
+                    $schoolType = new SchoolType();
+                    $schoolType->setName($type);
+                    $manager->persist($schoolType);
+                }
+            }
+
+            // Flush all changes to the database
+            $manager->flush();
+        }
     }
 
     /**

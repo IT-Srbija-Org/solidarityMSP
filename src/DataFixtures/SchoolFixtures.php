@@ -31,32 +31,50 @@ class SchoolFixtures extends Fixture implements FixtureGroupInterface
 
     public function load(ObjectManager $manager): void
     {
-        $schoolsData = ['schoolsMap' => Schools::getSchoolsMap()];
+        // Get all cities and school types upfront to reduce DB queries
+        $cities = $this->entityManager->getRepository(City::class)->findAll();
+        $cityNames = array_map(fn ($city) => $city->getName(), $cities);
+        $cityMap = array_combine($cityNames, $cities);
 
-        foreach ($schoolsData['schoolsMap'] as $cityName => $schools) {
-            $city = $this->entityManager->getRepository(City::class)->findOneBy(['name' => $cityName]);
+        $schoolTypes = $this->entityManager->getRepository(SchoolType::class)->findAll();
+        $schoolTypeNames = array_map(fn ($type) => $type->getName(), $schoolTypes);
+        $schoolTypeMap = array_combine($schoolTypeNames, $schoolTypes);
 
-            if (!$city) {
+        // Get schools data
+        $schoolsData = Schools::getSchoolsMap();
+
+        foreach ($schoolsData as $cityName => $schools) {
+            if (!isset($cityMap[$cityName])) {
                 continue;
             }
 
+            // Get city entity from the preloaded data
+            $city = $cityMap[$cityName];
+
             foreach ($schools as $schoolName) {
+                // Create and configure the School entity
                 $school = new School();
                 $school->setName($schoolName);
                 $school->setCity($city);
 
+                // Determine school type
                 $typeName = $this->determineSchoolType($schoolName);
-                $type = $this->entityManager->getRepository(SchoolType::class)->findOneBy(['name' => $typeName]);
 
-                if (!$type) {
+                // Check if the school type exists
+                if (!isset($schoolTypeMap[$typeName])) {
                     continue;
                 }
 
+                // Get school type entity from the preloaded data
+                $type = $schoolTypeMap[$typeName];
                 $school->setType($type);
+
+                // Persist the school entity
                 $manager->persist($school);
             }
         }
 
+        // Flush all changes to the database
         $manager->flush();
     }
 
