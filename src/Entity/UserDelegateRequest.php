@@ -6,6 +6,7 @@ use App\Repository\UserDelegateRequestRepository;
 use App\Validator\Phone;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserDelegateRequestRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -47,9 +48,11 @@ class UserDelegateRequest
     private ?School $school = null;
 
     #[ORM\Column]
+    #[Assert\LessThan(value: 1000, message: 'Ukupan broj zaposlenih u školi ne može da bude veći od 1000')]
     private ?int $totalEducators = null;
 
     #[ORM\Column]
+    #[Assert\LessThan(propertyPath: 'totalEducators', message: 'Ukupno u obustavi ne može da bude veće od ukupnog broja zaposlenih')]
     private ?int $totalBlockedEducators = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
