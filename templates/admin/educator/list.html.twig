@@ -44,7 +44,10 @@
             {% for educator in educators.items %}
                 <tr class="hover:bg-gray-100">
                     <td>{{ educator.name }}</td>
-                    <td>{{ educator.school.name }}</td>
+                    <td>
+                        <div>{{ educator.school.name }}</div>
+                        <div class="text-gray-500">{{ educator.school.city.name }}</div>
+                    </td>
                     <td>{{ educator.amount|number_format }}</td>
                     <td>{{ educator.accountNumber }}</td>
                     <td>{{ educator.updatedAt|date('d.m.Y.') }}</td>
