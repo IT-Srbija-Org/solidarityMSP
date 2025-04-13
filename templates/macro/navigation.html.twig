@@ -35,10 +35,20 @@
         {% endif %}
 
         <li>
-            <a href="{{ path('profile_edit') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
-                <span class="ti ti-user text-xl"></span>
-                Profile
-            </a>
+            <details class="lg:dropdown lg:dropdown-end">
+                <summary class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
+                    <span class="ti ti-user text-xl"></span>
+                    Profil
+                </summary>
+                <ul class="lg:dropdown-content z-[1] mt-0 lg:mt-3 pl-4 lg:pl-0 lg:menu bg-base-100 lg:rounded-box lg:w-52 lg:shadow">
+                    <li>
+                        <a href="{{ path('profile_edit') }}" class="text-base lg:text-sm px-4 py-3 text-primary">
+                            <span class="ti ti-edit text-xl"></span>
+                            Izmeni podatke
+                        </a>
+                    </li>
+                </ul>
+            </details>
         </li>
         <li>
             <a href="{{ path('logout') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">

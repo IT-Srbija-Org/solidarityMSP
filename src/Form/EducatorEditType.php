@@ -40,7 +40,7 @@ class EducatorEditType extends AbstractType
             ->add('amount', IntegerType::class, [
                 'label' => 'Cifra',
             ])
-            ->add('accountNumber', IntegerType::class, [
+            ->add('accountNumber', TextType::class, [
                 'label' => 'Broj računa',
             ])
             ->add('submit', SubmitType::class, [

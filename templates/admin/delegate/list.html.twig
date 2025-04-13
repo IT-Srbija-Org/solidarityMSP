@@ -14,6 +14,7 @@
         <table class="table rounded-xl border border-base-200">
             <thead class="bg-gray-100">
                 <tr>
+                    <th>ID</th>
                     <th>
                         <span class="ti ti-user text-xl"></span>
                         Ime
@@ -32,6 +33,7 @@
             <tbody>
             {% for delegate in delegates.items %}
                 <tr class="hover:bg-gray-100">
+                    <td>{{ delegate.id }}</td>
                     <td>
                         <div>{{ delegate.fullName ?? user.username }}</div>
                         <a href="{{ path('admin_user_edit', { 'id': delegate.id }) }}" class="link link-primary link-hover">

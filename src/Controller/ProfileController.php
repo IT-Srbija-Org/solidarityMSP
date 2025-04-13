@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\ProfileEditType;
+use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +32,17 @@ class ProfileController extends AbstractController
 
         return $this->render('profile/edit.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/transakcije', name: 'transactions')]
+    public function transactions(Request $request, TransactionRepository $transactionRepository): Response
+    {
+        $criteria = ['user' => $this->getUser()];
+        $page = $request->query->getInt('page', 1);
+
+        return $this->render('profile/transactions.html.twig', [
+            'transactions' => $transactionRepository->search($criteria, $page),
         ]);
     }
 }
