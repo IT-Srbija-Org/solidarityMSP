@@ -5,17 +5,19 @@ namespace App\Command;
 use App\Entity\Educator;
 use App\Validator\Mod97;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+#[AsCommand(
+    name: 'app:validate:account',
+    description: 'Validates bank account numbers in the database using mod97',
+)]
 class ValidateAccountCommand extends Command
 {
-    protected static $defaultName = 'app:validate:account';
-    protected static $defaultDescription = 'Validates bank account numbers in the database using mod97';
-
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator,

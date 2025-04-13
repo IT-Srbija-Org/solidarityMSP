@@ -5,17 +5,19 @@ namespace App\Command;
 use App\Entity\UserDelegateRequest;
 use App\Validator\Phone;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+#[AsCommand(
+    name: 'app:validate:phone',
+    description: 'Validates phone numbers in the database',
+)]
 class ValidatePhoneCommand extends Command
 {
-    protected static $defaultName = 'app:validate:phone';
-    protected static $defaultDescription = 'Validates phone numbers in the database';
-
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator,
