@@ -19,7 +19,9 @@ use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DelegateControllerTest extends WebTestCase
 {
@@ -197,7 +199,7 @@ class DelegateControllerTest extends WebTestCase
 
             // If we get here (no exception), still check for HTTP 403
             $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
-        } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException $e) {
+        } catch (AccessDeniedException $e) {
             // Expected exception, test passes
             $this->assertTrue(true, 'Expected AccessDeniedException was thrown');
         } catch (\Exception $e) {
@@ -229,7 +231,7 @@ class DelegateControllerTest extends WebTestCase
 
             // If we get here (no exception), still check for HTTP 403
             $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
-        } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException $e) {
+        } catch (AccessDeniedException $e) {
             // Expected exception, test passes
             $this->assertTrue(true, 'Expected AccessDeniedException was thrown');
         } catch (\Exception $e) {
@@ -258,7 +260,7 @@ class DelegateControllerTest extends WebTestCase
 
             // If we get here (no exception), still check for HTTP 404
             $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
-        } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+        } catch (NotFoundHttpException $e) {
             // Expected exception, test passes
             $this->assertTrue(true, 'Expected NotFoundHttpException was thrown');
         } catch (\Exception $e) {
@@ -290,7 +292,7 @@ class DelegateControllerTest extends WebTestCase
 
             // If we get here (no exception), still check for HTTP 404
             $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
-        } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+        } catch (NotFoundHttpException $e) {
             // Expected exception, test passes
             $this->assertTrue(true, 'Expected NotFoundHttpException was thrown');
         } catch (\Exception $e) {
@@ -345,7 +347,7 @@ class DelegateControllerTest extends WebTestCase
 
             // If we get here (no exception), still check for HTTP 403
             $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
-        } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException $e) {
+        } catch (AccessDeniedException $e) {
             // Expected exception, test passes
             $this->assertTrue(true, 'Expected AccessDeniedException was thrown');
         } catch (\Exception $e) {

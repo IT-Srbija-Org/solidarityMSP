@@ -9,12 +9,19 @@ use App\DataFixtures\SchoolTypeFixtures;
 use App\DataFixtures\UserDelegateRequestFixtures;
 use App\DataFixtures\UserDelegateSchoolFixtures;
 use App\DataFixtures\UserFixtures;
+use App\Entity\City;
+use App\Entity\Educator;
+use App\Entity\School;
+use App\Entity\SchoolType;
+use App\Entity\UserDelegateRequest;
+use App\Entity\UserDelegateSchool;
 use App\Repository\UserRepository;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class DelegateControllerTest extends WebTestCase
 {
@@ -84,8 +91,10 @@ class DelegateControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/osteceni');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+
         // Check for the table
         $this->assertCount(1, $crawler->filter('table'));
+
         // Check for the add button (by content rather than href)
         $this->assertSelectorTextContains('a.btn-primary', 'Dodaj');
     }
@@ -153,7 +162,7 @@ class DelegateControllerTest extends WebTestCase
         // Verify the educator was actually saved in the database
         $container = static::getContainer();
         $entityManager = $container->get('doctrine.orm.entity_manager');
-        $educatorRepository = $entityManager->getRepository('App\Entity\Educator');
+        $educatorRepository = $entityManager->getRepository(Educator::class);
 
         // Clear entity manager to ensure we get fresh data
         $entityManager->clear();
@@ -181,6 +190,7 @@ class DelegateControllerTest extends WebTestCase
         $this->client->request('GET', '/postani-delegat');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+
         // Should show approval template rather than the form
         $this->assertSelectorExists('.card-body');
     }
@@ -195,15 +205,15 @@ class DelegateControllerTest extends WebTestCase
         $entityManager = $container->get('doctrine.orm.entity_manager');
 
         // Create city if it doesn't exist
-        $cityRepository = $entityManager->getRepository('App\Entity\City');
+        $cityRepository = $entityManager->getRepository(City::class);
         $city = $cityRepository->findOneBy([]);
 
         // Create school type if it doesn't exist
-        $schoolTypeRepository = $entityManager->getRepository('App\Entity\SchoolType');
+        $schoolTypeRepository = $entityManager->getRepository(SchoolType::class);
         $schoolType = $schoolTypeRepository->findOneBy([]);
 
         // Create test school
-        $school = new \App\Entity\School();
+        $school = new School();
         $school->setName('Test School '.uniqid());
         $school->setCity($city);
         $school->setType($schoolType);
@@ -214,7 +224,7 @@ class DelegateControllerTest extends WebTestCase
         $delegate = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
 
         // Assign school to delegate
-        $delegateSchool = new \App\Entity\UserDelegateSchool();
+        $delegateSchool = new UserDelegateSchool();
         $delegateSchool->setUser($delegate);
         $delegateSchool->setSchool($school);
         $entityManager->persist($delegateSchool);
@@ -224,7 +234,7 @@ class DelegateControllerTest extends WebTestCase
         $this->client->loginUser($delegate);
 
         // Create educator in this school
-        $educator = new \App\Entity\Educator();
+        $educator = new Educator();
         $educator->setName('Test Educator');
         $educator->setSchool($school);
         $educator->setAmount(50000);
@@ -251,14 +261,14 @@ class DelegateControllerTest extends WebTestCase
         $container = static::getContainer();
         $entityManager = $container->get('doctrine.orm.entity_manager');
 
-        $cityRepository = $entityManager->getRepository('App\Entity\City');
+        $cityRepository = $entityManager->getRepository(City::class);
         $city = $cityRepository->findOneBy([]);
 
-        $schoolTypeRepository = $entityManager->getRepository('App\Entity\SchoolType');
+        $schoolTypeRepository = $entityManager->getRepository(SchoolType::class);
         $schoolType = $schoolTypeRepository->findOneBy([]);
 
         // Create test school
-        $school = new \App\Entity\School();
+        $school = new School();
         $school->setName('Test Delete School '.uniqid());
         $school->setCity($city);
         $school->setType($schoolType);
@@ -269,7 +279,7 @@ class DelegateControllerTest extends WebTestCase
         $delegate = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
 
         // Assign school to delegate
-        $delegateSchool = new \App\Entity\UserDelegateSchool();
+        $delegateSchool = new UserDelegateSchool();
         $delegateSchool->setUser($delegate);
         $delegateSchool->setSchool($school);
         $entityManager->persist($delegateSchool);
@@ -279,7 +289,7 @@ class DelegateControllerTest extends WebTestCase
         $this->client->loginUser($delegate);
 
         // Create educator in this school
-        $educator = new \App\Entity\Educator();
+        $educator = new Educator();
         $educator->setName('Test Delete Educator');
         $educator->setSchool($school);
         $educator->setAmount(50000);
@@ -306,21 +316,21 @@ class DelegateControllerTest extends WebTestCase
         $entityManager = $container->get('doctrine.orm.entity_manager');
 
         // Create a school not assigned to our delegate
-        $cityRepository = $entityManager->getRepository('App\Entity\City');
-        $schoolTypeRepository = $entityManager->getRepository('App\Entity\SchoolType');
+        $cityRepository = $entityManager->getRepository(City::class);
+        $schoolTypeRepository = $entityManager->getRepository(SchoolType::class);
 
         $city = $cityRepository->findOneBy([]);
         $schoolType = $schoolTypeRepository->findOneBy([]);
 
         // Create a new school that's NOT linked to our delegate
-        $school = new \App\Entity\School();
+        $school = new School();
         $school->setName('Other School');
         $school->setCity($city);
         $school->setType($schoolType);
         $entityManager->persist($school);
 
         // Create educator in this school
-        $educator = new \App\Entity\Educator();
+        $educator = new Educator();
         $educator->setName('Other Educator');
         $educator->setSchool($school);
         $educator->setAmount(50000);
@@ -348,7 +358,7 @@ class DelegateControllerTest extends WebTestCase
 
             // If we get here (no exception), still check for HTTP 403
             $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
-        } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException $e) {
+        } catch (AccessDeniedException $e) {
             // Expected exception, test passes
             $this->assertTrue(true, 'Expected AccessDeniedException was thrown');
         } catch (\Exception $e) {
@@ -363,7 +373,7 @@ class DelegateControllerTest extends WebTestCase
     /**
      * Helper method to create an educator for the delegate.
      */
-    private function createEducatorForDelegate(): \App\Entity\Educator
+    private function createEducatorForDelegate(): Educator
     {
         $container = static::getContainer();
         $entityManager = $container->get('doctrine.orm.entity_manager');
@@ -375,23 +385,24 @@ class DelegateControllerTest extends WebTestCase
 
         // Get the school assigned to this delegate (should exist after addSchoolToDelegate)
         $delegateSchool = $delegate->getUserDelegateSchools()->first();
+
         if (!$delegateSchool) {
             // Create a new school and assign it directly
-            $cityRepository = $entityManager->getRepository('App\Entity\City');
-            $schoolTypeRepository = $entityManager->getRepository('App\Entity\SchoolType');
+            $cityRepository = $entityManager->getRepository(City::class);
+            $schoolTypeRepository = $entityManager->getRepository(SchoolType::class);
 
             $city = $cityRepository->findOneBy([]);
             $schoolType = $schoolTypeRepository->findOneBy([]);
 
             // Create a new school for the delegate
-            $school = new \App\Entity\School();
+            $school = new School();
             $school->setName('Delegate Test School');
             $school->setCity($city);
             $school->setType($schoolType);
             $entityManager->persist($school);
 
             // Create UserDelegateSchool connection
-            $delegateSchool = new \App\Entity\UserDelegateSchool();
+            $delegateSchool = new UserDelegateSchool();
             $delegateSchool->setUser($delegate);
             $delegateSchool->setSchool($school);
             $entityManager->persist($delegateSchool);
@@ -399,7 +410,7 @@ class DelegateControllerTest extends WebTestCase
         }
 
         // Create an educator in this school
-        $educator = new \App\Entity\Educator();
+        $educator = new Educator();
         $educator->setName('Test Educator');
         $educator->setSchool($delegateSchool->getSchool());
         $educator->setAmount(50000);
@@ -421,11 +432,11 @@ class DelegateControllerTest extends WebTestCase
         $container = static::getContainer();
         $entityManager = $container->get('doctrine.orm.entity_manager');
 
-        $city = $entityManager->getRepository('App\Entity\City')->findOneBy([]);
-        $schoolType = $entityManager->getRepository('App\Entity\SchoolType')->findOneBy([]);
+        $city = $entityManager->getRepository(City::class)->findOneBy([]);
+        $schoolType = $entityManager->getRepository(SchoolType::class)->findOneBy([]);
 
         // Create a dedicated school for this test
-        $school = new \App\Entity\School();
+        $school = new School();
         $school->setName('Delete Test School');
         $school->setCity($city);
         $school->setType($schoolType);
@@ -436,14 +447,14 @@ class DelegateControllerTest extends WebTestCase
         $delegate = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
 
         // Create connection between delegate and school
-        $delegateSchool = new \App\Entity\UserDelegateSchool();
+        $delegateSchool = new UserDelegateSchool();
         $delegateSchool->setUser($delegate);
         $delegateSchool->setSchool($school);
         $entityManager->persist($delegateSchool);
         $entityManager->flush();
 
         // Create an educator to delete
-        $educator = new \App\Entity\Educator();
+        $educator = new Educator();
         $educator->setName('Delete Test Educator');
         $educator->setSchool($school);
         $educator->setAmount(50000);
@@ -475,7 +486,8 @@ class DelegateControllerTest extends WebTestCase
 
         // Check that the educator was actually deleted
         $entityManager->clear(); // Clear Doctrine's identity map to force reload
-        $deletedEducator = $entityManager->getRepository(\App\Entity\Educator::class)->find($educatorId);
+
+        $deletedEducator = $entityManager->getRepository(Educator::class)->find($educatorId);
         $this->assertNull($deletedEducator, 'Educator should have been deleted');
     }
 
@@ -487,11 +499,11 @@ class DelegateControllerTest extends WebTestCase
         $container = static::getContainer();
         $entityManager = $container->get('doctrine.orm.entity_manager');
 
-        $city = $entityManager->getRepository('App\Entity\City')->findOneBy([]);
-        $schoolType = $entityManager->getRepository('App\Entity\SchoolType')->findOneBy([]);
+        $city = $entityManager->getRepository(City::class)->findOneBy([]);
+        $schoolType = $entityManager->getRepository(SchoolType::class)->findOneBy([]);
 
         // Create a dedicated school for this test
-        $school = new \App\Entity\School();
+        $school = new School();
         $school->setName('Search Test School');
         $school->setCity($city);
         $school->setType($schoolType);
@@ -502,7 +514,7 @@ class DelegateControllerTest extends WebTestCase
         $delegate = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
 
         // Create connection between delegate and school
-        $delegateSchool = new \App\Entity\UserDelegateSchool();
+        $delegateSchool = new UserDelegateSchool();
         $delegateSchool->setUser($delegate);
         $delegateSchool->setSchool($school);
         $entityManager->persist($delegateSchool);
@@ -512,7 +524,7 @@ class DelegateControllerTest extends WebTestCase
         $searchName = 'SEARCHABLE_NAME_'.uniqid();
 
         // Create an educator with the search name
-        $educator1 = new \App\Entity\Educator();
+        $educator1 = new Educator();
         $educator1->setName($searchName);
         $educator1->setSchool($school);
         $educator1->setAmount(50000);
@@ -521,7 +533,7 @@ class DelegateControllerTest extends WebTestCase
         $entityManager->persist($educator1);
 
         // Create another educator with a different name
-        $educator2 = new \App\Entity\Educator();
+        $educator2 = new Educator();
         $educator2->setName('Different Name');
         $educator2->setSchool($school);
         $educator2->setAmount(40000);
@@ -582,9 +594,9 @@ class DelegateControllerTest extends WebTestCase
 
         // Create a test school if needed
         // First check for existing school and city
-        $schoolRepository = $entityManager->getRepository('App\Entity\School');
-        $cityRepository = $entityManager->getRepository('App\Entity\City');
-        $schoolTypeRepository = $entityManager->getRepository('App\Entity\SchoolType');
+        $schoolRepository = $entityManager->getRepository(School::class);
+        $cityRepository = $entityManager->getRepository(City::class);
+        $schoolTypeRepository = $entityManager->getRepository(SchoolType::class);
 
         $school = $schoolRepository->findOneBy([]);
         if (!$school) {
@@ -596,7 +608,7 @@ class DelegateControllerTest extends WebTestCase
             }
 
             // Create a new school
-            $school = new \App\Entity\School();
+            $school = new School();
             $school->setName('Test School');
             $school->setCity($city);
             $school->setType($schoolType);
@@ -605,7 +617,7 @@ class DelegateControllerTest extends WebTestCase
         }
 
         // Create UserDelegateSchool connection
-        $delegateSchool = new \App\Entity\UserDelegateSchool();
+        $delegateSchool = new UserDelegateSchool();
         $delegateSchool->setUser($delegate);
         $delegateSchool->setSchool($school);
         $entityManager->persist($delegateSchool);
@@ -622,9 +634,9 @@ class DelegateControllerTest extends WebTestCase
         $entityManager = $container->get('doctrine.orm.entity_manager');
 
         // Make sure we have a city, school type, and school
-        $cityRepository = $entityManager->getRepository('App\Entity\City');
-        $schoolTypeRepository = $entityManager->getRepository('App\Entity\SchoolType');
-        $schoolRepository = $entityManager->getRepository('App\Entity\School');
+        $cityRepository = $entityManager->getRepository(City::class);
+        $schoolTypeRepository = $entityManager->getRepository(SchoolType::class);
+        $schoolRepository = $entityManager->getRepository(School::class);
 
         $city = $cityRepository->findOneBy([]);
         $schoolType = $schoolTypeRepository->findOneBy([]);
@@ -659,9 +671,9 @@ class DelegateControllerTest extends WebTestCase
         $entityManager = $container->get('doctrine.orm.entity_manager');
 
         // Make sure we have a city, school type, and school
-        $cityRepository = $entityManager->getRepository('App\Entity\City');
-        $schoolRepository = $entityManager->getRepository('App\Entity\School');
-        $userDelegateRequestRepository = $entityManager->getRepository('App\Entity\UserDelegateRequest');
+        $cityRepository = $entityManager->getRepository(City::class);
+        $schoolRepository = $entityManager->getRepository(School::class);
+        $userDelegateRequestRepository = $entityManager->getRepository(UserDelegateRequest::class);
 
         $city = $cityRepository->findOneBy(['name' => 'Novi Sad']);
         if (!$city) {
@@ -763,15 +775,15 @@ class DelegateControllerTest extends WebTestCase
         $delegate = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
 
         // Create a test school directly rather than using helper methods
-        $cityRepository = $entityManager->getRepository('App\Entity\City');
-        $schoolTypeRepository = $entityManager->getRepository('App\Entity\SchoolType');
+        $cityRepository = $entityManager->getRepository(City::class);
+        $schoolTypeRepository = $entityManager->getRepository(SchoolType::class);
 
         // Create city if it doesn't exist
         $city = $cityRepository->findOneBy([]);
         $schoolType = $schoolTypeRepository->findOneBy([]);
 
         // Create a dedicated school for this test
-        $school = new \App\Entity\School();
+        $school = new School();
         $school->setName('Edit Form Test School');
         $school->setCity($city);
         $school->setType($schoolType);
@@ -779,14 +791,14 @@ class DelegateControllerTest extends WebTestCase
         $entityManager->flush();
 
         // Assign school to delegate
-        $delegateSchool = new \App\Entity\UserDelegateSchool();
+        $delegateSchool = new UserDelegateSchool();
         $delegateSchool->setUser($delegate);
         $delegateSchool->setSchool($school);
         $entityManager->persist($delegateSchool);
         $entityManager->flush();
 
         // Create an educator in this school
-        $educator = new \App\Entity\Educator();
+        $educator = new Educator();
         $educator->setName('Edit Form Test Educator');
         $educator->setSchool($school);
         $educator->setAmount(50000);
@@ -835,7 +847,7 @@ class DelegateControllerTest extends WebTestCase
         // Verify the educator was updated in the database
         $entityManager->clear(); // Clear entity manager to force reload
 
-        $updatedEducator = $entityManager->getRepository(\App\Entity\Educator::class)->find($educator->getId());
+        $updatedEducator = $entityManager->getRepository(Educator::class)->find($educator->getId());
         $this->assertEquals('Updated Educator Name', $updatedEducator->getName());
         $this->assertEquals(75000, $updatedEducator->getAmount());
     }
@@ -849,13 +861,13 @@ class DelegateControllerTest extends WebTestCase
         $entityManager = $container->get('doctrine.orm.entity_manager');
 
         // Create a school not assigned to our delegate
-        $cityRepository = $entityManager->getRepository('App\Entity\City');
-        $schoolTypeRepository = $entityManager->getRepository('App\Entity\SchoolType');
+        $cityRepository = $entityManager->getRepository(City::class);
+        $schoolTypeRepository = $entityManager->getRepository(SchoolType::class);
 
         // Get or create a city
         $city = $cityRepository->findOneBy([]);
         if (!$city) {
-            $city = new \App\Entity\City();
+            $city = new City();
             $city->setName('Test City');
             $entityManager->persist($city);
         }
@@ -863,31 +875,33 @@ class DelegateControllerTest extends WebTestCase
         // Get or create a school type
         $schoolType = $schoolTypeRepository->findOneBy([]);
         if (!$schoolType) {
-            $schoolType = new \App\Entity\SchoolType();
+            $schoolType = new SchoolType();
             $schoolType->setName('Test School Type');
             $entityManager->persist($schoolType);
             $entityManager->flush();
         }
 
         // Create a new school that's NOT linked to our delegate
-        $school = new \App\Entity\School();
+        $school = new School();
         $school->setName('Other Delete School');
         $school->setCity($city);
         $school->setType($schoolType);
         $entityManager->persist($school);
 
         // Create educator in this school
-        $educator = new \App\Entity\Educator();
+        $educator = new Educator();
         $educator->setName('Other Delete Educator');
         $educator->setSchool($school);
         $educator->setAmount(50000);
         $educator->setAccountNumber('265104031000361099');
+
         // Find an admin user for creator
         $adminUser = $this->userRepository->findOneBy(['email' => 'admin@gmail.com']);
         if (!$adminUser) {
             // If no admin user is found, use the delegate user instead
             $adminUser = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
         }
+
         $educator->setCreatedBy($adminUser);
         $entityManager->persist($educator);
         $entityManager->flush();
@@ -904,7 +918,7 @@ class DelegateControllerTest extends WebTestCase
 
             // If we get here (no exception), still check for HTTP 403
             $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
-        } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException $e) {
+        } catch (AccessDeniedException $e) {
             // Expected exception, test passes
             $this->assertTrue(true, 'Expected AccessDeniedException was thrown');
         } catch (\Exception $e) {
@@ -928,13 +942,13 @@ class DelegateControllerTest extends WebTestCase
         $delegate = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
 
         // Create the school and assign it to the delegate directly
-        $cityRepository = $entityManager->getRepository('App\Entity\City');
-        $schoolTypeRepository = $entityManager->getRepository('App\Entity\SchoolType');
+        $cityRepository = $entityManager->getRepository(City::class);
+        $schoolTypeRepository = $entityManager->getRepository(SchoolType::class);
 
         // Get or create a city
         $city = $cityRepository->findOneBy([]);
         if (!$city) {
-            $city = new \App\Entity\City();
+            $city = new City();
             $city->setName('Test City');
             $entityManager->persist($city);
             $entityManager->flush();
@@ -943,14 +957,14 @@ class DelegateControllerTest extends WebTestCase
         // Get or create a school type
         $schoolType = $schoolTypeRepository->findOneBy([]);
         if (!$schoolType) {
-            $schoolType = new \App\Entity\SchoolType();
+            $schoolType = new SchoolType();
             $schoolType->setName('Test School Type');
             $entityManager->persist($schoolType);
             $entityManager->flush();
         }
 
         // Create a new school for pagination test
-        $school = new \App\Entity\School();
+        $school = new School();
         $school->setName('Pagination Test School');
         $school->setCity($city);
         $school->setType($schoolType);
@@ -958,7 +972,7 @@ class DelegateControllerTest extends WebTestCase
         $entityManager->flush();
 
         // Create UserDelegateSchool connection
-        $delegateSchool = new \App\Entity\UserDelegateSchool();
+        $delegateSchool = new UserDelegateSchool();
         $delegateSchool->setUser($delegate);
         $delegateSchool->setSchool($school);
         $entityManager->persist($delegateSchool);
@@ -966,7 +980,7 @@ class DelegateControllerTest extends WebTestCase
 
         // Create enough educators to trigger pagination (assuming pagination is set to 10 per page)
         for ($i = 0; $i < 12; ++$i) {
-            $educator = new \App\Entity\Educator();
+            $educator = new Educator();
             $educator->setName('Pagination Test Educator '.$i);
             $educator->setSchool($school);
             $educator->setAmount(50000 + $i);
@@ -974,6 +988,7 @@ class DelegateControllerTest extends WebTestCase
             $educator->setCreatedBy($delegate);
             $entityManager->persist($educator);
         }
+
         $entityManager->flush();
 
         // Login as delegate
@@ -1016,8 +1031,8 @@ class DelegateControllerTest extends WebTestCase
         $delegate = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
 
         // Create two schools for this delegate
-        $cityRepository = $entityManager->getRepository('App\Entity\City');
-        $schoolTypeRepository = $entityManager->getRepository('App\Entity\SchoolType');
+        $cityRepository = $entityManager->getRepository(City::class);
+        $schoolTypeRepository = $entityManager->getRepository(SchoolType::class);
 
         // Get or create city and school type
         $city = $cityRepository->findOneBy([]);
@@ -1028,14 +1043,14 @@ class DelegateControllerTest extends WebTestCase
         }
 
         // Create first school
-        $school1 = new \App\Entity\School();
+        $school1 = new School();
         $school1->setName('Filter Test School 1');
         $school1->setCity($city);
         $school1->setType($schoolType);
         $entityManager->persist($school1);
 
         // Create second school
-        $school2 = new \App\Entity\School();
+        $school2 = new School();
         $school2->setName('Filter Test School 2');
         $school2->setCity($city);
         $school2->setType($schoolType);
@@ -1043,12 +1058,12 @@ class DelegateControllerTest extends WebTestCase
         $entityManager->flush();
 
         // Assign both schools to delegate
-        $delegateSchool1 = new \App\Entity\UserDelegateSchool();
+        $delegateSchool1 = new UserDelegateSchool();
         $delegateSchool1->setUser($delegate);
         $delegateSchool1->setSchool($school1);
         $entityManager->persist($delegateSchool1);
 
-        $delegateSchool2 = new \App\Entity\UserDelegateSchool();
+        $delegateSchool2 = new UserDelegateSchool();
         $delegateSchool2->setUser($delegate);
         $delegateSchool2->setSchool($school2);
         $entityManager->persist($delegateSchool2);
@@ -1056,7 +1071,7 @@ class DelegateControllerTest extends WebTestCase
 
         // Create educators in each school with distinctive names
         $school1EducatorName = 'SCHOOL1_EDUCATOR_'.uniqid();
-        $educator1 = new \App\Entity\Educator();
+        $educator1 = new Educator();
         $educator1->setName($school1EducatorName);
         $educator1->setSchool($school1);
         $educator1->setAmount(50000);
@@ -1065,7 +1080,7 @@ class DelegateControllerTest extends WebTestCase
         $entityManager->persist($educator1);
 
         $school2EducatorName = 'SCHOOL2_EDUCATOR_'.uniqid();
-        $educator2 = new \App\Entity\Educator();
+        $educator2 = new Educator();
         $educator2->setName($school2EducatorName);
         $educator2->setSchool($school2);
         $educator2->setAmount(40000);
