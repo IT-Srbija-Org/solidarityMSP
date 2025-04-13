@@ -13,9 +13,9 @@
             </div>
         </div>
 
-        <table class="table rounded-box border border-base-200">
-            <thead>
-                <tr class="bg-base-200 text-base-content">
+        <table class="table rounded-xl border border-base-200">
+            <thead class="bg-gray-100">
+                <tr>
                     <th>
                         <span class="ti ti-user text-xl"></span>
                         Ime
@@ -41,7 +41,7 @@
             </thead>
             <tbody>
             {% for userDelegateRequest in userDelegateRequests.items %}
-                <tr class="hover:bg-base-200">
+                <tr class="hover:bg-gray-100">
                     <td>
                         <div>{{ userDelegateRequest.user.fullName }}</div>
                         <a href="{{ path('admin_user_edit', { 'id': userDelegateRequest.user.id }) }}" class="link link-primary link-hover">

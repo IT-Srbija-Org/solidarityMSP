@@ -42,7 +42,7 @@ class ProfileControllerTest extends WebTestCase
 
     public function testRedirectToLoginWhenNotAuthenticated(): void
     {
-        $this->client->request('GET', '/profil/');
+        $this->client->request('GET', '/profil/izmena-podataka');
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $this->assertStringContainsString('/logovanje', $this->client->getResponse()->headers->get('Location'));
@@ -51,7 +51,7 @@ class ProfileControllerTest extends WebTestCase
     public function testProfileEdit(): void
     {
         $this->loginAsUser();
-        $crawler = $this->client->request('GET', '/profil/');
+        $crawler = $this->client->request('GET', '/profil/izmena-podataka');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorExists('form[name="profile_edit"]');

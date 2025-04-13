@@ -11,9 +11,9 @@
             Ukupno rezultata: <span class="font-bold">{{ users.total }}</span>
         </div>
 
-        <table class="table rounded-box border border-base-200">
-            <thead>
-                <tr class="bg-base-200 text-base-content">
+        <table class="table rounded-xl border border-base-200">
+            <thead class="bg-gray-100">
+                <tr>
                     <th></th>
                     <th>
                         <span class="ti ti-user text-xl"></span>
@@ -34,7 +34,7 @@
             </thead>
             <tbody>
                 {% for user in users.items %}
-                    <tr class="hover:bg-base-200">
+                    <tr class="hover:bg-gray-100">
                         <th>{{ user.id }}</th>
                         <td>
                             <div>{{ user.fullName ?? user.username }}</div>
