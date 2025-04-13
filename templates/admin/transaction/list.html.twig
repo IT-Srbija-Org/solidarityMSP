@@ -14,6 +14,7 @@
         <table class="table rounded-xl border border-base-200">
             <thead class="bg-gray-100">
                 <tr>
+                    <th>ID</th>
                     <th>
                         <span class="ti ti-user-heart text-xl"></span>
                         Donator
@@ -41,6 +42,7 @@
             <tbody>
             {% for transaction in transactions.items %}
                 <tr class="hover:bg-gray-100">
+                    <td>{{ transaction.id }}</td>
                     <td>
                         <div>{{ transaction.user.fullName ?? user.username }}</div>
                         <a href="{{ path('admin_user_edit', { 'id': transaction.user.id }) }}" class="link link-primary link-hover">

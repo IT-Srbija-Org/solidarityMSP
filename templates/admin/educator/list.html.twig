@@ -14,6 +14,7 @@
         <table class="table rounded-xl border border-base-200">
             <thead class="bg-gray-100">
                 <tr>
+                    <th>ID</th>
                     <th>
                         <span class="ti ti-user text-xl"></span>
                         Ime
@@ -43,6 +44,7 @@
             <tbody>
             {% for educator in educators.items %}
                 <tr class="hover:bg-gray-100">
+                    <td>{{ educator.id }}</td>
                     <td>{{ educator.name }}</td>
                     <td>
                         <div>{{ educator.school.name }}</div>

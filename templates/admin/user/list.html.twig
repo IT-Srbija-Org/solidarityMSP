@@ -14,7 +14,7 @@
         <table class="table rounded-xl border border-base-200">
             <thead class="bg-gray-100">
                 <tr>
-                    <th></th>
+                    <th>ID</th>
                     <th>
                         <span class="ti ti-user text-xl"></span>
                         Ime
@@ -35,7 +35,7 @@
             <tbody>
                 {% for user in users.items %}
                     <tr class="hover:bg-gray-100">
-                        <th>{{ user.id }}</th>
+                        <td>{{ user.id }}</td>
                         <td>
                             <div>{{ user.fullName ?? user.username }}</div>
                             <a href="{{ path('admin_user_edit', { 'id': user.id }) }}" class="link link-primary link-hover">
