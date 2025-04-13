@@ -28,9 +28,9 @@
                     </a>
                 </div>
 
-                <table class="table rounded-box border border-base-200">
-                    <thead>
-                        <tr class="bg-base-200 text-base-content">
+                <table class="table rounded-xl border border-base-200">
+                    <thead class="bg-gray-100">
+                        <tr>
                             <th>
                                 <span class="ti ti-user text-xl"></span>
                                 Ime
@@ -60,9 +60,12 @@
                     </thead>
                     <tbody>
                     {% for educator in educators.items %}
-                        <tr class="hover:bg-base-200">
+                        <tr class="hover:bg-gray-100">
                             <td>{{ educator.name }}</td>
-                            <td>{{ educator.school.name }}</td>
+                            <td>
+                                <div>{{ educator.school.name }}</div>
+                                <div class="text-gray-500">{{ educator.school.city.name }}</div>
+                            </td>
                             <td>{{ educator.amount|number_format }}</td>
                             <td>{{ educator.accountNumber }}</td>
                             <td>{{ educator.updatedAt|date('d.m.Y.') }}</td>
