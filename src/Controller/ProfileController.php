@@ -18,7 +18,7 @@ class ProfileController extends AbstractController
     {
     }
 
-    #[Route('/', name: 'edit')]
+    #[Route('/izmena-podataka', name: 'edit')]
     public function edit(Request $request): Response
     {
         $form = $this->createForm(ProfileEditType::class, $this->getUser());
