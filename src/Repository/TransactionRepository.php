@@ -21,6 +21,11 @@ class TransactionRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('t');
 
+        if (isset($criteria['user'])) {
+            $qb->andWhere('t.user = :user')
+                ->setParameter('user', $criteria['user']);
+        }
+
         if (isset($criteria['status'])) {
             $qb->andWhere('t.status = :status')
                 ->setParameter('status', $criteria['status']);
