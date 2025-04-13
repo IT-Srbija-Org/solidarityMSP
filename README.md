@@ -24,7 +24,7 @@ Pre pokretanja projekta, potrebno je da na vašem računaru bude instaliran [Doc
 bash ./configureProject.sh
 ```
 
-Projekat će biti inicijalno podignut sa svim test podacima. Aplikacija koristi [passwordless](https://symfony.com/doc/6.4/security/login_link.html) autentifikaciju, tako da se umesto lozinke pri logovanju korisniku šalje link za prijavu na njegovu email adrese.
+Projekat će biti inicijalno podignut sa svim test podacima na adresi [localhost:1000](http://localhost:1000). Aplikacija koristi [passwordless](https://symfony.com/doc/6.4/security/login_link.html) autentifikaciju, tako da se umesto lozinke pri logovanju korisniku šalje link za prijavu na njegovu email adrese.
 
 | Email              | Privilegije  |
 |--------------------|--------------|
