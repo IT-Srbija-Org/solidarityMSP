@@ -2,48 +2,78 @@
 
 namespace App\Tests\Controller;
 
+use App\DataFixtures\UserFixtures;
+use App\Repository\UserRepository;
+use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
+use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class SecurityControllerTest extends WebTestCase
 {
-    private $client;
+    private KernelBrowser $client;
+    private AbstractDatabaseTool $databaseTool;
+    private ?UserRepository $userRepository;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
         $this->client->catchExceptions(true);
+        $container = static::getContainer();
+
+        $this->databaseTool = $container->get(DatabaseToolCollection::class)->get();
+        $this->loadFixtures();
+
+        $this->userRepository = $container->get(UserRepository::class);
     }
 
-    /**
-     * Test that the login page loads correctly with all form elements.
-     */
-    public function testLoginPageLoads(): void
+    private function loadFixtures(): void
     {
-        $this->client->request('GET', '/logovanje');
+        $this->databaseTool->loadFixtures([
+            UserFixtures::class,
+        ]);
+    }
 
+    private function getLoginUser(): ?UserInterface
+    {
+        return static::getContainer()->get('security.token_storage')->getToken()->getUser();
+    }
+
+    public function testLoginAndEmailSend(): void
+    {
+        $crawler = $this->client->request('GET', '/logovanje');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
         $this->assertSelectorExists('input[name="email"]');
         $this->assertSelectorExists('button[type="submit"]');
-    }
 
-    /**
-     * Test the logout route throws an exception (as expected)
-     * This is a valid behavior since the logout route is handled by Symfony's security system.
-     */
-    public function testLogoutThrowsLogicException(): void
-    {
-        // The logout route should throw a LogicException
-        $this->expectException(\LogicException::class);
+        // Login
+        $form = $crawler->selectButton('Uloguj se')->form([
+            'email' => 'korisnik@gmail.com',
+        ]);
 
-        // We need to make a kernel that doesn't catch exceptions
-        $kernel = self::bootKernel();
-        $container = $kernel->getContainer();
+        $this->client->submit($form);
 
-        // Get the controller
-        $controller = $container->get('App\Controller\SecurityController');
+        // Check are email is sent
+        $this->assertEmailCount(1);
+        $mailerMessage = $this->getMailerMessage();
+        $this->assertEmailSubjectContains($mailerMessage, 'Link za prijavu');
+        $this->assertEmailTextBodyContains($mailerMessage, 'Kliknite na link ispod kako bi se prijavili na svoj nalog');
 
-        // Call the logout method directly
-        $controller->logout();
+        // Extract login link
+        $crawler = new Crawler($mailerMessage->getHtmlBody());
+        $loginLink = $crawler->filter('#link')->attr('href');
+
+        // Click on login link
+        $this->client->request('GET', $loginLink);
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        // Check if user is logged
+        $user = $this->getLoginUser();
+        $this->assertNotNull($user);
+        $this->assertEquals('korisnik@gmail.com', $user->getEmail());
     }
 }

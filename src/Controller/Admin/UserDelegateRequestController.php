@@ -35,6 +35,14 @@ final class UserDelegateRequestController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}', name: 'detail', requirements: ['id' => '\d+'])]
+    public function detail(UserDelegateRequest $userDelegateRequest): Response
+    {
+        return $this->render('admin/userDelegateRequest/detail.html.twig', [
+            'userDelegateRequest' => $userDelegateRequest,
+        ]);
+    }
+
     #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'])]
     public function edit(Request $request, UserDelegateRequest $userDelegateRequest, EntityManagerInterface $entityManager): Response
     {

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo "Running pre-push checks..."
+docker exec solidarity-php-container php bin/console app:lint:all
+
+# Store the exit code
+exit_code=$?
+
+if [ $exit_code -ne 0 ]; then
+    echo "❌ Pre-push checks failed. Please fix the issues before pushing."
+    exit 1
+fi
+
+echo "✅ All checks passed!"
+exit 0

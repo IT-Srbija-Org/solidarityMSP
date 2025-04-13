@@ -41,7 +41,12 @@
             <tbody>
             {% for transaction in transactions.items %}
                 <tr class="hover:bg-base-200">
-                    <td>{{ transaction.user.fullName }}</td>
+                    <td>
+                        <div>{{ transaction.user.fullName ?? user.username }}</div>
+                        <a href="{{ path('admin_user_edit', { 'id': transaction.user.id }) }}" class="link link-primary link-hover">
+                            {{ transaction.user.email }}
+                        </a>
+                    </td>
                     <td>{{ transaction.educator.name }}</td>
                     <td>{{ transaction.accountNumber }}</td>
                     <td>{{ transaction.amount|number_format }}</td>

@@ -48,20 +48,23 @@ class ProfileControllerTest extends WebTestCase
         $this->assertStringContainsString('/logovanje', $this->client->getResponse()->headers->get('Location'));
     }
 
-    public function testProfileEditForm(): void
+    public function testProfileEdit(): void
     {
         $this->loginAsUser();
-        $this->client->request('GET', '/profil/');
+        $crawler = $this->client->request('GET', '/profil/');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorExists('form[name="profile_edit"]');
-    }
 
-    public function testSuccessPageAccessible(): void
-    {
-        $this->loginAsUser();
-        $this->client->request('GET', '/uspesna-registracija-donatora');
+        $form = $crawler->filter('form[name="profile_edit"]')->form([
+            'profile_edit[firstName]' => 'Milan',
+            'profile_edit[lastName]' => 'Knezevic',
+        ]);
 
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->client->submit($form);
+
+        $user = $this->userRepository->findOneBy(['email' => 'korisnik@gmail.com']);
+        $this->assertEquals('Milan', $user->getFirstName());
+        $this->assertEquals('Knezevic', $user->getLastName());
     }
 }

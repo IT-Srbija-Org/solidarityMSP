@@ -12,6 +12,28 @@ use Doctrine\Persistence\ObjectManager;
 
 class UserDelegateRequestFixtures extends Fixture implements FixtureGroupInterface
 {
+    private array $delegateComments = [
+        'Predstavnik sam grupe profesora u našoj školi. U stalnoj sam komunikaciji sa kolegama i aktivno učestvujem u organizaciji.',
+        'Kao vođa sindikalne organizacije u školi, zadužen sam za koordinaciju između uprave i nastavnog osoblja.',
+        'Izabran sam od strane kolega da predstavljam interese nastavnog kolektiva naše škole.',
+    ];
+
+    private array $confirmedComments = [
+        'Prihvaćen zahtev nakon provere dokumentacije.',
+        'Uspešna verifikacija škole i broja nastavnika.',
+        'Podaci potvrđeni od strane uprave škole.',
+        'Verifikovan identitet podnosioca zahteva.',
+        'Potvrđena saradnja sa školom.',
+    ];
+
+    private array $rejectedComments = [
+        'Odbijen zbog nedovoljnog broja aktivnih nastavnika.',
+        'Potrebna dodatna dokumentacija.',
+        'Neuspešna verifikacija podataka škole.',
+        'Nepotpuna dokumentacija o broju nastavnika.',
+        'Nije moguće potvrditi identitet podnosioca.',
+    ];
+
     public function __construct(private EntityManagerInterface $entityManager)
     {
     }
@@ -46,6 +68,7 @@ class UserDelegateRequestFixtures extends Fixture implements FixtureGroupInterfa
             $prefix = $prefixes[array_rand($prefixes)];
             $number = str_pad(mt_rand(0, 9999999), 7, '0', STR_PAD_LEFT);
             $userDelegateRequest->setPhone($prefix.$number);
+            $userDelegateRequest->setComment($this->delegateComments[array_rand($this->delegateComments)]);
 
             // Pick random school
             $school = $schools[array_rand($schools)];
@@ -59,14 +82,21 @@ class UserDelegateRequestFixtures extends Fixture implements FixtureGroupInterfa
             $userDelegateRequest->setTotalEducators($total);
             $userDelegateRequest->setTotalBlockedEducators($blocked);
 
-            // Set status: 50% confirmed, 25% new, 25% rejected
+            // Set status: evenly distributed (33% each)
             $rand = mt_rand(1, 100);
             $status = match (true) {
-                $rand <= 50 => UserDelegateRequest::STATUS_CONFIRMED,
-                $rand <= 75 => UserDelegateRequest::STATUS_NEW,
+                $rand <= 33 => UserDelegateRequest::STATUS_CONFIRMED,
+                $rand <= 66 => UserDelegateRequest::STATUS_NEW,
                 default => UserDelegateRequest::STATUS_REJECTED,
             };
             $userDelegateRequest->setStatus($status);
+
+            // Add admin comment for confirmed or rejected requests
+            if (UserDelegateRequest::STATUS_CONFIRMED === $status) {
+                $userDelegateRequest->setAdminComment($this->confirmedComments[array_rand($this->confirmedComments)]);
+            } elseif (UserDelegateRequest::STATUS_REJECTED === $status) {
+                $userDelegateRequest->setAdminComment($this->rejectedComments[array_rand($this->rejectedComments)]);
+            }
 
             // If request is confirmed, add ROLE_DELEGATE to the user
             if (UserDelegateRequest::STATUS_CONFIRMED === $status) {

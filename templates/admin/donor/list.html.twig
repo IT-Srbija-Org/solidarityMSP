@@ -19,10 +19,6 @@
                         Ime
                     </th>
                     <th>
-                        <span class="ti ti-mail text-xl"></span>
-                        Email
-                    </th>
-                    <th>
                         <span class="ti ti-repeat text-xl"></span>
                         Mesečna podrška
                     </th>
@@ -39,8 +35,12 @@
             <tbody>
             {% for donor in donors.items %}
                 <tr class="hover:bg-base-200">
-                    <td>{{ donor.user.fullName ?? donor.user.username }}</td>
-                    <td>{{ donor.user.email }}</td>
+                    <td>
+                        <div>{{ donor.user.fullName ?? donor.user.username }}</div>
+                        <a href="{{ path('admin_user_edit', { 'id': donor.user.id }) }}" class="link link-primary link-hover">
+                            {{ donor.user.email }}
+                        </a>
+                    </td>
                     <td>
                         {% if donor.isMonthly %}
                             <div class="status status-success mb-1"></div>

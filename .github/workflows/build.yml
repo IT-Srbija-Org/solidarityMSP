@@ -42,6 +42,15 @@ jobs:
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
+      - name: Lint Container
+        run: php bin/console lint:container
+
+      - name: Lint Twig Templates
+        run: php bin/console lint:twig templates
+
+      - name: Lint YAML Config Files
+        run: php bin/console lint:yaml config
+
       - name: Run PHPStan
         run: vendor/bin/phpstan analyse --level=3 src
 

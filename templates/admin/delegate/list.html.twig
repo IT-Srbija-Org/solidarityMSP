@@ -19,10 +19,6 @@
                         Ime
                     </th>
                     <th>
-                        <span class="ti ti-mail text-xl"></span>
-                        Email
-                    </th>
-                    <th>
                         <span class="ti ti-link text-xl"></span>
                         Povezanih škola
                     </th>
@@ -36,8 +32,12 @@
             <tbody>
             {% for delegate in delegates.items %}
                 <tr class="hover:bg-base-200">
-                    <td>{{ delegate.fullName }}</td>
-                    <td>{{ delegate.email }}</td>
+                    <td>
+                        <div>{{ delegate.fullName ?? user.username }}</div>
+                        <a href="{{ path('admin_user_edit', { 'id': delegate.id }) }}" class="link link-primary link-hover">
+                            {{ delegate.email }}
+                        </a>
+                    </td>
                     <td>{{ delegate.userDelegateSchools|length }}</td>
                     <td>
                         {{ delegate.createdAt|date('d.m.Y.') }}

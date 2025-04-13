@@ -49,7 +49,10 @@
                     <td>{{ educator.accountNumber }}</td>
                     <td>{{ educator.updatedAt|date('d.m.Y.') }}</td>
                     <td>
-                        <a href="{{ path('admin_user_edit', { 'id': educator.createdBy.id }) }}" class="link link-primary no-underline">{{ educator.createdBy.fullName }}</a>
+                        <div>{{ educator.createdBy.fullName ?? educator.createdBy.username }}</div>
+                        <a href="{{ path('admin_user_edit', { 'id': educator.createdBy.id }) }}" class="link link-primary link-hover">
+                            {{ educator.createdBy.email }}
+                        </a>
                     </td>
                 </tr>
             {% endfor %}

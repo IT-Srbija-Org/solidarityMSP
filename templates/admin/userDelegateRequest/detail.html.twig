@@ -1,0 +1,99 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block content %}
+    <div class="text-xl">
+        <span class="ti ti-info-circle text-2xl"></span>
+        Detalji zahteva za delegata
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="card bg-base-200 mb-4">
+        <div class="card-body">
+            <div class="flex justify-between items-center mb-4">
+                <div class="card-title m-0">
+                    {{ userDelegateRequest.status|userDelegateRequestStatus|raw }}
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                {% if userDelegateRequest.comment %}
+                <div class="chat chat-start">
+                    <div class="chat-image">
+                        <div class="avatar avatar-placeholder">
+                            <div class="bg-base-300 text-base-content w-12 rounded-full">
+                                <span>{{ userDelegateRequest.user.fullName|split(' ')|map(name => name|first)|join }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-bubble">{{ userDelegateRequest.comment }}</div>
+                </div>
+                {% endif %}
+
+                {% if userDelegateRequest.adminComment %}
+                <div class="chat chat-end">
+                    <div class="chat-image">
+                        <div class="avatar avatar-placeholder">
+                            <div class="bg-primary text-primary-content w-12 rounded-full">
+                                <span>AD</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-bubble {% if userDelegateRequest.status == 2 %}chat-bubble-success{% elseif userDelegateRequest.status == 3 %}chat-bubble-error{% endif %}">
+                        {{ userDelegateRequest.adminComment }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+        <div class="card bg-base-200 h-fit">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <span class="ti ti-user"></span>
+                    Osnovni podaci
+                </h2>
+                <div class="grid gap-4">
+                    <div>
+                        <div class="text-sm text-gray-500">Ime i prezime</div>
+                        <div>{{ userDelegateRequest.user.fullName }}</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Email</div>
+                        <div>
+                            <a href="{{ path('admin_user_edit', { 'id': userDelegateRequest.user.id }) }}" class="link link-primary link-hover">
+                                {{ userDelegateRequest.user.email }}
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Broj telefona</div>
+                        <div>{{ userDelegateRequest.phone }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-200 h-fit">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <span class="ti ti-building-community"></span>
+                    Lokacija
+                </h2>
+                <div class="grid gap-4">
+                    <div>
+                        <div class="text-sm text-gray-500">Grad</div>
+                        <div>{{ userDelegateRequest.city.name }}</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Škola</div>
+                        <div>{{ userDelegateRequest.school.name }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
