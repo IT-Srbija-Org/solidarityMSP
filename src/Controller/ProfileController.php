@@ -45,6 +45,4 @@ class ProfileController extends AbstractController
             'transactions' => $transactionRepository->search($criteria, $page),
         ]);
     }
-
-
 }
