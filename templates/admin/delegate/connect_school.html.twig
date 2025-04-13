@@ -26,9 +26,9 @@
                 Ukupno povezanih škola: <span class="font-bold">{{ user.userDelegateSchools|length }}</span>
             </div>
 
-            <table class="table rounded-box border border-base-200">
-                <thead>
-                    <tr class="bg-base-200 text-base-content">
+            <table class="table rounded-xl border border-base-200">
+                <thead class="bg-gray-100">
+                    <tr>
                         <th>
                             <span class="ti ti-building text-xl"></span>
                             Naziv
@@ -50,7 +50,7 @@
                 </thead>
                 <tbody>
                 {% for userDelegateSchool in user.userDelegateSchools %}
-                    <tr class="hover:bg-base-200">
+                    <tr class="hover:bg-gray-100">
                         <td>{{ userDelegateSchool.school.name }}</td>
                         <td>{{ userDelegateSchool.school.city.name }}</td>
                         <td>{{ userDelegateSchool.school.type.name }}</td>

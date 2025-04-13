@@ -18,9 +18,9 @@
             </a>
         </div>
 
-        <table class="table rounded-box border border-base-200">
-            <thead>
-                <tr class="bg-base-200 text-base-content">
+        <table class="table rounded-xl border border-base-200">
+            <thead class="bg-gray-100">
+                <tr>
                     <th>ID</th>
                     <th>Naziv</th>
                     <th>
@@ -40,7 +40,7 @@
             </thead>
             <tbody>
             {% for school in schools.items %}
-                <tr class="hover:bg-base-200">
+                <tr class="hover:bg-gray-100">
                     <th>{{ school.id }}</th>
                     <td>{{ school.name }}</td>
                     <td>{{ school.city.name }}</td>
