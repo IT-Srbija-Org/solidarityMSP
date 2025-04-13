@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% import "macro.twig" as macro %}
+    {{ macro.back('home') }}
+
+    <div class="card card-lg bg-base-100 shadow m-10 mt-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-credit-card-pay text-2xl"></span>
+                Transakcije
+            </h2>
+
+            <div class="text-gray-500 mb-4">
+                Na stranici možete da vidite spisak svih vaših transakcija ka oštećenim prosvetnim radnicima. Takođe možete da dodate potvrdu o plaćanju za svaku transakciju.
+            </div>
+
+            {% if transactions.total == 0 %}
+                <div class="alert alert-info alert-soft">
+                    <span class="ti ti-info-circle text-2xl"></span>
+                    <span>Trenutno nema nijedne transakcije, kada sistem bude kreirao nove transakcije bićete obavešteni na email.</span>
+                </div>
+            {% else %}
+                <div class="overflow-x-auto mt-6">
+                    <div class="text-gray-500 mb-2">
+                        Ukupno rezultata: <span class="font-bold">{{ transactions.total }}</span>
+                    </div>
+
+                    <table class="table rounded-xl border border-base-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th>ID</th>
+                                <th>
+                                    <span class="ti ti-school text-xl"></span>
+                                    Oštećeni/a
+                                </th>
+                                <th>
+                                    <span class="ti ti-building text-xl"></span>
+                                    Škola
+                                </th>
+                                <th>
+                                    <span class="ti ti-credit-card text-xl"></span>
+                                    Broj računa
+                                </th>
+                                <th>
+                                    <span class="ti ti-cash text-xl"></span>
+                                    Cifra
+                                </th>
+                                <th>
+                                    <span class="ti ti-calendar-event text-xl"></span>
+                                    Kreirano
+                                </th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for transaction in transactions.items %}
+                            <tr class="hover:bg-gray-100">
+                                <td>{{ transaction.id }}</td>
+                                <td>{{ transaction.educator.name }}</td>
+                                <td>
+                                    <div>{{ transaction.educator.school.name }}</div>
+                                    <div class="text-gray-500">{{ transaction.educator.school.city.name }}</div>
+                                </td>
+                                <td>{{ transaction.accountNumber }}</td>
+                                <td>{{ transaction.amount|number_format }}</td>
+                                <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
+                                <td>{{ transaction.status|transactionStatus }}</td>
+                                <td>
+                                    <div class="flex gap-2 justify-end">
+                                        <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="Unesi potvrdu">
+                                            <span class="ti ti-file-plus text-xl"></span>
+                                        </a>
+
+                                        <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="Oštampaj">
+                                            <span class="ti ti-printer text-xl"></span>
+                                        </a>
+
+                                        <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="NBS IPS QR">
+                                            <span class="ti ti-qrcode text-xl"></span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% import "macro.twig" as macro %}
+                {{ macro.pagination('admin_transaction_list', transactions.total_pages, transactions.current_page) }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
