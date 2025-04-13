@@ -47,7 +47,12 @@
                             {{ transaction.user.email }}
                         </a>
                     </td>
-                    <td>{{ transaction.educator.name }}</td>
+                    <td>
+                        <div>{{ transaction.educator.name }}</div>
+                        <div class="text-gray-500">
+                            {{ transaction.educator.school.name }} ({{ transaction.educator.school.city.name }})
+                        </div>
+                    </td>
                     <td>{{ transaction.accountNumber }}</td>
                     <td>{{ transaction.amount|number_format }}</td>
                     <td>{{ transaction.status|transactionStatus }}</td>

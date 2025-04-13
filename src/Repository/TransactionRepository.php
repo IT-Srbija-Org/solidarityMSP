@@ -21,9 +21,23 @@ class TransactionRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('t');
 
+        if (!empty($criteria['search'])) {
+            $or = $qb->expr()->orX();
+            $or->add($qb->expr()->like('u.email', ':search'));
+            $or->add($qb->expr()->like('e.name', ':search'));
+            $or->add($qb->expr()->like('s.name', ':search'));
+            $or->add($qb->expr()->like('c.name', ':search'));
+            $qb->leftJoin('t.educator', 'e')
+               ->leftJoin('t.user', 'u')
+               ->leftJoin('e.school', 's')
+               ->leftJoin('s.city', 'c')
+               ->where($or)
+               ->setParameter('search', '%'.$criteria['search'].'%');
+        }
+
         if (isset($criteria['status'])) {
             $qb->andWhere('t.status = :status')
-                ->setParameter('status', $criteria['status']);
+               ->setParameter('status', $criteria['status']);
         }
 
         // Set the sorting
