@@ -34,57 +34,54 @@ class UserDelegateRequestFixtures extends Fixture implements FixtureGroupInterfa
             ->getQuery()
             ->getResult();
 
-        // Check if the users array is not empty
-        if (!empty($users)) {
-            // Get all schools
-            $schools = $this->entityManager->getRepository(School::class)->findAll();
+        // Get all schools
+        $schools = $this->entityManager->getRepository(School::class)->findAll();
 
-            foreach ($users as $user) {
-                $userDelegateRequest = new UserDelegateRequest();
-                $userDelegateRequest->setUser($user);
+        foreach ($users as $user) {
+            $userDelegateRequest = new UserDelegateRequest();
+            $userDelegateRequest->setUser($user);
 
-                // Mobile operator prefixes
-                $prefixes = ['061', '062', '063', '064', '065', '066'];
-                $prefix = $prefixes[array_rand($prefixes)];
-                $number = str_pad(mt_rand(0, 9999999), 7, '0', STR_PAD_LEFT);
-                $userDelegateRequest->setPhone($prefix.$number);
+            // Mobile operator prefixes
+            $prefixes = ['061', '062', '063', '064', '065', '066'];
+            $prefix = $prefixes[array_rand($prefixes)];
+            $number = str_pad(mt_rand(0, 9999999), 7, '0', STR_PAD_LEFT);
+            $userDelegateRequest->setPhone($prefix.$number);
 
-                // Check if the schools array is not empty
-                if (!empty($schools)) {
-                    // Pick random school
-                    $school = $schools[array_rand($schools)];
-                    $userDelegateRequest->setSchoolType($school->getType());
-                    $userDelegateRequest->setCity($school->getCity());
-                    $userDelegateRequest->setSchool($school);
-                }
-
-                // Random educator counts
-                $total = mt_rand(50, 200);
-                $blocked = (int) round($total * (mt_rand(30, 70) / 100)); // 30-70% of total
-                $userDelegateRequest->setTotalEducators($total);
-                $userDelegateRequest->setTotalBlockedEducators($blocked);
-
-                // Set status: 50% confirmed, 25% new, 25% rejected
-                $rand = mt_rand(1, 100);
-                $status = match (true) {
-                    $rand <= 50 => UserDelegateRequest::STATUS_CONFIRMED,
-                    $rand <= 75 => UserDelegateRequest::STATUS_NEW,
-                    default => UserDelegateRequest::STATUS_REJECTED,
-                };
-                $userDelegateRequest->setStatus($status);
-
-                // If request is confirmed, add ROLE_DELEGATE to the user
-                if (UserDelegateRequest::STATUS_CONFIRMED === $status) {
-                    $user->addRole('ROLE_DELEGATE');
-                    $manager->persist($user);
-                }
-
-                $manager->persist($userDelegateRequest);
+            // Check if the schools array is not empty
+            if (!empty($schools)) {
+                // Pick random school
+                $school = $schools[array_rand($schools)];
+                $userDelegateRequest->setSchoolType($school->getType());
+                $userDelegateRequest->setCity($school->getCity());
+                $userDelegateRequest->setSchool($school);
             }
 
-            // Flush all changes to the database
-            $manager->flush();
+            // Random educator counts
+            $total = mt_rand(50, 200);
+            $blocked = (int) round($total * (mt_rand(30, 70) / 100)); // 30-70% of total
+            $userDelegateRequest->setTotalEducators($total);
+            $userDelegateRequest->setTotalBlockedEducators($blocked);
+
+            // Set status: 50% confirmed, 25% new, 25% rejected
+            $rand = mt_rand(1, 100);
+            $status = match (true) {
+                $rand <= 50 => UserDelegateRequest::STATUS_CONFIRMED,
+                $rand <= 75 => UserDelegateRequest::STATUS_NEW,
+                default => UserDelegateRequest::STATUS_REJECTED,
+            };
+            $userDelegateRequest->setStatus($status);
+
+            // If request is confirmed, add ROLE_DELEGATE to the user
+            if (UserDelegateRequest::STATUS_CONFIRMED === $status) {
+                $user->addRole('ROLE_DELEGATE');
+                $manager->persist($user);
+            }
+
+            $manager->persist($userDelegateRequest);
         }
+
+        // Flush all changes to the database
+        $manager->flush();
     }
 
     /**

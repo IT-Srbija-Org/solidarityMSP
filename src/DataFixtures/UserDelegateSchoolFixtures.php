@@ -36,24 +36,21 @@ class UserDelegateSchoolFixtures extends Fixture implements FixtureGroupInterfac
         // Get all schools
         $schools = $this->entityManager->getRepository(School::class)->findAll();
 
-        // Check if the schools array is not empty
-        if (!empty($schools)) {
-            foreach ($confirmedDelegates as $delegate) {
-                // Each delegate gets 1-3 random schools
-                $schoolCount = mt_rand(1, 3);
-                $randomSchools = (array) array_rand($schools, $schoolCount);
+        foreach ($confirmedDelegates as $delegate) {
+            // Each delegate gets 1-3 random schools
+            $schoolCount = mt_rand(1, 3);
+            $randomSchools = (array) array_rand($schools, $schoolCount);
 
-                foreach ($randomSchools as $schoolIndex) {
-                    $userDelegateSchool = new UserDelegateSchool();
-                    $userDelegateSchool->setUser($delegate);
-                    $userDelegateSchool->setSchool($schools[$schoolIndex]);
-                    $manager->persist($userDelegateSchool);
-                }
+            foreach ($randomSchools as $schoolIndex) {
+                $userDelegateSchool = new UserDelegateSchool();
+                $userDelegateSchool->setUser($delegate);
+                $userDelegateSchool->setSchool($schools[$schoolIndex]);
+                $manager->persist($userDelegateSchool);
             }
-
-            // Flush all changes to the database
-            $manager->flush();
         }
+
+        // Flush all changes to the database
+        $manager->flush();
     }
 
     /**

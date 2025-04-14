@@ -50,13 +50,6 @@ $ cp git-hooks/pre-push .git/hooks/pre-push
 $ chmod +x .git/hooks/pre-push
 ```
 
-5. Za pristup bazi koristite
- ```bash
-docker exec -it solidarity-mysql-container bash
-mysql -u root -p
-pass - docker-compose.yml -> MYSQL_ROOT_PASSWORD
- ```
-
 Ova podešavanja će automatski pokrenuti proveru koda pre svakog push-a:
 - Provera sintakse Twig templtes
 - Provera sintakse YAML konfiguracionih fajlova
