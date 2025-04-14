@@ -14,21 +14,9 @@
             <div class="space-y-4">
                 {% for item in items %}
                     <a href="{{ path('delegate_damaged_educators', { 'period': item.id }) }}" class="flex items-center justify-between w-full p-6 transition-all rounded-lg shadow-sm hover:shadow-md {% if not item.active %}opacity-50 grayscale{% endif %} bg-info/10 border-l-4 border-info">
-                        <div class="flex items-center space-x-4">
-                            <div>
-                                <h3 class="text-4xl font-bold mb-3">
-                                    {{ item.date|date('F')|trans }}
-                                </h3>
-
-                                <div class="text-gray-500">
-                                    {% if item.firstHalf %}
-                                        Prva polovina meseca (1/2)
-                                    {% else %}
-                                        Druga polovina meseca (2/2)
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
+                        <h3 class="text-5xl text-gray-500">
+                            {{ item.date|date('F')|trans }}
+                        </h3>
 
                         <div class="text-8xl font-bold text-gray-300/80">{{ item.year }}</div>
                     </a>

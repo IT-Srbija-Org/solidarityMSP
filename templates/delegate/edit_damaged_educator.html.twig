@@ -8,15 +8,7 @@
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <span class="ti ti-school text-3xl"></span>
-                Oštećeni/a za {{ damagedEducator.period.date|date('F')|trans }},
-
-                {% if damagedEducator.period.firstHalf %}
-                    prva polovina meseca (1/2),
-                {% else %}
-                    druga polovina meseca (2/2),
-                {% endif %}
-
-                {{ damagedEducator.period.year }}
+                Oštećeni/a za {{ damagedEducator.period.date|date('F')|trans }}, {{ damagedEducator.period.year }}
             </h2>
 
             <div>

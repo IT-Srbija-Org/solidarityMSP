@@ -31,15 +31,13 @@ class DamagedEducatorSearchType extends AbstractType
                 'choice_value' => 'id',
                 'choice_label' => function (DamagedEducatorPeriod $damagedEducatorPeriod): string {
                     $monthName = $damagedEducatorPeriod->getDate()->format('M');
-                    $firstHalf = $damagedEducatorPeriod->isFirstHalf() ? '1/2' : '2/2';
 
-                    return $firstHalf.' '.$monthName.' '.$damagedEducatorPeriod->getYear();
+                    return $monthName.' '.$damagedEducatorPeriod->getYear();
                 },
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
                     return $er->createQueryBuilder('s')
                         ->orderBy('s.year', 'DESC')
-                        ->addOrderBy('s.month', 'DESC')
-                        ->addOrderBy('s.firstHalf', 'ASC');
+                        ->addOrderBy('s.month', 'DESC');
                 },
             ])
             ->add('school', EntityType::class, [

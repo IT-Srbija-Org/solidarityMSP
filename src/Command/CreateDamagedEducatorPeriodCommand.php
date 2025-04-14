@@ -26,8 +26,7 @@ class CreateDamagedEducatorPeriodCommand extends Command
     {
         $this
             ->addArgument('month', InputArgument::REQUIRED, 'Month number (1-12)')
-            ->addArgument('year', InputArgument::REQUIRED, 'Year (2020-2030)')
-            ->addArgument('firstHalf', InputArgument::REQUIRED, 'Is first half of month? (1 for true, 0 for false)');
+            ->addArgument('year', InputArgument::REQUIRED, 'Year (2020-2030)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -36,7 +35,6 @@ class CreateDamagedEducatorPeriodCommand extends Command
 
         $month = (int) $input->getArgument('month');
         $year = (int) $input->getArgument('year');
-        $firstHalf = (bool) $input->getArgument('firstHalf');
 
         // Validate month
         if ($month < 1 || $month > 12) {
@@ -66,7 +64,6 @@ class CreateDamagedEducatorPeriodCommand extends Command
         $entity = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
             'month' => $month,
             'year' => $year,
-            'firstHalf' => $firstHalf,
         ]);
 
         if ($entity) {
@@ -79,12 +76,11 @@ class CreateDamagedEducatorPeriodCommand extends Command
         $entity = new DamagedEducatorPeriod();
         $entity->setMonth($month);
         $entity->setYear($year);
-        $entity->setFirstHalf($firstHalf);
 
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 
-        $io->success(sprintf('Created new period: %s %d %d', $firstHalf ? 'First half' : 'Second half', $month, $year));
+        $io->success(sprintf('Created new period: %d %d', $month, $year));
 
         return Command::SUCCESS;
     }

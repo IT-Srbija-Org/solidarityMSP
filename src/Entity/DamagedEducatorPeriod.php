@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DamagedEducatorPeriodRepository::class)]
-#[ORM\Index(name: 'idx_search', columns: ['month', 'year', 'first_half'])]
+#[ORM\Index(name: 'idx_search', columns: ['month', 'year'])]
 #[ORM\HasLifecycleCallbacks]
 class DamagedEducatorPeriod
 {
@@ -23,9 +23,6 @@ class DamagedEducatorPeriod
 
     #[ORM\Column]
     private ?int $year = null;
-
-    #[ORM\Column]
-    private ?bool $firstHalf = null;
 
     #[ORM\Column]
     private ?bool $active = true;
@@ -82,18 +79,6 @@ class DamagedEducatorPeriod
         $date->setDate($this->getYear(), $this->getMonth(), 1);
 
         return $date;
-    }
-
-    public function isFirstHalf(): ?bool
-    {
-        return $this->firstHalf;
-    }
-
-    public function setFirstHalf(bool $firstHalf): static
-    {
-        $this->firstHalf = $firstHalf;
-
-        return $this;
     }
 
     public function isActive(): ?bool

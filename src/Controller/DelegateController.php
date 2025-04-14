@@ -65,7 +65,6 @@ class DelegateController extends AbstractController
         $items = $damagedEducatorPeriodRepository->findBy([], [
             'year' => 'DESC',
             'month' => 'DESC',
-            'firstHalf' => 'ASC',
         ]);
 
         return $this->render('delegate/damaged_educator_period.html.twig', [

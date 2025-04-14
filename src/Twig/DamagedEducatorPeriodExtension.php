@@ -17,8 +17,6 @@ class DamagedEducatorPeriodExtension extends AbstractExtension
 
     public function showPeriodMonth(DamagedEducatorPeriod $damagedEducatorPeriod): string
     {
-        $monthName = $damagedEducatorPeriod->getDate()->format('M');
-
-        return ($damagedEducatorPeriod->isFirstHalf() ? '1/2' : '2/2').' '.$monthName;
+        return $damagedEducatorPeriod->getDate()->format('M');
     }
 }
