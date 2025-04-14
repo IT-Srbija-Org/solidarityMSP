@@ -32,9 +32,8 @@ class TransactionRepository extends ServiceEntityRepository
                ->setParameter('donor', '%'.$criteria['donor'].'%');
         }
 
-        $qb->leftJoin('t.damagedEducator', 'e')
-           ->leftJoin('e.school', 's')
-           ->leftJoin('s.city', 'c');
+        $qb->leftJoin('t.educator', 'e')
+           ->leftJoin('e.school', 's');
 
         if (!empty($criteria['educator'])) {
             $qb->andWhere('e.name LIKE :educator')

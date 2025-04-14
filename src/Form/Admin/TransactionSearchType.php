@@ -21,7 +21,7 @@ class TransactionSearchType extends AbstractType
             ->setMethod('GET')
             ->add('donor', TextType::class, [
                 'required' => false,
-                'label' => 'Donator',
+                'label' => 'Donator (Email)',
             ])
             ->add('educator', TextType::class, [
                 'required' => false,
