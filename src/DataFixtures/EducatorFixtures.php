@@ -30,11 +30,11 @@ class EducatorFixtures extends Fixture implements FixtureGroupInterface
     private function generateAccountNumber(): string
     {
         // Generate base number (160 is bank code for Banca Intesa)
-        $base = '160'.str_pad(mt_rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
+        // We need a 16-digit number (18 total - 2 control digits)
+        $base = '160'.str_pad(mt_rand(0, 9999999999), 13, '0', STR_PAD_LEFT);
 
         // Calculate control digits using MOD97
-        $num = (int) substr($base, 0, -2);
-        $controlNumber = 98 - ($num * 100) % 97;
+        $controlNumber = 98 - ((int) $base % 97);
 
         // Format final number with control digits
         return $base.str_pad($controlNumber, 2, '0', STR_PAD_LEFT);

@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Educator;
 use App\Entity\School;
+use App\Form\DataTransformer\AccountNumberTransformer;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -16,6 +17,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EducatorEditType extends AbstractType
 {
+    private AccountNumberTransformer $accountNumberTransformer;
+
+    public function __construct()
+    {
+        $this->accountNumberTransformer = new AccountNumberTransformer();
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -46,6 +54,8 @@ class EducatorEditType extends AbstractType
             ->add('submit', SubmitType::class, [
                 'label' => 'Sačuvaj',
             ]);
+
+        $builder->get('accountNumber')->addModelTransformer($this->accountNumberTransformer);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
