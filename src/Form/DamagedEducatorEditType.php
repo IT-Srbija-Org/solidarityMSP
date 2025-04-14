@@ -2,28 +2,35 @@
 
 namespace App\Form;
 
+use App\Entity\DamagedEducator;
 use App\Entity\School;
+use App\Form\DataTransformer\AccountNumberTransformer;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EducatorSearchType extends AbstractType
+class DamagedEducatorEditType extends AbstractType
 {
+    private AccountNumberTransformer $accountNumberTransformer;
+
+    public function __construct()
+    {
+        $this->accountNumberTransformer = new AccountNumberTransformer();
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->setMethod('GET')
             ->add('name', TextType::class, [
-                'required' => false,
                 'label' => 'Ime',
             ])
             ->add('school', EntityType::class, [
-                'required' => false,
                 'class' => School::class,
                 'placeholder' => '',
                 'label' => 'Škola',
@@ -38,23 +45,24 @@ class EducatorSearchType extends AbstractType
                     return $school->getName().' ('.$school->getCity()->getName().')';
                 },
             ])
+            ->add('amount', IntegerType::class, [
+                'label' => 'Cifra',
+            ])
+            ->add('accountNumber', TextType::class, [
+                'label' => 'Broj računa',
+            ])
             ->add('submit', SubmitType::class, [
-                'label' => '<i class="ti ti-search text-2xl"></i> Pretraži',
-                'label_html' => true,
+                'label' => 'Sačuvaj',
             ]);
+
+        $builder->get('accountNumber')->addModelTransformer($this->accountNumberTransformer);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'csrf_protection' => false,
-            'validation_groups' => false,
+            'data_class' => DamagedEducator::class,
             'user' => null,
         ]);
-    }
-
-    public function getBlockPrefix(): string
-    {
-        return '';
     }
 }

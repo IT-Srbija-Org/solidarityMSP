@@ -21,13 +21,18 @@ class TransactionRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('t');
 
+        if (isset($criteria['user'])) {
+            $qb->andWhere('t.user = :user')
+                ->setParameter('user', $criteria['user']);
+        }
+
         if (!empty($criteria['donor'])) {
             $qb->leftJoin('t.user', 'u')
                ->andWhere('u.email LIKE :donor')
                ->setParameter('donor', '%'.$criteria['donor'].'%');
         }
 
-        $qb->leftJoin('t.educator', 'e')
+        $qb->leftJoin('t.damagedEducator', 'e')
            ->leftJoin('e.school', 's')
            ->leftJoin('s.city', 'c');
 

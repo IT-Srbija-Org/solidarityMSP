@@ -2,13 +2,21 @@
 
 {% block body %}
     {% import "macro.twig" as macro %}
-    {{ macro.back('home') }}
+    {{ macro.back('delegate_damaged_educator_period') }}
 
     <div class="card card-lg bg-base-100 shadow m-10 mt-0">
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <span class="ti ti-school text-3xl"></span>
-                Oštećeni
+                Oštećeni za {{ period.date|date('F')|trans }},
+
+                {% if period.firstHalf %}
+                    prva polovina meseca (1/2),
+                {% else %}
+                    druga polovina meseca (2/2),
+                {% endif %}
+
+                {{ period.year }}
             </h2>
 
             {{ include('flashes.html.twig') }}
@@ -19,10 +27,10 @@
             <div class="overflow-x-auto mt-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="text-gray-500">
-                        Ukupno rezultata: <span class="font-bold">{{ educators.total }}</span>
+                        Ukupno rezultata: <span class="font-bold">{{ damagedEducators.total }}</span>
                     </div>
 
-                    <a href="{{ path('delegate_new_educator') }}" class="btn btn-primary">
+                    <a href="{{ path('delegate_new_damaged_educator', { 'period': period.id }) }}" class="btn {% if period.active %}btn-primary{% else %}btn-disabled{% endif %}">
                         <span class="ti ti-plus text-xl"></span>
                         Dodaj
                     </a>
@@ -59,23 +67,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for educator in educators.items %}
+                    {% for damagedEducator in damagedEducators.items %}
                         <tr class="hover:bg-gray-100">
-                            <td>{{ educator.name }}</td>
+                            <td>{{ damagedEducator.name }}</td>
                             <td>
-                                <div>{{ educator.school.name }}</div>
-                                <div class="text-gray-500">{{ educator.school.city.name }}</div>
+                                <div>{{ damagedEducator.school.name }}</div>
+                                <div class="text-gray-500">{{ damagedEducator.school.city.name }}</div>
                             </td>
-                            <td>{{ educator.amount|number_format }}</td>
-                            <td>{{ educator.accountNumber }}</td>
-                            <td>{{ educator.updatedAt|date('d.m.Y.') }}</td>
-                            <td>{{ educator.createdBy.fullName }}</td>
+                            <td>{{ damagedEducator.amount|number_format }}</td>
+                            <td>{{ damagedEducator.accountNumber }}</td>
+                            <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
+                            <td>{{ damagedEducator.createdBy.fullName }}</td>
                             <td>
                                 <div class="flex gap-2 justify-end">
-                                    <a href="{{ path('delegate_delete_educator', { 'id': educator.id }) }}" class="btn btn-error btn-sm flex tooltip" data-tip="Brisanje">
+                                    <a href="{{ path('delegate_delete_damaged_educator', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Brisanje">
                                         <span class="ti ti-trash text-xl"></span>
                                     </a>
-                                    <a href="{{ path('delegate_edit_educator', { 'id': educator.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Izmeni">
+                                    <a href="{{ path('delegate_edit_damaged_educator', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Izmeni">
                                         <span class="ti ti-edit text-xl"></span>
                                     </a>
                                 </div>

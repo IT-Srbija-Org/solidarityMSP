@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Data\Amounts;
-use App\Entity\Educator;
+use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
 use App\Entity\UserDonor;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -24,11 +24,7 @@ class TransactionFixtures extends Fixture implements FixtureGroupInterface
 
         // Get all donors and educators
         $donors = $this->entityManager->getRepository(UserDonor::class)->findAll();
-        $educators = $this->entityManager->getRepository(Educator::class)->findAll();
-
-        if (empty($donors) || empty($educators)) {
-            return; // Skip if no donors or educators exist yet
-        }
+        $damagedEducators = $this->entityManager->getRepository(DamagedEducator::class)->findAll();
 
         // Each donor will make 1-5 transactions
         foreach ($donors as $donor) {
@@ -39,14 +35,14 @@ class TransactionFixtures extends Fixture implements FixtureGroupInterface
                 $transaction->setUser($donor->getUser());
 
                 // Pick random educator
-                $educator = $educators[array_rand($educators)];
-                $transaction->setEducator($educator);
+                $damagedEducator = $damagedEducators[array_rand($damagedEducators)];
+                $transaction->setDamagedEducator($damagedEducator);
 
                 // Generate amount based on donor's monthly amount
-                $transaction->setAmount(Amounts::generate($donor->getAmount(), null, 1000, $donor->getAmount() * 2));
+                $transaction->setAmount(Amounts::generate($donor->getAmount(), null, 500, $donor->getAmount() * 2));
 
                 // Use educator's account number
-                $transaction->setAccountNumber($educator->getAccountNumber());
+                $transaction->setAccountNumber($damagedEducator->getAccountNumber());
 
                 $manager->persist($transaction);
             }
@@ -60,6 +56,6 @@ class TransactionFixtures extends Fixture implements FixtureGroupInterface
      */
     public static function getGroups(): array
     {
-        return [6]; // Run last, after all other fixtures
+        return [6];
     }
 }

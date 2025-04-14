@@ -2,35 +2,30 @@
 
 namespace App\Form;
 
-use App\Entity\Educator;
 use App\Entity\School;
-use App\Form\DataTransformer\AccountNumberTransformer;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EducatorEditType extends AbstractType
+class DamagedEducatorSearchType extends AbstractType
 {
-    private AccountNumberTransformer $accountNumberTransformer;
-
-    public function __construct()
-    {
-        $this->accountNumberTransformer = new AccountNumberTransformer();
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->setMethod('GET')
             ->add('name', TextType::class, [
+                'required' => false,
                 'label' => 'Ime',
             ])
+            ->add('period', HiddenType::class)
             ->add('school', EntityType::class, [
+                'required' => false,
                 'class' => School::class,
                 'placeholder' => '',
                 'label' => 'Škola',
@@ -45,24 +40,23 @@ class EducatorEditType extends AbstractType
                     return $school->getName().' ('.$school->getCity()->getName().')';
                 },
             ])
-            ->add('amount', IntegerType::class, [
-                'label' => 'Cifra',
-            ])
-            ->add('accountNumber', TextType::class, [
-                'label' => 'Broj računa',
-            ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Sačuvaj',
+                'label' => '<i class="ti ti-search text-2xl"></i> Pretraži',
+                'label_html' => true,
             ]);
-
-        $builder->get('accountNumber')->addModelTransformer($this->accountNumberTransformer);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Educator::class,
+            'csrf_protection' => false,
+            'validation_groups' => false,
             'user' => null,
         ]);
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return '';
     }
 }

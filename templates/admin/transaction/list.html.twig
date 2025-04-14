@@ -16,12 +16,16 @@
                 <tr>
                     <th>ID</th>
                     <th>
+                        <span class="ti ti-calendar-event text-xl"></span>
+                        Period
+                    </th>
+                    <th>
                         <span class="ti ti-user-heart text-xl"></span>
                         Donator
                     </th>
                     <th>
                         <span class="ti ti-school text-xl"></span>
-                        Edukator
+                        Oštećeni/a
                     </th>
                     <th>
                         <span class="ti ti-credit-card text-xl"></span>
@@ -44,17 +48,16 @@
                 <tr class="hover:bg-gray-100">
                     <td>{{ transaction.id }}</td>
                     <td>
-                        <div>{{ transaction.user.fullName ?? user.username }}</div>
+                        <div>{{ transaction.damagedEducator.period|showPeriodMonth }}</div>
+                        <div class="text-gray-500">{{ transaction.damagedEducator.period.year }}</div>
+                    </td>
+                    <td>
+                        <div>{{ transaction.user.fullName ?? transaction.user.username }}</div>
                         <a href="{{ path('admin_user_edit', { 'id': transaction.user.id }) }}" class="link link-primary link-hover">
                             {{ transaction.user.email }}
                         </a>
                     </td>
-                    <td>
-                        <div>{{ transaction.educator.name }}</div>
-                        <div class="text-gray-500">
-                            {{ transaction.educator.school.name }} ({{ transaction.educator.school.city.name }})
-                        </div>
-                    </td>
+                    <td>{{ transaction.damagedEducator.name }}</td>
                     <td>{{ transaction.accountNumber }}</td>
                     <td>{{ transaction.amount|number_format }}</td>
                     <td>{{ transaction.status|transactionStatus }}</td>
@@ -73,5 +76,5 @@
     </div>
 
     {% import "macro.twig" as macro %}
-    {{ macro.pagination('admin_transaction_list', transactions.total_pages, transactions.current_page) }}
+    {{ macro.pagination('admin_damaged_educator_list', transactions.total_pages, transactions.current_page) }}
 {% endblock %}

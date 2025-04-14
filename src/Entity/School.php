@@ -46,10 +46,10 @@ class School
     private Collection $userDelegateSchools;
 
     /**
-     * @var Collection<int, Educator>
+     * @var Collection<int, DamagedEducator>
      */
-    #[ORM\OneToMany(targetEntity: Educator::class, mappedBy: 'school')]
-    private Collection $educators;
+    #[ORM\OneToMany(targetEntity: DamagedEducator::class, mappedBy: 'school')]
+    private Collection $damagedEducators;
 
     /**
      * @var Collection<int, UserDelegateRequest>
@@ -60,7 +60,7 @@ class School
     public function __construct()
     {
         $this->userDelegateSchools = new ArrayCollection();
-        $this->educators = new ArrayCollection();
+        $this->damagedEducators = new ArrayCollection();
         $this->userDelegateRequests = new ArrayCollection();
     }
 
@@ -141,11 +141,11 @@ class School
     }
 
     /**
-     * @return Collection<int, Educator>
+     * @return Collection<int, DamagedEducator>
      */
-    public function getEducators(): Collection
+    public function getDamagedEducators(): Collection
     {
-        return $this->educators;
+        return $this->damagedEducators;
     }
 
     /**

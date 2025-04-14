@@ -33,7 +33,7 @@ class Transaction
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Educator $educator = null;
+    private ?DamagedEducator $damagedEducator = null;
 
     #[ORM\Column(length: 50)]
     private ?string $accountNumber = null;
@@ -70,14 +70,14 @@ class Transaction
         return $this;
     }
 
-    public function getEducator(): ?Educator
+    public function getDamagedEducator(): ?DamagedEducator
     {
-        return $this->educator;
+        return $this->damagedEducator;
     }
 
-    public function setEducator(?Educator $educator): static
+    public function setDamagedEducator(?DamagedEducator $damagedEducator): static
     {
-        $this->educator = $educator;
+        $this->damagedEducator = $damagedEducator;
 
         return $this;
     }

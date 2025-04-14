@@ -1,7 +1,7 @@
-{% macro back(routeName) %}
+{% macro back(routeName, parameters = {}) %}
     <div class="card bg-base-100 shadow m-10 mb-2">
         <div class="px-3 py-4">
-            <a href="{{ path(routeName) }}" class="link link-primary no-underline">
+            <a href="{{ path(routeName, parameters) }}" class="link link-primary no-underline">
                 <span class="ti ti-chevron-left text-2xl relative top-1"></span>
                 Nazad
             </a>

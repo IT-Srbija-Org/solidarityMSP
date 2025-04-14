@@ -2,14 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\Educator;
+use App\Entity\DamagedEducator;
 use App\Entity\User;
 use App\Entity\UserDelegateRequest;
 use App\Form\ConfirmType;
-use App\Form\EducatorEditType;
-use App\Form\EducatorSearchType;
+use App\Form\DamagedEducatorEditType;
+use App\Form\DamagedEducatorSearchType;
 use App\Form\RegistrationDelegateType;
-use App\Repository\EducatorRepository;
+use App\Repository\DamagedEducatorPeriodRepository;
+use App\Repository\DamagedEducatorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,10 +59,31 @@ class DelegateController extends AbstractController
     }
 
     #[IsGranted('ROLE_DELEGATE')]
-    #[Route('/osteceni', name: 'educators')]
-    public function educators(Request $request, EducatorRepository $educatorRepository): Response
+    #[Route('/osteceni-period', name: 'damaged_educator_period')]
+    public function damagedEducatorPeriod(DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository): Response
     {
-        $form = $this->createForm(EducatorSearchType::class, null, [
+        $items = $damagedEducatorPeriodRepository->findBy([], [
+            'year' => 'DESC',
+            'month' => 'DESC',
+            'firstHalf' => 'ASC',
+        ]);
+
+        return $this->render('delegate/damaged_educator_period.html.twig', [
+            'items' => $items,
+        ]);
+    }
+
+    #[IsGranted('ROLE_DELEGATE')]
+    #[Route('/osteceni', name: 'damaged_educators')]
+    public function damagedEducators(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, DamagedEducatorRepository $damagedEducatorRepository): Response
+    {
+        $periodId = $request->query->getInt('period');
+        $period = $damagedEducatorPeriodRepository->find($periodId);
+        if (empty($period)) {
+            return $this->redirectToRoute('delegate_damaged_educator_period');
+        }
+
+        $form = $this->createForm(DamagedEducatorSearchType::class, null, [
             'user' => $this->getUser(),
         ]);
 
@@ -80,44 +102,60 @@ class DelegateController extends AbstractController
             $criteria['schools'][] = $delegateSchool->getSchool()->getId();
         }
 
+        $criteria['period'] = $period;
         $page = $request->query->getInt('page', 1);
 
-        return $this->render('delegate/educators.html.twig', [
-            'educators' => $educatorRepository->search($criteria, $page),
+        return $this->render('delegate/damaged_educators.html.twig', [
+            'damagedEducators' => $damagedEducatorRepository->search($criteria, $page),
+            'period' => $period,
             'form' => $form->createView(),
         ]);
     }
 
     #[IsGranted('ROLE_DELEGATE')]
-    #[Route('/prijavi-ostecenog', name: 'new_educator')]
-    public function newEducator(Request $request): Response
+    #[Route('/prijavi-ostecenog', name: 'new_damaged_educator')]
+    public function newDamagedEducator(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository): Response
     {
-        $educator = new Educator();
-        $educator->setCreatedBy($this->getUser());
+        $periodId = $request->query->getInt('period');
+        $period = $damagedEducatorPeriodRepository->find($periodId);
+        if (empty($period) || !$period->isActive()) {
+            throw $this->createAccessDeniedException();
+        }
 
-        $form = $this->createForm(EducatorEditType::class, $educator, [
+        $damagedEducator = new DamagedEducator();
+        $damagedEducator->setCreatedBy($this->getUser());
+        $damagedEducator->setPeriod($period);
+
+        $form = $this->createForm(DamagedEducatorEditType::class, $damagedEducator, [
             'user' => $this->getUser(),
         ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($educator);
+            $this->entityManager->persist($damagedEducator);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Uspešno ste sačuvali oštećenog.');
 
-            return $this->redirectToRoute('delegate_educators');
+            return $this->redirectToRoute('delegate_damaged_educators', [
+                'period' => $damagedEducator->getPeriod()->getId(),
+            ]);
         }
 
-        return $this->render('delegate/edit_educator.html.twig', [
+        return $this->render('delegate/edit_damaged_educator.html.twig', [
             'form' => $form->createView(),
+            'damagedEducator' => $damagedEducator,
         ]);
     }
 
     #[IsGranted('ROLE_DELEGATE')]
-    #[Route('/osteceni/{id}/izmeni-podatke', name: 'edit_educator')]
-    public function editEducator(Request $request, Educator $educator): Response
+    #[Route('/osteceni/{id}/izmeni-podatke', name: 'edit_damaged_educator')]
+    public function editDamagedEducator(Request $request, DamagedEducator $damagedEducator): Response
     {
+        if (!$damagedEducator->getPeriod()->isActive()) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -126,34 +164,41 @@ class DelegateController extends AbstractController
             $allowedSchools[] = $delegateSchool->getSchool()->getId();
         }
 
-        if (!in_array($educator->getSchool()->getId(), $allowedSchools)) {
+        if (!in_array($damagedEducator->getSchool()->getId(), $allowedSchools)) {
             throw $this->createAccessDeniedException();
         }
 
-        $form = $this->createForm(EducatorEditType::class, $educator, [
+        $form = $this->createForm(DamagedEducatorEditType::class, $damagedEducator, [
             'user' => $this->getUser(),
         ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $educator->setCreatedBy($this->getUser());
-            $this->entityManager->persist($educator);
+            $damagedEducator->setCreatedBy($this->getUser());
+            $this->entityManager->persist($damagedEducator);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Uspešno ste izmenili podatke od oštećenog.');
 
-            return $this->redirectToRoute('delegate_educators');
+            return $this->redirectToRoute('delegate_damaged_educators', [
+                'period' => $damagedEducator->getPeriod()->getId(),
+            ]);
         }
 
-        return $this->render('delegate/edit_educator.html.twig', [
+        return $this->render('delegate/edit_damaged_educator.html.twig', [
             'form' => $form->createView(),
+            'damagedEducator' => $damagedEducator,
         ]);
     }
 
     #[IsGranted('ROLE_DELEGATE')]
-    #[Route('/osteceni/{id}/brisanje', name: 'delete_educator')]
-    public function deleteEducator(Request $request, Educator $educator): Response
+    #[Route('/osteceni/{id}/brisanje', name: 'delete_damaged_educator')]
+    public function deleteDamagedEducator(Request $request, DamagedEducator $damagedEducator): Response
     {
+        if (!$damagedEducator->getPeriod()->isActive()) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -162,31 +207,31 @@ class DelegateController extends AbstractController
             $allowedSchools[] = $delegateSchool->getSchool()->getId();
         }
 
-        if (!in_array($educator->getSchool()->getId(), $allowedSchools)) {
+        if (!in_array($damagedEducator->getSchool()->getId(), $allowedSchools)) {
             throw $this->createAccessDeniedException();
         }
 
         $form = $this->createForm(ConfirmType::class, null, [
-            'message' => 'Potvrđujem da želim da obrišem oštećenog "'.$educator->getName().'".',
+            'message' => 'Potvrđujem da želim da obrišem oštećenog "'.$damagedEducator->getName().'".',
             'submit_message' => 'Potvrdi',
             'submit_class' => 'btn btn-error',
         ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->remove($educator);
+            $this->entityManager->remove($damagedEducator);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Uspešno ste obrisali oštećenog.');
 
-            return $this->redirectToRoute('delegate_educators');
+            return $this->redirectToRoute('delegate_damaged_educators', [
+                'period' => $damagedEducator->getPeriod()->getId(),
+            ]);
         }
 
-        return $this->render('confirm_message.html.twig', [
-            'iconClass' => 'ti ti-trash',
-            'title' => 'Brisanje oštećenog',
-            'backRouteName' => 'delegate_educators',
+        return $this->render('delegate/delete_damaged_educator.html.twig', [
             'form' => $form->createView(),
+            'damagedEducator' => $damagedEducator,
         ]);
     }
 }

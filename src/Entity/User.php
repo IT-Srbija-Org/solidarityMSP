@@ -77,10 +77,10 @@ class User implements UserInterface
     private Collection $userDelegateSchools;
 
     /**
-     * @var Collection<int, Educator>
+     * @var Collection<int, DamagedEducator>
      */
-    #[ORM\OneToMany(targetEntity: Educator::class, mappedBy: 'createdBy')]
-    private Collection $educators;
+    #[ORM\OneToMany(targetEntity: DamagedEducator::class, mappedBy: 'createdBy')]
+    private Collection $damagedEducators;
 
     /**
      * @var Collection<int, Transaction>
@@ -94,7 +94,7 @@ class User implements UserInterface
     public function __construct()
     {
         $this->userDelegateSchools = new ArrayCollection();
-        $this->educators = new ArrayCollection();
+        $this->damagedEducators = new ArrayCollection();
         $this->transactions = new ArrayCollection();
     }
 
@@ -282,11 +282,11 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection<int, Educator>
+     * @return Collection<int, DamagedEducator>
      */
-    public function getEducators(): Collection
+    public function getDamagedEducators(): Collection
     {
-        return $this->educators;
+        return $this->damagedEducators;
     }
 
     /**

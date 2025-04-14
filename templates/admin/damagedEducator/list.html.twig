@@ -8,13 +8,17 @@
 
     <div class="overflow-x-auto mt-6">
         <div class="text-gray-500 mb-2">
-            Ukupno rezultata: <span class="font-bold">{{ educators.total }}</span>
+            Ukupno rezultata: <span class="font-bold">{{ damagedEducators.total }}</span>
         </div>
 
         <table class="table rounded-xl border border-base-200">
             <thead class="bg-gray-100">
                 <tr>
                     <th>ID</th>
+                    <th>
+                        <span class="ti ti-calendar-event text-xl"></span>
+                        Period
+                    </th>
                     <th>
                         <span class="ti ti-user text-xl"></span>
                         Ime
@@ -33,7 +37,7 @@
                     </th>
                     <th>
                         <span class="ti ti-calendar-event text-xl"></span>
-                        Registrovan
+                        Unešen/a
                     </th>
                     <th>
                         <span class="ti ti-user-cog text-xl"></span>
@@ -42,21 +46,25 @@
                 </tr>
             </thead>
             <tbody>
-            {% for educator in educators.items %}
+            {% for damagedEducator in damagedEducators.items %}
                 <tr class="hover:bg-gray-100">
-                    <td>{{ educator.id }}</td>
-                    <td>{{ educator.name }}</td>
+                    <td>{{ damagedEducator.id }}</td>
                     <td>
-                        <div>{{ educator.school.name }}</div>
-                        <div class="text-gray-500">{{ educator.school.city.name }}</div>
+                        <div>{{ damagedEducator.period|showPeriodMonth }}</div>
+                        <div class="text-gray-500">{{ damagedEducator.period.year }}</div>
                     </td>
-                    <td>{{ educator.amount|number_format }}</td>
-                    <td>{{ educator.accountNumber }}</td>
-                    <td>{{ educator.updatedAt|date('d.m.Y.') }}</td>
+                    <td>{{ damagedEducator.name }}</td>
                     <td>
-                        <div>{{ educator.createdBy.fullName ?? educator.createdBy.username }}</div>
-                        <a href="{{ path('admin_user_edit', { 'id': educator.createdBy.id }) }}" class="link link-primary link-hover">
-                            {{ educator.createdBy.email }}
+                        <div>{{ damagedEducator.school.name }}</div>
+                        <div class="text-gray-500">{{ damagedEducator.school.city.name }}</div>
+                    </td>
+                    <td>{{ damagedEducator.amount|number_format }}</td>
+                    <td>{{ damagedEducator.accountNumber }}</td>
+                    <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
+                    <td>
+                        <div>{{ damagedEducator.createdBy.fullName ?? damagedEducator.createdBy.username }}</div>
+                        <a href="{{ path('admin_user_edit', { 'id': damagedEducator.createdBy.id }) }}" class="link link-primary link-hover">
+                            {{ damagedEducator.createdBy.email }}
                         </a>
                     </td>
                 </tr>
@@ -66,5 +74,5 @@
     </div>
 
     {% import "macro.twig" as macro %}
-    {{ macro.pagination('admin_educator_list', educators.total_pages, educators.current_page) }}
+    {{ macro.pagination('admin_damaged_educator_list', damagedEducators.total_pages, damagedEducators.current_page) }}
 {% endblock %}

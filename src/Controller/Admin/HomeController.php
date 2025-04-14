@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\City;
-use App\Entity\Educator;
+use App\Entity\DamagedEducator;
 use App\Entity\School;
 use App\Entity\User;
 use App\Entity\UserDonor;
@@ -45,7 +45,7 @@ final class HomeController extends AbstractController
 
         $qb = $entityManager->createQueryBuilder();
         $totalEducatorsSum = $qb->select('SUM(e.amount)')
-            ->from(Educator::class, 'e')
+            ->from(DamagedEducator::class, 'e')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -62,7 +62,7 @@ final class HomeController extends AbstractController
             'totalDonors' => $totalDonors,
             'totalDonorsSum' => $totalDelegatesSum,
             'totalDelegate' => $totalDelegates,
-            'totalEducators' => $entityManager->getRepository(Educator::class)->count(),
+            'totalEducators' => $entityManager->getRepository(DamagedEducator::class)->count(),
             'totalEducatorsSum' => $totalEducatorsSum,
             'totalSchool' => $entityManager->getRepository(School::class)->count(),
             'totalCities' => $entityManager->getRepository(City::class)->count(),

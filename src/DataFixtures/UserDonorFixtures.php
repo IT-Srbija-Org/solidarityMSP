@@ -50,6 +50,7 @@ class UserDonorFixtures extends Fixture implements FixtureGroupInterface
             $userDonor = new UserDonor();
             $userDonor->setUser($user);
             $userDonor->setIsMonthly((bool) mt_rand(0, 1));
+
             // Generate amount between 500 and 100000, clustering around 5000
             $userDonor->setAmount(Amounts::generate(5000, null, 500, 100000));
             $userDonor->setComment($this->comments[array_rand($this->comments)]);
@@ -65,6 +66,6 @@ class UserDonorFixtures extends Fixture implements FixtureGroupInterface
      */
     public static function getGroups(): array
     {
-        return [4]; // After UserDelegateSchool fixtures to exclude confirmed delegates
+        return [4];
     }
 }
