@@ -27,17 +27,40 @@ class EducatorFixtures extends Fixture implements FixtureGroupInterface
         return $firstName.' '.$lastName;
     }
 
-    private function generateAccountNumber(): string
+    /**
+     * Generates a valid Serbian bank account number.
+     *
+     * @param string $bankCode The 3-digit bank code (defaults to "160" for Banca Intesa)
+     *
+     * @return string A valid Serbian bank account number
+     */
+    public function generateAccountNumber(string $bankCode = '160'): string
     {
-        // Generate base number (160 is bank code for Banca Intesa)
-        // We need a 16-digit number (18 total - 2 control digits)
-        $base = '160'.str_pad(mt_rand(0, 9999999999), 13, '0', STR_PAD_LEFT);
+        // Ensure bank code is 3 digits
+        $bankCode = substr(str_pad($bankCode, 3, '0', STR_PAD_LEFT), 0, 3);
 
-        // Calculate control digits using MOD97
-        $controlNumber = 98 - ((int) $base % 97);
+        // Generate a random account part (13 digits)
+        $randomPart = str_pad(mt_rand(0, 9999999999999), 13, '0', STR_PAD_LEFT);
 
-        // Format final number with control digits
-        return $base.str_pad($controlNumber, 2, '0', STR_PAD_LEFT);
+        // Combine bank code and random part to form the base
+        $base = $bankCode.$randomPart;
+
+        // Calculate control digits (mod97)
+        $controlNumber = 0;
+        $calcBase = 100;
+
+        // Process in reverse order (from right to left)
+        for ($x = strlen($base) - 1; $x >= 0; --$x) {
+            $num = (int) $base[$x];
+            $controlNumber = ($controlNumber + ($calcBase * $num)) % 97;
+            $calcBase = ($calcBase * 10) % 97;
+        }
+
+        // Calculate control digits (98 minus remainder)
+        $checkDigits = str_pad(98 - $controlNumber, 2, '0', STR_PAD_LEFT);
+
+        // Return the complete account number
+        return $base.$checkDigits;
     }
 
     public function load(ObjectManager $manager): void
