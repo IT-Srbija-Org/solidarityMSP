@@ -101,4 +101,63 @@ class DonorControllerTest extends WebTestCase
         $userDonor = $this->userDonorRepository->findOneBy(['user' => $this->user]);
         $this->assertNull($userDonor);
     }
+
+    public function testSuccessMessageRoute(): void
+    {
+        $this->loginAsUser();
+        $this->client->request('GET', '/uspesna-registracija-donatora');
+
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('h2', 'Uspešno ste se registrovali kao donator!');
+    }
+
+    public function testUnsubscribeWithoutToken(): void
+    {
+        $this->loginAsUser();
+
+        // Configure client to not catch exceptions
+        $this->client->catchExceptions(false);
+
+        try {
+            // This should throw an access denied exception
+            $this->client->request('GET', '/odjava-donatora');
+
+            // If we get here (no exception), still check for HTTP 403
+            $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
+        } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException $e) {
+            // Expected exception, test passes
+            $this->assertTrue(true, 'Expected AccessDeniedException was thrown');
+        } catch (\Exception $e) {
+            // Catch any other exceptions to ensure we reset client
+            $this->fail('Unexpected exception thrown: '.get_class($e).' - '.$e->getMessage());
+        } finally {
+            // Reset to default behavior
+            $this->client->catchExceptions(true);
+        }
+    }
+
+    public function testUnsubscribeWithInvalidToken(): void
+    {
+        $this->loginAsUser();
+
+        // Configure client to not catch exceptions
+        $this->client->catchExceptions(false);
+
+        try {
+            // This should throw an access denied exception
+            $this->client->request('GET', '/odjava-donatora?_token=invalid');
+
+            // If we get here (no exception), still check for HTTP 403
+            $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
+        } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException $e) {
+            // Expected exception, test passes
+            $this->assertTrue(true, 'Expected AccessDeniedException was thrown');
+        } catch (\Exception $e) {
+            // Catch any other exceptions to ensure we reset client
+            $this->fail('Unexpected exception thrown: '.get_class($e).' - '.$e->getMessage());
+        } finally {
+            // Reset to default behavior
+            $this->client->catchExceptions(true);
+        }
+    }
 }

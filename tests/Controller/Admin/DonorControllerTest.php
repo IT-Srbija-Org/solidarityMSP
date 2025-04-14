@@ -79,5 +79,48 @@ class DonorControllerTest extends WebTestCase
 
         // Check that the page loads successfully
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorExists('form');
+        $this->assertSelectorExists('input[name="firstName"]');
+        $this->assertSelectorExists('input[name="lastName"]');
+        $this->assertSelectorExists('input[name="email"]');
+        $this->assertSelectorExists('select[name="isMonthly"]');
+    }
+
+    public function testListDonorsWithSearchCriteria(): void
+    {
+        $this->loginAsAdmin();
+        $crawler = $this->client->request('GET', '/admin/donor/list');
+
+        $form = $crawler->selectButton('Pretraži')->form([
+            'isMonthly' => '1',
+        ]);
+
+        $this->client->submit($form);
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testListDonorsAccessDeniedForRegularUsers(): void
+    {
+        $this->loginAsUser();
+
+        // Configure client to not catch exceptions
+        $this->client->catchExceptions(false);
+
+        try {
+            // This should throw an access denied exception
+            $this->client->request('GET', '/admin/donor/list');
+
+            // If we get here (no exception), still check for HTTP 403
+            $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
+        } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException $e) {
+            // Expected exception, test passes
+            $this->assertTrue(true, 'Expected AccessDeniedException was thrown');
+        } catch (\Exception $e) {
+            // Catch any other exceptions to ensure we reset client
+            $this->fail('Unexpected exception thrown: '.get_class($e).' - '.$e->getMessage());
+        } finally {
+            // Reset to default behavior
+            $this->client->catchExceptions(true);
+        }
     }
 }
