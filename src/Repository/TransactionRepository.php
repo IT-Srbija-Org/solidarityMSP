@@ -28,8 +28,7 @@ class TransactionRepository extends ServiceEntityRepository
         }
 
         $qb->leftJoin('t.educator', 'e')
-           ->leftJoin('e.school', 's')
-           ->leftJoin('s.city', 'c');
+           ->leftJoin('e.school', 's');
 
         if (!empty($criteria['educator'])) {
             $qb->andWhere('e.name LIKE :educator')
