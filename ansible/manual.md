@@ -1,12 +1,12 @@
-# Production Deployment Guide
+# Vodič za produkcijsko postavljanje
 
-This guide describes how to deploy the Solidarity Network application on a production VM without Docker.
+Ovaj vodič opisuje kako da postavite aplikaciju Solidarity Network na produkcioni VM bez Docker-a.
 
-## System Requirements
+## Sistemski zahtevi
 
-- Ubuntu 22.04 LTS or newer
+- Ubuntu 22.04 LTS ili noviji
 - MySQL 8.0
-- PHP 8.3.6 with extensions:
+- PHP 8.3.6 sa ekstenzijama:
   - mysql
   - mbstring
   - zip
@@ -25,61 +25,61 @@ This guide describes how to deploy the Solidarity Network application on a produ
 - Composer
 - Git
 
-## Installation Steps
+## Koraci instalacije
 
-### 1. Update System
+### 1. Ažurirajte sistem
 ```bash
 sudo apt-get update && sudo apt-get upgrade -y
 ```
 
-### 2. Install Required Packages
+### 2. Instalirajte potrebne pakete
 ```bash
-# Install MySQL, Nginx, and basic tools
+# Instalirajte MySQL, Nginx i osnovne alate
 sudo apt-get install -y mysql-server nginx git curl unzip imagemagick
 
-# Install PHP and extensions
+# Instalirajte PHP i ekstenzije
 sudo apt-get install -y php8.3-fpm php8.3-cli php8.3-common \
     php8.3-mysql php8.3-zip php8.3-gd php8.3-mbstring \
     php8.3-curl php8.3-xml php8.3-bcmath php8.3-opcache \
     php8.3-intl php8.3-imagick php8.3-igbinary
 ```
 
-### 3. Configure PHP
+### 3. Podesite PHP
 
-Create/edit `/etc/php/8.3/fpm/conf.d/custom.ini`:
+Kreirajte/izmenite `/etc/php/8.3/fpm/conf.d/custom.ini`:
 ```ini
 date.timezone = Europe/Belgrade
 memory_limit = 2048M
 ```
 
-Restart PHP-FPM:
+Restartujte PHP-FPM:
 ```bash
 sudo systemctl restart php8.3-fpm
 ```
 
-### 4. Install and Configure Redis
+### 4. Instalirajte i podesite Redis
 
 ```bash
-# Install Redis
+# Instalirajte Redis
 sudo apt-get install -y redis-server php8.3-redis
 
-# Configure Redis to start on boot
+# Podesite Redis da se startuje pri podizanju sistema
 sudo systemctl enable redis-server
 sudo systemctl start redis-server
 
-# Secure Redis (edit /etc/redis/redis.conf)
-sudo sed -i 's/^# requirepass .*/requirepass your_strong_redis_password/' /etc/redis/redis.conf
+# Obezbedite Redis (izmenite /etc/redis/redis.conf)
+sudo sed -i 's/^# requirepass .*/requirepass vaša_jaka_redis_lozinka/' /etc/redis/redis.conf
 
-# Restart Redis to apply changes
+# Restartujte Redis da bi se promene primenile
 sudo systemctl restart redis-server
 ```
 
-Configure Symfony to use Redis for sessions. Add to `.env.local`:
+Podesite Symfony da koristi Redis za sesije. Dodajte u `.env.local`:
 ```dotenv
-REDIS_URL=redis://default:your_strong_redis_password@localhost:6379
+REDIS_URL=redis://default:vaša_jaka_redis_lozinka@localhost:6379
 ```
 
-Update `config/packages/framework.yaml`:
+Izmenite `config/packages/framework.yaml`:
 ```yaml
 framework:
     session:
@@ -89,33 +89,33 @@ framework:
         storage_factory_id: session.storage.factory.native
 ```
 
-Test Redis connection:
+Testirajte Redis konekciju:
 ```bash
 redis-cli ping
-# Should return PONG
+# Trebalo bi da vrati PONG
 ```
 
-### 5. Configure MySQL
+### 5. Podesite MySQL
 
 ```bash
 sudo mysql_secure_installation
 ```
 
-Create database and user:
+Kreirajte bazu i korisnika:
 ```sql
 CREATE DATABASE solidarity;
-CREATE USER 'solidarity'@'localhost' IDENTIFIED BY 'your_strong_password';
+CREATE USER 'solidarity'@'localhost' IDENTIFIED BY 'vaša_jaka_lozinka';
 GRANT ALL PRIVILEGES ON solidarity.* TO 'solidarity'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-### 6. Configure Nginx
+### 6. Podesite Nginx
 
-Create `/etc/nginx/sites-available/solidarity`:
+Kreirajte `/etc/nginx/sites-available/solidarity`:
 ```nginx
 server {
     listen 80;
-    server_name your_domain.com;
+    server_name vaš_domen.com;
     root /var/www/solidarity/public;
 
     client_max_body_size 10M;
@@ -147,101 +147,101 @@ server {
 }
 ```
 
-Enable the site:
+Omogućite sajt:
 ```bash
 sudo ln -s /etc/nginx/sites-available/solidarity /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 ```
 
-### 7. Deploy Application
+### 7. Deploy aplikacije
 
-Clone repository:
+Klonirajte repozitorijum:
 ```bash
 cd /var/www
 git clone https://github.com/IT-Srbija-Org/solidaritySF.git solidarity
 cd solidarity
 ```
 
-Install dependencies:
+Instalirajte zavisnosti:
 ```bash
 composer install --no-dev --optimize-autoloader
 ```
 
-Set up environment:
+Podesite okruženje:
 ```bash
 cp .env .env.local
-# Edit .env.local to set:
+# Izmenite .env.local i podesite:
 # - APP_ENV=prod
-# - APP_SECRET=your_secret
-# - DATABASE_URL=mysql://solidarity:your_password@127.0.0.1:3306/solidarity
-# - MAILER_DSN=your_mail_configuration
+# - APP_SECRET=vaš_secret
+# - DATABASE_URL=mysql://solidarity:vaša_lozinka@127.0.0.1:3306/solidarity
+# - MAILER_DSN=vaša_mail_konfiguracija
 ```
 
-Set permissions:
+Podesite dozvole:
 ```bash
 sudo chown -R www-data:www-data var
 sudo chmod -R 775 var
 ```
 
-### 8. Initialize Database
+### 8. Inicijalizujte bazu
 
 ```bash
 php bin/console doctrine:schema:create
 ```
 
-Load initial data (if needed):
+Učitajte početne podatke (ako je potrebno):
 ```bash
 php bin/console doctrine:fixtures:load --group=1 --no-interaction
 ```
 
-### 9. Final Steps
+### 9. Završni koraci
 
-Clear cache:
+Očistite keš:
 ```bash
 APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
 ```
 
-Set up SSL with Let's Encrypt:
+Podesite SSL sa Let's Encrypt:
 ```bash
 sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d your_domain.com
+sudo certbot --nginx -d vaš_domen.com
 ```
 
-### 10. Maintenance
+### 10. Održavanje
 
-Regular backups:
+Redovan backup:
 ```bash
-# Add to crontab
-0 3 * * * mysqldump -u solidarity -p'your_password' solidarity > /backup/solidarity_$(date +\%Y\%m\%d).sql
+# Dodajte u crontab
+0 3 * * * mysqldump -u solidarity -p'vaša_lozinka' solidarity > /backup/solidarity_$(date +\%Y\%m\%d).sql
 ```
 
-Monitor logs:
+Pratite logove:
 ```bash
 tail -f /var/log/nginx/solidarity_error.log
 ```
 
-## Security Considerations
+## Bezbednosne preporuke
 
-1. Always keep the system updated
-2. Use strong passwords
-3. Configure firewall (UFW)
-4. Regular security audits
-5. Enable HTTPS only
-6. Set up fail2ban
-7. Regular backup strategy
+1. Uvek ažurirajte sistem
+2. Koristite jake lozinke
+3. Podesite firewall (UFW)
+4. Redovno radite bezbednosne provere
+5. Omogućite samo HTTPS
+6. Podesite fail2ban
+7. Redovan backup
 
-## Performance Optimization
+## Optimizacija performansi
 
-1. Enable OPcache
-2. Configure PHP-FPM pool settings
-3. Set up Redis for session storage
-4. Configure Nginx caching
-5. Use CDN for assets
+1. Omogućite OPcache
+2. Podesite PHP-FPM pool
+3. Koristite Redis za sesije
+4. Podesite Nginx keširanje
+5. Koristite CDN za statičke fajlove
 
 ## Monitoring
 
-1. Set up application monitoring
-2. Configure error logging
-3. Monitor system resources
-4. Set up alerts for critical events
+1. Podesite monitoring aplikacije
+2. Podesite logovanje grešaka
+3. Pratite resurse sistema
+4. Podesite alarme za kritične događaje
