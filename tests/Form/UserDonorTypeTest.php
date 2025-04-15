@@ -5,7 +5,7 @@ namespace App\Tests\Form;
 use App\Entity\User;
 use App\Entity\UserDonor;
 use App\Form\UserDonorType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -24,7 +24,7 @@ class UserDonorTypeTest extends TypeTestCase
         $this->assertTrue($form->has('submit'));
 
         // Get the form field types
-        $this->assertInstanceOf(ChoiceType::class, $form->get('isMonthly')->getConfig()->getType()->getInnerType());
+        $this->assertInstanceOf(CheckboxType::class, $form->get('isMonthly')->getConfig()->getType()->getInnerType());
         $this->assertInstanceOf(IntegerType::class, $form->get('amount')->getConfig()->getType()->getInnerType());
         $this->assertInstanceOf(TextareaType::class, $form->get('comment')->getConfig()->getType()->getInnerType());
         $this->assertInstanceOf(SubmitType::class, $form->get('submit')->getConfig()->getType()->getInnerType());
