@@ -1,0 +1,39 @@
+---
+# Application settings
+app_root: /var/www/solidarity
+domain_name: your-domain.com
+admin_email: admin@example.com
+git_repo: https://github.com/IT-Srbija-Org/solidaritySF.git
+git_branch: main
+
+# Database settings
+mysql_root_password: change_this_root_password
+mysql_database: solidarity
+mysql_user: solidarity
+mysql_password: change_this_db_password
+
+# Redis settings
+redis_password: change_this_redis_password
+
+# Environment settings
+app_env: prod
+app_secret: change_this_app_secret
+mailer_dsn: smtp://localhost:25
+
+# Deployment flags
+initialize_database: true
+load_fixtures: true
+enable_ssl: true
+
+# Backup settings
+backup_dir: /backup
+
+# PHP settings
+php_timezone: Europe/Belgrade
+php_memory_limit: 2048M
+
+# Nginx settings
+nginx_client_max_body_size: 10M
+nginx_fastcgi_buffer_size: 128k
+nginx_fastcgi_buffers: "4 256k"
+nginx_fastcgi_busy_buffers_size: 256k

@@ -1,0 +1,26 @@
+---
+- name: Configure Nginx
+  ansible.builtin.template:
+    src: templates/etc/nginx/sites-available/solidarity.j2
+    dest: /etc/nginx/sites-available/solidarity
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload Nginx
+  tags: [nginx, config]
+
+- name: Enable Nginx site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/solidarity
+    dest: /etc/nginx/sites-enabled/solidarity
+    state: link
+    owner: root
+    group: root
+  notify: Reload Nginx
+  tags: [nginx, config]
+
+- name: Set up SSL with Let's Encrypt
+  ansible.builtin.command: certbot --nginx -d {{ domain_name }} --non-interactive --agree-tos --email {{ admin_email }}
+  when: enable_ssl | bool
+  changed_when: true
+  tags: [ssl]

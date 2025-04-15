@@ -1,0 +1,10 @@
+---
+- name: Configure Redis
+  ansible.builtin.template:
+    src: templates/etc/redis/redis.conf.j2
+    dest: /etc/redis/redis.conf
+    owner: redis
+    group: redis
+    mode: "0640"
+  notify: Restart Redis
+  tags: [redis, config]

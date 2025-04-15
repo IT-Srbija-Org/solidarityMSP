@@ -1,0 +1,22 @@
+---
+- name: Update database schema
+  ansible.builtin.command: php bin/console doctrine:schema:update --force
+  args:
+    chdir: "{{ app_root }}"
+  when: initialize_database | bool
+  changed_when: false
+  become: true
+  become_user: www-data
+  tags: [deploy, database]
+
+- name: Load initial fixtures
+  ansible.builtin.command: php bin/console doctrine:fixtures:load --group=1 --no-interaction
+  args:
+    chdir: "{{ app_root }}"
+  when:
+    - load_fixtures | bool
+    - app_env == 'dev'
+  changed_when: false
+  become: true
+  become_user: www-data
+  tags: [deploy, database]

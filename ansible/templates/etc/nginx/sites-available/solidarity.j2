@@ -1,0 +1,81 @@
+server {
+    listen 80;
+    server_name {{ domain_name }};
+    root {{ app_root }}/public;
+
+    client_max_body_size {{ nginx_client_max_body_size }};
+
+    location / {
+        try_files $uri /index.php$is_args$args;
+    }
+
+    location ~ ^/index\.php(/|$) {
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+
+        fastcgi_buffer_size {{ nginx_fastcgi_buffer_size }};
+        fastcgi_buffers {{ nginx_fastcgi_buffers }};
+        fastcgi_busy_buffers_size {{ nginx_fastcgi_busy_buffers_size }};
+
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        internal;
+    }
+
+    location ~ \.php$ {
+        return 404;
+    }
+
+    error_log /var/log/nginx/solidarity_error.log;
+    access_log /var/log/nginx/solidarity_access.log;
+
+    # Enable gzip compression
+    gzip on;
+    gzip_disable "msie6";
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_buffers 16 8k;
+    gzip_http_version 1.1;
+    gzip_min_length 256;
+    gzip_types
+        application/atom+xml
+        application/javascript
+        application/json
+        application/ld+json
+        application/manifest+json
+        application/rss+xml
+        application/vnd.geo+json
+        application/vnd.ms-fontobject
+        application/x-font-ttf
+        application/x-web-app-manifest+json
+        application/xhtml+xml
+        application/xml
+        font/opentype
+        image/bmp
+        image/svg+xml
+        image/x-icon
+        text/cache-manifest
+        text/css
+        text/plain
+        text/vcard
+        text/vnd.rim.location.xloc
+        text/vtt
+        text/x-component
+        text/x-cross-domain-policy;
+
+    # Cache static files
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+    }
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+}

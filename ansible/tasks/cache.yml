@@ -1,0 +1,9 @@
+---
+- name: Clear cache
+  ansible.builtin.command: php bin/console cache:clear --env={{ app_env }} --no-debug
+  args:
+    chdir: "{{ app_root }}"
+  changed_when: true
+  become: true
+  become_user: www-data
+  tags: [deploy, cache]

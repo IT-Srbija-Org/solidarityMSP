@@ -1,0 +1,39 @@
+# Redis configuration
+bind 127.0.0.1
+port 6379
+timeout 0
+tcp-keepalive 300
+
+# Security
+requirepass {{ redis_password }}
+maxmemory 256mb
+maxmemory-policy allkeys-lru
+
+# Persistence
+save 900 1
+save 300 10
+save 60 10000
+stop-writes-on-bgsave-error yes
+rdbcompression yes
+rdbchecksum yes
+dbfilename dump.rdb
+dir /var/lib/redis
+
+# Logging
+loglevel notice
+logfile /var/log/redis/redis-server.log
+
+# Performance tuning
+appendonly no
+appendfilename "appendonly.aof"
+appendfsync everysec
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+aof-load-truncated yes
+
+# Recommended production settings
+protected-mode yes
+supervised systemd
+daemonize yes
+pidfile /var/run/redis/redis-server.pid

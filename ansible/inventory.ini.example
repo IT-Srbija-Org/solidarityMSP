@@ -1,0 +1,5 @@
+[solidarity_servers]
+mrezasolidarnosti.org ansible_user=root
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3

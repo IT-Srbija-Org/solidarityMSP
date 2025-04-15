@@ -1,0 +1,37 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  tags: [system, packages]
+
+- name: Install required system packages
+  ansible.builtin.apt:
+    name:
+      - python3-pymysql
+      - php8.3-fpm
+      - php8.3-cli
+      - php8.3-common
+      - php8.3-mysql
+      - php8.3-zip
+      - php8.3-gd
+      - php8.3-mbstring
+      - php8.3-curl
+      - php8.3-xml
+      - php8.3-bcmath
+      - php8.3-opcache
+      - php8.3-redis
+      - php8.3-intl
+      - php8.3-imagick
+      - php8.3-igbinary
+      - git
+      - curl
+      - unzip
+      - nginx
+      - mysql-server
+      - redis-server
+      - imagemagick
+      - certbot
+      - python3-certbot-nginx
+    state: present
+  tags: [system, packages]

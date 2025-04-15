@@ -1,0 +1,82 @@
+---
+- name: Check if application directory exists
+  ansible.builtin.stat:
+    path: "{{ app_root }}"
+  register: app_dir
+  tags: [deploy, app]
+
+- name: Remove existing application directory
+  ansible.builtin.file:
+    path: "{{ app_root }}"
+    state: absent
+  when: app_dir.stat.exists
+  tags: [deploy, app]
+
+- name: Add application directory to Git safe directories
+  ansible.builtin.command: git config --global --add safe.directory {{ app_root }}
+  changed_when: false
+  tags: [deploy, app]
+
+- name: Clone application repository
+  ansible.builtin.git:
+    repo: "{{ git_repo }}"
+    dest: "{{ app_root }}"
+    version: "{{ git_branch }}"
+    force: false
+    update: true
+  tags: [deploy, app]
+
+- name: Set application directory ownership
+  ansible.builtin.file:
+    path: "{{ app_root }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    recurse: true
+  tags: [deploy, app]
+
+- name: Create Composer cache directory
+  ansible.builtin.file:
+    path: /var/www/.cache/composer
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
+    recurse: true
+  tags: [deploy, app]
+
+- name: Create .env.local from template
+  ansible.builtin.template:
+    src: templates/var/www/solidarity/.env.local.j2
+    dest: "{{ app_root }}/.env.local"
+    owner: www-data
+    group: www-data
+    mode: "0640"
+  tags: [deploy, config]
+
+- name: Install Composer dependencies
+  community.general.composer:
+    command: install
+    working_dir: "{{ app_root }}"
+    no_dev: "{{ app_env != 'dev' }}"
+    optimize_autoloader: true
+    prefer_dist: true
+    arguments: --no-interaction
+  become: true
+  become_user: www-data
+  environment:
+    COMPOSER_HOME: /var/www/.cache/composer
+  tags: [deploy, app]
+
+- name: Set directory permissions
+  ansible.builtin.file:
+    path: "{{ app_root }}/{{ item }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0775"
+    recurse: true
+  with_items:
+    - var
+    - public
+  tags: [deploy, permissions]

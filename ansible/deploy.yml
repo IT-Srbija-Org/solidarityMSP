@@ -1,0 +1,72 @@
+---
+- name: Deploy Solidarity Network Application
+  hosts: solidarity_servers
+  become: true
+  vars_files:
+    - vars.yml
+  pre_tasks:
+    - name: Create Ansible directories for www-data
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: "0755"
+        recurse: true
+      with_items:
+        - /var/www/.ansible
+        - /var/www/.ansible/tmp
+      tags: [setup]
+
+  tasks:
+    - name: Include system tasks
+      ansible.builtin.include_tasks:
+        file: tasks/system.yml
+
+    - name: Include PHP tasks
+      ansible.builtin.include_tasks:
+        file: tasks/php.yml
+
+    - name: Include Redis tasks
+      ansible.builtin.include_tasks:
+        file: tasks/redis.yml
+
+    - name: Include MySQL tasks
+      ansible.builtin.include_tasks:
+        file: tasks/mysql.yml
+
+    - name: Include Nginx tasks
+      ansible.builtin.include_tasks:
+        file: tasks/nginx.yml
+
+    - name: Application setup tasks
+      ansible.builtin.include_tasks:
+        file: tasks/app_setup.yml
+
+    - name: Database tasks
+      ansible.builtin.include_tasks:
+        file: tasks/db.yml
+
+    - name: Cache tasks
+      ansible.builtin.include_tasks:
+        file: tasks/cache.yml
+
+    - name: Backup tasks
+      ansible.builtin.include_tasks:
+        file: tasks/backup.yml
+
+  handlers:
+    - name: Restart PHP-FPM
+      ansible.builtin.service:
+        name: php8.3-fpm
+        state: restarted
+
+    - name: Restart Redis
+      ansible.builtin.service:
+        name: redis-server
+        state: restarted
+
+    - name: Reload Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
