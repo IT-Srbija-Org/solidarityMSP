@@ -28,7 +28,7 @@ class DonorController extends AbstractController
         $user = $this->getUser();
 
         $userDonor = new UserDonor();
-        if($user && $user->getUserDonor()) {
+        if ($user && $user->getUserDonor()) {
             $userDonor = $user->getUserDonor();
         }
 
