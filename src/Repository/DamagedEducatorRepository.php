@@ -2,19 +2,19 @@
 
 namespace App\Repository;
 
-use App\Entity\Educator;
+use App\Entity\DamagedEducator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Educator>
+ * @extends ServiceEntityRepository<DamagedEducator>
  */
-class EducatorRepository extends ServiceEntityRepository
+class DamagedEducatorRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Educator::class);
+        parent::__construct($registry, DamagedEducator::class);
     }
 
     public function search(array $criteria, int $page = 1, int $limit = 50): array
@@ -29,6 +29,11 @@ class EducatorRepository extends ServiceEntityRepository
         if (isset($criteria['school'])) {
             $qb->andWhere('e.school = :school')
                 ->setParameter('school', $criteria['school']);
+        }
+
+        if (isset($criteria['period'])) {
+            $qb->andWhere('e.period = :period')
+                ->setParameter('period', $criteria['period']);
         }
 
         if (isset($criteria['schools'])) {

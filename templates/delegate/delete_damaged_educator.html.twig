@@ -2,13 +2,13 @@
 
 {% block body %}
     {% import "macro.twig" as macro %}
-    {{ macro.back('delegate_educators') }}
+    {{ macro.back('delegate_damaged_educators', { 'period': damagedEducator.period.id }) }}
 
     <div class="card card-lg bg-base-100 shadow m-10 mt-0">
         <div class="card-body">
             <h2 class="card-title mb-4">
-                <span class="ti ti-school text-3xl"></span>
-                Oštećeni
+                <span class="ti ti-trash text-3xl"></span>
+                Oštećeni/a za {{ damagedEducator.period.date|date('F')|trans }}, {{ damagedEducator.period.year }}
             </h2>
 
             <div>

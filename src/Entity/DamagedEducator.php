@@ -2,18 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\EducatorRepository;
+use App\Repository\DamagedEducatorRepository;
 use App\Validator\Mod97;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-#[ORM\Entity(repositoryClass: EducatorRepository::class)]
-#[UniqueEntity(fields: ['accountNumber'], message: 'Vec postoji edukator sa ovim brojem računa')]
+#[ORM\Entity(repositoryClass: DamagedEducatorRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class Educator
+class DamagedEducator
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -23,18 +21,18 @@ class Educator
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'educators')]
+    #[ORM\ManyToOne(inversedBy: 'damagedEducators')]
     #[ORM\JoinColumn(nullable: false)]
     private ?School $school = null;
 
     #[ORM\Column]
     private ?int $amount = null;
 
-    #[ORM\Column(length: 50, unique: true)]
+    #[ORM\Column(length: 50)]
     #[Mod97]
     private ?string $accountNumber = null;
 
-    #[ORM\ManyToOne(inversedBy: 'educators')]
+    #[ORM\ManyToOne(inversedBy: 'damagedEducators')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $createdBy = null;
 
@@ -47,8 +45,12 @@ class Educator
     /**
      * @var Collection<int, Transaction>
      */
-    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'educator')]
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'damagedEducator')]
     private Collection $transactions;
+
+    #[ORM\ManyToOne(inversedBy: 'damagedEducators')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?DamagedEducatorPeriod $period = null;
 
     public function __construct()
     {
@@ -155,24 +157,14 @@ class Educator
         return $this->transactions;
     }
 
-    public function addTransaction(Transaction $transaction): static
+    public function getPeriod(): ?DamagedEducatorPeriod
     {
-        if (!$this->transactions->contains($transaction)) {
-            $this->transactions->add($transaction);
-            $transaction->setEducator($this);
-        }
-
-        return $this;
+        return $this->period;
     }
 
-    public function removeTransaction(Transaction $transaction): static
+    public function setPeriod(?DamagedEducatorPeriod $period): static
     {
-        if ($this->transactions->removeElement($transaction)) {
-            // set the owning side to null (unless already changed)
-            if ($transaction->getEducator() === $this) {
-                $transaction->setEducator(null);
-            }
-        }
+        $this->period = $period;
 
         return $this;
     }

@@ -4,7 +4,8 @@ namespace App\DataFixtures;
 
 use App\DataFixtures\Data\Amounts;
 use App\DataFixtures\Data\Names;
-use App\Entity\Educator;
+use App\Entity\DamagedEducator;
+use App\Entity\DamagedEducatorPeriod;
 use App\Entity\School;
 use App\Entity\User;
 use App\Entity\UserDelegateRequest;
@@ -13,7 +14,7 @@ use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class EducatorFixtures extends Fixture implements FixtureGroupInterface
+class DamagedEducatorFixtures extends Fixture implements FixtureGroupInterface
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
@@ -84,17 +85,20 @@ class EducatorFixtures extends Fixture implements FixtureGroupInterface
         }
 
         $schools = $this->entityManager->getRepository(School::class)->findAll();
+        $periods = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findAll();
 
         foreach ($schools as $school) {
             // Generate 1-30 educators per school
             $count = mt_rand(1, 30);
 
             for ($i = 0; $i < $count; ++$i) {
-                $educator = new Educator();
+                $educator = new DamagedEducator();
                 $educator->setName($this->generateName());
                 $educator->setSchool($school);
                 $educator->setAmount(Amounts::generate(30000, null, 15, 50000));
                 $educator->setAccountNumber($this->generateAccountNumber());
+                $educator->setPeriod($periods[array_rand($periods)]);
+
                 // Pick random confirmed delegate
                 $delegate = $delegates[array_rand($delegates)];
                 $educator->setCreatedBy($delegate);
@@ -111,6 +115,6 @@ class EducatorFixtures extends Fixture implements FixtureGroupInterface
      */
     public static function getGroups(): array
     {
-        return [5]; // After UserDelegateSchool and UserDonor fixtures
+        return [5];
     }
 }

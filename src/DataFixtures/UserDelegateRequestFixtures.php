@@ -89,6 +89,7 @@ class UserDelegateRequestFixtures extends Fixture implements FixtureGroupInterfa
                 $rand <= 66 => UserDelegateRequest::STATUS_NEW,
                 default => UserDelegateRequest::STATUS_REJECTED,
             };
+
             $userDelegateRequest->setStatus($status);
 
             // Add admin comment for confirmed or rejected requests
@@ -115,6 +116,6 @@ class UserDelegateRequestFixtures extends Fixture implements FixtureGroupInterfa
      */
     public static function getGroups(): array
     {
-        return [2]; // Run with Schools, before UserDelegateSchool assignments
+        return [2];
     }
 }

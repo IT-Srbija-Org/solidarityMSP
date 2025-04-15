@@ -22,6 +22,7 @@ class SchoolFixtures extends Fixture implements FixtureGroupInterface
         if (str_contains($schoolName, 'Osnovna škola')) {
             return 'Osnovna škola';
         }
+
         if (str_contains($schoolName, 'Gimnazija')) {
             return 'Gimnazija';
         }

@@ -58,10 +58,10 @@
                         {% for transaction in transactions.items %}
                             <tr class="hover:bg-gray-100">
                                 <td>{{ transaction.id }}</td>
-                                <td>{{ transaction.educator.name }}</td>
+                                <td>{{ transaction.damagedEducator.name }}</td>
                                 <td>
-                                    <div>{{ transaction.educator.school.name }}</div>
-                                    <div class="text-gray-500">{{ transaction.educator.school.city.name }}</div>
+                                    <div>{{ transaction.damagedEducator.school.name }}</div>
+                                    <div class="text-gray-500">{{ transaction.damagedEducator.school.city.name }}</div>
                                 </td>
                                 <td>{{ transaction.accountNumber }}</td>
                                 <td>{{ transaction.amount|number_format }}</td>

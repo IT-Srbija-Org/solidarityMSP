@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Educator;
+use App\Entity\DamagedEducator;
 use App\Entity\School;
 use App\Form\DataTransformer\AccountNumberTransformer;
 use Doctrine\ORM\EntityRepository;
@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EducatorEditType extends AbstractType
+class DamagedEducatorEditType extends AbstractType
 {
     private AccountNumberTransformer $accountNumberTransformer;
 
@@ -61,7 +61,7 @@ class EducatorEditType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Educator::class,
+            'data_class' => DamagedEducator::class,
             'user' => null,
         ]);
     }

@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Entity\Educator;
+use App\Entity\DamagedEducator;
 use App\Validator\Mod97;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -29,7 +29,7 @@ class ValidateAccountCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $educators = $this->entityManager->getRepository(Educator::class)->findAll();
+        $educators = $this->entityManager->getRepository(DamagedEducator::class)->findAll();
         $mod97Constraint = new Mod97();
         $invalidCount = 0;
 

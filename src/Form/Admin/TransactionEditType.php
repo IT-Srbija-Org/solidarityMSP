@@ -21,16 +21,16 @@ class TransactionEditType extends AbstractType
                 'data' => $options['data']->getUser()?->getFullName(),
                 'label' => 'Donator',
             ])
-            ->add('educator', TextType::class, [
+            ->add('damagedEducator', TextType::class, [
                 'disabled' => true,
                 'mapped' => false,
-                'data' => $options['data']->getEducator()?->getName(),
-                'label' => 'Edukator',
+                'data' => $options['data']->getDamagedEducator()?->getName(),
+                'label' => 'Oštećeni',
             ])
             ->add('accountNumber', TextType::class, [
                 'disabled' => true,
                 'mapped' => false,
-                'data' => $options['data']->getEducator()?->getAccountNumber(),
+                'data' => $options['data']->getDamagedEducator()?->getAccountNumber(),
                 'label' => 'Broj računa',
             ])
             ->add('amount', TextType::class, [
