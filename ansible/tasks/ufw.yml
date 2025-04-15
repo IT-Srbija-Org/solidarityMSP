@@ -1,0 +1,31 @@
+---
+- name: Install UFW firewall
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+    update_cache: yes
+  become: true
+  tags: [firewall, ufw]
+
+- name: Allow SSH (port 22) through UFW
+  community.general.ufw:
+    rule: allow
+    port: 22
+    proto: tcp
+  become: true
+  tags: [firewall, ufw]
+
+- name: Allow HTTPS (port 443) through UFW
+  community.general.ufw:
+    rule: allow
+    port: 443
+    proto: tcp
+  become: true
+  tags: [firewall, ufw]
+
+- name: Enable UFW firewall with default deny policy
+  community.general.ufw:
+    state: enabled
+    policy: deny
+  become: true
+  tags: [firewall, ufw]

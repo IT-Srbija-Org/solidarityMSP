@@ -33,5 +33,6 @@
       - imagemagick
       - certbot
       - python3-certbot-nginx
+      - ufw
     state: present
   tags: [system, packages]

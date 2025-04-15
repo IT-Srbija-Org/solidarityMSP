@@ -23,6 +23,14 @@
       ansible.builtin.include_tasks:
         file: tasks/system.yml
 
+    - name: Configure UFW firewall (SSH/HTTPS)
+      ansible.builtin.include_tasks:
+        file: tasks/ufw.yml
+
+    - name: SSH hardening
+      ansible.builtin.include_tasks:
+        file: tasks/ssh_hardening.yml
+
     - name: Include PHP tasks
       ansible.builtin.include_tasks:
         file: tasks/php.yml

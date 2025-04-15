@@ -1,0 +1,30 @@
+---
+- name: Disable SSH password authentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+    state: present
+    backrefs: yes
+  notify: Restart sshd
+  become: true
+  tags: [ssh, hardening]
+
+- name: Enforce SSH protocol 2
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?Protocol'
+    line: 'Protocol 2'
+    state: present
+    backrefs: yes
+  notify: Restart sshd
+  become: true
+  tags: [ssh, hardening]
+
+# Handler to restart sshd if config changes
+handlers:
+  - name: Restart sshd
+    ansible.builtin.service:
+      name: ssh
+      state: restarted
+    become: true
