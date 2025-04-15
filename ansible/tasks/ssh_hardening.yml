@@ -5,7 +5,7 @@
     regexp: '^#?PasswordAuthentication'
     line: 'PasswordAuthentication no'
     state: present
-    backrefs: yes
+    backrefs: true
   notify: Restart sshd
   become: true
   tags: [ssh, hardening]
@@ -16,15 +16,7 @@
     regexp: '^#?Protocol'
     line: 'Protocol 2'
     state: present
-    backrefs: yes
+    backrefs: true
   notify: Restart sshd
   become: true
   tags: [ssh, hardening]
-
-# Handler to restart sshd if config changes
-handlers:
-  - name: Restart sshd
-    ansible.builtin.service:
-      name: ssh
-      state: restarted
-    become: true
