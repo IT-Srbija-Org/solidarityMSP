@@ -23,6 +23,41 @@ class UserDelegateRequestRepository extends ServiceEntityRepository
         $qb->innerJoin('udr.user', 'u')
             ->andWhere('u.isActive = 1');
 
+        if (!empty($criteria['firstName'])) {
+            $qb->andWhere('u.firstName LIKE :firstName')
+                ->setParameter('firstName', '%'.$criteria['firstName'].'%');
+        }
+
+        if (!empty($criteria['lastName'])) {
+            $qb->andWhere('u.lastName LIKE :lastName')
+                ->setParameter('lastName', '%'.$criteria['lastName'].'%');
+        }
+
+        if (!empty($criteria['email'])) {
+            $qb->andWhere('u.email LIKE :email')
+                ->setParameter('email', '%'.$criteria['email'].'%');
+        }
+
+        if (!empty($criteria['phone'])) {
+            $qb->andWhere('udr.phone LIKE :phone')
+                ->setParameter('phone', '%'.$criteria['phone'].'%');
+        }
+
+        if (!empty($criteria['city'])) {
+            $qb->andWhere('udr.city = :city')
+                ->setParameter('city', $criteria['city']);
+        }
+
+        if (!empty($criteria['school'])) {
+            $qb->andWhere('udr.school = :school')
+                ->setParameter('school', $criteria['school']);
+        }
+
+        if (!empty($criteria['status'])) {
+            $qb->andWhere('udr.status = :status')
+                ->setParameter('status', $criteria['status']);
+        }
+
         // Set the sorting
         $qb->orderBy('udr.id', 'DESC');
 

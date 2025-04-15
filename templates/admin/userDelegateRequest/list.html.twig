@@ -26,10 +26,6 @@
                         Broj telefona
                     </th>
                     <th>
-                        <span class="ti ti-building-community text-xl"></span>
-                        Grad
-                    </th>
-                    <th>
                         <span class="ti ti-school text-xl"></span>
                         Škola
                     </th>
@@ -51,8 +47,10 @@
                         </a>
                     </td>
                     <td>{{ userDelegateRequest.phone }}</td>
-                    <td>{{ userDelegateRequest.city.name }}</td>
-                    <td>{{ userDelegateRequest.school.name }}</td>
+                    <td>
+                        <div>{{ userDelegateRequest.school.name }}</div>
+                        <div class="text-gray-500">{{ userDelegateRequest.school.city.name }}</div>
+                    </td>
                     <td>{{ userDelegateRequest.status|userDelegateRequestStatus|raw }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">

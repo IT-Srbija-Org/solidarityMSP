@@ -20,6 +20,8 @@ class TransactionRepository extends ServiceEntityRepository
     public function search(array $criteria, int $page = 1, int $limit = 50): array
     {
         $qb = $this->createQueryBuilder('t');
+        $qb->leftJoin('t.damagedEducator', 'e')
+            ->leftJoin('e.school', 's');
 
         if (isset($criteria['user'])) {
             $qb->andWhere('t.user = :user')
@@ -32,25 +34,27 @@ class TransactionRepository extends ServiceEntityRepository
                 ->setParameter('donor', '%'.$criteria['donor'].'%');
         }
 
-        $qb->leftJoin('t.damagedEducator', 'e')
-            ->leftJoin('e.school', 's');
-
         if (!empty($criteria['educator'])) {
             $qb->andWhere('e.name LIKE :educator')
                 ->setParameter('educator', '%'.$criteria['educator'].'%');
         }
 
-        if (isset($criteria['school'])) {
+        if (!empty($criteria['school'])) {
             $qb->andWhere('e.school = :school')
                 ->setParameter('school', $criteria['school']);
         }
 
-        if (isset($criteria['city'])) {
+        if (!empty($criteria['city'])) {
             $qb->andWhere('s.city = :city')
                 ->setParameter('city', $criteria['city']);
         }
 
-        if (isset($criteria['status'])) {
+        if (!empty($criteria['accountNumber'])) {
+            $qb->andWhere('t.accountNumber LIKE :accountNumber')
+                ->setParameter('accountNumber', '%'.$criteria['accountNumber'].'%');
+        }
+
+        if (!empty($criteria['status'])) {
             $qb->andWhere('t.status = :status')
                 ->setParameter('status', $criteria['status']);
         }

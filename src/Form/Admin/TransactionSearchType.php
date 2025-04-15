@@ -47,6 +47,10 @@ class TransactionSearchType extends AbstractType
                     return $school->getName().' ('.$school->getCity()->getName().')';
                 },
             ])
+            ->add('accountNumber', TextType::class, [
+                'required' => false,
+                'label' => 'Broj računa',
+            ])
             ->add('status', ChoiceType::class, [
                 'required' => false,
                 'choices' => array_flip(Transaction::STATUS),

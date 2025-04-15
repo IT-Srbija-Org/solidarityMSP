@@ -20,25 +20,41 @@ class DamagedEducatorRepository extends ServiceEntityRepository
     public function search(array $criteria, int $page = 1, int $limit = 50): array
     {
         $qb = $this->createQueryBuilder('e');
-
-        if (!empty($criteria['name'])) {
-            $qb->andWhere('e.name LIKE :name')
-                ->setParameter('name', '%'.$criteria['name'].'%');
-        }
-
-        if (isset($criteria['school'])) {
-            $qb->andWhere('e.school = :school')
-                ->setParameter('school', $criteria['school']);
-        }
+        $qb->leftJoin('e.school', 's');
 
         if (isset($criteria['period'])) {
             $qb->andWhere('e.period = :period')
                 ->setParameter('period', $criteria['period']);
         }
 
+        if (!empty($criteria['name'])) {
+            $qb->andWhere('e.name LIKE :name')
+                ->setParameter('name', '%'.$criteria['name'].'%');
+        }
+
+        if (!empty($criteria['city'])) {
+            $qb->andWhere('s.city = :city')
+                ->setParameter('city', $criteria['city']);
+        }
+
+        if (!empty($criteria['school'])) {
+            $qb->andWhere('e.school = :school')
+                ->setParameter('school', $criteria['school']);
+        }
+
         if (isset($criteria['schools'])) {
             $qb->andWhere('e.school IN (:schools)')
                 ->setParameter('schools', $criteria['schools']);
+        }
+
+        if (!empty($criteria['accountNumber'])) {
+            $qb->andWhere('e.accountNumber LIKE :accountNumber')
+                ->setParameter('accountNumber', '%'.$criteria['accountNumber'].'%');
+        }
+
+        if (!empty($criteria['createdBy'])) {
+            $qb->andWhere('e.createdBy = :createdBy')
+                ->setParameter('createdBy', $criteria['createdBy']);
         }
 
         // Set the sorting
