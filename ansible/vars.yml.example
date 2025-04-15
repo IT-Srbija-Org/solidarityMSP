@@ -19,6 +19,7 @@ redis_password: change_this_redis_password
 app_env: prod
 app_secret: change_this_app_secret
 mailer_dsn: smtp://localhost:25
+mailer_sender: noreply@mrezasolidarnosti.org
 
 # Deployment flags
 initialize_database: true
