@@ -9,10 +9,12 @@
   become_user: www-data
   tags: [deploy, database]
 
-- name: Load initial fixtures
-  ansible.builtin.command: php bin/console doctrine:fixtures:load --group=1 --no-interaction
+- name: Load all data fixtures (groups 1-6)
+  ansible.builtin.command: >
+    php bin/console doctrine:fixtures:load --group={{ item }}{% if item != 1 %} --append{% endif %} --no-interaction
   args:
     chdir: "{{ app_root }}"
+  loop: [1, 2, 3, 4, 5, 6]
   when:
     - load_fixtures | bool
     - app_env == 'dev'
