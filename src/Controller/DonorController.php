@@ -7,12 +7,10 @@ use App\Form\UserDonorType;
 use App\Repository\UserDonorRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -73,7 +71,7 @@ class DonorController extends AbstractController
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
-        if($user && $user->isVerified()){
+        if ($user && $user->isVerified()) {
             return $this->render('donor/success.html.twig');
         }
 

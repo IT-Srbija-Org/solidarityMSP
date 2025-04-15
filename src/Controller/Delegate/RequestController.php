@@ -35,7 +35,7 @@ class RequestController extends AbstractController
         }
 
         $userDelegateRequest = new UserDelegateRequest();
-        if($user && $user->getUserDelegateRequest()){
+        if ($user && $user->getUserDelegateRequest()) {
             $userDelegateRequest = $user->getUserDelegateRequest();
         }
 
@@ -83,10 +83,10 @@ class RequestController extends AbstractController
     #[Route('/uspesna-registracija-delegata', name: 'request_success')]
     public function messageSuccess(): Response
     {
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
-        if($user && $user->isVerified()){
+        if ($user && $user->isVerified()) {
             return $this->render('delegate/request_success.html.twig');
         }
 

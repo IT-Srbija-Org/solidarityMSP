@@ -70,7 +70,6 @@ class RegistrationController extends AbstractController
             throw new AuthenticationCredentialsNotFoundException();
         }
 
-
         try {
             // Check if user validation token valid
             $this->emailVerifier->handleEmailConfirmation($request, $user);
@@ -79,12 +78,13 @@ class RegistrationController extends AbstractController
             $security->login($user, 'form_login');
 
             $action = $request->get('action');
-            if($action == 'donor'){
+            if ('donor' == $action) {
                 $userDonorRepository->sendSuccessEmail($user);
+
                 return $this->redirectToRoute('donor_success');
             }
 
-            if($action == 'delegate'){
+            if ('delegate' == $action) {
                 return $this->redirectToRoute('delegate_request_success');
             }
         } catch (VerifyEmailExceptionInterface $exception) {
