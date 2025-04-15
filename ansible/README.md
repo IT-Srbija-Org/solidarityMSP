@@ -5,7 +5,7 @@ Ovaj direktorijum sadrži Ansible playbook-ove i konfiguraciju za produkcijsko p
 ## Struktura direktorijuma
 
 ```yaml
-ansible/production/
+ansible
 ├── README.md           # Ovaj fajl
 ├── deploy.yml          # Glavni playbook za deploy
 ├── inventory.ini       # Fajl za inventar koji definiše server
