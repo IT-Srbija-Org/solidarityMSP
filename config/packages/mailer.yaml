@@ -2,6 +2,6 @@ framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
         envelope:
-            sender: 'noreply@mrezasolidarnosti.org'
+            sender: '%env(MAILER_SENDER)%'
         headers:
-            From: 'Mreža Solidarnosti <noreply@mrezasolidarnosti.org>'
+            From: 'Mreža Solidarnosti <%env(MAILER_SENDER)%>'
