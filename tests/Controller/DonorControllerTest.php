@@ -87,7 +87,7 @@ class DonorControllerTest extends WebTestCase
         // Subscribe
         $form = $crawler->selectButton('Sačuvaj')->form([
             'user_donor[email]' => $email,
-            'user_donor[isMonthly]' => 0,
+            'user_donor[isMonthly]' => 1,
             'user_donor[amount]' => 10000,
             'user_donor[comment]' => 'Test donation comment',
         ]);
@@ -110,7 +110,7 @@ class DonorControllerTest extends WebTestCase
 
         // Check are donor data saved
         $userDonor = $this->userDonorRepository->findOneBy(['user' => $user]);
-        $this->assertFalse($userDonor->isMonthly());
+        $this->assertTrue($userDonor->isMonthly());
         $this->assertEquals(10000, $userDonor->getAmount());
         $this->assertEquals('Test donation comment', $userDonor->getComment());
 
