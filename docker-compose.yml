@@ -32,5 +32,9 @@ services:
     image: axllent/mailpit:v1.24
     ports: [ '1002:8025' ]
 
+  solidarity-redis-service:
+      container_name: solidarity-redis-container
+      image: redis:7.4.2-alpine
+
 volumes:
   mysql-data: { }
