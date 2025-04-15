@@ -62,22 +62,20 @@
                     {% endif %}
                 </div>
 
-                <div class="grid grid-cols-2 gap-10 mb-4">
-                    <div>
-                        {{ form_label(form.isMonthly) }}
-                        {{ form_widget(form.isMonthly, { 'attr': { 'class': 'select select-md select-bordered rounded-md w-full' } }) }}
-                        {{ form_errors(form.isMonthly) }}
+                <div>
+                    {{ form_label(form.amount) }}
+                    {{ form_widget(form.amount, { 'attr': { 'class': 'input input-md input-bordered rounded-md w-full' } }) }}
+                    {{ form_errors(form.amount) }}
 
-                        <span class="text-gray-500 text-sm">Klikom na "Da" prihvatate mesečno izdvajanje dogovorenog iznosa, a klikom na "Ne" odbijate tu obavezu</span>
-                    </div>
+                    <span class="text-gray-500 text-sm">Iznos sa kojim sam spreman/a da pomognem u dinarima (RSD).</span>
+                </div>
 
-                    <div>
-                        {{ form_label(form.amount) }}
-                        {{ form_widget(form.amount, { 'attr': { 'class': 'input input-md input-bordered rounded-md w-full' } }) }}
-                        {{ form_errors(form.amount) }}
+                <div class="my-4">
+                    {{ form_label(form.isMonthly) }}
+                    {{ form_widget(form.isMonthly, { 'attr': { 'class': 'checkbox checkbox-primary' } }) }}
+                    {{ form_errors(form.isMonthly) }}
 
-                        <span class="text-gray-500 text-sm">Iznos sa kojim sam spreman/a da pomognem u dinarima (RSD). Minimalni iznos je 500</span>
-                    </div>
+                    <div class="text-gray-500 text-sm">Čekiranjem ove opcije prihvatate mesečno izdvajanje dogovorenog iznosa (Kasnije požete da promenite)</div>
                 </div>
 
                 <div class="mb-4">

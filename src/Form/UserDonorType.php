@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\UserDonor;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -24,13 +25,8 @@ class UserDonorType extends AbstractType
                 'data' => $options['user'] ? $options['user']->getEmail() : null,
                 'disabled' => $options['user'] ? true : false,
             ])
-            ->add('isMonthly', ChoiceType::class, [
+            ->add('isMonthly', CheckboxType::class, [
                 'label' => 'Mesečna podrška',
-                'placeholder' => '',
-                'choices' => [
-                    'Ne' => false,
-                    'Da' => true,
-                ],
             ])
             ->add('amount', IntegerType::class, [
                 'label' => 'Iznos',

@@ -26,7 +26,11 @@ class DonorController extends AbstractController
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        $userDonor = $user ? $user->getUserDonor() : new UserDonor();
+
+        $userDonor = new UserDonor();
+        if($user && $user->getUserDonor()) {
+            $userDonor = $user->getUserDonor();
+        }
 
         $form = $this->createForm(UserDonorType::class, $userDonor, [
             'user' => $user,
