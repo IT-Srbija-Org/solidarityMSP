@@ -7,15 +7,37 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RedirectControllerTest extends WebTestCase
 {
-    // Testing one URL is sufficient since all routes share the same controller method
-    // and have identical behavior (301 redirect to homepage)
     public function testLegacyUrlRedirectsToHome(): void
     {
         $urls = [
             '/hvalaDonatoru',
             '/hvalaDelegatu',
             '/hvalaZaOstecenog',
+        ];
+
+        $client = static::createClient();
+        foreach ($urls as $url) {
+            $client->request('GET', $url);
+            $this->assertResponseRedirects('/', Response::HTTP_MOVED_PERMANENTLY);
+        }
+    }
+
+    public function testLegacyUrlRedirectsToDonor(): void
+    {
+        $urls = [
             '/obrazacDonatori',
+        ];
+
+        $client = static::createClient();
+        foreach ($urls as $url) {
+            $client->request('GET', $url);
+            $this->assertResponseRedirects('/postani-donator', Response::HTTP_MOVED_PERMANENTLY);
+        }
+    }
+
+    public function testLegacyUrlRedirectsToDelegate(): void
+    {
+        $urls = [
             '/obrazacDelegati',
             '/profileDelegat',
             '/obrazacOsteceni',
@@ -24,7 +46,7 @@ class RedirectControllerTest extends WebTestCase
         $client = static::createClient();
         foreach ($urls as $url) {
             $client->request('GET', $url);
-            $this->assertResponseRedirects('/', Response::HTTP_MOVED_PERMANENTLY);
+            $this->assertResponseRedirects('/postani-delegat', Response::HTTP_MOVED_PERMANENTLY);
         }
     }
 }

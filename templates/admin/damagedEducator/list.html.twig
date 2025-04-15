@@ -62,7 +62,7 @@
                     <td>{{ damagedEducator.accountNumber }}</td>
                     <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
                     <td>
-                        <div>{{ damagedEducator.createdBy.fullName ?? damagedEducator.createdBy.username }}</div>
+                        <div>{{ damagedEducator.createdBy.fullName }}</div>
                         <a href="{{ path('admin_user_edit', { 'id': damagedEducator.createdBy.id }) }}" class="link link-primary link-hover">
                             {{ damagedEducator.createdBy.email }}
                         </a>

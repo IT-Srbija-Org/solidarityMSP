@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\UserDonor;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -16,6 +17,13 @@ class UserDonorType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('email', EmailType::class, [
+                'required' => true,
+                'mapped' => false,
+                'label' => 'Email',
+                'data' => $options['user'] ? $options['user']->getEmail() : null,
+                'disabled' => $options['user'] ? true : false,
+            ])
             ->add('isMonthly', ChoiceType::class, [
                 'label' => 'Mesečna podrška',
                 'placeholder' => '',
@@ -44,6 +52,7 @@ class UserDonorType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => UserDonor::class,
+            'user' => null,
         ]);
     }
 }

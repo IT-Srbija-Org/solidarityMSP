@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Delegate;
 
 use App\Entity\DamagedEducator;
 use App\Entity\User;
-use App\Entity\UserDelegateRequest;
 use App\Form\ConfirmType;
 use App\Form\DamagedEducatorEditType;
 use App\Form\DamagedEducatorSearchType;
-use App\Form\RegistrationDelegateType;
 use App\Repository\DamagedEducatorPeriodRepository;
 use App\Repository\DamagedEducatorRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,48 +16,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route(name: 'delegate_')]
-class DelegateController extends AbstractController
+#[IsGranted('ROLE_DELEGATE')]
+#[Route('/delegat', name: 'delegate_panel_')]
+class PanelController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
     }
 
-    #[IsGranted('ROLE_USER')]
-    #[Route('/postani-delegat', name: 'request_access')]
-    public function requestAccess(Request $request): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if (in_array('ROLE_DELEGATE', $user->getRoles())) {
-            return $this->render('delegate/request_approved.html.twig');
-        }
-
-        if ($user->getUserDelegateRequest() && UserDelegateRequest::STATUS_NEW != $user->getUserDelegateRequest()->getStatus()) {
-            return $this->render('delegate/request_already_exist.html.twig');
-        }
-
-        $userDelegateRequest = $user->getUserDelegateRequest() ?? new UserDelegateRequest();
-        $userDelegateRequest->setUser($user);
-
-        $form = $this->createForm(RegistrationDelegateType::class, $userDelegateRequest);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($userDelegateRequest);
-            $this->entityManager->flush();
-
-            return $this->redirectToRoute('delegate_request_access');
-        }
-
-        return $this->render('delegate/request_access.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    #[IsGranted('ROLE_DELEGATE')]
-    #[Route('/osteceni-period', name: 'damaged_educator_period')]
+    #[Route('/odabir-perioda', name: 'damaged_educator_period')]
     public function damagedEducatorPeriod(DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository): Response
     {
         $items = $damagedEducatorPeriodRepository->findBy([], [
@@ -72,14 +37,13 @@ class DelegateController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_DELEGATE')]
     #[Route('/osteceni', name: 'damaged_educators')]
     public function damagedEducators(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, DamagedEducatorRepository $damagedEducatorRepository): Response
     {
         $periodId = $request->query->getInt('period');
         $period = $damagedEducatorPeriodRepository->find($periodId);
         if (empty($period)) {
-            return $this->redirectToRoute('delegate_damaged_educator_period');
+            return $this->redirectToRoute('delegate_panel_damaged_educator_period');
         }
 
         $form = $this->createForm(DamagedEducatorSearchType::class, null, [
@@ -111,7 +75,6 @@ class DelegateController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_DELEGATE')]
     #[Route('/prijavi-ostecenog', name: 'new_damaged_educator')]
     public function newDamagedEducator(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository): Response
     {
@@ -136,7 +99,7 @@ class DelegateController extends AbstractController
 
             $this->addFlash('success', 'Uspešno ste sačuvali oštećenog.');
 
-            return $this->redirectToRoute('delegate_damaged_educators', [
+            return $this->redirectToRoute('delegate_panel_damaged_educators', [
                 'period' => $damagedEducator->getPeriod()->getId(),
             ]);
         }
@@ -147,7 +110,6 @@ class DelegateController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_DELEGATE')]
     #[Route('/osteceni/{id}/izmeni-podatke', name: 'edit_damaged_educator')]
     public function editDamagedEducator(Request $request, DamagedEducator $damagedEducator): Response
     {
@@ -179,7 +141,7 @@ class DelegateController extends AbstractController
 
             $this->addFlash('success', 'Uspešno ste izmenili podatke od oštećenog.');
 
-            return $this->redirectToRoute('delegate_damaged_educators', [
+            return $this->redirectToRoute('delegate_panel_damaged_educators', [
                 'period' => $damagedEducator->getPeriod()->getId(),
             ]);
         }
@@ -190,7 +152,6 @@ class DelegateController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_DELEGATE')]
     #[Route('/osteceni/{id}/brisanje', name: 'delete_damaged_educator')]
     public function deleteDamagedEducator(Request $request, DamagedEducator $damagedEducator): Response
     {
@@ -223,7 +184,7 @@ class DelegateController extends AbstractController
 
             $this->addFlash('success', 'Uspešno ste obrisali oštećenog.');
 
-            return $this->redirectToRoute('delegate_damaged_educators', [
+            return $this->redirectToRoute('delegate_panel_damaged_educators', [
                 'period' => $damagedEducator->getPeriod()->getId(),
             ]);
         }

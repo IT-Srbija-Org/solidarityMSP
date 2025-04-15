@@ -38,7 +38,7 @@
 
             {{ include('flashes.html.twig') }}
 
-            {% if app.user.userDonor %}
+            {% if app.user and app.user.userDonor %}
                 <div class="alert alert-success alert-soft">
                     <span class="ti ti-user-heart text-2xl"></span>
                     <span>Već ste se prijavili na listu donatora. U slučaju da želite da promenite podatke unesite nove u formu ispod.</span>
@@ -52,6 +52,16 @@
 
             {% form_theme form 'form.html.twig' %}
             {{ form_start(form) }}
+                <div class="mb-4">
+                    {{ form_label(form.email) }}
+                    {{ form_widget(form.email, { 'attr': { 'class': 'input input-md input-bordered rounded-md w-full' } }) }}
+                    {{ form_errors(form.email) }}
+
+                    {% if not app.user %}
+                        <span class="text-gray-500 text-sm">Biće Vam poslat email za verifikaciju. Ako već imate nalog na sajtu možete se ulogovati <a href="{{ path('login') }}" class="link link-primary link-hover">ovde</a></span>
+                    {% endif %}
+                </div>
+
                 <div class="grid grid-cols-2 gap-10 mb-4">
                     <div>
                         {{ form_label(form.isMonthly) }}

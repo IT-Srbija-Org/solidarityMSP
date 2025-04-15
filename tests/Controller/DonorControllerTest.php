@@ -6,20 +6,22 @@ use App\DataFixtures\UserFixtures;
 use App\Entity\User;
 use App\Repository\UserDonorRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class DonorControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
     private AbstractDatabaseTool $databaseTool;
+    private ?EntityManagerInterface $entityManager;
     private ?UserRepository $userRepository;
     private ?UserDonorRepository $userDonorRepository;
-
-    private ?User $user;
 
     protected function setUp(): void
     {
@@ -29,6 +31,7 @@ class DonorControllerTest extends WebTestCase
         $this->databaseTool = $container->get(DatabaseToolCollection::class)->get();
         $this->loadFixtures();
 
+        $this->entityManager = $container->get(EntityManagerInterface::class);
         $this->userRepository = $container->get(UserRepository::class);
         $this->userDonorRepository = $container->get(UserDonorRepository::class);
     }
@@ -40,23 +43,42 @@ class DonorControllerTest extends WebTestCase
         ]);
     }
 
-    private function loginAsUser(): void
+    private function getUser(string $email): ?User
     {
-        $this->user = $this->userRepository->findOneBy(['email' => 'korisnik@gmail.com']);
-        $this->client->loginUser($this->user);
+        return $this->userRepository->findOneBy(['email' => $email]);
     }
 
-    public function testRedirectToLoginWhenNotAuthenticated(): void
+    private function getLoginUser(): ?UserInterface
+    {
+        return static::getContainer()->get('security.token_storage')->getToken()->getUser();
+    }
+
+    private function loginAsUser(string $email): void
+    {
+        $user = $this->userRepository->findOneBy(['email' => $email]);
+        $this->client->loginUser($user);
+    }
+
+    private function removeUser(string $email): void
+    {
+        $user = $this->userRepository->findOneBy(['email' => $email]);
+        if ($user) {
+            $this->entityManager->remove($user);
+            $this->entityManager->flush();
+        }
+    }
+
+    public function testNonAuthenticatedAccess(): void
     {
         $this->client->request('GET', '/postani-donator');
-
-        $this->assertTrue($this->client->getResponse()->isRedirect());
-        $this->assertStringContainsString('/logovanje', $this->client->getResponse()->headers->get('Location'));
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testSubscribeAndUnsubscribeDonorForm(): void
+    public function testNewUserSubscribeAndRegistrationAndVerification(): void
     {
-        $this->loginAsUser();
+        $email = 'korisnik@gmail.com';
+        $this->removeUser($email);
+
         $crawler = $this->client->request('GET', '/postani-donator');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
@@ -64,28 +86,53 @@ class DonorControllerTest extends WebTestCase
 
         // Subscribe
         $form = $crawler->selectButton('Sačuvaj')->form([
+            'user_donor[email]' => $email,
             'user_donor[isMonthly]' => 0,
-            'user_donor[amount]' => 5000,
+            'user_donor[amount]' => 10000,
             'user_donor[comment]' => 'Test donation comment',
         ]);
 
         $this->client->submit($form);
 
-        // Check email
+        // Check are register verification email sent
         $this->assertEmailCount(1);
         $mailerMessage = $this->getMailerMessage();
-        $this->assertEmailSubjectContains($mailerMessage, 'Potvrda registracije donora na Mrežu solidarnosti');
+        $this->assertEmailSubjectContains($mailerMessage, 'Link za verifikaciju email adrese');
 
         // Check redirect
         $this->client->followRedirect();
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertStringContainsString('/uspesna-registracija-donatora', $this->client->getRequest()->getUri());
 
-        // Check are donor registered
-        $userDonor = $this->userDonorRepository->findOneBy(['user' => $this->user]);
+        // Check are user registered
+        $user = $this->getUser($email);
+        $this->assertFalse($user->isVerified());
+
+        // Check are donor data saved
+        $userDonor = $this->userDonorRepository->findOneBy(['user' => $user]);
         $this->assertFalse($userDonor->isMonthly());
-        $this->assertEquals(5000, $userDonor->getAmount());
+        $this->assertEquals(10000, $userDonor->getAmount());
         $this->assertEquals('Test donation comment', $userDonor->getComment());
+
+        // Extract verified link
+        $crawler = new Crawler($mailerMessage->getHtmlBody());
+        $verifiedLink = $crawler->filter('#link')->attr('href');
+
+        // Click on verified link from email
+        $this->client->request('GET', $verifiedLink);
+
+        // Check are donor success email send
+        $this->assertEmailCount(1);
+        $mailerMessage = $this->getMailerMessage();
+        $this->assertEmailSubjectContains($mailerMessage, 'Potvrda registracije donora na Mrežu solidarnosti');
+
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        // Check are user now login and verified
+        $user = $this->getLoginUser();
+        $this->assertNotNull($user);
+        $this->assertTrue($user->isVerified());
 
         // Check success message
         $crawler = $this->client->request('GET', '/postani-donator');
@@ -98,22 +145,30 @@ class DonorControllerTest extends WebTestCase
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
-        $userDonor = $this->userDonorRepository->findOneBy(['user' => $this->user]);
+        $userDonor = $this->userDonorRepository->findOneBy(['user' => $user]);
         $this->assertNull($userDonor);
     }
 
     public function testSuccessMessageRoute(): void
     {
-        $this->loginAsUser();
+        $this->loginAsUser('korisnik@gmail.com');
         $this->client->request('GET', '/uspesna-registracija-donatora');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorTextContains('h2', 'Uspešno ste se registrovali kao donator!');
     }
 
+    public function testNotAuthenticatedSuccessMessageRoute(): void
+    {
+        $this->client->request('GET', '/uspesna-registracija-donatora');
+
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('h2', 'Potvrdite svoj email kako bi donacija bila uspešna');
+    }
+
     public function testUnsubscribeWithoutToken(): void
     {
-        $this->loginAsUser();
+        $this->loginAsUser('korisnik@gmail.com');
 
         // Configure client to not catch exceptions
         $this->client->catchExceptions(false);
@@ -138,7 +193,7 @@ class DonorControllerTest extends WebTestCase
 
     public function testUnsubscribeWithInvalidToken(): void
     {
-        $this->loginAsUser();
+        $this->loginAsUser('korisnik@gmail.com');
 
         // Configure client to not catch exceptions
         $this->client->catchExceptions(false);

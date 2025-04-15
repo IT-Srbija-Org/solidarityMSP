@@ -52,7 +52,7 @@
                         <div class="text-gray-500">{{ transaction.damagedEducator.period.year }}</div>
                     </td>
                     <td>
-                        <div>{{ transaction.user.fullName ?? transaction.user.username }}</div>
+                        <div>{{ transaction.user.fullName }}</div>
                         <a href="{{ path('admin_user_edit', { 'id': transaction.user.id }) }}" class="link link-primary link-hover">
                             {{ transaction.user.email }}
                         </a>

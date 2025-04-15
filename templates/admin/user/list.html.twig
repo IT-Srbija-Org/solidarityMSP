@@ -37,7 +37,7 @@
                     <tr class="hover:bg-gray-100">
                         <td>{{ user.id }}</td>
                         <td>
-                            <div>{{ user.fullName ?? user.username }}</div>
+                            <div>{{ user.fullName }}</div>
                             <a href="{{ path('admin_user_edit', { 'id': user.id }) }}" class="link link-primary link-hover">
                                 {{ user.email }}
                             </a>

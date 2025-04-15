@@ -3,7 +3,6 @@
 namespace App\Tests\Controller;
 
 use App\DataFixtures\UserFixtures;
-use App\Repository\UserRepository;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -15,7 +14,6 @@ class SecurityControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
     private AbstractDatabaseTool $databaseTool;
-    private ?UserRepository $userRepository;
 
     protected function setUp(): void
     {
@@ -25,8 +23,6 @@ class SecurityControllerTest extends WebTestCase
 
         $this->databaseTool = $container->get(DatabaseToolCollection::class)->get();
         $this->loadFixtures();
-
-        $this->userRepository = $container->get(UserRepository::class);
     }
 
     private function loadFixtures(): void

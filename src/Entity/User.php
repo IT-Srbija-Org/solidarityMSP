@@ -41,12 +41,12 @@ class User implements UserInterface
 
     #[Assert\NotBlank(message: 'Ovo polje je obavezno')]
     #[Assert\Length(min: 3, max: 100, minMessage: 'Polje mora imati bar {{ limit }} karaktera', maxMessage: 'Polje ne može imati više od {{ limit }} karaktera')]
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstName = null;
 
     #[Assert\NotBlank(message: 'Ovo polje je obavezno')]
     #[Assert\Length(min: 3, max: 100, minMessage: 'Polje mora imati bar {{ limit }} karaktera', maxMessage: 'Polje ne može imati više od {{ limit }} karaktera')]
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastName = null;
 
     #[ORM\Column]
@@ -169,7 +169,7 @@ class User implements UserInterface
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): static
+    public function setFirstName(?string $firstName): static
     {
         $this->firstName = $firstName;
 
@@ -181,7 +181,7 @@ class User implements UserInterface
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): static
+    public function setLastName(?string $lastName): static
     {
         $this->lastName = $lastName;
 
@@ -265,6 +265,10 @@ class User implements UserInterface
 
     public function getFullName(): string
     {
+        if (null === $this->firstName || null === $this->lastName) {
+            return '-';
+        }
+
         return $this->firstName.' '.$this->lastName;
     }
 

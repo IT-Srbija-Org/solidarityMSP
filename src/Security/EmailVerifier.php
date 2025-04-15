@@ -19,13 +19,13 @@ class EmailVerifier
     ) {
     }
 
-    public function sendEmailConfirmation(string $verifyEmailRouteName, User $user, TemplatedEmail $email): void
+    public function sendEmailConfirmation(string $verifyEmailRouteName, User $user, ?string $action, TemplatedEmail $email): void
     {
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
             $verifyEmailRouteName,
             (string) $user->getId(),
             (string) $user->getEmail(),
-            ['id' => $user->getId()]
+            ['id' => $user->getId(), 'action' => $action],
         );
 
         $context = $email->getContext();

@@ -4,16 +4,18 @@ namespace App\Controller;
 
 use App\Entity\UserDonor;
 use App\Form\UserDonorType;
+use App\Repository\UserDonorRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_USER')]
 #[Route(name: 'donor_')]
 class DonorController extends AbstractController
 {
@@ -22,28 +24,39 @@ class DonorController extends AbstractController
     }
 
     #[Route('/postani-donator', name: 'subscribe')]
-    public function subscribe(Request $request, MailerInterface $mailer): Response
+    public function subscribe(Request $request, UserRepository $userRepository, UserDonorRepository $userDonorRepository): Response
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        $userDonor = $user->getUserDonor() ?? new UserDonor();
-        $userDonor->setUser($user);
+        $userDonor = $user ? $user->getUserDonor() : new UserDonor();
 
-        $form = $this->createForm(UserDonorType::class, $userDonor);
+        $form = $this->createForm(UserDonorType::class, $userDonor, [
+            'user' => $user,
+        ]);
+
         $form->handleRequest($request);
+        if (!$user && $form->isSubmitted() && $form->isValid()) {
+            $email = $form->get('email')->getData();
+
+            $user = $userRepository->findOneBy(['email' => $email]);
+            if ($user) {
+                $form->get('email')->addError(new FormError('Korisnik sa ovom email adresom vec postoji, molimo Vas da se ulogujete i da nastavite proces.'));
+                $userRepository->sendLoginLink($user);
+            } else {
+                $user = $userRepository->createUser(null, null, $email);
+                $userRepository->sendVerificationLink($user, 'donor');
+            }
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $isNew = !$userDonor->getId();
+
+            $userDonor->setUser($user);
             $this->entityManager->persist($userDonor);
             $this->entityManager->flush();
 
-            if ($isNew) {
-                $message = (new TemplatedEmail())
-                    ->to($user->getEmail())
-                    ->subject('Potvrda registracije donora na Mrežu solidarnosti')
-                    ->htmlTemplate('donor/success_email.html.twig');
-
-                $mailer->send($message);
+            if ($isNew && $user->isVerified()) {
+                $userDonorRepository->sendSuccessEmail($user);
             }
 
             return $this->redirectToRoute('donor_success');
@@ -55,11 +68,19 @@ class DonorController extends AbstractController
     }
 
     #[Route('/uspesna-registracija-donatora', name: 'success')]
-    public function messageSuccessSupport(): Response
+    public function messageSuccess(): Response
     {
-        return $this->render('donor/success.html.twig');
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if($user && $user->isVerified()){
+            return $this->render('donor/success.html.twig');
+        }
+
+        return $this->render('donor/success_need_verify.html.twig');
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/odjava-donatora', name: 'unsubscribe')]
     public function unsubscribe(Request $request): Response
     {

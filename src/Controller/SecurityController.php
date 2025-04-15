@@ -3,34 +3,22 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 
 class SecurityController extends AbstractController
 {
     #[Route(path: '/logovanje', name: 'login')]
-    public function login(Request $request, LoginLinkHandlerInterface $loginLinkHandler, MailerInterface $mailer, UserRepository $userRepository): Response
+    public function login(Request $request, UserRepository $userRepository): Response
     {
         if ($request->isMethod('POST')) {
             $email = $request->getPayload()->get('email');
             $user = $userRepository->findOneBy(['email' => $email]);
 
             if ($user && $user->isActive() && $user->isVerified()) {
-                $loginLinkDetails = $loginLinkHandler->createLoginLink($user);
-                $loginLink = $loginLinkDetails->getUrl();
-
-                $message = (new TemplatedEmail())
-                    ->to($user->getEmail())
-                    ->subject('Link za prijavu')
-                    ->htmlTemplate('security/login_link_email.html.twig')
-                    ->context(['link' => $loginLink]);
-
-                $mailer->send($message);
+                $userRepository->sendLoginLink($user);
 
                 $this->addFlash('success', 'Link za prijavu je poslat na vašu email adresu.');
 

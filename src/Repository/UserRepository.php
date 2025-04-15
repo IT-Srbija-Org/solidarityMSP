@@ -3,18 +3,64 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Security\EmailVerifier;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 
 /**
  * @extends ServiceEntityRepository<User>
  */
 class UserRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private LoginLinkHandlerInterface $loginLinkHandler, private EmailVerifier $emailVerifier, private MailerInterface $mailer)
     {
         parent::__construct($registry, User::class);
+    }
+
+    public function createUser(?string $firstName, ?string $lastName, string $email): User
+    {
+        $user = $this->findOneBy(['email' => $email]);
+        if ($user) {
+            return $user;
+        }
+
+        $user = new User();
+        $user->setFirstName($firstName);
+        $user->setLastName($lastName);
+        $user->setEmail($email);
+
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+
+        return $user;
+    }
+
+    public function sendVerificationLink(User $user, ?string $action): void
+    {
+        $this->emailVerifier->sendEmailConfirmation('verify_email', $user, $action,
+            (new TemplatedEmail())
+                ->to($user->getEmail())
+                ->subject('Link za verifikaciju email adrese')
+                ->htmlTemplate('registration/confirmation_email.html.twig')
+        );
+    }
+
+    public function sendLoginLink(User $user): void
+    {
+        $loginLinkDetails = $this->loginLinkHandler->createLoginLink($user);
+        $loginLink = $loginLinkDetails->getUrl();
+
+        $message = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->subject('Link za prijavu')
+            ->htmlTemplate('security/login_link_email.html.twig')
+            ->context(['link' => $loginLink]);
+
+        $this->mailer->send($message);
     }
 
     public function search(array $criteria, int $page = 1, int $limit = 50): array
@@ -23,22 +69,22 @@ class UserRepository extends ServiceEntityRepository
 
         if (!empty($criteria['firstName'])) {
             $qb->andWhere('u.firstName LIKE :firstName')
-                ->setParameter('firstName', '%'.$criteria['firstName'].'%');
+                ->setParameter('firstName', '%' . $criteria['firstName'] . '%');
         }
 
         if (!empty($criteria['lastName'])) {
             $qb->andWhere('u.lastName LIKE :lastName')
-                ->setParameter('lastName', '%'.$criteria['lastName'].'%');
+                ->setParameter('lastName', '%' . $criteria['lastName'] . '%');
         }
 
         if (!empty($criteria['email'])) {
             $qb->andWhere('u.email LIKE :email')
-                ->setParameter('email', '%'.$criteria['email'].'%');
+                ->setParameter('email', '%' . $criteria['email'] . '%');
         }
 
         if (!empty($criteria['role']) && 'ROLE_USER' != $criteria['role']) {
             $qb->andWhere('u.roles LIKE :role')
-                ->setParameter('role', '%'.$criteria['role'].'%');
+                ->setParameter('role', '%' . $criteria['role'] . '%');
         }
 
         if (isset($criteria['isActive'])) {

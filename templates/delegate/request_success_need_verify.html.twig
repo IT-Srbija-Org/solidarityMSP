@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% import "macro.twig" as macro %}
+    {{ macro.back('delegate_request_access') }}
+
+    <div class="card card-lg bg-base-100 shadow m-10 mt-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-mail-check text-3xl"></span>
+                Potvrdite svoj email kako bi zahtev za delegata bio uspešan
+            </h2>
+
+            <div class="font-bold">Vaša zahtev za delegata je uspešno evidentirana, ali je potrebno da verifikujete svoj email kako bi proces bio završen.</div>
+            <div>Uskoro će Vam stići email sa linkom za verifikaciju.</div>
+
+            <div class="mt-4">
+                <div class="font-bold">Imate pitanje?</div>
+                <div>Pišite nam na: <a href="mailto:donatori@mrezasolidarnosti.org" class="link link-primary link-hover">donatori@mrezasolidarnosti.org</a></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

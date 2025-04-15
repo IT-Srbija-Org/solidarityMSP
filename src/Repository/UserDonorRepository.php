@@ -2,19 +2,32 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\UserDonor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
 
 /**
  * @extends ServiceEntityRepository<UserDonor>
  */
 class UserDonorRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private MailerInterface $mailer)
     {
         parent::__construct($registry, UserDonor::class);
+    }
+
+    public function sendSuccessEmail(User $user): void
+    {
+        $message = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->subject('Potvrda registracije donora na Mrežu solidarnosti')
+            ->htmlTemplate('donor/success_email.html.twig');
+
+        $this->mailer->send($message);
     }
 
     public function search(array $criteria, int $page = 1, int $limit = 50): array

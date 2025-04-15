@@ -28,6 +28,22 @@ class RegistrationDelegateType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('firstName', TextType::class, [
+                'label' => 'Ime',
+                'mapped' => false,
+                'data' => $options['user'] ? $options['user']->getFirstName() : null,
+            ])
+            ->add('lastName', TextType::class, [
+                'label' => 'Prezime',
+                'mapped' => false,
+                'data' => $options['user'] ? $options['user']->getLastName() : null,
+            ])
+            ->add('email', TextType::class, [
+                'label' => 'Email',
+                'mapped' => false,
+                'data' => $options['user'] ? $options['user']->getEmail() : null,
+                'disabled' => $options['user'] ? true : false,
+            ])
             ->add('phone', TextType::class, [
                 'label' => 'Vaš broj telefona',
             ])
@@ -93,7 +109,7 @@ class RegistrationDelegateType extends AbstractType
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) use ($formModifier) {
                 $data = $event->getData();
-                $city = $data->getCity() ?? null;
+                $city = $data ? $data->getCity() : null;
                 $formModifier($event->getForm(), $city);
             }
         );
@@ -103,6 +119,7 @@ class RegistrationDelegateType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => UserDelegateRequest::class,
+            'user' => null,
         ]);
     }
 }

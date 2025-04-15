@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\Delegate;
 
 use App\DataFixtures\CityFixtures;
 use App\DataFixtures\DamagedEducatorFixtures;
@@ -21,7 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-class DelegateControllerTest extends WebTestCase
+class PanelControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
     private AbstractDatabaseTool $databaseTool;
@@ -74,27 +74,10 @@ class DelegateControllerTest extends WebTestCase
         $this->client->loginUser($user);
     }
 
-    public function testRedirectToLoginWhenNotAuthenticated(): void
-    {
-        $this->client->request('GET', '/postani-delegat');
-
-        $this->assertTrue($this->client->getResponse()->isRedirect());
-        $this->assertStringContainsString('/logovanje', $this->client->getResponse()->headers->get('Location'));
-    }
-
-    public function testRequestAccessPage(): void
-    {
-        $this->loginAsUser();
-        $this->client->request('GET', '/postani-delegat');
-
-        // Just check that the page loads with 200 OK status
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-    }
-
     public function testDamagedEducatorPeriod(): void
     {
         $this->loginAsDelegate();
-        $this->client->request('GET', '/osteceni-period');
+        $this->client->request('GET', '/delegat/odabir-perioda');
 
         // Just check that the page loads with 200 OK status
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
@@ -103,10 +86,10 @@ class DelegateControllerTest extends WebTestCase
     public function testRedirectWithoutPeriodParameter(): void
     {
         $this->loginAsDelegate();
-        $this->client->request('GET', '/osteceni');
+        $this->client->request('GET', '/delegat/osteceni');
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
-        $this->assertStringContainsString('/osteceni-period', $this->client->getResponse()->headers->get('Location'));
+        $this->assertStringContainsString('/delegat/odabir-perioda', $this->client->getResponse()->headers->get('Location'));
     }
 
     public function testActiveDamagedEducatorsList(): void
@@ -114,7 +97,7 @@ class DelegateControllerTest extends WebTestCase
         $this->loginAsDelegate();
 
         $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
-        $crawler = $this->client->request('GET', '/osteceni', ['period' => $period->getId()]);
+        $crawler = $this->client->request('GET', '/delegat/osteceni', ['period' => $period->getId()]);
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertCount(1, $crawler->filter('table'));
@@ -126,7 +109,7 @@ class DelegateControllerTest extends WebTestCase
         $this->loginAsDelegate();
 
         $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => false]);
-        $crawler = $this->client->request('GET', '/osteceni', ['period' => $period->getId()]);
+        $crawler = $this->client->request('GET', '/delegat/osteceni', ['period' => $period->getId()]);
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertCount(1, $crawler->filter('table'));
@@ -138,7 +121,7 @@ class DelegateControllerTest extends WebTestCase
         $this->loginAsDelegate();
 
         $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
-        $this->client->request('GET', '/prijavi-ostecenog', ['period' => $period->getId()]);
+        $this->client->request('GET', '/delegat/prijavi-ostecenog', ['period' => $period->getId()]);
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorExists('form');
@@ -154,7 +137,7 @@ class DelegateControllerTest extends WebTestCase
 
         try {
             $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => false]);
-            $this->client->request('GET', '/prijavi-ostecenog', ['period' => $period->getId()]);
+            $this->client->request('GET', '/delegat/prijavi-ostecenog', ['period' => $period->getId()]);
             $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
         } catch (AccessDeniedException $e) {
             $this->assertTrue(true, 'Expected AccessDeniedException was thrown');
@@ -173,7 +156,7 @@ class DelegateControllerTest extends WebTestCase
         $user = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
         $userDelegateSchool = $this->userDelegateSchoolRepository->findOneBy(['user' => $user]);
 
-        $crawler = $this->client->request('GET', '/prijavi-ostecenog?period='.$period->getId());
+        $crawler = $this->client->request('GET', '/delegat/prijavi-ostecenog?period='.$period->getId());
         $form = $crawler->filter('form[name="damaged_educator_edit"]')->form([
             'damaged_educator_edit[name]' => 'Milan Janjic',
             'damaged_educator_edit[school]' => $userDelegateSchool->getSchool()->getId(),
@@ -198,7 +181,7 @@ class DelegateControllerTest extends WebTestCase
         $userDelegateSchool = $this->userDelegateSchoolRepository->findOneBy(['user' => $user]);
         $damagedEducator = $this->damagedEducatorRepository->findOneBy(['school' => $userDelegateSchool->getSchool(), 'period' => $period]);
 
-        $crawler = $this->client->request('GET', '/osteceni/'.$damagedEducator->getId().'/izmeni-podatke');
+        $crawler = $this->client->request('GET', '/delegat/osteceni/'.$damagedEducator->getId().'/izmeni-podatke');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->filter('form[name="damaged_educator_edit"]')->form([
@@ -228,7 +211,7 @@ class DelegateControllerTest extends WebTestCase
         $userDelegateSchool = $this->userDelegateSchoolRepository->findOneBy(['user' => $user]);
         $damagedEducator = $this->damagedEducatorRepository->findOneBy(['school' => $userDelegateSchool->getSchool(), 'period' => $period]);
 
-        $crawler = $this->client->request('GET', '/osteceni/'.$damagedEducator->getId().'/brisanje');
+        $crawler = $this->client->request('GET', '/delegat/osteceni/'.$damagedEducator->getId().'/brisanje');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->filter('form[name="confirm"]')->form([
