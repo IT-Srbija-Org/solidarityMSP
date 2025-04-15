@@ -6,19 +6,39 @@ Ovaj direktorijum sadrži Ansible playbook-ove i konfiguraciju za produkcijsko p
 
 ```yaml
 ansible
-├── README.md           # Ovaj fajl
-├── deploy.yml          # Glavni playbook za deploy
-├── inventory.ini       # Fajl za inventar koji definiše server
-├── vars.yml            # Konfiguracija promenljivih
-└── templates/          # Jinja2 šabloni za konfiguracije
-    ├── etc/
-    │   ├── nginx/sites-available/solidarity.j2
-    │   ├── php/8.3/fpm/conf.d/custom.ini.j2
-    │   └── redis/redis.conf.j2
-    └── var/
-        └── www/
-            └── solidarity/
-                └── .env.local.j2
+├── deploy.yml              # Glavni Ansible playbook za deploy
+├── inventory.ini           # Inventar servera (nije u git-u)
+├── inventory.ini.example   # Primer inventara servera
+├── manual.md               # Detaljan vodič za ručno podizanje servera
+├── tasks/                  # Ansible task fajlovi (modularni koraci deploy-a)
+│   └── system.yml          # Taskovi za sistemske pripreme i update
+│   ├── php.yml             # Taskovi za instalaciju i konfiguraciju PHP-a
+│   ├── mysql.yml           # Taskovi za instalaciju i konfiguraciju MySQL-a
+│   ├── nginx.yml           # Taskovi za instalaciju i konfiguraciju Nginx-a
+│   ├── redis.yml           # Taskovi za instalaciju i konfiguraciju Redis-a
+│   ├── app_setup.yml       # Taskovi za setup aplikacije
+│   ├── backup.yml          # Taskovi za backup baze
+│   ├── cache.yml           # Taskovi za čišćenje symfony cache-a
+│   ├── db.yml              # Taskovi za symfony komande oko konfiguracija baze
+├── templates/              # Jinja2 šabloni za konfiguracione fajlove
+│   ├── etc/                # Šabloni za /etc konfiguracije
+│   │   ├── my.cnf.j2                       # MySQL konfiguracija
+│   │   ├── nginx/                          # Nginx konfiguracije
+│   │   │   └── sites-available/
+│   │   │       └── solidarity.j2           # Nginx vhost za aplikaciju
+│   │   ├── php/                            # PHP konfiguracije
+│   │   │   └── 8.3/
+│   │   │       └── fpm/
+│   │   │           └── conf.d/
+│   │   │               └── custom.ini.j2   # Custom PHP FPM podešavanja
+│   │   └── redis/
+│   │       └── redis.conf.j2               # Redis konfiguracija
+│   └── var/
+│       └── www/
+│           └── solidarity/
+│               └── .env.local.j2           # Šablon za .env.local aplikacije
+├── vars.yml                 # Glavna fajl sa konfiguracijom promenljivih (nije u git-u)
+└── vars.yml.example         # Primer konfiguracije promenljivih
 ```
 
 ## Preduslovi
