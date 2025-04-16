@@ -12,7 +12,6 @@ use App\DataFixtures\UserDelegateRequestFixtures;
 use App\DataFixtures\UserDelegateSchoolFixtures;
 use App\DataFixtures\UserDonorFixtures;
 use App\DataFixtures\UserFixtures;
-use App\Entity\User;
 use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
@@ -113,6 +112,6 @@ class ProfileControllerTest extends WebTestCase
         $loginUser = $this->getLoginUser();
         $totalTransactions = count($loginUser->getTransactions());
 
-        $this->assertSelectorTextSame('.total-results', 'Ukupno rezultata: ' . $totalTransactions);
+        $this->assertSelectorTextSame('.total-results', 'Ukupno rezultata: '.$totalTransactions);
     }
 }
