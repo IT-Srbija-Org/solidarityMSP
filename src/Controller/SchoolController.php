@@ -8,11 +8,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class SchoolController extends AbstractController
 {
-    #[IsGranted('ROLE_USER')]
     #[Route('/schools')]
     public function index(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
