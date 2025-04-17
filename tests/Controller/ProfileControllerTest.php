@@ -105,8 +105,8 @@ class ProfileControllerTest extends WebTestCase
     {
         $this->loginAsUserWithTransactions();
 
-        $this->client->request('GET', '/profil/transakcije');
-        $this->assertSelectorTextContains('h2', 'Transakcije');
+        $this->client->request('GET', '/profil/instrukcije-za-uplatu');
+        $this->assertSelectorTextContains('h2', 'Instrukcije za uplatu');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $loginUser = $this->getLoginUser();
