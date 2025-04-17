@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\DataFixtures\Data\Names;
 use App\Entity\School;
 use App\Entity\User;
 use App\Entity\UserDelegateRequest;
@@ -43,18 +44,29 @@ class UserDelegateRequestFixtures extends Fixture implements FixtureGroupInterfa
         // Set fixed seed for deterministic results
         mt_srand(1234);
 
-        // Find regular users (not admin, not delegate)
-        $users = $this->entityManager->getRepository(User::class)
-            ->createQueryBuilder('u')
-            ->where('u.roles LIKE :role')
-            ->setParameter('role', '%ROLE_USER%')
-            ->andWhere('u.roles NOT LIKE :admin')
-            ->andWhere('u.roles NOT LIKE :delegate')
-            ->setParameter('admin', '%ROLE_ADMIN%')
-            ->setParameter('delegate', '%ROLE_DELEGATE%')
-            ->setMaxResults(5) // Get 5 random users
-            ->getQuery()
-            ->getResult();
+        // Create new delegate users with random names
+        $users = [];
+        for ($i = 1; $i <= 10; ++$i) {
+            $user = new User();
+            $firstName = Names::getFirstNames()[array_rand(Names::getFirstNames())];
+            $lastName = Names::getLastNames()[array_rand(Names::getLastNames())];
+            $user->setFirstName($firstName);
+            $user->setLastName($lastName);
+            $user->setEmail("delegat{$i}@example.com");
+            $user->setRoles(['ROLE_USER', 'ROLE_DELEGATE']);
+            $user->setIsVerified(true);
+            $this->entityManager->persist($user);
+            $users[] = $user;
+        }
+
+        // Also add the core 'delegat@gmail.com' user as a confirmed delegate
+        $coreDelegate = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'delegat@gmail.com']);
+        if ($coreDelegate) {
+            $coreDelegate->setRoles(['ROLE_USER', 'ROLE_DELEGATE']);
+            $coreDelegate->setIsVerified(true);
+            $this->entityManager->persist($coreDelegate);
+            $users[] = $coreDelegate;
+        }
 
         // Get all schools
         $schools = $this->entityManager->getRepository(School::class)->findAll();
@@ -82,13 +94,18 @@ class UserDelegateRequestFixtures extends Fixture implements FixtureGroupInterfa
             $userDelegateRequest->setTotalEducators($total);
             $userDelegateRequest->setTotalBlockedEducators($blocked);
 
-            // Set status: evenly distributed (33% each)
-            $rand = mt_rand(1, 100);
-            $status = match (true) {
-                $rand <= 33 => UserDelegateRequest::STATUS_CONFIRMED,
-                $rand <= 66 => UserDelegateRequest::STATUS_NEW,
-                default => UserDelegateRequest::STATUS_REJECTED,
-            };
+            // For the core 'delegat@gmail.com', always set status to CONFIRMED
+            if ('delegat@gmail.com' === $user->getEmail()) {
+                $status = UserDelegateRequest::STATUS_CONFIRMED;
+            } else {
+                // Set status: evenly distributed (33% each)
+                $rand = mt_rand(1, 100);
+                $status = match (true) {
+                    $rand <= 33 => UserDelegateRequest::STATUS_CONFIRMED,
+                    $rand <= 66 => UserDelegateRequest::STATUS_NEW,
+                    default => UserDelegateRequest::STATUS_REJECTED,
+                };
+            }
 
             $userDelegateRequest->setStatus($status);
 

@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\School;
-use App\Entity\User;
 use App\Entity\UserDelegateSchool;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -21,13 +20,18 @@ class UserDelegateSchoolFixtures extends Fixture implements FixtureGroupInterfac
         // Set fixed seed for deterministic results
         mt_srand(1234);
 
-        // Get all delegates
-        $delegates = $this->entityManager->getRepository(User::class)
-            ->createQueryBuilder('u')
-            ->where('u.roles LIKE :role')
-            ->setParameter('role', '%ROLE_DELEGATE%')
+        // Get all delegates with confirmed delegate requests
+        $confirmedRequests = $this->entityManager->getRepository(\App\Entity\UserDelegateRequest::class)
+            ->createQueryBuilder('r')
+            ->where('r.status = :status')
+            ->setParameter('status', \App\Entity\UserDelegateRequest::STATUS_CONFIRMED)
             ->getQuery()
             ->getResult();
+
+        $delegates = [];
+        foreach ($confirmedRequests as $request) {
+            $delegates[] = $request->getUser();
+        }
 
         // Get all schools
         $schools = $this->entityManager->getRepository(School::class)->findAll();

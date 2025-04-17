@@ -87,6 +87,25 @@ class DamagedEducatorFixtures extends Fixture implements FixtureGroupInterface
         $schools = $this->entityManager->getRepository(School::class)->findAll();
         $periods = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findAll();
 
+        // Ensure at least one DamagedEducator for delegat@gmail.com, their school, and the active period
+        $coreDelegate = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'delegat@gmail.com']);
+        $activePeriod = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy(['active' => true]);
+        $userDelegateSchool = null;
+        if ($coreDelegate && $activePeriod) {
+            $userDelegateSchool = $this->entityManager->getRepository(\App\Entity\UserDelegateSchool::class)
+                ->findOneBy(['user' => $coreDelegate]);
+            if ($userDelegateSchool) {
+                $educator = new DamagedEducator();
+                $educator->setName($this->generateName());
+                $educator->setSchool($userDelegateSchool->getSchool());
+                $educator->setAmount(Amounts::generate(30000, null, 15, 50000));
+                $educator->setAccountNumber($this->generateAccountNumber());
+                $educator->setPeriod($activePeriod);
+                $educator->setCreatedBy($coreDelegate);
+                $manager->persist($educator);
+            }
+        }
+
         foreach ($schools as $school) {
             // Generate 1-30 educators per school
             $count = mt_rand(1, 30);
