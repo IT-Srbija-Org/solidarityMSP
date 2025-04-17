@@ -1,44 +1,13 @@
-# top-most EditorConfig file
 root = true
 
-# Unix-style newlines with a newline ending every file
 [*]
-charset = utf-8
+indent_style = space
+indent_size = 4
 end_of_line = lf
-insert_final_newline = true
 trim_trailing_whitespace = true
+insert_final_newline = true
 
-# PHP files
-[*.php]
-indent_style = space
-indent_size = 4
-
-# Twig files
-[*.{twig,html.twig}]
-indent_style = space
-indent_size = 4
-
-# JavaScript files
-[*.js]
-indent_style = space
-indent_size = 4
-
-# CSS files
-[*.css]
-indent_style = space
-indent_size = 4
-
-# YAML files
-[*.{yml,yaml}]
-indent_style = space
-indent_size = 4
-
-# JSON files
-[*.json]
-indent_style = space
-indent_size = 4
-
-# XML files
-[*.xml]
-indent_style = space
-indent_size = 4
+# trailing spaces in markdown indicate word wrap
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = 80
