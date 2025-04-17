@@ -25,6 +25,7 @@ class UserDonorType extends AbstractType
                 'disabled' => $options['user'] ? true : false,
             ])
             ->add('isMonthly', CheckboxType::class, [
+                'required' => false,
                 'label' => 'Mesečna podrška',
             ])
             ->add('amount', IntegerType::class, [
