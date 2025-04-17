@@ -12,7 +12,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class SchoolController extends AbstractController
 {
-    #[IsGranted('ROLE_USER')]
     #[Route('/schools')]
     public function index(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
