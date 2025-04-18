@@ -1,29 +1,35 @@
 {% macro nav_links(additional_link_classes = '') %}
-    <li>
-        <a href="{{ path('donor_subscribe') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 text-red-400 hover:text-base-100 hover:bg-red-400 lg:border lg:border-red-400 {{ additional_link_classes }}">
-            {% if app.user and app.user.userDonor %}
-                <span class="ti ti-heart-filled text-xl"></span>
-            {% else %}
-                <span class="ti ti-heart text-xl"></span>
-            {% endif %}
-
-            Profil
-        </a>
-    </li>
-
-    {% if app.user %}
+    {% if app.user and app.user.userDonor %}
         <li>
-            <a href="{{ path('profile_transactions') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
-                <span class="ti ti-credit-card-pay text-xl"></span>
-                Instrukcije za uplatu
+            <a href="{{ path('donor_subscribe') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 text-red-400 hover:text-base-100 hover:bg-red-400 lg:border lg:border-red-400 {{ additional_link_classes }}">
+                <span class="ti ti-heart-filled text-xl"></span>
+                Profil
             </a>
         </li>
+    {% else %}
+        <li>
+            <a href="{{ path('donor_subscribe') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 text-red-400 hover:text-base-100 hover:bg-red-400 lg:border lg:border-red-400 {{ additional_link_classes }}">
+                <span class="ti ti-heart text-xl"></span>
+                Postani donator
+            </a>
+        </li>
+    {% endif %}
 
-        {% if 'ROLE_ADMIN' in app.user.getRoles %}
+    {% if not (app.user and 'ROLE_DELEGATE' in app.user.getRoles) %}
+        <li>
+            <a href="{{ path('delegate_request') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 text-red-400 hover:text-base-100 hover:bg-red-400 lg:border lg:border-red-400 {{ additional_link_classes }}">
+                <span class="ti ti-user-cog text-xl"></span>
+                Postani delegat
+            </a>
+        </li>
+    {% endif %}
+
+    {% if app.user %}
+        {% if app.user.userDonor %}
             <li>
-                <a href="{{ path('admin_home') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
-                    <span class="ti ti-settings text-xl"></span>
-                    Admin Panel
+                <a href="{{ path('profile_transactions') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
+                    <span class="ti ti-credit-card-pay text-xl"></span>
+                    Instrukcije za uplatu
                 </a>
             </li>
         {% endif %}
@@ -33,6 +39,15 @@
                 <a href="{{ path('delegate_panel_damaged_educator_period') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
                     <span class="ti ti-school text-xl"></span>
                     Spisak oštećenih
+                </a>
+            </li>
+        {% endif %}
+
+        {% if 'ROLE_ADMIN' in app.user.getRoles %}
+            <li>
+                <a href="{{ path('admin_home') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
+                    <span class="ti ti-settings text-xl"></span>
+                    Admin Panel
                 </a>
             </li>
         {% endif %}

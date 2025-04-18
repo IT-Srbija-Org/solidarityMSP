@@ -7,12 +7,16 @@
     <div class="card card-lg bg-base-100 shadow m-10 mt-0">
         <div class="card-body">
             <h2 class="card-title mb-4">
-                <span class="ti ti-user-heart text-3xl"></span>
-                Profil
+                <span class="ti ti-user-heart color-error text-3xl"></span>
+                {% if app.user and app.user.userDonor %}
+                    Profil
+                {% else %}
+                    Postani donator
+                {% endif %}
             </h2>
 
             <div class="space-y-4">
-                {% if not app.user or not app.user.userDonor %}
+                {% if not (app.user and app.user.userDonor) %}
                     <div>
                         <div>Priključi se – Pomozimo prosvetnim radnicima sada!</div>
                         <div>Mere smanjenja plata su već stupile na snagu, što znači da moramo odmah reagovati</div>
