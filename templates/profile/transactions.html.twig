@@ -26,8 +26,9 @@
                         Ukupno rezultata: <span class="font-bold">{{ transactions.total }}</span>
                     </div>
 
-                    <table class="table rounded-xl border border-base-200">
-                        <thead class="bg-gray-100">
+                    {% if transactions.total > 0 %}
+                        <table class="table rounded-xl border border-base-200">
+                            <thead class="bg-gray-100">
                             <tr>
                                 <th>ID</th>
                                 <th>
@@ -53,39 +54,40 @@
                                 <th>Status</th>
                                 <th></th>
                             </tr>
-                        </thead>
-                        <tbody>
-                        {% for transaction in transactions.items %}
-                            <tr class="hover:bg-gray-100">
-                                <td>{{ transaction.id }}</td>
-                                <td>{{ transaction.damagedEducator.name }}</td>
-                                <td>
-                                    <div>{{ transaction.damagedEducator.school.name }}</div>
-                                    <div class="text-gray-500">{{ transaction.damagedEducator.school.city.name }}</div>
-                                </td>
-                                <td>{{ transaction.accountNumber }}</td>
-                                <td>{{ transaction.amount|number_format }}</td>
-                                <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
-                                <td>{{ transaction.status|transactionStatus }}</td>
-                                <td>
-                                    <div class="flex gap-2 justify-end">
-                                        <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="Unesi potvrdu">
-                                            <span class="ti ti-file-plus text-xl"></span>
-                                        </a>
+                            </thead>
+                            <tbody>
+                            {% for transaction in transactions.items %}
+                                <tr class="hover:bg-gray-100">
+                                    <td>{{ transaction.id }}</td>
+                                    <td>{{ transaction.damagedEducator.name }}</td>
+                                    <td>
+                                        <div>{{ transaction.damagedEducator.school.name }}</div>
+                                        <div class="text-gray-500">{{ transaction.damagedEducator.school.city.name }}</div>
+                                    </td>
+                                    <td>{{ transaction.accountNumber }}</td>
+                                    <td>{{ transaction.amount|number_format }}</td>
+                                    <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
+                                    <td>{{ transaction.status|transactionStatus }}</td>
+                                    <td>
+                                        <div class="flex gap-2 justify-end">
+                                            <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="Unesi potvrdu">
+                                                <span class="ti ti-file-plus text-xl"></span>
+                                            </a>
 
-                                        <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="Oštampaj">
-                                            <span class="ti ti-printer text-xl"></span>
-                                        </a>
+                                            <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="Oštampaj">
+                                                <span class="ti ti-printer text-xl"></span>
+                                            </a>
 
-                                        <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="NBS QR">
-                                            <span class="ti ti-qrcode text-xl"></span>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                                            <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="NBS QR">
+                                                <span class="ti ti-qrcode text-xl"></span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
                 </div>
 
                 {% import "macro.html.twig" as macro %}
