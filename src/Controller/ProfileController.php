@@ -53,6 +53,13 @@ class ProfileController extends AbstractController
     #[Route('/prilozi-potvrdu-o-uplati/{id}', name: 'transaction_payment_proof_upload', requirements: ['id' => '\d+'])]
     public function uploadPaymentProof(Request $request, Transaction $transaction, EntityManagerInterface $entityManager): Response
     {
+        /* @var User $user */
+        $user = $this->getUser();
+
+        if ($transaction->getUser() !== $user) {
+            throw $this->createAccessDeniedException();
+        }
+
         $form = $this->createForm(ProfileTransactionPaymentProofType::class);
         $form->handleRequest($request);
 
@@ -81,7 +88,7 @@ class ProfileController extends AbstractController
     }
 
     #[Route('/preuzmi-potvrdu-o-uplati/{id}', name: 'transaction_payment_proof_download', requirements: ['id' => '\d+'])]
-    public function paymentProof(Transaction $transaction): Response
+    public function downloadPaymentProof(Transaction $transaction): Response
     {
         /* @var User $user */
         $user = $this->getUser();
