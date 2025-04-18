@@ -20,7 +20,7 @@ class UserSearchTypeTest extends TypeTestCase
         $this->assertTrue($form->has('email'));
         $this->assertTrue($form->has('role'));
         $this->assertTrue($form->has('isActive'));
-        $this->assertTrue($form->has('isVerified'));
+        $this->assertTrue($form->has('isEmailVerified'));
         $this->assertTrue($form->has('submit'));
 
         // Get the form field types
@@ -29,7 +29,7 @@ class UserSearchTypeTest extends TypeTestCase
         $this->assertInstanceOf(TextType::class, $form->get('email')->getConfig()->getType()->getInnerType());
         $this->assertInstanceOf(ChoiceType::class, $form->get('role')->getConfig()->getType()->getInnerType());
         $this->assertInstanceOf(ChoiceType::class, $form->get('isActive')->getConfig()->getType()->getInnerType());
-        $this->assertInstanceOf(ChoiceType::class, $form->get('isVerified')->getConfig()->getType()->getInnerType());
+        $this->assertInstanceOf(ChoiceType::class, $form->get('isEmailVerified')->getConfig()->getType()->getInnerType());
         $this->assertInstanceOf(SubmitType::class, $form->get('submit')->getConfig()->getType()->getInnerType());
 
         // Check method is GET
@@ -41,7 +41,7 @@ class UserSearchTypeTest extends TypeTestCase
         $this->assertFalse($form->get('email')->getConfig()->getOption('required'));
         $this->assertFalse($form->get('role')->getConfig()->getOption('required'));
         $this->assertFalse($form->get('isActive')->getConfig()->getOption('required'));
-        $this->assertFalse($form->get('isVerified')->getConfig()->getOption('required'));
+        $this->assertFalse($form->get('isEmailVerified')->getConfig()->getOption('required'));
     }
 
     public function testSubmitValidData(): void
@@ -52,7 +52,7 @@ class UserSearchTypeTest extends TypeTestCase
             'email' => 'petar.petrovic@example.com',
             'role' => 'ROLE_ADMIN',
             'isActive' => true,
-            'isVerified' => true,
+            'isEmailVerified' => true,
         ];
 
         $form = $this->factory->create(UserSearchType::class);
@@ -71,7 +71,7 @@ class UserSearchTypeTest extends TypeTestCase
         $this->assertEquals('petar.petrovic@example.com', $data['email']);
         $this->assertEquals('ROLE_ADMIN', $data['role']);
         $this->assertEquals(true, $data['isActive']);
-        $this->assertEquals(true, $data['isVerified']);
+        $this->assertEquals(true, $data['isEmailVerified']);
     }
 
     public function testConfigureOptions(): void

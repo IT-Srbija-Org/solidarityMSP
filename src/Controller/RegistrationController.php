@@ -41,7 +41,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('login');
         }
 
-        if ($user->isVerified()) {
+        if ($user->isEmailVerified()) {
             $this->addFlash('success', 'Vaš nalog je već verifikovan. Možete se prijaviti.');
 
             return $this->redirectToRoute('login');

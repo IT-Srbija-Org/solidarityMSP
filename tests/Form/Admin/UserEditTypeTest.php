@@ -21,7 +21,7 @@ class UserEditTypeTest extends TypeTestCase
         $this->assertTrue($form->has('email'));
         $this->assertTrue($form->has('roles'));
         $this->assertTrue($form->has('isActive'));
-        $this->assertTrue($form->has('isVerified'));
+        $this->assertTrue($form->has('isEmailVerified'));
         $this->assertTrue($form->has('submit'));
 
         // Get the form field types
@@ -29,7 +29,7 @@ class UserEditTypeTest extends TypeTestCase
         $this->assertInstanceOf(TextType::class, $form->get('lastName')->getConfig()->getType()->getInnerType());
         $this->assertInstanceOf(ChoiceType::class, $form->get('roles')->getConfig()->getType()->getInnerType());
         $this->assertInstanceOf(ChoiceType::class, $form->get('isActive')->getConfig()->getType()->getInnerType());
-        $this->assertInstanceOf(ChoiceType::class, $form->get('isVerified')->getConfig()->getType()->getInnerType());
+        $this->assertInstanceOf(ChoiceType::class, $form->get('isEmailVerified')->getConfig()->getType()->getInnerType());
         $this->assertInstanceOf(SubmitType::class, $form->get('submit')->getConfig()->getType()->getInnerType());
 
         // Check that email field is disabled
@@ -49,7 +49,7 @@ class UserEditTypeTest extends TypeTestCase
             'email' => 'petar.petrovic@example.com',
             'roles' => ['ROLE_ADMIN'],
             'isActive' => true,
-            'isVerified' => true,
+            'isEmailVerified' => true,
         ];
 
         $user = new User();
@@ -67,7 +67,7 @@ class UserEditTypeTest extends TypeTestCase
         $this->assertEquals('petar.petrovic@example.com', $user->getEmail());
         $this->assertContains('ROLE_ADMIN', $user->getRoles());
         $this->assertTrue($user->isActive());
-        $this->assertTrue($user->isVerified());
+        $this->assertTrue($user->isEmailVerified());
     }
 
     public function testConfigureOptions(): void

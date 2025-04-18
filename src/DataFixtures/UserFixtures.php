@@ -56,7 +56,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             $user->setLastName($userData['lastName']);
             $user->setEmail($userData['email']);
             $user->setRoles($userData['role']);
-            $user->setIsVerified(true);
+            $user->setIsEmailVerified(true);
             $manager->persist($user);
         }
 

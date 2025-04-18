@@ -90,7 +90,7 @@ class RequestController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if ($user && $user->isVerified()) {
+        if ($user && $user->isEmailVerified()) {
             return $this->render('delegate/request_success.html.twig');
         }
 

@@ -106,7 +106,7 @@ class DonorControllerTest extends WebTestCase
 
         // Check are user registered
         $user = $this->getUser($email);
-        $this->assertFalse($user->isVerified());
+        $this->assertFalse($user->isEmailVerified());
 
         // Check are donor data saved
         $userDonor = $this->userDonorRepository->findOneBy(['user' => $user]);
@@ -132,7 +132,7 @@ class DonorControllerTest extends WebTestCase
         // Check are user now login and verified
         $user = $this->getLoginUser();
         $this->assertNotNull($user);
-        $this->assertTrue($user->isVerified());
+        $this->assertTrue($user->isEmailVerified());
 
         // Check success message
         $crawler = $this->client->request('GET', '/postani-donator');

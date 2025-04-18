@@ -31,7 +31,7 @@ class UserCheckerTest extends TestCase
     {
         $user = new User();
         $user->setIsActive(false);
-        $user->setIsVerified(true);
+        $user->setIsEmailVerified(true);
 
         $this->expectException(CustomUserMessageAccountStatusException::class);
         $this->expectExceptionMessage('Vaš nalog je deaktiviran.');
@@ -43,7 +43,7 @@ class UserCheckerTest extends TestCase
     {
         $user = new User();
         $user->setIsActive(true);
-        $user->setIsVerified(false);
+        $user->setIsEmailVerified(false);
 
         $this->expectException(CustomUserMessageAccountStatusException::class);
         $this->expectExceptionMessage('Email adresa nije verifikovana.');
@@ -55,7 +55,7 @@ class UserCheckerTest extends TestCase
     {
         $user = new User();
         $user->setIsActive(true);
-        $user->setIsVerified(true);
+        $user->setIsEmailVerified(true);
 
         // This should not throw any exception
         $this->userChecker->checkPreAuth($user);

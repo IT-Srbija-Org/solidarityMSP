@@ -19,7 +19,7 @@ class UserChecker implements UserCheckerInterface
             throw new CustomUserMessageAccountStatusException('Vaš nalog je deaktiviran.');
         }
 
-        if (!$user->isVerified()) {
+        if (!$user->isEmailVerified()) {
             throw new CustomUserMessageAccountStatusException('Email adresa nije verifikovana.');
         }
     }

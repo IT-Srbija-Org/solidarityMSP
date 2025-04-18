@@ -57,7 +57,7 @@ class DonorController extends AbstractController
             $this->entityManager->persist($userDonor);
             $this->entityManager->flush();
 
-            if ($isNew && $user->isVerified()) {
+            if ($isNew && $user->isEmailVerified()) {
                 $userDonorRepository->sendSuccessEmail($user);
             }
 
@@ -75,7 +75,7 @@ class DonorController extends AbstractController
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
-        if ($user && $user->isVerified()) {
+        if ($user && $user->isEmailVerified()) {
             return $this->render('donor/success.html.twig');
         }
 

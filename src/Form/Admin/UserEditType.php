@@ -46,7 +46,7 @@ class UserEditType extends AbstractType
                     'Ne' => false,
                 ],
             ])
-            ->add('isVerified', ChoiceType::class, [
+            ->add('isEmailVerified', ChoiceType::class, [
                 'label' => 'Verifikovan',
                 'choices' => [
                     'Da' => true,

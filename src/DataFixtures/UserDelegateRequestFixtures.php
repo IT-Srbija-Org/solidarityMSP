@@ -54,7 +54,7 @@ class UserDelegateRequestFixtures extends Fixture implements FixtureGroupInterfa
             $user->setLastName($lastName);
             $user->setEmail("delegat{$i}@example.com");
             $user->setRoles(['ROLE_USER', 'ROLE_DELEGATE']);
-            $user->setIsVerified(true);
+            $user->setIsEmailVerified(true);
             $this->entityManager->persist($user);
             $users[] = $user;
         }
@@ -63,7 +63,7 @@ class UserDelegateRequestFixtures extends Fixture implements FixtureGroupInterfa
         $coreDelegate = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'delegat@gmail.com']);
         if ($coreDelegate) {
             $coreDelegate->setRoles(['ROLE_USER', 'ROLE_DELEGATE']);
-            $coreDelegate->setIsVerified(true);
+            $coreDelegate->setIsEmailVerified(true);
             $this->entityManager->persist($coreDelegate);
             $users[] = $coreDelegate;
         }

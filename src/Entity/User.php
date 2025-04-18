@@ -59,7 +59,7 @@ class User implements UserInterface
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column]
-    private bool $isVerified = false;
+    private bool $isEmailVerified = false;
 
     #[ORM\Column(length: 32, nullable: true)]
     private ?string $resetToken = null;
@@ -227,14 +227,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function isVerified(): bool
+    public function isEmailVerified(): bool
     {
-        return $this->isVerified;
+        return $this->isEmailVerified;
     }
 
-    public function setIsVerified(bool $isVerified): static
+    public function setIsEmailVerified(bool $isEmailVerified): static
     {
-        $this->isVerified = $isVerified;
+        $this->isEmailVerified = $isEmailVerified;
 
         return $this;
     }

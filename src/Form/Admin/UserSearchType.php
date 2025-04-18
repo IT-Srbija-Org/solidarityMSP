@@ -41,7 +41,7 @@ class UserSearchType extends AbstractType
                     'Ne' => false,
                 ],
             ])
-            ->add('isVerified', ChoiceType::class, [
+            ->add('isEmailVerified', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Verifikovan email',
                 'choices' => [

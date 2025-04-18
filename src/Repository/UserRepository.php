@@ -92,9 +92,9 @@ class UserRepository extends ServiceEntityRepository
                 ->setParameter('isActive', $criteria['isActive']);
         }
 
-        if (isset($criteria['isVerified'])) {
-            $qb->andWhere('u.isVerified = :isVerified')
-                ->setParameter('isVerified', $criteria['isVerified']);
+        if (isset($criteria['isEmailVerified'])) {
+            $qb->andWhere('u.isEmailVerified = :isEmailVerified')
+                ->setParameter('isEmailVerified', $criteria['isEmailVerified']);
         }
 
         // Set the sorting

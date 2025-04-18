@@ -17,7 +17,7 @@ class SecurityController extends AbstractController
             $email = $request->getPayload()->get('email');
             $user = $userRepository->findOneBy(['email' => $email]);
 
-            if ($user && $user->isActive() && $user->isVerified()) {
+            if ($user && $user->isActive() && $user->isEmailVerified()) {
                 $userRepository->sendLoginLink($user);
 
                 $this->addFlash('success', 'Link za prijavu je poslat na vašu email adresu.');
@@ -31,7 +31,7 @@ class SecurityController extends AbstractController
                 return $this->redirectToRoute('login');
             }
 
-            if ($user && !$user->isVerified()) {
+            if ($user && !$user->isEmailVerified()) {
                 $this->addFlash('unverified_user', $email);
 
                 return $this->redirectToRoute('login');

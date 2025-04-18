@@ -30,7 +30,7 @@ class UserTest extends TestCase
     public function testDefaultValues(): void
     {
         $this->assertTrue($this->user->isActive());
-        $this->assertFalse($this->user->isVerified());
+        $this->assertFalse($this->user->isEmailVerified());
     }
 
     public function testUserIdentifier(): void

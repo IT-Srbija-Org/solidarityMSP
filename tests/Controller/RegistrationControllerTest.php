@@ -70,7 +70,7 @@ class RegistrationControllerTest extends WebTestCase
         $user->setFirstName('Verified');
         $user->setLastName('User');
         $user->setEmail($email);
-        $user->setIsVerified(true);
+        $user->setIsEmailVerified(true);
         $user->setIsActive(true);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -92,7 +92,7 @@ class RegistrationControllerTest extends WebTestCase
         $user->setFirstName('Unverified');
         $user->setLastName('User');
         $user->setEmail($email);
-        $user->setIsVerified(false);
+        $user->setIsEmailVerified(false);
         $user->setIsActive(true);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -142,7 +142,7 @@ class RegistrationControllerTest extends WebTestCase
         $this->assertEquals('Dragan', $user->getFirstName());
         $this->assertEquals('Jovanovic', $user->getLastName());
         $this->assertTrue($user->isActive());
-        $this->assertFalse($user->isVerified());
+        $this->assertFalse($user->isEmailVerified());
 
         // Extract verified link
         $crawler = new Crawler($mailerMessage->getHtmlBody());
@@ -157,6 +157,6 @@ class RegistrationControllerTest extends WebTestCase
         $user = $this->getLoginUser();
         $this->assertNotNull($user);
         $this->assertEquals('korisnik@gmail.com', $user->getEmail());
-        $this->assertTrue($user->isVerified());
+        $this->assertTrue($user->isEmailVerified());
     }
 }
