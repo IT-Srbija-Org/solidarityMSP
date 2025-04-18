@@ -65,11 +65,19 @@ class ProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $uploadedFile = $form->get('paymentProofFile')->getData();
+            $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
+
+            // Remove old file if exists
+            if ($transaction->hasPaymentProofFile()) {
+                $filename = $transaction->getPaymentProofFile();
+                $filePath = $uploadDir.'/'.$filename;
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
 
             if ($uploadedFile) {
                 $filename = md5(uniqid(true).microtime()).'.'.$uploadedFile->guessExtension();
-
-                $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
                 $uploadedFile->move($uploadDir, $filename);
 
                 $transaction->setPaymentProofFile($filename);
