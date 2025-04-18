@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% import "macro.html.twig" as macro %}
+    {{ macro.back('delegate_panel_damaged_educators', { 'period': damagedEducator.period.id }) }}
+
+    <div class="card card-lg bg-base-100 shadow m-10 mt-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-credit-card text-3xl"></span>
+                Spisak svih instrukcija za uplatu oštećenom za period {{ damagedEducator.period.date|date('F')|trans }}, {{ damagedEducator.period.year }}
+            </h2>
+
+            <div>
+                <div>
+                    Ime: <span class="font-bold">{{ damagedEducator.name }}</span>
+                </div>
+
+                <div>
+                    Ukupna cifra: <span class="font-bold">{{ damagedEducator.amount|number_format }}</span>
+                </div>
+
+                <div>
+                    Broj računa: <span class="font-bold">{{ damagedEducator.accountNumber }}</span>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="overflow-x-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-gray-500">
+                        Ukupno rezultata: <span class="font-bold">{{ transactions|length }}</span>
+                    </div>
+                </div>
+
+                <table class="table rounded-xl border border-base-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th>ID</th>
+                            <th>
+                                <span class="ti ti-cash text-xl"></span>
+                                Cifra
+                            </th>
+                            <th>
+                                <span class="ti ti-credit-card text-xl"></span>
+                                Status
+                            </th>
+                            <th>
+                                <span class="ti ti-calendar-event text-xl"></span>
+                                Napravljeno
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% set total = 0 %}
+                    {% for transaction in transactions %}
+                        {% set total = total + transaction.amount %}
+
+                        <tr class="hover:bg-gray-100">
+                            <td>{{ transaction.id }}</td>
+                            <td>{{ transaction.amount|number_format }}</td>
+                            <td>{{ transaction.status|transactionStatus }}</td>
+                            <td>{{ transaction.createdAt|date('H:i d.m.Y.') }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    <tr class="bg-gray-100 font-bold">
+                        <td>Ukupno:</td>
+                        <td>{{ total|number_format }}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

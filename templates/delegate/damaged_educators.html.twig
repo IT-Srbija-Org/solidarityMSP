@@ -72,6 +72,9 @@
                             <td>{{ damagedEducator.createdBy.fullName }}</td>
                             <td>
                                 <div class="flex gap-2 justify-end">
+                                    <a href="{{ path('delegate_panel_damaged_educator_transactions', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-disabled{% else %}btn-primary{% endif %} btn-sm flex tooltip" data-tip="Spisak IZU">
+                                        <span class="ti ti-credit-card text-xl"></span>
+                                    </a>
                                     <a href="{{ path('delegate_panel_delete_damaged_educator', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Brisanje">
                                         <span class="ti ti-trash text-xl"></span>
                                     </a>
