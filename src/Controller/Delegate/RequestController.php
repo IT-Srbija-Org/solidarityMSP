@@ -75,7 +75,7 @@ class RequestController extends AbstractController
             return $this->redirectToRoute('delegate_request_success');
         }
 
-        if($form->isSubmitted() && !$form->isValid()){
+        if ($form->isSubmitted() && !$form->isValid()) {
             $this->addFlash('error', 'Došlo je do greške, molimo Vas da proverite unešene podatke.');
         }
 
