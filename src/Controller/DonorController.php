@@ -21,7 +21,7 @@ class DonorController extends AbstractController
     {
     }
 
-    #[Route('/profil-donora', name: 'subscribe')]
+    #[Route('/postani-donator', name: 'subscribe')]
     public function subscribe(Request $request, UserRepository $userRepository, UserDonorRepository $userDonorRepository): Response
     {
         /** @var \App\Entity\User $user */

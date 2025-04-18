@@ -70,7 +70,7 @@ class DonorControllerTest extends WebTestCase
 
     public function testNonAuthenticatedAccess(): void
     {
-        $this->client->request('GET', '/profil-donora');
+        $this->client->request('GET', '/postani-donator');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 
@@ -79,7 +79,7 @@ class DonorControllerTest extends WebTestCase
         $email = 'korisnik@gmail.com';
         $this->removeUser($email);
 
-        $crawler = $this->client->request('GET', '/profil-donora');
+        $crawler = $this->client->request('GET', '/postani-donator');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorExists('form[name="user_donor"]');
@@ -135,7 +135,7 @@ class DonorControllerTest extends WebTestCase
         $this->assertTrue($user->isVerified());
 
         // Check success message
-        $crawler = $this->client->request('GET', '/profil-donora');
+        $crawler = $this->client->request('GET', '/postani-donator');
 
         // Unsubscribe
         $unsubscribeLink = $crawler->filter('.test-link1')->attr('href');
