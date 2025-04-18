@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% import "macro.html.twig" as macro %}
+    {{ macro.back('profile_transactions') }}
+
+    <div class="card card-lg bg-base-100 shadow m-10 mt-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-file-plus text-2xl"></span>
+                Priloži potvrdu o uplate
+            </h2>
+
+            {{ include('flashes.html.twig') }}
+
+            <div>
+                {% form_theme form 'form.html.twig' %}
+                {{ form_start(form) }}
+                    <div class="mb-4">
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Izaberite fajl</legend>
+                            {{ form_widget(form.paymentProofFile) }}
+                            {{ form_label(form.paymentProofFile) }}
+                            {{ form_errors(form.paymentProofFile) }}
+                        </fieldset>
+                    </div>
+
+                    {{ form_row(form.submit) }}
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

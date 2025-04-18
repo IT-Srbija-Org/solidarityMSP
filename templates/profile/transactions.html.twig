@@ -21,73 +21,94 @@
                     <span>Trenutno nema nijedne instrukcije za uplatu, kada sistem bude kreirao nove instrukcije bićete obavešteni na email.</span>
                 </div>
             {% else %}
+                {{ include('flashes.html.twig') }}
+
                 <div class="overflow-x-auto mt-6">
                     <div class="text-gray-500 mb-2 total-results">
                         Ukupno rezultata: <span class="font-bold">{{ transactions.total }}</span>
                     </div>
 
-                    {% if transactions.total > 0 %}
-                        <table class="table rounded-xl border border-base-200">
-                            <thead class="bg-gray-100">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>
-                                        <span class="ti ti-school text-xl"></span>
-                                        Oštećeni/a
-                                    </th>
-                                    <th>
-                                        <span class="ti ti-building text-xl"></span>
-                                        Škola
-                                    </th>
-                                    <th>
-                                        <span class="ti ti-credit-card text-xl"></span>
-                                        Broj računa
-                                    </th>
-                                    <th>
-                                        <span class="ti ti-cash text-xl"></span>
-                                        Cifra
-                                    </th>
-                                    <th>
-                                        <span class="ti ti-calendar-event text-xl"></span>
-                                        Kreirano
-                                    </th>
-                                    <th>Status</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for transaction in transactions.items %}
-                                <tr class="hover:bg-gray-100">
-                                    <td>{{ transaction.id }}</td>
-                                    <td>{{ transaction.damagedEducator.name }}</td>
-                                    <td>
-                                        <div>{{ transaction.damagedEducator.school.name }}</div>
-                                        <div class="text-gray-500">{{ transaction.damagedEducator.school.city.name }}</div>
-                                    </td>
-                                    <td>{{ transaction.accountNumber }}</td>
-                                    <td>{{ transaction.amount|number_format }}</td>
-                                    <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
-                                    <td>{{ transaction.status|transactionStatus }}</td>
-                                    <td>
-                                        <div class="flex gap-2 justify-end">
-                                            <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="Unesi potvrdu">
+                    <table class="table rounded-xl border border-base-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th>ID</th>
+                                <th>
+                                    <span class="ti ti-school text-xl"></span>
+                                    Oštećeni/a
+                                </th>
+                                <th>
+                                    <span class="ti ti-building text-xl"></span>
+                                    Škola
+                                </th>
+                                <th>
+                                    <span class="ti ti-credit-card text-xl"></span>
+                                    Broj računa
+                                </th>
+                                <th>
+                                    <span class="ti ti-cash text-xl"></span>
+                                    Cifra
+                                </th>
+                                <th>
+                                    <span class="ti ti-calendar-event text-xl"></span>
+                                    Kreirano
+                                </th>
+                                <th>
+                                    <span class="ti ti-file text-xl"></span>
+                                    Potvrda o uplati
+                                </th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for transaction in transactions.items %}
+                            <tr class="hover:bg-gray-100">
+                                <td>{{ transaction.id }}</td>
+                                <td>{{ transaction.damagedEducator.name }}</td>
+                                <td>
+                                    <div>{{ transaction.damagedEducator.school.name }}</div>
+                                    <div class="text-gray-500">{{ transaction.damagedEducator.school.city.name }}</div>
+                                </td>
+                                <td>{{ transaction.accountNumber }}</td>
+                                <td>{{ transaction.amount|number_format }}</td>
+                                <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
+                                <td>
+                                    {% if transaction.hasPaymentProofFile %}
+                                        <a href="{{ path('profile_transaction_payment_proof_download', { 'id': transaction.id }) }}" class="link link-primary no-underline">
+                                            <span class="ti ti-download text-xl"></span>
+                                            Preuzmi
+                                        </a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>{{ transaction.status|transactionStatus }}</td>
+                                <td>
+                                    <div class="flex gap-2 justify-end">
+                                        {% if transaction.hasPaymentProofFile %}
+                                            <a href="{{ path('profile_transaction_payment_proof_delete', { 'id': transaction.id }) }}" class="btn btn-error btn-sm flex tooltip" data-tip="Obriši potvrdu o uplate">
+                                                <span class="ti ti-file-x text-xl"></span>
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ path('profile_transaction_payment_proof_upload', { 'id': transaction.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Priloži potvrdu o uplate">
                                                 <span class="ti ti-file-plus text-xl"></span>
                                             </a>
+                                        {% endif %}
 
-                                            <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="Oštampaj">
-                                                <span class="ti ti-printer text-xl"></span>
-                                            </a>
 
-                                            <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="NBS QR">
-                                                <span class="ti ti-qrcode text-xl"></span>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    {% endif %}
+                                        <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="Oštampaj">
+                                            <span class="ti ti-printer text-xl"></span>
+                                        </a>
+
+                                        <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="NBS QR">
+                                            <span class="ti ti-qrcode text-xl"></span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
 
                 {% import "macro.html.twig" as macro %}

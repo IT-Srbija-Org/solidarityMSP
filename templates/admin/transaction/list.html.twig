@@ -35,11 +35,15 @@
                         <span class="ti ti-cash text-xl"></span>
                         Cifra
                     </th>
-                    <th>Status</th>
                     <th>
                         <span class="ti ti-calendar-event text-xl"></span>
-                        Datum
+                        Kreirano
                     </th>
+                    <th>
+                        <span class="ti ti-file text-xl"></span>
+                        Potvrda o uplati
+                    </th>
+                    <th>Status</th>
                     <th></th>
                 </tr>
             </thead>
@@ -65,8 +69,18 @@
                     </td>
                     <td>{{ transaction.accountNumber }}</td>
                     <td>{{ transaction.amount|number_format }}</td>
-                    <td>{{ transaction.status|transactionStatus }}</td>
                     <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
+                    <td>
+                        {% if transaction.hasPaymentProofFile %}
+                            <a href="{{ path('admin_transaction_payment_proof_download', { 'id': transaction.id }) }}" class="link link-primary no-underline">
+                                <span class="ti ti-download text-xl"></span>
+                                Preuzmi
+                            </a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ transaction.status|transactionStatus }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">
                             <a href="{{ path('admin_transaction_edit', { 'id': transaction.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Izmeni">

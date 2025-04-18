@@ -56,6 +56,14 @@ class TransactionSearchType extends AbstractType
                 'choices' => array_flip(Transaction::STATUS),
                 'label' => 'Status',
             ])
+            ->add('hasPaymentProofFile', ChoiceType::class, [
+                'required' => false,
+                'label' => 'Ima potvrdu o uplati?',
+                'choices' => [
+                    'Da' => true,
+                    'Ne' => false,
+                ],
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => '<i class="ti ti-search text-2xl"></i> Pretraži',
                 'label_html' => true,
