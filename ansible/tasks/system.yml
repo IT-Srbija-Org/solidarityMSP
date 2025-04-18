@@ -1,4 +1,53 @@
 ---
+- name: Add PHP repository for Ubuntu 22.04
+  ansible.builtin.apt_repository:
+    repo: ppa:ondrej/php
+    state: present
+    update_cache: true
+  when:
+    - ansible_facts['os_family'] == "Debian"
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] is version('22.04', '==')
+  tags: [packages]
+
+- name: Install repo dependencies for Debian
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - lsb-release
+      - gnupg
+    state: present
+    update_cache: true
+  when:
+    - ansible_facts['os_family'] == "Debian"
+    - ansible_facts['distribution'] == "Debian"
+  tags: [packages]
+
+- name: Add PHP repository GPG key for Debian
+  ansible.builtin.apt_key:
+    url: https://packages.sury.org/php/apt.gpg
+    state: present
+  when:
+    - ansible_facts['os_family'] == "Debian"
+    - ansible_facts['distribution'] == "Debian"
+  tags: [packages]
+
+- name: Add PHP Sury repo for Debian
+  ansible.builtin.apt_repository:
+    repo: "deb https://packages.sury.org/php/ {{ ansible_facts['distribution_release'] }} main"
+    state: present
+    update_cache: true
+  when:
+    - ansible_facts['os_family'] == "Debian"
+    - ansible_facts['distribution'] == "Debian"
+  tags: [packages]
+
+# - name: Set MySQL server package name
+#   ansible.builtin.set_fact:
+#     mysql_server_package: "{{ 'mysql-server' if ansible_facts['distribution'] == 'Ubuntu' else 'default-mysql-server' }}"
+#   tags: [packages]
+
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: true
@@ -8,6 +57,7 @@
 - name: Install required system packages
   ansible.builtin.apt:
     name:
+    #   - "{{ mysql_server_package }}"
       - python3-pymysql
       - php8.3-fpm
       - php8.3-cli
@@ -28,11 +78,11 @@
       - curl
       - unzip
       - nginx
-      - mysql-server
       - redis-server
       - imagemagick
       - certbot
       - python3-certbot-nginx
       - ufw
+      - acl
     state: present
   tags: [packages]

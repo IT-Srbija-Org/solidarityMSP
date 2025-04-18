@@ -3,11 +3,15 @@
 # Check if "docker compose" or "docker-compose" is available
 if docker compose &> /dev/null
 then
-    # Use docker compose
+    # Use "docker compose"
+    docker compose down;
+    docker compose build;
     docker compose up -d;
 elif command -v docker-compose &> /dev/null
 then
-    # Use docker-compose
+    # Use "docker-compose"
+    docker-compose down;
+    docker-compose build;
     docker-compose up -d;
 else
     echo "Error: Neither docker compose nor docker-compose command found"

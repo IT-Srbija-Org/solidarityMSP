@@ -1,0 +1,28 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    # config.vm.box = "generic/ubuntu2204" # Ubuntu 22.04 LTS
+    config.vm.box = "bento/ubuntu-24.04" # Ubuntu 24.04 LTS
+    # config.vm.box = "debian/bookworm64" # Debian 12 (Bookworm)
+
+    config.vm.hostname = "solidarity.local"
+    config.vm.network "forwarded_port", guest: 80, host: 8080
+    config.vm.network "forwarded_port", guest: 443, host: 8443
+    config.vm.network "forwarded_port", guest: 3306, host: 33060
+
+    # For libvirt, omit the type or use "rsync" or "nfs" if available.
+    config.vm.synced_folder "..", "/vagrant"
+
+    # Provision with Ansible
+    config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "deploy.yml"
+        ansible.limit = "all"
+
+        # Only run tasks tagged with specific tag, for example "deploy" (or you can use array of strings)
+        # ansible.tags = "deploy"
+        #
+        # Use ansible.cfg only for Vagrant provision
+        ansible.config_file = "ansible.vagrant.cfg"
+    end
+end

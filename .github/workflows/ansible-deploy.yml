@@ -46,6 +46,7 @@ jobs:
         with:
           playbook: deploy.yml
           directory: ansible
+          requirements: requirements.yml
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           inventory: |
             [solidarity_servers]
@@ -56,7 +57,6 @@ jobs:
           options: >
             ${{ github.event.inputs.tags_deploy == 'true' && '--tags deploy' || '' }}
             --extra-vars "domain_name=${{ secrets.DOMAIN_NAME }}"
-            --extra-vars "mysql_root_password=${{ secrets.MYSQL_ROOT_PASSWORD }}"
             --extra-vars "mysql_password=${{ secrets.MYSQL_PASSWORD }}"
             --extra-vars "app_secret=${{ secrets.APP_SECRET }}"
             --extra-vars "mailer_dsn=${{ secrets.MAILER_DSN }}"

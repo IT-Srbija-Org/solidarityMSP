@@ -1,21 +1,24 @@
 {% macro nav_links(additional_link_classes = '') %}
     <li>
         <a href="{{ path('donor_subscribe') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 text-red-400 hover:text-base-100 hover:bg-red-400 lg:border lg:border-red-400 {{ additional_link_classes }}">
-            <span class="ti ti-heart text-xl"></span>
-            Postani donator
+            {% if app.user and app.user.userDonor %}
+                <span class="ti ti-heart-filled text-xl"></span>
+            {% else %}
+                <span class="ti ti-heart text-xl"></span>
+            {% endif %}
+
+            Profil
         </a>
     </li>
 
-    {% if not app.user or 'ROLE_DELEGATE' not in app.user.getRoles %}
+    {% if app.user %}
         <li>
-            <a href="{{ path('delegate_request') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 text-red-400 hover:text-base-100 hover:bg-red-400 lg:border lg:border-red-400 {{ additional_link_classes }}">
-                <span class="ti ti-user-cog text-xl"></span>
-                Postani delegat
+            <a href="{{ path('profile_transactions') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
+                <span class="ti ti-credit-card-pay text-xl"></span>
+                Instrukcije za uplatu
             </a>
         </li>
-    {% endif %}
 
-    {% if app.user %}
         {% if 'ROLE_ADMIN' in app.user.getRoles %}
             <li>
                 <a href="{{ path('admin_home') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
@@ -35,28 +38,12 @@
         {% endif %}
 
         <li>
-            <details class="lg:dropdown lg:dropdown-end">
-                <summary class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
-                    <span class="ti ti-user text-xl"></span>
-                    Profil
-                </summary>
-
-                <ul class="lg:dropdown-content z-[1] mt-0 lg:mt-3 pl-4 lg:pl-0 lg:menu bg-base-100 lg:rounded-box lg:w-52 lg:shadow">
-                    <li>
-                        <a href="{{ path('profile_edit') }}" class="text-base lg:text-sm px-4 py-3 text-primary">
-                            <span class="ti ti-edit text-xl"></span>
-                            Izmeni podatke
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('profile_transactions') }}" class="text-base lg:text-sm px-4 py-3 text-primary">
-                            <span class="ti ti-credit-card-pay text-xl"></span>
-                            Transakcije
-                        </a>
-                    </li>
-                </ul>
-            </details>
+            <a href="{{ path('profile_edit') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
+                <span class="ti ti-user text-xl"></span>
+                Korisnički podaci
+            </a>
         </li>
+
         <li>
             <a href="{{ path('logout') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
                 <span class="ti ti-logout text-xl"></span>

@@ -1,10 +1,20 @@
 ---
 - name: Deploy Solidarity Network Application
-  hosts: solidarity_servers
+  hosts: all
   become: true
   vars_files:
     - vars.yml
   pre_tasks:
+    - name: Print OS information
+      ansible.builtin.debug:
+        msg: |
+          OS: {{ ansible_distribution }} {{ ansible_distribution_version }}
+          Kernel: {{ ansible_kernel }}
+          Architecture: {{ ansible_architecture }}
+          FQDN: {{ ansible_fqdn }}
+          Ansible version: {{ ansible_version.full }}
+      tags: [always]
+
     - name: Create Ansible directories for www-data
       ansible.builtin.file:
         path: "{{ item }}"
@@ -44,11 +54,6 @@
         file: tasks/redis.yml
       tags: [redis]
 
-    - name: Include MySQL tasks
-      ansible.builtin.include_tasks:
-        file: tasks/mysql.yml
-      tags: [mysql]
-
     - name: Include Nginx tasks
       ansible.builtin.include_tasks:
         file: tasks/nginx.yml
@@ -73,6 +78,11 @@
       ansible.builtin.include_tasks:
         file: tasks/backup.yml
       tags: [backup]
+
+
+  roles:
+    - role: geerlingguy.mysql
+      tags: [mysql]
 
   handlers:
     - name: Restart PHP-FPM

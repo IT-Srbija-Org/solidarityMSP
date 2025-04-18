@@ -70,7 +70,7 @@ class DonorControllerTest extends WebTestCase
 
     public function testNonAuthenticatedAccess(): void
     {
-        $this->client->request('GET', '/postani-donator');
+        $this->client->request('GET', '/profil-donora');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 
@@ -79,7 +79,7 @@ class DonorControllerTest extends WebTestCase
         $email = 'korisnik@gmail.com';
         $this->removeUser($email);
 
-        $crawler = $this->client->request('GET', '/postani-donator');
+        $crawler = $this->client->request('GET', '/profil-donora');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorExists('form[name="user_donor"]');
@@ -135,12 +135,10 @@ class DonorControllerTest extends WebTestCase
         $this->assertTrue($user->isVerified());
 
         // Check success message
-        $crawler = $this->client->request('GET', '/postani-donator');
-        $this->assertSelectorTextContains('.alert-success', 'Već ste se prijavili na listu donatora. U slučaju da želite da promenite podatke unesite nove u formu ispod.');
-        $this->assertSelectorTextContains('.alert-error', 'Ako želite da se odjavite sa liste donatora kliknite na sledeći link');
+        $crawler = $this->client->request('GET', '/profil-donora');
 
         // Unsubscribe
-        $unsubscribeLink = $crawler->filter('.alert-error a')->attr('href');
+        $unsubscribeLink = $crawler->filter('.test-link1')->attr('href');
         $this->client->request('GET', $unsubscribeLink);
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();

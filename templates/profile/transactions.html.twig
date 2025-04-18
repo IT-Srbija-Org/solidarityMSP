@@ -8,17 +8,17 @@
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <span class="ti ti-credit-card-pay text-2xl"></span>
-                Transakcije
+                Instrukcije za uplatu
             </h2>
 
             <div class="text-gray-500 mb-4">
-                Na stranici možete da vidite spisak svih vaših transakcija ka oštećenim prosvetnim radnicima. Takođe možete da dodate potvrdu o plaćanju za svaku transakciju.
+                Na stranici možete da vidite spisak svih vaših instrukcija za uplatu ka oštećenim prosvetnim radnicima. Takođe možete da dodate potvrdu o plaćanju za svaku upplatu.
             </div>
 
             {% if transactions.total == 0 %}
                 <div class="alert alert-info alert-soft">
                     <span class="ti ti-info-circle text-2xl"></span>
-                    <span>Trenutno nema nijedne transakcije, kada sistem bude kreirao nove transakcije bićete obavešteni na email.</span>
+                    <span>Trenutno nema nijedne instrukcije za uplatu, kada sistem bude kreirao nove instrukcije bićete obavešteni na email.</span>
                 </div>
             {% else %}
                 <div class="overflow-x-auto mt-6">
@@ -77,7 +77,7 @@
                                             <span class="ti ti-printer text-xl"></span>
                                         </a>
 
-                                        <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="NBS IPS QR">
+                                        <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="NBS QR">
                                             <span class="ti ti-qrcode text-xl"></span>
                                         </a>
                                     </div>

@@ -6,11 +6,7 @@ admin_email: admin@example.com
 git_repo: https://github.com/IT-Srbija-Org/solidaritySF.git
 git_branch: main
 
-# Database settings
-mysql_root_password: change_this_root_password
-mysql_database: solidarity
-mysql_user: solidarity
-mysql_password: change_this_db_password
+
 
 # Redis settings
 redis_host: 127.0.0.1
@@ -24,7 +20,10 @@ mailer_sender: noreply@mrezasolidarnosti.org
 
 # Deployment flags
 initialize_database: true
+# this will load fixtures from the database, additional condition is that 'app_env' is set 'dev'
 load_fixtures: true
+# this will install certbot and automatically configure nginx and cert renewal
+# if you want to use CF SSL, set this to false
 enable_ssl: false
 enable_ufw: false
 
@@ -40,3 +39,20 @@ nginx_client_max_body_size: 10M
 nginx_fastcgi_buffer_size: 128k
 nginx_fastcgi_buffers: "4 256k"
 nginx_fastcgi_busy_buffers_size: 256k
+
+# Database settings
+mysql_database: solidarity
+mysql_user: solidarity
+mysql_password: change_this_db_password
+
+# geerlingguy.mysql role variables
+mysql_databases:
+  - name: "{{ mysql_database }}"
+    encoding: utf8mb4
+    collation: utf8mb4_general_ci
+mysql_users:
+  - name: "{{ mysql_user }}"
+    host: "localhost"
+    password: "{{ mysql_password }}"
+    priv: "{{ mysql_database }}.*:ALL"
+    state: present

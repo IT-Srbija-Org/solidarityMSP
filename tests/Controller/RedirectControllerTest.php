@@ -31,7 +31,7 @@ class RedirectControllerTest extends WebTestCase
         $client = static::createClient();
         foreach ($urls as $url) {
             $client->request('GET', $url);
-            $this->assertResponseRedirects('/postani-donator', Response::HTTP_MOVED_PERMANENTLY);
+            $this->assertResponseRedirects('/profil-donora', Response::HTTP_MOVED_PERMANENTLY);
         }
     }
 

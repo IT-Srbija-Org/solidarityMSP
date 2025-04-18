@@ -27,4 +27,6 @@ phpstan*neon
 /.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
 
+# Ansible
 .ansible/.lock
+.vagrant/

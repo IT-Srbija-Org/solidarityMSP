@@ -35,7 +35,7 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    #[Route('/transakcije', name: 'transactions')]
+    #[Route('/instrukcije-za-uplatu', name: 'transactions')]
     public function transactions(Request $request, TransactionRepository $transactionRepository): Response
     {
         $criteria = ['user' => $this->getUser()];

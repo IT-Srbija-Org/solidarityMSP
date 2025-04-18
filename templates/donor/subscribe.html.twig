@@ -8,19 +8,21 @@
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <span class="ti ti-user-heart text-3xl"></span>
-                Obrazac za donatore
+                Profil
             </h2>
 
             <div class="space-y-4">
-                <div>
-                    <div>Priključi se – Pomozimo prosvetnim radnicima sada!</div>
-                    <div>Mere smanjenja plata su već stupile na snagu, što znači da moramo odmah reagovati</div>
-                </div>
+                {% if not app.user or not app.user.userDonor %}
+                    <div>
+                        <div>Priključi se – Pomozimo prosvetnim radnicima sada!</div>
+                        <div>Mere smanjenja plata su već stupile na snagu, što znači da moramo odmah reagovati</div>
+                    </div>
 
-                <div>
-                    <div><span class="font-bold">Hitno nam je potrebno više donatora!</span> Broj ugroženih nastavnika raste iz dana u dan, a vremena je sve manje.</div>
-                    <div class="font-bold">Prijavite se odmah i pomozite da zaštitimo što veći broj prosvetnih radnika putem direktne materijalne podrške.</div>
-                </div>
+                    <div>
+                        <div><span class="font-bold">Hitno nam je potrebno više donatora!</span> Broj ugroženih nastavnika raste iz dana u dan, a vremena je sve manje.</div>
+                        <div class="font-bold">Prijavite se odmah i pomozite da zaštitimo što veći broj prosvetnih radnika putem direktne materijalne podrške.</div>
+                    </div>
+                {% endif %}
 
                 <div>
                     <div class="font-bold">Želite više informacija?</div>
@@ -37,18 +39,6 @@
             <div class="divider"></div>
 
             {{ include('flashes.html.twig') }}
-
-            {% if app.user and app.user.userDonor %}
-                <div class="alert alert-success alert-soft">
-                    <span class="ti ti-user-heart text-2xl"></span>
-                    <span>Već ste se prijavili na listu donatora. U slučaju da želite da promenite podatke unesite nove u formu ispod.</span>
-                </div>
-
-                <div class="alert alert-error alert-soft mb-4">
-                    <span class="ti ti-x text-2xl"></span>
-                    <span>Ako želite da se odjavite sa liste donatora kliknite na sledeći link: <a href="{{ path('donor_unsubscribe', { '_token': csrf_token('unsubscribe') }) }}" class="link link-primary link-hover">odjava</a></span>
-                </div>
-            {% endif %}
 
             {% form_theme form 'form.html.twig' %}
             {{ form_start(form) }}
@@ -87,6 +77,13 @@
 
                 {{ form_row(form.submit, { 'attr': { 'class': 'btn btn-primary w-full' } }) }}
             {{ form_end(form) }}
+
+            {% if app.user and app.user.userDonor %}
+                <div class="mt-8 text-gray-500 text-sm text-right">
+                    Ako želite da se odjavite sa liste donatora kliknite na sledeći link:
+                    <a href="{{ path('donor_unsubscribe', { '_token': csrf_token('unsubscribe') }) }}" onclick="confirm('Da li ste sigurni da želite da se odjavite sa liste donatora?');" class="link link-primary link-hover test-link1">odjava</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

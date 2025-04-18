@@ -6,39 +6,43 @@ Ovaj direktorijum sadrži Ansible playbook-ove i konfiguraciju za produkcijsko p
 
 ```yaml
 ansible
-├── deploy.yml              # Glavni Ansible playbook za deploy
-├── inventory.ini           # Inventar servera (nije u git-u)
-├── inventory.ini.example   # Primer inventara servera
-├── manual.md               # Detaljan vodič za ručno podizanje servera
-├── tasks/                  # Ansible task fajlovi (modularni koraci deploy-a)
-│   └── system.yml          # Taskovi za sistemske pripreme i update
-│   ├── php.yml             # Taskovi za instalaciju i konfiguraciju PHP-a
-│   ├── mysql.yml           # Taskovi za instalaciju i konfiguraciju MySQL-a
-│   ├── nginx.yml           # Taskovi za instalaciju i konfiguraciju Nginx-a
-│   ├── redis.yml           # Taskovi za instalaciju i konfiguraciju Redis-a
-│   ├── app_setup.yml       # Taskovi za setup aplikacije
-│   ├── backup.yml          # Taskovi za backup baze
-│   ├── cache.yml           # Taskovi za čišćenje symfony cache-a
-│   ├── db.yml              # Taskovi za symfony komande oko konfiguracija baze
-├── templates/              # Jinja2 šabloni za konfiguracione fajlove
-│   ├── etc/                # Šabloni za /etc konfiguracije
-│   │   ├── my.cnf.j2                       # MySQL konfiguracija
-│   │   ├── nginx/                          # Nginx konfiguracije
+├── Vagrantfile              # Vagrant konfiguracija za lokalni razvoj
+├── ansible.vagrant.cfg      # Vagrant specifična Ansible konfiguracija
+├── deploy.yml               # Glavni Ansible playbook za deploy
+├── inventory.ini            # Inventar servera (nije u git-u)
+├── inventory.ini.example    # Primer inventara servera
+├── manual.md                # Detaljan vodič za ručno podizanje servera
+├── README.md                # Ovaj fajl
+├── roles/                   # Ansible roles (ako se koriste)
+├── tasks/                   # Ansible task fajlovi (modularni koraci deploy-a)
+│   ├── system.yml           # Taskovi za sistemske pripreme i update
+│   ├── php.yml              # Taskovi za instalaciju i konfiguraciju PHP-a
+│   ├── nginx.yml            # Taskovi za instalaciju i konfiguraciju Nginx-a
+│   ├── redis.yml            # Taskovi za instalaciju i konfiguraciju Redis-a
+│   ├── app_setup.yml        # Taskovi za setup aplikacije
+│   ├── backup.yml           # Taskovi za backup baze
+│   ├── cache.yml            # Taskovi za čišćenje symfony cache-a
+│   ├── db.yml               # Taskovi za symfony komande oko konfiguracija baze
+│   ├── ssh_hardening.yml    # Taskovi za hardening SSH-a
+│   └── ufw.yml              # Taskovi za firewall
+├── templates/               # Jinja2 šabloni za konfiguracione fajlove
+│   ├── etc/                 # Šabloni za /etc konfiguracije
+│   │   ├── nginx/                           # Nginx konfiguracije
 │   │   │   └── sites-available/
-│   │   │       └── solidarity.j2           # Nginx vhost za aplikaciju
-│   │   ├── php/                            # PHP konfiguracije
+│   │   │       └── solidarity.j2            # Nginx vhost za aplikaciju
+│   │   ├── php/                             # PHP konfiguracije
 │   │   │   └── 8.3/
 │   │   │       └── fpm/
 │   │   │           └── conf.d/
-│   │   │               └── custom.ini.j2   # Custom PHP FPM podešavanja
+│   │   │               └── custom.ini.j2    # Custom PHP FPM podešavanja
 │   │   └── redis/
-│   │       └── redis.conf.j2               # Redis konfiguracija
+│   │       └── redis.conf.j2                # Redis konfiguracija
 │   └── var/
 │       └── www/
 │           └── solidarity/
-│               └── .env.local.j2           # Šablon za .env.local aplikacije
-├── vars.yml                 # Glavna fajl sa konfiguracijom promenljivih (nije u git-u)
-└── vars.yml.example         # Primer konfiguracije promenljivih
+│               └── .env.local.j2            # Šablon za .env.local aplikacije
+├── vars.yml                  # Glavna fajl sa konfiguracijom promenljivih (nije u git-u)
+└── vars.yml.example          # Primer konfiguracije promenljivih
 ```
 
 ## Automatski Deploy preko GitHub Actions
@@ -79,17 +83,33 @@ Playbook instalira sve potrebne zavisnosti:
 
 1. Kopirajte `vars.yml.example` u `vars.yml`:
 
+2. Instalirajte Ansible Galaxy role (npr. geerlingguy.mysql):
+
+```bash
+cd ansible
+ansible-galaxy install -r requirements.yml -p roles
+```
+
+> **Napomena:** Svi Ansible Galaxy roles (uključujući `geerlingguy.mysql`) su git-ignorovani i moraju biti instalirani pre pokretanja playbook-a. Ova komanda će ih instalirati u `roles` poddirektorijum.
+
+
 ```bash
 cp vars.yml.example vars.yml
 ```
 
-2. Izmenite `vars.yml` i podesite vrednosti za vašu sredinu:
+3. Izmenite `vars.yml` i podesite vrednosti za vašu sredinu:
 
-- Podešavanja aplikacije (domen, repozitorijum, itd.)
-- Baza podataka (korisnik, lozinka)
-- Redis lozinka
-- Email za SSL sertifikat
-- Ostali parametri po potrebi
+- `app_secret` - Tajni ključ aplikacije
+- `mysql_password` - Lozinka za MySQL bazu podataka
+- `mailer_dsn` - DSN za slanje emailova
+
+Opciono:
+
+- `domain_name` - Domen na kojem se aplikacija hostuje (podrazumevano je `mrezasolidarnosti.org`)
+- `mailer_sender` - Ako se testira slanje emailova sa nekog domena koji nije  mrezasolidarnosti.org, ovde treba da se unese email adresa sa tog domena
+- `admin_email` - Email za SSL sertifikat (samo ako je *enable_ssl* `true`)
+
+Postoji još dosta opcija koje možete podesiti u `vars.yml`, ali u većini slučajeva podrazumevane vrednosti nije potrebno menjati.
 
 ## Korišćenje
 
