@@ -22,9 +22,11 @@ class ProfileTransactionPaymentProofType extends AbstractType
                         'maxSizeMessage' => 'Dokument ne sme biti preko 1M',
                         'mimeTypes' => [
                             'application/pdf',
-                            'image/*',
+                            'image/jpeg',
+                            'image/png',
+                            'image/webp',
                         ],
-                        'mimeTypesMessage' => 'Molimo uploadajte validan dokument (PDF ili sliku)',
+                        'mimeTypesMessage' => 'Molimo uploadajte validan dokument (PDF, JPG, PNG ili WEBP)',
                     ]),
                 ],
                 'attr' => [
