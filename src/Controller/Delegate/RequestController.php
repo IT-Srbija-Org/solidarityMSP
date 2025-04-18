@@ -75,6 +75,10 @@ class RequestController extends AbstractController
             return $this->redirectToRoute('delegate_request_success');
         }
 
+        if($form->isSubmitted() && !$form->isValid()){
+            $this->addFlash('error', 'Došlo je do greške, molimo Vas da proverite unešene podatke.');
+        }
+
         return $this->render('delegate/request.html.twig', [
             'form' => $form->createView(),
         ]);
