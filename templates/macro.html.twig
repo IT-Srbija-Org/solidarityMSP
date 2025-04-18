@@ -1,3 +1,28 @@
+{% macro back(routeName, parameters = {}) %}
+    <div class="card bg-base-100 shadow m-10 mb-2">
+        <div class="px-3 py-4">
+            <a href="{{ path(routeName, parameters) }}" class="link link-primary no-underline">
+                <span class="ti ti-chevron-left text-2xl relative top-1"></span>
+                Nazad
+            </a>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro pagination(routeName, totalPages, currentPage) %}
+    {% if totalPages > 1 %}
+        <div class="join flex justify-center my-5">
+            <a href="{{ path(routeName, app.request.query.all|merge({ page: currentPage - 1 })) }}" class="join-item btn {% if currentPage == 1 %}btn-disabled{% endif %}">
+                <span class="ti ti-chevron-left text-2xl"></span> Predhodna
+            </a>
+
+            <a href="{{ path(routeName, app.request.query.all|merge({ page: currentPage + 1 })) }}" class="join-item btn {% if currentPage >= totalPages %}btn-disabled{% endif %}">
+                Sledeća <span class="ti ti-chevron-right text-2xl"></span>
+            </a>
+        </div>
+    {% endif %}
+{% endmacro %}
+
 {% macro nav_links(additional_link_classes = '') %}
     {% if app.user and app.user.userDonor %}
         <li>

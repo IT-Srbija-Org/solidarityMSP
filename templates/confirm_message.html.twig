@@ -2,7 +2,7 @@
 
 {% block body %}
     {% if backRouteName is defined %}
-        {% import "macro.twig" as macro %}
+        {% import "macro.html.twig" as macro %}
         {{ macro.back(backRouteName) }}
     {% endif %}
 

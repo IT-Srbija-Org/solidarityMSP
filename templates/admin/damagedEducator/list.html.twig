@@ -73,6 +73,6 @@
         </table>
     </div>
 
-    {% import "macro.twig" as macro %}
+    {% import "macro.html.twig" as macro %}
     {{ macro.pagination('admin_damaged_educator_list', damagedEducators.total_pages, damagedEducators.current_page) }}
 {% endblock %}

@@ -77,6 +77,6 @@
         </table>
     </div>
 
-    {% import "macro.twig" as macro %}
+    {% import "macro.html.twig" as macro %}
     {{ macro.pagination('admin_user_list', users.total_pages, users.current_page) }}
 {% endblock %}

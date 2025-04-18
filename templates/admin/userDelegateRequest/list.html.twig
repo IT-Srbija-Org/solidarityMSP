@@ -68,6 +68,6 @@
         </table>
     </div>
 
-    {% import "macro.twig" as macro %}
+    {% import "macro.html.twig" as macro %}
     {{ macro.pagination('admin_user_delegate_request_list', userDelegateRequests.total_pages, userDelegateRequests.current_page) }}
 {% endblock %}
