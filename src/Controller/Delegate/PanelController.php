@@ -196,8 +196,6 @@ class PanelController extends AbstractController
         ]);
     }
 
-
-
     #[Route('/osteceni/{id}/transakcije', name: 'damaged_educator_transactions')]
     public function damagedEducatorTransactions(DamagedEducator $damagedEducator, TransactionRepository $transactionRepository): Response
     {
@@ -218,6 +216,4 @@ class PanelController extends AbstractController
             'transactions' => $transactionRepository->findBy(['damagedEducator' => $damagedEducator]),
         ]);
     }
-
-
 }
