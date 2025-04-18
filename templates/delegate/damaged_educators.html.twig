@@ -28,8 +28,9 @@
                     </a>
                 </div>
 
-                <table class="table rounded-xl border border-base-200">
-                    <thead class="bg-gray-100">
+                {% if damagedEducators.total > 0 %}
+                    <table class="table rounded-xl border border-base-200">
+                        <thead class="bg-gray-100">
                         <tr>
                             <th>
                                 <span class="ti ti-user text-xl"></span>
@@ -57,36 +58,37 @@
                             </th>
                             <th></th>
                         </tr>
-                    </thead>
-                    <tbody>
-                    {% for damagedEducator in damagedEducators.items %}
-                        <tr class="hover:bg-gray-100">
-                            <td>{{ damagedEducator.name }}</td>
-                            <td>
-                                <div>{{ damagedEducator.school.name }}</div>
-                                <div class="text-gray-500">{{ damagedEducator.school.city.name }}</div>
-                            </td>
-                            <td>{{ damagedEducator.amount|number_format }}</td>
-                            <td>{{ damagedEducator.accountNumber }}</td>
-                            <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
-                            <td>{{ damagedEducator.createdBy.fullName }}</td>
-                            <td>
-                                <div class="flex gap-2 justify-end">
-                                    <a href="{{ path('delegate_panel_damaged_educator_transactions', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-disabled{% else %}btn-primary{% endif %} btn-sm flex tooltip" data-tip="Spisak IZU">
-                                        <span class="ti ti-credit-card text-xl"></span>
-                                    </a>
-                                    <a href="{{ path('delegate_panel_delete_damaged_educator', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Brisanje">
-                                        <span class="ti ti-trash text-xl"></span>
-                                    </a>
-                                    <a href="{{ path('delegate_panel_edit_damaged_educator', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Izmeni">
-                                        <span class="ti ti-edit text-xl"></span>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        {% for damagedEducator in damagedEducators.items %}
+                            <tr class="hover:bg-gray-100">
+                                <td>{{ damagedEducator.name }}</td>
+                                <td>
+                                    <div>{{ damagedEducator.school.name }}</div>
+                                    <div class="text-gray-500">{{ damagedEducator.school.city.name }}</div>
+                                </td>
+                                <td>{{ damagedEducator.amount|number_format }}</td>
+                                <td>{{ damagedEducator.accountNumber }}</td>
+                                <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
+                                <td>{{ damagedEducator.createdBy.fullName }}</td>
+                                <td>
+                                    <div class="flex gap-2 justify-end">
+                                        <a href="{{ path('delegate_panel_damaged_educator_transactions', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-disabled{% else %}btn-primary{% endif %} btn-sm flex tooltip" data-tip="Spisak IZU">
+                                            <span class="ti ti-credit-card text-xl"></span>
+                                        </a>
+                                        <a href="{{ path('delegate_panel_delete_damaged_educator', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Brisanje">
+                                            <span class="ti ti-trash text-xl"></span>
+                                        </a>
+                                        <a href="{{ path('delegate_panel_edit_damaged_educator', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Izmeni">
+                                            <span class="ti ti-edit text-xl"></span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
             </div>
         </div>
     </div>
