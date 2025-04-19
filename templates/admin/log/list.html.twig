@@ -1,0 +1,68 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block content %}
+    {% form_theme form with ['form.html.twig', 'form_inline.html.twig'] %}
+    {{ form(form) }}
+
+    <div class="overflow-x-auto mt-6">
+        <div class="text-gray-500 mb-2">
+            Ukupno rezultata: <span class="font-bold">{{ logs.total }}</span>
+        </div>
+
+        <table class="table rounded-xl border border-base-200">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th>ID</th>
+                    <th>
+                        <span class="ti ti-user text-xl"></span>
+                        User
+                    </th>
+                    <th>Action</th>
+                    <th>Entity Name</th>
+                    <th>Entity ID</th>
+                    <th>
+                        <span class="ti ti-calendar-event text-xl"></span>
+                        Created at
+                    </th>
+                    <th>Changes</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for log in logs.items %}
+                <tr class="hover:bg-gray-100">
+                    <td>{{ log.id }}</td>
+                    <td>
+                        {% if log.changedByUser %}
+                            {{ log.changedByUser.email }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ log.action }}</td>
+                    <td>{{ log.entityName }}</td>
+                    <td>{{ log.entityId }}</td>
+                    <td>
+                        {{ log.createdAt|date('d.m.Y.') }}
+                    </td>
+                    <td>
+                        <button class="btn" onclick="my_modal_{{ log.id }}.showModal()" data->Prikaži</button>
+
+                        <dialog id="my_modal_{{ log.id }}" class="modal">
+                            <div class="modal-box">{{ log.changes|pre|raw }}</div>
+
+                            <form method="dialog" class="modal-backdrop">
+                                <button>close</button>
+                            </form>
+                        </dialog>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    {% import "macro.html.twig" as macro %}
+    {{ macro.pagination('admin_log_list', logs.total_pages, logs.current_page) }}
+{% endblock %}

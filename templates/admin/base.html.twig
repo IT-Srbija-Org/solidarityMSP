@@ -112,6 +112,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ path('admin_log_list') }}" class="{% if app.request.get('_route') == 'admin_log_list' %}menu-active{% endif %}">
+                        <span class="ti ti-archive text-2xl"></span>
+                        Logovi
+                    </a>
+                </li>
+                <li>
                     <a href="{{ path('logout') }}">
                         <span class="ti ti-logout text-2xl"></span>
                         Izloguj se
