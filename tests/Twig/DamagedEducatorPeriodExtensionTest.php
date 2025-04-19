@@ -5,7 +5,6 @@ namespace App\Tests\Twig;
 use App\Entity\DamagedEducatorPeriod;
 use App\Twig\DamagedEducatorPeriodExtension;
 use PHPUnit\Framework\TestCase;
-use DateTime;
 
 class DamagedEducatorPeriodExtensionTest extends TestCase
 {
@@ -27,7 +26,7 @@ class DamagedEducatorPeriodExtensionTest extends TestCase
     public function testShowPeriodMonth(): void
     {
         // Create a mock DamagedEducatorPeriod with a specific date
-        $date = new DateTime('2023-05-15');
+        $date = new \DateTime('2023-05-15');
         $period = $this->createMock(DamagedEducatorPeriod::class);
         $period->method('getDate')->willReturn($date);
 
@@ -46,7 +45,7 @@ class DamagedEducatorPeriodExtensionTest extends TestCase
         ];
 
         foreach ($testCases as [$dateString, $expected]) {
-            $date = new DateTime($dateString);
+            $date = new \DateTime($dateString);
             $period = $this->createMock(DamagedEducatorPeriod::class);
             $period->method('getDate')->willReturn($date);
 
