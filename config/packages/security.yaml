@@ -30,6 +30,12 @@ security:
             form_login:
                 login_path: login
 
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 7776000
+                signature_properties: ['id']
+                always_remember_me: true
+
             logout:
                 path: logout
                 # where to redirect after logout
