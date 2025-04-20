@@ -119,10 +119,15 @@
 
     {# QR Modal (single instance, content loaded dynamically) #}
     <dialog id="qr_modal" class="modal">
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+
         <div class="modal-box" id="qr_modal_box">
             <form method="dialog">
                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
+
             <div id="qr_modal_content">
                 <!-- QR content will be loaded here -->
             </div>
