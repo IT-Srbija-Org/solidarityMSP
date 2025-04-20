@@ -117,7 +117,6 @@
         </div>
     </div>
 
-    {# QR Modal (single instance, content loaded dynamically) #}
     <dialog id="qr_modal" class="modal">
         <form method="dialog" class="modal-backdrop">
             <button>close</button>
@@ -128,21 +127,20 @@
                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
 
-            <div id="qr_modal_content">
-                <!-- QR content will be loaded here -->
-            </div>
+            <div id="qr_modal_content"></div>
         </div>
     </dialog>
-
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+
     <script>
         function openQrModal(transactionId) {
             const modal = document.getElementById('qr_modal');
             const contentDiv = document.getElementById('qr_modal_content');
             contentDiv.innerHTML = '<div class="text-center my-4">Učitavanje...</div>';
+
             fetch('/profil/qr-kod/' + transactionId)
                 .then(response => response.text())
                 .then(html => {
@@ -151,6 +149,7 @@
                 .catch(() => {
                     contentDiv.innerHTML = '<div class="text-error">Greška pri učitavanju QR koda.</div>';
                 });
+
             modal.showModal();
         }
     </script>
