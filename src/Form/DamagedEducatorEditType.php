@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -26,24 +27,27 @@ class DamagedEducatorEditType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $schools = $options['entityManager']->getRepository(School::class)
+            ->createQueryBuilder('s')
+            ->innerJoin('s.userDelegateSchools', 'uds')
+            ->where('uds.user = :user')
+            ->setParameter('user', $options['user'])
+            ->getQuery()
+            ->getResult();
+
+        $schoolChoices = [];
+        foreach($schools as $school) {
+            $schoolChoices[$school->getName() .' ('.$school->getCity()->getName().')'] = $school->getId();
+        }
+
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Ime',
             ])
-            ->add('school', EntityType::class, [
-                'class' => School::class,
-                'placeholder' => '',
+            ->add('school', ChoiceType::class, [
+                'placeholder' => count($schoolChoices) === 1 ? null : '',
                 'label' => 'Škola',
-                'query_builder' => function (EntityRepository $er) use ($options): QueryBuilder {
-                    return $er->createQueryBuilder('s')
-                        ->innerJoin('s.userDelegateSchools', 'uds')
-                        ->where('uds.user = :user')
-                        ->setParameter('user', $options['user']);
-                },
-                'choice_value' => 'id',
-                'choice_label' => function (School $school): string {
-                    return $school->getName().' ('.$school->getCity()->getName().')';
-                },
+                'choices' => $schoolChoices,
             ])
             ->add('amount', IntegerType::class, [
                 'label' => 'Cifra',
@@ -63,6 +67,7 @@ class DamagedEducatorEditType extends AbstractType
         $resolver->setDefaults([
             'data_class' => DamagedEducator::class,
             'user' => null,
+            'entityManager' => null,
         ]);
     }
 }

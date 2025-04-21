@@ -91,6 +91,7 @@ class PanelController extends AbstractController
 
         $form = $this->createForm(DamagedEducatorEditType::class, $damagedEducator, [
             'user' => $this->getUser(),
+            'entityManager' => $this->entityManager,
         ]);
 
         $form->handleRequest($request);
@@ -132,6 +133,7 @@ class PanelController extends AbstractController
 
         $form = $this->createForm(DamagedEducatorEditType::class, $damagedEducator, [
             'user' => $this->getUser(),
+            'entityManager' => $this->entityManager,
         ]);
 
         $form->handleRequest($request);
