@@ -30,6 +30,7 @@ class UserDelegateRequestEditType extends AbstractType
                 'mapped' => false,
             ])
             ->add('phone', TextType::class, [
+                'required' => false,
                 'label' => 'Broj telefona',
             ])
             ->add('schoolType', TextType::class, [
@@ -51,10 +52,12 @@ class UserDelegateRequestEditType extends AbstractType
                 'mapped' => false,
             ])
             ->add('totalEducators', IntegerType::class, [
+                'required' => false,
                 'label' => 'Ukupan broj zaposlenih u školi',
                 'disabled' => true,
             ])
             ->add('totalBlockedEducators', IntegerType::class, [
+                'required' => false,
                 'label' => 'Ukupno u obustavi',
                 'disabled' => true,
             ])

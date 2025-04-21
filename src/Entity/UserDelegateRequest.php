@@ -31,7 +31,7 @@ class UserDelegateRequest
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     #[Phone]
     private ?string $phone = null;
 
@@ -47,11 +47,11 @@ class UserDelegateRequest
     #[ORM\JoinColumn(nullable: false)]
     private ?School $school = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Assert\LessThan(value: 1000, message: 'Ukupan broj zaposlenih u školi ne može da bude veći od 1000')]
     private ?int $totalEducators = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Assert\LessThan(propertyPath: 'totalEducators', message: 'Ukupno u obustavi ne može da bude veće od ukupnog broja zaposlenih')]
     private ?int $totalBlockedEducators = null;
 
@@ -92,7 +92,7 @@ class UserDelegateRequest
         return $this->phone;
     }
 
-    public function setPhone(string $phone): static
+    public function setPhone(?string $phone): static
     {
         $this->phone = $phone;
 
@@ -140,7 +140,7 @@ class UserDelegateRequest
         return $this->totalEducators;
     }
 
-    public function setTotalEducators(int $totalEducators): static
+    public function setTotalEducators(?int $totalEducators): static
     {
         $this->totalEducators = $totalEducators;
 
@@ -152,7 +152,7 @@ class UserDelegateRequest
         return $this->totalBlockedEducators;
     }
 
-    public function setTotalBlockedEducators(int $totalBlockedEducators): static
+    public function setTotalBlockedEducators(?int $totalBlockedEducators): static
     {
         $this->totalBlockedEducators = $totalBlockedEducators;
 

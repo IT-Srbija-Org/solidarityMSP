@@ -44,12 +44,6 @@ final class HomeController extends AbstractController
             ->getSingleScalarResult();
 
         $qb = $entityManager->createQueryBuilder();
-        $totalEducatorsSum = $qb->select('SUM(e.amount)')
-            ->from(DamagedEducator::class, 'e')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $qb = $entityManager->createQueryBuilder();
         $totalAdmins = $qb->select('COUNT(u.id)')
             ->from(User::class, 'u')
             ->andWhere('u.roles LIKE :role')
@@ -62,8 +56,6 @@ final class HomeController extends AbstractController
             'totalDonors' => $totalDonors,
             'totalDonorsSum' => $totalDelegatesSum,
             'totalDelegate' => $totalDelegates,
-            'totalEducators' => $entityManager->getRepository(DamagedEducator::class)->count(),
-            'totalEducatorsSum' => $totalEducatorsSum,
             'totalSchool' => $entityManager->getRepository(School::class)->count(),
             'totalCities' => $entityManager->getRepository(City::class)->count(),
             'totalUsers' => $entityManager->getRepository(User::class)->count(['isActive' => 1]),
