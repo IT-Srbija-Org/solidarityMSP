@@ -3,8 +3,11 @@
 namespace App\Command;
 
 use App\Entity\City;
+use App\Entity\DamagedEducator;
+use App\Entity\DamagedEducatorPeriod;
 use App\Entity\School;
 use App\Entity\SchoolType;
+use App\Entity\Transaction;
 use App\Entity\User;
 use App\Entity\UserDelegateRequest;
 use App\Entity\UserDelegateSchool;
@@ -19,6 +22,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Process\Process;
 
 #[AsCommand(
     name: 'app:database-migration',
@@ -42,16 +46,54 @@ class DatabaseMigrationCommand extends Command
 
         $io->writeln('Migration started at ' . date('Y-m-d H:i:s'));
 
+        $this->clearDatabases();
+        $this->createPeriod($io);
         $this->syncCities($io);
         $this->syncUsers($io);
         $this->syncSchoolTypes($io);
         $this->syncSchool($io);
         $this->syncDonors($io);
         $this->syncDelegate($io);
+        $this->syncDamagedEducator($io);
+        $this->syncTransactions($io);
 
         $io->success('Migration completed at ' . date('Y-m-d H:i:s'));
 
         return Command::SUCCESS;
+    }
+
+    public function clearDatabases(): void
+    {
+        $commands = [
+            ['php', 'bin/console', 'doctrine:schema:drop', '--force'],
+            ['php', 'bin/console', 'doctrine:schema:update', '--force'],
+        ];
+
+        foreach ($commands as $command) {
+            $process = new Process($command);
+            $process->run();
+        }
+    }
+
+    public function createPeriod(SymfonyStyle $io): void
+    {
+        $io->writeln('Creating period...');
+
+        $entity = new DamagedEducatorPeriod();
+        $entity->setMonth(2);
+        $entity->setYear(2025);
+        $entity->setActive(false);
+        $this->entityManager->persist($entity);
+
+        $entity = new DamagedEducatorPeriod();
+        $entity->setMonth(3);
+        $entity->setYear(2025);
+        $entity->setActive(true);
+        $this->entityManager->persist($entity);
+
+        $this->entityManager->flush();
+
+        $io->writeln('Period created');
     }
 
     public function syncUsers(SymfonyStyle $io): void
@@ -275,6 +317,98 @@ class DatabaseMigrationCommand extends Command
 
         $this->entityManager->clear();
         $io->writeln(sprintf('Synced %d schools', $count));
+    }
+
+    public function syncDamagedEducator(SymfonyStyle $io): void
+    {
+        $io->writeln('Syncing damaged educators...');
+        $count = 0;
+
+        $items = $this->oldConnection->executeQuery('SELECT * FROM educator')->iterateAssociative();
+        $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
+            'month' => 2,
+            'year' => 2025
+        ]);
+
+        foreach ($items as $item) {
+            if ($item['amount'] < 500) {
+                continue;
+            }
+
+            $entity = new DamagedEducator();
+            $entity->setName($item['name']);
+            $entity->setAccountNumber($item['accountNumber']);
+            $entity->setAmount($item['amount']);
+            $entity->setPeriod($period);
+
+            $city = $this->entityManager->getRepository(City::class)->findOneBy(['name' => $item['city']]);
+            $school = $this->entityManager->getRepository(School::class)->findOneBy([
+                'city' => $city,
+                'name' => $item['schoolName']
+            ]);
+
+            $entity->setSchool($school);
+
+            $this->entityManager->persist($entity);
+            $this->entityManager->flush();
+
+            $this->updateDates('damaged_educator', $entity->getId(), $item['createdAt'], $item['updatedAt']);
+
+            $count++;
+            if ($count % 25 == 0) {
+                $this->entityManager->clear();
+
+                $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
+                    'month' => 2,
+                    'year' => 2025
+                ]);
+            }
+        }
+
+        $this->entityManager->clear();
+        $io->writeln(sprintf('Synced %d damaged educators', $count));
+    }
+
+    public function syncTransactions(SymfonyStyle $io): void
+    {
+        $io->writeln('Syncing transactions...');
+        $count = 0;
+
+        $items = $this->oldConnection->executeQuery('SELECT * FROM transaction')->iterateAssociative();
+        foreach ($items as $item) {
+            if ($item['amount'] < 500) {
+                continue;
+            }
+
+            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $item['email']]);
+            if (empty($user)) {
+                continue;
+            }
+
+            $damagedEducator = $this->entityManager->getRepository(DamagedEducator::class)->findOneBy(['accountNumber' => $item['accountNumber']]);
+            if (empty($damagedEducator)) {
+                continue;
+            }
+
+            $entity = new Transaction();
+            $entity->setUser($user);
+            $entity->setDamagedEducator($damagedEducator);
+            $entity->setAccountNumber($item['accountNumber']);
+            $entity->setAmount($item['amount']);
+
+            $this->entityManager->persist($entity);
+            $this->entityManager->flush();
+
+            $this->updateDates('transaction', $entity->getId(), $item['createdAt'], $item['updatedAt']);
+
+            $count++;
+            if ($count % 25 == 0) {
+                $this->entityManager->clear();
+            }
+        }
+
+        $this->entityManager->clear();
+        $io->writeln(sprintf('Synced %d transactions', $count));
     }
 
     public function syncDonors(SymfonyStyle $io): void

@@ -70,7 +70,13 @@
                                 <td>{{ damagedEducator.amount|number_format }}</td>
                                 <td>{{ damagedEducator.accountNumber }}</td>
                                 <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
-                                <td>{{ damagedEducator.createdBy.fullName }}</td>
+                                <td>
+                                    {% if damagedEducator.createdBy %}
+                                        {{ damagedEducator.createdBy.fullName }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <div class="flex gap-2 justify-end">
                                         <a href="{{ path('delegate_panel_damaged_educator_transactions', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-disabled{% else %}btn-primary{% endif %} btn-sm flex tooltip" data-tip="Spisak IZU">

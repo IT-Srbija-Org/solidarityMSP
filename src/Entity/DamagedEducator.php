@@ -36,7 +36,7 @@ class DamagedEducator
     private ?string $accountNumber = null;
 
     #[ORM\ManyToOne(inversedBy: 'damagedEducators')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn]
     private ?User $createdBy = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
