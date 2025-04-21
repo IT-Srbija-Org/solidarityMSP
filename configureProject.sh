@@ -24,11 +24,11 @@ docker exec solidarity-php-container php composer.phar install;
 # Create database
 docker exec solidarity-php-container php bin/console doctrine:database:create --if-not-exists;
 
-# Create tables
+# Dump and create tables
 docker exec solidarity-php-container php bin/console doctrine:schema:drop --force;
 docker exec solidarity-php-container php bin/console doctrine:schema:update --force;
 
-# Load fixtures in order:
+# Load fixtures
 docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=1 --no-interaction;
 docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=2 --append --no-interaction;
 docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=3 --append --no-interaction;
