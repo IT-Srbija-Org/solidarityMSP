@@ -22,7 +22,7 @@
                     <div class="chat-image">
                         <div class="avatar avatar-placeholder">
                             <div class="bg-base-300 text-base-content w-12 rounded-full">
-                                <span>{{ userDelegateRequest.user.fullName|split(' ')|map(name => name|first)|join }}</span>
+                                <span>{{ userDelegateRequest.fullName|split(' ')|map(name => name|first)|join }}</span>
                             </div>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                 <div class="grid gap-4">
                     <div>
                         <div class="text-sm text-gray-500">Ime i prezime</div>
-                        <div>{{ userDelegateRequest.user.fullName }}</div>
+                        <div>{{ userDelegateRequest.fullName }}</div>
                     </div>
                     <div>
                         <div class="text-sm text-gray-500">Email</div>

@@ -41,7 +41,7 @@
                 <tr class="hover:bg-gray-100">
                     <td>{{ userDelegateRequest.id }}</td>
                     <td>
-                        <div>{{ userDelegateRequest.user.fullName }}</div>
+                        <div>{{ userDelegateRequest.fullName }}</div>
                         <a href="{{ path('admin_user_edit', { 'id': userDelegateRequest.user.id }) }}" class="link link-primary link-hover">
                             {{ userDelegateRequest.user.email }}
                         </a>
