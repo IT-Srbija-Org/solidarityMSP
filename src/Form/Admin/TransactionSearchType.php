@@ -3,8 +3,11 @@
 namespace App\Form\Admin;
 
 use App\Entity\City;
+use App\Entity\DamagedEducatorPeriod;
 use App\Entity\School;
 use App\Entity\Transaction;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -19,6 +22,30 @@ class TransactionSearchType extends AbstractType
     {
         $builder
             ->setMethod('GET')
+            ->add('period', EntityType::class, [
+                'required' => false,
+                'class' => DamagedEducatorPeriod::class,
+                'placeholder' => '',
+                'label' => 'Period',
+                'choice_value' => 'id',
+                'choice_label' => function (DamagedEducatorPeriod $damagedEducatorPeriod): string {
+                    $month = $damagedEducatorPeriod->getDate()->format('M');
+
+                    $type = match ($damagedEducatorPeriod->getType()) {
+                        DamagedEducatorPeriod::TYPE_FIRST_HALF => ' (1/2)',
+                        DamagedEducatorPeriod::TYPE_SECOND_HALF => ' (2/2)',
+                        default => '',
+                    };
+
+                    return $month.$type.', '.$damagedEducatorPeriod->getYear();
+                },
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+                    return $er->createQueryBuilder('s')
+                        ->orderBy('s.year', 'DESC')
+                        ->addOrderBy('s.month', 'DESC')
+                        ->addOrderBy('s.id', 'DESC');
+                },
+            ])
             ->add('donor', TextType::class, [
                 'required' => false,
                 'label' => 'Donator (Email)',

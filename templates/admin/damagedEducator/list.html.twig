@@ -49,10 +49,7 @@
             {% for damagedEducator in damagedEducators.items %}
                 <tr class="hover:bg-gray-100">
                     <td>{{ damagedEducator.id }}</td>
-                    <td>
-                        <div>{{ damagedEducator.period|showPeriodMonth }}</div>
-                        <div class="text-gray-500">{{ damagedEducator.period.year }}</div>
-                    </td>
+                    <td>{{ damagedEducator.period|format_period(true) }}</td>
                     <td>{{ damagedEducator.name }}</td>
                     <td>
                         <div>{{ damagedEducator.school.name }}</div>

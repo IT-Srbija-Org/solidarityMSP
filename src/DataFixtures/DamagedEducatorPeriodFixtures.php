@@ -20,15 +20,30 @@ class DamagedEducatorPeriodFixtures extends Fixture implements FixtureGroupInter
             $date = date('Y-m-d', strtotime("-$x month"));
             $isActive = (1 === $x);
 
-            $educatorPeriod = new DamagedEducatorPeriod();
-            $educatorPeriod->setMonth(date('m', strtotime($date)));
-            $educatorPeriod->setYear(date('Y', strtotime($date)));
-            $educatorPeriod->setActive($isActive);
+            $month = date('m', strtotime($date));
+            $year = date('Y', strtotime($date));
 
-            $this->entityManager->persist($educatorPeriod);
+            if ($month == date('m', strtotime('-2 month'))) {
+                $this->createPeriod($month, $year, $isActive, DamagedEducatorPeriod::TYPE_FIRST_HALF);
+                $this->createPeriod($month, $year, $isActive, DamagedEducatorPeriod::TYPE_SECOND_HALF);
+                continue;
+            }
+
+            $this->createPeriod($month, $year, $isActive, DamagedEducatorPeriod::TYPE_FULL);
         }
 
         $manager->flush();
+    }
+
+    private function createPeriod(int $month, int $year, bool $isActive, string $type): void
+    {
+        $educatorPeriod = new DamagedEducatorPeriod();
+        $educatorPeriod->setMonth($month);
+        $educatorPeriod->setYear($year);
+        $educatorPeriod->setActive($isActive);
+        $educatorPeriod->setType($type);
+
+        $this->entityManager->persist($educatorPeriod);
     }
 
     /**

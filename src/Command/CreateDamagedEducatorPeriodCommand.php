@@ -26,7 +26,8 @@ class CreateDamagedEducatorPeriodCommand extends Command
     {
         $this
             ->addArgument('month', InputArgument::REQUIRED, 'Month number (1-12)')
-            ->addArgument('year', InputArgument::REQUIRED, 'Year (2020-2030)');
+            ->addArgument('year', InputArgument::REQUIRED, 'Year (2020-2030)')
+            ->addArgument('type', InputArgument::REQUIRED, '"first", "second", "full"');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -35,6 +36,7 @@ class CreateDamagedEducatorPeriodCommand extends Command
 
         $month = (int) $input->getArgument('month');
         $year = (int) $input->getArgument('year');
+        $type = $input->getArgument('type');
 
         // Validate month
         if ($month < 1 || $month > 12) {
@@ -48,6 +50,10 @@ class CreateDamagedEducatorPeriodCommand extends Command
             $io->error('Year must be greater than 2025');
 
             return Command::FAILURE;
+        }
+
+        if ('first' !== DamagedEducatorPeriod::TYPE_FIRST_HALF && 'second' !== DamagedEducatorPeriod::TYPE_SECOND_HALF && 'full' !== DamagedEducatorPeriod::TYPE_FULL) {
+            $io->error('Type must be "first-half", "second-half" or "full"');
         }
 
         // Validate not in future
@@ -64,6 +70,7 @@ class CreateDamagedEducatorPeriodCommand extends Command
         $entity = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
             'month' => $month,
             'year' => $year,
+            'type' => $type,
         ]);
 
         if ($entity) {
@@ -76,11 +83,12 @@ class CreateDamagedEducatorPeriodCommand extends Command
         $entity = new DamagedEducatorPeriod();
         $entity->setMonth($month);
         $entity->setYear($year);
+        $entity->setType($type);
 
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 
-        $io->success(sprintf('Created new period: %d %d', $month, $year));
+        $io->success(sprintf('Created new period: %s %d %d', $type, $month, $year));
 
         return Command::SUCCESS;
     }

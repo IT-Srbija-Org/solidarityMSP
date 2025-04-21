@@ -8,7 +8,7 @@
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <span class="ti ti-school text-3xl"></span>
-                Oštećeni za {{ period.date|date('F')|trans }}, {{ period.year }}
+                Oštećeni za {{ period|format_period }}
             </h2>
 
             {{ include('flashes.html.twig') }}
