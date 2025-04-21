@@ -53,6 +53,8 @@ class RequestController extends AbstractController
             if ($user) {
                 $form->get('email')->addError(new FormError('Korisnik sa ovom email adresom vec postoji, molimo Vas da se ulogujete i da nastavite proces.'));
                 $userRepository->sendLoginLink($user);
+            } elseif (preg_match('/edu\.rs$/i', $email)) {
+                $form->get('email')->addError(new FormError('Nije dozvoljeno korišćenje email adresa "edu.rs" zbog bezbednosnih razloga. Molimo vas da unesete Vašu ličnu email adresu.'));
             } else {
                 $user = $userRepository->createUser($firstName, $lastName, $email);
                 $userRepository->sendVerificationLink($user, 'delegate');
