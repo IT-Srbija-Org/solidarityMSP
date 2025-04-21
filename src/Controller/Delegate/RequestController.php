@@ -45,14 +45,16 @@ class RequestController extends AbstractController
 
         $form->handleRequest($request);
         if (!$user && $form->isSubmitted() && $form->isValid()) {
-            $firstName = $form->get('firstName')->getData();
-            $lastName = $form->get('lastName')->getData();
+            $firstName = $userDelegateRequest->getFirstName();
+            $lastName = $userDelegateRequest->getLastName();
             $email = $form->get('email')->getData();
 
             $user = $userRepository->findOneBy(['email' => $email]);
             if ($user) {
                 $form->get('email')->addError(new FormError('Korisnik sa ovom email adresom vec postoji, molimo Vas da se ulogujete i da nastavite proces.'));
                 $userRepository->sendLoginLink($user);
+            } elseif (preg_match('/edu\.rs$/i', $email)) {
+                $form->get('email')->addError(new FormError('Nije dozvoljeno korišćenje email adresa "edu.rs" zbog bezbednosnih razloga. Molimo vas da unesete Vašu ličnu email adresu.'));
             } else {
                 $user = $userRepository->createUser($firstName, $lastName, $email);
                 $userRepository->sendVerificationLink($user, 'delegate');
@@ -60,13 +62,6 @@ class RequestController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $firstName = $form->get('firstName')->getData();
-            $lastName = $form->get('lastName')->getData();
-
-            $user->setFirstName($firstName);
-            $user->setLastName($lastName);
-            $this->entityManager->persist($user);
-
             $userDelegateRequest->setUser($user);
             $this->entityManager->persist($userDelegateRequest);
 

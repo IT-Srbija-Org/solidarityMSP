@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\DamagedEducator;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,6 +16,20 @@ class DamagedEducatorRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, DamagedEducator::class);
+    }
+
+    public function getFromUser(User $user): array
+    {
+        $userDelegateSchools = $user->getUserDelegateSchools();
+
+        $schoolIds = [];
+        foreach ($userDelegateSchools as $userDelegateSchool) {
+            $schoolIds[] = $userDelegateSchool->getSchool()->getId();
+        }
+
+        return $this->findBy([
+            'school' => $schoolIds,
+        ]);
     }
 
     public function search(array $criteria, int $page = 1, int $limit = 50): array

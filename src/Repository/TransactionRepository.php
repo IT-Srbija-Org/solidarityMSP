@@ -28,6 +28,11 @@ class TransactionRepository extends ServiceEntityRepository
                 ->setParameter('user', $criteria['user']);
         }
 
+        if (isset($criteria['period'])) {
+            $qb->andWhere('e.period = :period')
+                ->setParameter('period', $criteria['period']);
+        }
+
         if (!empty($criteria['donor'])) {
             $qb->leftJoin('t.user', 'u')
                 ->andWhere('u.email LIKE :donor')

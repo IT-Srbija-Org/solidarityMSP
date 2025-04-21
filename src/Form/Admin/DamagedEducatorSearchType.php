@@ -28,14 +28,21 @@ class DamagedEducatorSearchType extends AbstractType
                 'label' => 'Period',
                 'choice_value' => 'id',
                 'choice_label' => function (DamagedEducatorPeriod $damagedEducatorPeriod): string {
-                    $monthName = $damagedEducatorPeriod->getDate()->format('M');
+                    $month = $damagedEducatorPeriod->getDate()->format('M');
 
-                    return $monthName.' '.$damagedEducatorPeriod->getYear();
+                    $type = match ($damagedEducatorPeriod->getType()) {
+                        DamagedEducatorPeriod::TYPE_FIRST_HALF => ' (1/2)',
+                        DamagedEducatorPeriod::TYPE_SECOND_HALF => ' (2/2)',
+                        default => '',
+                    };
+
+                    return $month.$type.', '.$damagedEducatorPeriod->getYear();
                 },
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
                     return $er->createQueryBuilder('s')
                         ->orderBy('s.year', 'DESC')
-                        ->addOrderBy('s.month', 'DESC');
+                        ->addOrderBy('s.month', 'DESC')
+                        ->addOrderBy('s.id', 'DESC');
                 },
             ])
             ->add('name', TextType::class, [

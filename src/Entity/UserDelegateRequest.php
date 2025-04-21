@@ -27,6 +27,16 @@ class UserDelegateRequest
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(message: 'Ovo polje je obavezno')]
+    #[Assert\Length(min: 3, max: 100, minMessage: 'Polje mora imati bar {{ limit }} karaktera', maxMessage: 'Polje ne može imati više od {{ limit }} karaktera')]
+    #[ORM\Column(length: 255)]
+    private ?string $firstName = null;
+
+    #[Assert\NotBlank(message: 'Ovo polje je obavezno')]
+    #[Assert\Length(min: 3, max: 100, minMessage: 'Polje mora imati bar {{ limit }} karaktera', maxMessage: 'Polje ne može imati više od {{ limit }} karaktera')]
+    #[ORM\Column(length: 255)]
+    private ?string $lastName = null;
+
     #[ORM\OneToOne(inversedBy: 'userDelegateRequest')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -73,6 +83,35 @@ class UserDelegateRequest
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(?string $firstName): static
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName): static
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->firstName.' '.$this->lastName;
     }
 
     public function getUser(): ?User

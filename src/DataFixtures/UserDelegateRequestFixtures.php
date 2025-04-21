@@ -73,6 +73,8 @@ class UserDelegateRequestFixtures extends Fixture implements FixtureGroupInterfa
 
         foreach ($users as $user) {
             $userDelegateRequest = new UserDelegateRequest();
+            $userDelegateRequest->setFirstName($user->getFirstName());
+            $userDelegateRequest->setLastName($user->getLastName());
             $userDelegateRequest->setUser($user);
 
             // Mobile operator prefixes

@@ -30,13 +30,9 @@ class RegistrationDelegateType extends AbstractType
         $builder
             ->add('firstName', TextType::class, [
                 'label' => 'Ime',
-                'mapped' => false,
-                'data' => $options['user'] ? $options['user']->getFirstName() : null,
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Prezime',
-                'mapped' => false,
-                'data' => $options['user'] ? $options['user']->getLastName() : null,
             ])
             ->add('email', TextType::class, [
                 'label' => 'Email',

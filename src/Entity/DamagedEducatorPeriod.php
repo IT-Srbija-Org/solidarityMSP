@@ -9,10 +9,14 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DamagedEducatorPeriodRepository::class)]
-#[ORM\Index(name: 'idx_search', columns: ['month', 'year'])]
+#[ORM\Index(name: 'idx_search', columns: ['month', 'year', 'type'])]
 #[ORM\HasLifecycleCallbacks]
 class DamagedEducatorPeriod
 {
+    public const TYPE_FIRST_HALF = 'first-half';
+    public const TYPE_SECOND_HALF = 'second-half';
+    public const TYPE_FULL = 'full';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -23,6 +27,9 @@ class DamagedEducatorPeriod
 
     #[ORM\Column]
     private ?int $year = null;
+
+    #[ORM\Column(length: 30)]
+    private ?string $type = null;
 
     #[ORM\Column]
     private ?bool $active = true;
@@ -69,6 +76,18 @@ class DamagedEducatorPeriod
     public function setYear(int $year): static
     {
         $this->year = $year;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }
