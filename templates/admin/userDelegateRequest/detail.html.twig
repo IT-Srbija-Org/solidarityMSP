@@ -51,17 +51,19 @@
     <div class="grid gap-4 md:grid-cols-2">
         <div class="card bg-base-200 h-fit">
             <div class="card-body">
-                <h2 class="card-title">
-                    <span class="ti ti-user"></span>
-                    Osnovni podaci
-                </h2>
                 <div class="grid gap-4">
                     <div>
-                        <div class="text-sm text-gray-500">Ime i prezime</div>
+                        <div class="text-sm text-gray-500">
+                            <span class="ti ti-user"></span>
+                            Ime i prezime
+                        </div>
                         <div>{{ userDelegateRequest.fullName }}</div>
                     </div>
                     <div>
-                        <div class="text-sm text-gray-500">Email</div>
+                        <div class="text-sm text-gray-500">
+                            <span class="ti ti-mail"></span>
+                            Email
+                        </div>
                         <div>
                             <a href="{{ path('admin_user_edit', { 'id': userDelegateRequest.user.id }) }}" class="link link-primary link-hover">
                                 {{ userDelegateRequest.user.email }}
@@ -69,31 +71,59 @@
                         </div>
                     </div>
                     <div>
-                        <div class="text-sm text-gray-500">Broj telefona</div>
+                        <div class="text-sm text-gray-500">
+                            <span class="ti ti-phone"></span>
+                            Broj telefona
+                        </div>
                         <div>{{ userDelegateRequest.phone|phone_format }}</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">
+                            <span class="ti ti-calendar-event"></span>
+                            Datum krairanja
+                        </div>
+
+                        <div>{{ userDelegateRequest.createdAt|date('H:i d.m.Y') }}</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">
+                            <span class="ti ti-calendar-event"></span>
+                            Datum poslednje izmene
+                        </div>
+
+                        <div>{{ userDelegateRequest.updatedAt|date('H:i d.m.Y') }}</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card bg-base-200 h-fit">
+        <div class="card bg-base-200">
             <div class="card-body">
-                <h2 class="card-title">
-                    <span class="ti ti-building-community"></span>
-                    Lokacija
-                </h2>
                 <div class="grid gap-4">
                     <div>
-                        <div class="text-sm text-gray-500">Grad</div>
+                        <div class="text-sm text-gray-500">
+                            <span class="ti ti-building-community"></span>
+                            Grad
+                        </div>
+
                         <div>{{ userDelegateRequest.city.name }}</div>
                     </div>
                     <div>
-                        <div class="text-sm text-gray-500">Škola</div>
+                        <div class="text-sm text-gray-500">
+                            <span class="ti ti-building"></span>
+                            Škola
+                        </div>
+
                         <div>{{ userDelegateRequest.school.name }}</div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
+    <div class="w-full flex justify-end">
+        <a href="{{ path('admin_user_delegate_request_edit', { 'id': userDelegateRequest.id }) }}" class="btn {% if userDelegateRequest.status == 1 %}btn-primary{% else %}btn-disabled{% endif %} flex tooltip" data-tip="Izmeni">
+            <span class="ti ti-edit text-xl"></span> Izmeni
+        </a>
     </div>
 {% endblock %}
