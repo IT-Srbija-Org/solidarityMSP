@@ -39,8 +39,11 @@ class PanelController extends AbstractController
     }
 
     #[Route('/osteceni', name: 'damaged_educators')]
-    public function damagedEducators(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, DamagedEducatorRepository $damagedEducatorRepository): Response
-    {
+    public function damagedEducators(
+        Request $request,
+        DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository,
+        DamagedEducatorRepository $damagedEducatorRepository
+    ): Response {
         $periodId = $request->query->getInt('period');
         $period = $damagedEducatorPeriodRepository->find($periodId);
         if (empty($period)) {
@@ -77,7 +80,7 @@ class PanelController extends AbstractController
     }
 
     #[Route('/prijavi-ostecenog', name: 'new_damaged_educator')]
-    public function newDamagedEducator(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository): Response
+    public function newDamagedEducator(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, DamagedEducatorRepository $damagedEducatorRepository): Response
     {
         $periodId = $request->query->getInt('period');
         $period = $damagedEducatorPeriodRepository->find($periodId);
@@ -106,14 +109,18 @@ class PanelController extends AbstractController
             ]);
         }
 
+        /** @var User $user */
+        $user = $this->getUser();
+
         return $this->render('delegate/edit_damaged_educator.html.twig', [
             'form' => $form->createView(),
             'damagedEducator' => $damagedEducator,
+            'damagedEducators' => $damagedEducatorRepository->getFromUser($user),
         ]);
     }
 
     #[Route('/osteceni/{id}/izmeni-podatke', name: 'edit_damaged_educator')]
-    public function editDamagedEducator(Request $request, DamagedEducator $damagedEducator): Response
+    public function editDamagedEducator(Request $request, DamagedEducator $damagedEducator, DamagedEducatorRepository $damagedEducatorRepository): Response
     {
         if (!$damagedEducator->getPeriod()->isActive()) {
             throw $this->createAccessDeniedException();
@@ -149,9 +156,13 @@ class PanelController extends AbstractController
             ]);
         }
 
+        /** @var User $user */
+        $user = $this->getUser();
+
         return $this->render('delegate/edit_damaged_educator.html.twig', [
             'form' => $form->createView(),
             'damagedEducator' => $damagedEducator,
+            'damagedEducators' => $damagedEducatorRepository->getFromUser($user),
         ]);
     }
 
@@ -175,7 +186,7 @@ class PanelController extends AbstractController
         }
 
         $form = $this->createForm(ConfirmType::class, null, [
-            'message' => 'Potvrđujem da želim da obrišem oštećenog "'.$damagedEducator->getName().'".',
+            'message' => 'Potvrđujem da želim da obrišem oštećenog "' . $damagedEducator->getName() . '".',
             'submit_message' => 'Potvrdi',
             'submit_class' => 'btn btn-error',
         ]);
@@ -199,8 +210,10 @@ class PanelController extends AbstractController
     }
 
     #[Route('/osteceni/{id}/transakcije', name: 'damaged_educator_transactions')]
-    public function damagedEducatorTransactions(DamagedEducator $damagedEducator, TransactionRepository $transactionRepository): Response
-    {
+    public function damagedEducatorTransactions(
+        DamagedEducator $damagedEducator,
+        TransactionRepository $transactionRepository
+    ): Response {
         /** @var User $user */
         $user = $this->getUser();
 

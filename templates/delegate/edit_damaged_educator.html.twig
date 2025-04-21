@@ -13,8 +13,88 @@
 
             <div>
                 {% form_theme form 'form.html.twig' %}
-                {{ form(form) }}
+                {{ form_start(form) }}
+                    <div class="mb-4">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name) }}
+                        {{ form_errors(form.name) }}
+
+                        {% if damagedEducators is not empty %}
+                            <div>
+                                <a href="#" class="link link-primary no-underline" onclick="my_modal.showModal()">
+                                    <span class="ti ti-users"></span>
+                                    Izaberi iz šablona
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {{ form_row(form.school) }}
+                    {{ form_row(form.amount) }}
+                    {{ form_row(form.accountNumber) }}
+                {{ form_end(form) }}
             </div>
+
+            <dialog id="my_modal" class="modal">
+                <div class="modal-box h-6/10 max-w-5xl">
+                    <form method="dialog">
+                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+
+                    <h3 class="font-bold text-2xl mb-4">Izaberite oštećenog iz šablona</h3>
+
+                    <table class="table rounded-xl border border-base-200 w-fit">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th>
+                                    <div>Ime</div>
+                                </th>
+                                <th>Broj računa</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in damagedEducators %}
+                                <tr class="hover:bg-gray-100">
+                                    <td>
+                                        <div>{{ item.name }}</div>
+                                        <div class="text-gray-500">{{ item.school.name }}</div>
+                                    </td>
+                                    <td>{{ item.accountNumber|account_format }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-primary btn-soft btn-sm js-model-choose" data-name="{{ item.name }}" data-school="{{ item.school.id }}" data-account-number="{{ item.accountNumber }}">Izaberi</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <form method="dialog" class="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $(function(){
+            $('.js-model-choose').on('click', function() {
+                var name = $(this).data('name');
+                var school = $(this).data('school');
+                var accountNumber = $(this).data('account-number');
+
+                var form = $('form[name="damaged_educator_edit"]');
+                $('#damaged_educator_edit_name', form).val(name);
+                $('#damaged_educator_edit_school', form).val(school);
+                $('#damaged_educator_edit_accountNumber', form).val(accountNumber);
+
+                my_modal.close();
+            });
+        });
+    </script>
 {% endblock %}
