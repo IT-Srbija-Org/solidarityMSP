@@ -5,9 +5,6 @@ namespace App\Form;
 use App\Entity\DamagedEducator;
 use App\Entity\School;
 use App\Form\DataTransformer\AccountNumberTransformer;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\QueryBuilder;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -36,8 +33,8 @@ class DamagedEducatorEditType extends AbstractType
             ->getResult();
 
         $schoolChoices = [];
-        foreach($schools as $school) {
-            $schoolChoices[$school->getName() .' ('.$school->getCity()->getName().')'] = $school->getId();
+        foreach ($schools as $school) {
+            $schoolChoices[$school->getName().' ('.$school->getCity()->getName().')'] = $school->getId();
         }
 
         $builder
@@ -45,7 +42,7 @@ class DamagedEducatorEditType extends AbstractType
                 'label' => 'Ime',
             ])
             ->add('school', ChoiceType::class, [
-                'placeholder' => count($schoolChoices) === 1 ? null : '',
+                'placeholder' => 1 === count($schoolChoices) ? null : '',
                 'label' => 'Škola',
                 'choices' => $schoolChoices,
             ])
