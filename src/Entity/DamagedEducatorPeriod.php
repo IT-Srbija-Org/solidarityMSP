@@ -29,7 +29,7 @@ class DamagedEducatorPeriod
     private ?int $year = null;
 
     #[ORM\Column(length: 30)]
-    private ?string $type = null;
+    private ?string $type = self::TYPE_FULL;
 
     #[ORM\Column]
     private ?bool $active = true;

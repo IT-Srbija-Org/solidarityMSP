@@ -82,6 +82,14 @@ class DatabaseMigrationCommand extends Command
         $entity = new DamagedEducatorPeriod();
         $entity->setMonth(2);
         $entity->setYear(2025);
+        $entity->setType(DamagedEducatorPeriod::TYPE_FIRST_HALF);
+        $entity->setActive(false);
+        $this->entityManager->persist($entity);
+
+        $entity = new DamagedEducatorPeriod();
+        $entity->setMonth(2);
+        $entity->setYear(2025);
+        $entity->setType(DamagedEducatorPeriod::TYPE_SECOND_HALF);
         $entity->setActive(false);
         $this->entityManager->persist($entity);
 
