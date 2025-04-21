@@ -34,7 +34,7 @@ class DamagedEducatorEditType extends AbstractType
 
         $schoolChoices = [];
         foreach ($schools as $school) {
-            $schoolChoices[$school->getName().' ('.$school->getCity()->getName().')'] = $school->getId();
+            $schoolChoices[$school->getName().' ('.$school->getCity()->getName().')'] = $school;
         }
 
         $builder
@@ -45,6 +45,7 @@ class DamagedEducatorEditType extends AbstractType
                 'placeholder' => 1 === count($schoolChoices) ? null : '',
                 'label' => 'Škola',
                 'choices' => $schoolChoices,
+                'choice_value' => 'id',
             ])
             ->add('amount', IntegerType::class, [
                 'label' => 'Cifra',
