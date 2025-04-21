@@ -75,7 +75,14 @@
                             <span class="ti ti-phone"></span>
                             Broj telefona
                         </div>
-                        <div>{{ userDelegateRequest.phone|phone_format }}</div>
+
+                        <div>
+                            {% if userDelegateRequest.phone %}
+                                {{ userDelegateRequest.phone|phone_format }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
                     </div>
                     <div>
                         <div class="text-sm text-gray-500">
