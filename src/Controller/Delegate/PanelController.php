@@ -42,7 +42,7 @@ class PanelController extends AbstractController
     public function damagedEducators(
         Request $request,
         DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository,
-        DamagedEducatorRepository $damagedEducatorRepository
+        DamagedEducatorRepository $damagedEducatorRepository,
     ): Response {
         $periodId = $request->query->getInt('period');
         $period = $damagedEducatorPeriodRepository->find($periodId);
@@ -186,7 +186,7 @@ class PanelController extends AbstractController
         }
 
         $form = $this->createForm(ConfirmType::class, null, [
-            'message' => 'Potvrđujem da želim da obrišem oštećenog "' . $damagedEducator->getName() . '".',
+            'message' => 'Potvrđujem da želim da obrišem oštećenog "'.$damagedEducator->getName().'".',
             'submit_message' => 'Potvrdi',
             'submit_class' => 'btn btn-error',
         ]);
@@ -212,7 +212,7 @@ class PanelController extends AbstractController
     #[Route('/osteceni/{id}/transakcije', name: 'damaged_educator_transactions')]
     public function damagedEducatorTransactions(
         DamagedEducator $damagedEducator,
-        TransactionRepository $transactionRepository
+        TransactionRepository $transactionRepository,
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
