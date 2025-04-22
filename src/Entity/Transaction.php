@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ORM\Table(name: '`transaction`')]
+#[ORM\Index(name: 'idx_status', columns: ['status', 'has_payment_proof_file', 'created_at', 'id'])]
 #[ORM\HasLifecycleCallbacks]
 class Transaction
 {
@@ -52,7 +53,7 @@ class Transaction
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $comment = null;
+    private ?string $statusComment = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $paymentProofFile = null;
@@ -125,14 +126,14 @@ class Transaction
         return $this;
     }
 
-    public function getComment(): ?string
+    public function getStatusComment(): ?string
     {
-        return $this->comment;
+        return $this->statusComment;
     }
 
-    public function setComment(?string $comment): static
+    public function setStatusComment(?string $statusComment): static
     {
-        $this->comment = $comment;
+        $this->statusComment = $statusComment;
 
         return $this;
     }
