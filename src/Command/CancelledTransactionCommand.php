@@ -26,7 +26,7 @@ class CancelledTransactionCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $io->section('Command started at ' . date('Y-m-d H:i:s'));
+        $io->section('Command started at '.date('Y-m-d H:i:s'));
 
         // Cancelled comment
         $comment = 'Transakcija je automatski otkazana jer je prošlo više od 72 sata.';
@@ -38,7 +38,7 @@ class CancelledTransactionCommand extends Command
             }
 
             foreach ($items as $item) {
-                $io->comment('Cancelled transaction ID: ' . $item->getId());
+                $io->comment('Cancelled transaction ID: '.$item->getId());
 
                 $item->setStatus(Transaction::STATUS_CANCELLED);
                 $item->setStatusComment($comment);
@@ -48,7 +48,8 @@ class CancelledTransactionCommand extends Command
             $this->entityManager->flush();
         }
 
-        $io->success('Command finished at ' . date('Y-m-d H:i:s'));
+        $io->success('Command finished at '.date('Y-m-d H:i:s'));
+
         return Command::SUCCESS;
     }
 
@@ -76,5 +77,4 @@ class CancelledTransactionCommand extends Command
 
         return $results;
     }
-
 }
