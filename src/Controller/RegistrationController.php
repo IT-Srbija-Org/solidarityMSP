@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Repository\UserDonorRepository;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +43,7 @@ class RegistrationController extends AbstractController
         }
 
         $session = $request->getSession();
-        $lastResendKey = 'last_verification_resend_' . $email;
+        $lastResendKey = 'last_verification_resend_'.$email;
         $lastResend = $session->get($lastResendKey);
         $now = new \DateTime();
 
