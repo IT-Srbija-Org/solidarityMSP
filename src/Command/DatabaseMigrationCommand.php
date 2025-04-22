@@ -54,7 +54,7 @@ class DatabaseMigrationCommand extends Command
         $this->syncSchool($io);
         $this->syncDonors($io);
         $this->syncDelegate($io);
-        $this->syncDamagedEducator($io);
+        $this->syncDamagedEducators($io);
         $this->syncTransactions($io);
 
         $io->success('Migration completed at ' . date('Y-m-d H:i:s'));
@@ -203,10 +203,10 @@ class DatabaseMigrationCommand extends Command
 
             $explodedName = explode(' ', $item['name']);
 
-            $givenName = $explodedName[0];
+            $firstName = trim($explodedName[0]);
             unset($explodedName[0]);
 
-            $lastName = implode(' ', $explodedName);
+            $lastName = trim(implode(' ', $explodedName));
 
             $entity = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $item['email']]);
             if (empty($entity)) {
@@ -215,7 +215,7 @@ class DatabaseMigrationCommand extends Command
                 $entity->setIsEmailVerified(true);
             }
 
-            $entity->setFirstName(empty($givenName) ? null : $givenName);
+            $entity->setFirstName(empty($firstName) ? null : $firstName);
             $entity->setLastName(empty($lastName) ? null : $lastName);
 
             if ($item['status'] == 2) {
@@ -232,6 +232,8 @@ class DatabaseMigrationCommand extends Command
             if (empty($delegateRequest)) {
                 $delegateRequest = new UserDelegateRequest();
                 $delegateRequest->setUser($entity);
+                $delegateRequest->setFirstName($firstName);
+                $delegateRequest->setLastName($lastName);
 
                 if ($this->validateSerbianPhoneNumber($item['phone'])) {
                     $delegateRequest->setPhone($item['phone']);
@@ -327,49 +329,65 @@ class DatabaseMigrationCommand extends Command
         $io->writeln(sprintf('Synced %d schools', $count));
     }
 
-    public function syncDamagedEducator(SymfonyStyle $io): void
+    public function syncDamagedEducators(SymfonyStyle $io): void
     {
         $io->writeln('Syncing damaged educators...');
         $count = 0;
 
-        $items = $this->oldConnection->executeQuery('SELECT * FROM educator')->iterateAssociative();
-        $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
-            'month' => 2,
-            'year' => 2025
-        ]);
-
-        foreach ($items as $item) {
-            if ($item['amount'] < 500) {
-                continue;
+        foreach ([DamagedEducatorPeriod::TYPE_FIRST_HALF, DamagedEducatorPeriod::TYPE_SECOND_HALF] as $type) {
+            $roundId = 1;
+            if ($type == DamagedEducatorPeriod::TYPE_SECOND_HALF) {
+                $roundId = 2;
             }
 
-            $entity = new DamagedEducator();
-            $entity->setName($item['name']);
-            $entity->setAccountNumber($item['accountNumber']);
-            $entity->setAmount($item['amount']);
-            $entity->setPeriod($period);
+            $smtp = $this->oldConnection->prepare('
+                SELECT e.name, e.accountNumber, er.amount, e.city, e.schoolName, e.createdAt, e.updatedAt
+                FROM educator_round AS er
+                 INNER JOIN educator AS e ON e.id = er.educatorId
+                WHERE er.roundId = :roundId
+                ');
+            $items = $smtp->executeQuery(['roundId' => $roundId])->fetchAllAssociative();
 
-            $city = $this->entityManager->getRepository(City::class)->findOneBy(['name' => $item['city']]);
-            $school = $this->entityManager->getRepository(School::class)->findOneBy([
-                'city' => $city,
-                'name' => $item['schoolName']
+            $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
+                'month' => 2,
+                'year' => 2025,
+                'type' => $type
             ]);
 
-            $entity->setSchool($school);
+            foreach ($items as $item) {
+                if ($item['amount'] < 500) {
+                    continue;
+                }
 
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
+                $entity = new DamagedEducator();
+                $entity->setName($item['name']);
+                $entity->setAccountNumber($item['accountNumber']);
+                $entity->setAmount($item['amount']);
+                $entity->setPeriod($period);
 
-            $this->updateDates('damaged_educator', $entity->getId(), $item['createdAt'], $item['updatedAt']);
-
-            $count++;
-            if ($count % 25 == 0) {
-                $this->entityManager->clear();
-
-                $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
-                    'month' => 2,
-                    'year' => 2025
+                $city = $this->entityManager->getRepository(City::class)->findOneBy(['name' => $item['city']]);
+                $school = $this->entityManager->getRepository(School::class)->findOneBy([
+                    'city' => $city,
+                    'name' => $item['schoolName']
                 ]);
+
+                $entity->setSchool($school);
+
+                $this->entityManager->persist($entity);
+                $this->entityManager->flush();
+
+                $this->updateDates('damaged_educator', $entity->getId(), $item['createdAt'], $item['updatedAt']);
+
+                $count++;
+                if ($count % 25 == 0) {
+                    $this->entityManager->clear();
+
+                    $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
+                        'month' => 2,
+                        'year' => 2025,
+                        'type' => $type
+                    ]);
+                }
             }
         }
 
@@ -382,36 +400,65 @@ class DatabaseMigrationCommand extends Command
         $io->writeln('Syncing transactions...');
         $count = 0;
 
-        $items = $this->oldConnection->executeQuery('SELECT * FROM transaction')->iterateAssociative();
-        foreach ($items as $item) {
-            if ($item['amount'] < 500) {
-                continue;
+        foreach ([DamagedEducatorPeriod::TYPE_FIRST_HALF, DamagedEducatorPeriod::TYPE_SECOND_HALF] as $type) {
+            $roundId = 1;
+            if ($type == DamagedEducatorPeriod::TYPE_SECOND_HALF) {
+                $roundId = 2;
             }
 
-            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $item['email']]);
-            if (empty($user)) {
-                continue;
-            }
+            $smtp = $this->oldConnection->prepare('
+                SELECT *
+                FROM transaction
+                WHERE roundId = :roundId
+                ');
+            $items = $smtp->executeQuery(['roundId' => $roundId])->fetchAllAssociative();
 
-            $damagedEducator = $this->entityManager->getRepository(DamagedEducator::class)->findOneBy(['accountNumber' => $item['accountNumber']]);
-            if (empty($damagedEducator)) {
-                continue;
-            }
+            $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
+                'month' => 2,
+                'year' => 2025,
+                'type' => $type
+            ]);
 
-            $entity = new Transaction();
-            $entity->setUser($user);
-            $entity->setDamagedEducator($damagedEducator);
-            $entity->setAccountNumber($item['accountNumber']);
-            $entity->setAmount($item['amount']);
+            foreach ($items as $item) {
+                if ($item['amount'] < 500) {
+                    continue;
+                }
 
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
+                $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $item['email']]);
+                if (empty($user)) {
+                    continue;
+                }
 
-            $this->updateDates('transaction', $entity->getId(), $item['createdAt'], $item['updatedAt']);
+                $damagedEducator = $this->entityManager->getRepository(DamagedEducator::class)->findOneBy([
+                    'period' => $period,
+                    'accountNumber' => $item['accountNumber'],
+                ]);
 
-            $count++;
-            if ($count % 25 == 0) {
-                $this->entityManager->clear();
+                if (empty($damagedEducator)) {
+                    continue;
+                }
+
+                $entity = new Transaction();
+                $entity->setUser($user);
+                $entity->setDamagedEducator($damagedEducator);
+                $entity->setAccountNumber($item['accountNumber']);
+                $entity->setAmount($item['amount']);
+
+                $this->entityManager->persist($entity);
+                $this->entityManager->flush();
+
+                $this->updateDates('transaction', $entity->getId(), $item['createdAt'], $item['updatedAt']);
+
+                $count++;
+                if ($count % 25 == 0) {
+                    $this->entityManager->clear();
+
+                    $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
+                        'month' => 2,
+                        'year' => 2025,
+                        'type' => $type
+                    ]);
+                }
             }
         }
 
