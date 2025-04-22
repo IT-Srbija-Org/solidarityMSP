@@ -1,6 +1,7 @@
 # Mreža Solidarnosti
 
-Mreža solidarnosti je inicijativa [IT Srbija](https://itsrbija.org/) za direktnu finansijsku podršku nastavnicima i vannastavnom osoblju čija je plata umanjena zbog obustave rada.
+Mreža solidarnosti je inicijativa [IT Srbija](https://itsrbija.org/) koja inicijalno ima za cilj direktnu finansijsku podršku zaposlenima u prosveti čija je plata umanjena ili ukinuta zbog obustave rada.
+Mreža solidarnosti je zamišljena da ima upotrebu za sve slične inicijative na teritoriji Republike Srbije u budućnosti.
 
 [![build](../../actions/workflows/build.yml/badge.svg)](../../actions/workflows/build.yml)
 
@@ -14,17 +15,22 @@ Mreža solidarnosti je inicijativa [IT Srbija](https://itsrbija.org/) za direktn
 
 ## ❤️ Zajednica
 
-[IT Srbija](https://itsrbija.org/) okuplja profesionalce iz svih oblasti informacionih tehnologija s ciljem umrežavanja, deljenja znanja i jačanja solidarnosti u IT industriji. Naša misija je povezivanje stručnjaka, podrška zajednici i kreiranje prilika za profesionalni razvoj.
+[IT Srbija](https://itsrbija.org/) okuplja profesionalce iz svih oblasti informacionih tehnologija s ciljem umrežavanja, 
+deljenja znanja i jačanja solidarnosti u IT industriji. Naša misija je povezivanje stručnjaka, 
+podrška zajednici i kreiranje prilika za profesionalni razvoj.
 
 ## 🚀 Instalacija
 
-Pre pokretanja projekta, potrebno je da na vašem računaru bude instaliran [Docker](https://www.docker.com/). Kompletna instalacija i inicijalna konfiguracija se vrši automatski pokretanjem sledeće komande:
+Pre pokretanja projekta, potrebno je da na vašem računaru bude instaliran [Docker](https://www.docker.com/). 
+Kompletna instalacija i inicijalna konfiguracija se vrši automatski pokretanjem sledeće komande:
 
 ```bash
 bash ./configureProject.sh
 ```
 
-Projekat će biti inicijalno podignut sa svim test podacima na adresi [localhost:1000](http://localhost:1000). Aplikacija koristi [passwordless](https://symfony.com/doc/6.4/security/login_link.html) autentifikaciju, tako da se umesto lozinke pri logovanju korisniku šalje link za prijavu na njegovu email adrese.
+Projekat će biti inicijalno podignut sa svim test podacima na adresi [localhost:1000](http://localhost:1000). 
+Aplikacija koristi [passwordless](https://symfony.com/doc/6.4/security/login_link.html) autentifikaciju, 
+tako da se umesto lozinke pri logovanju korisniku šalje link za prijavu na njegovu email adrese.
 
 | Email              | Privilegije  |
 |--------------------|--------------|
@@ -41,7 +47,9 @@ Sva pitanja nam možete postaviti na zvanicnom [Discord](https://discord.gg/it-s
 
 ## 🐞 Pronašli ste problem?
 
-Slobodno napravite novi [Issue](https://github.com/IT-Srbija-Org/solidaritySF/issues) sa odgovarajućim naslovom i opisom. Ako ste već pronašli rešenje za problem, **slobodno otvorite [pull request](https://github.com/IT-Srbija-Org/solidaritySF/pulls)**.
+Slobodno napravite novi [Issue](https://github.com/IT-Srbija-Org/solidaritySF/issues) sa 
+odgovarajućim naslovom i opisom. Ako ste već pronašli rešenje za problem, 
+**slobodno otvorite [pull request](https://github.com/IT-Srbija-Org/solidaritySF/pulls)**.
 
 ## ❤️ Hvala!
 
