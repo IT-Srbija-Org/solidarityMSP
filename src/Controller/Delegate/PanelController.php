@@ -210,7 +210,7 @@ class PanelController extends AbstractController
         ]);
     }
 
-    #[Route('/osteceni/{id}/transakcije', name: 'damaged_educator_transactions')]
+    #[Route('/osteceni/{id}/instrukcija-za-uplatu', name: 'damaged_educator_transactions')]
     public function damagedEducatorTransactions(
         DamagedEducator $damagedEducator,
         TransactionRepository $transactionRepository,

@@ -11,7 +11,6 @@ class FormatPeriodExtension extends AbstractExtension
 {
     public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     public function getFilters(): array
@@ -43,6 +42,6 @@ class FormatPeriodExtension extends AbstractExtension
 
         $year = $period->getYear();
 
-        return $month.$type.', '.$year;
+        return $month . $type . ', ' . $year;
     }
 }

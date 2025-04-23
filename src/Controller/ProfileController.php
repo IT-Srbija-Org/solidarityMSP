@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Transaction;
+use App\Entity\User;
 use App\Form\ConfirmType;
 use App\Form\ProfileEditType;
 use App\Form\ProfileTransactionPaymentProofType;
@@ -36,6 +37,10 @@ class ProfileController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        if (!$transaction->allowShowPrint()) {
+            throw $this->createAccessDeniedException();
+        }
+
         // Prepare slip data and background info using the service
         $data = $this->invoiceSlipService->prepareSlipData($transaction, $user);
         $bgInfo = $this->invoiceSlipService->getSlipBackgroundInfo();
@@ -46,14 +51,14 @@ class ProfileController extends AbstractController
         // Generate PDF with Dompdf using the service
         $pdfContent = $this->invoiceSlipService->generatePdfFromHtml($html, $bgInfo['img_width'], $bgInfo['img_height']);
 
-        $filename = 'faktura_'.$transaction->getId().'.pdf';
+        $filename = 'faktura_' . $transaction->getId() . '.pdf';
 
         return new Response(
             $pdfContent,
             200,
             [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="'.$filename.'"',
+                'Content-Disposition' => 'inline; filename="' . $filename . '"',
             ]
         );
     }
@@ -61,8 +66,13 @@ class ProfileController extends AbstractController
     #[Route('/qr-kod/{id}', name: 'transaction_qr', requirements: ['id' => '\d+'])]
     public function transactionQr(Transaction $transaction): Response
     {
+        /* @var User $user */
         $user = $this->getUser();
         if ($transaction->getUser() !== $user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$transaction->allowShowQR()) {
             throw $this->createAccessDeniedException();
         }
 
@@ -106,8 +116,14 @@ class ProfileController extends AbstractController
         $criteria = ['user' => $this->getUser()];
         $page = $request->query->getInt('page', 1);
 
+        $hasCancelledTransactions = (bool)$transactionRepository->count([
+            'user' => $this->getUser(),
+            'status' => Transaction::STATUS_CANCELLED
+        ]);
+
         return $this->render('profile/transactions.html.twig', [
             'transactions' => $transactionRepository->search($criteria, $page),
+            'hasCancelledTransactions' => $hasCancelledTransactions
         ]);
     }
 
@@ -116,8 +132,11 @@ class ProfileController extends AbstractController
     {
         /* @var User $user */
         $user = $this->getUser();
-
         if ($transaction->getUser() !== $user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$transaction->allowUpdatePaymentProof()) {
             throw $this->createAccessDeniedException();
         }
 
@@ -131,14 +150,14 @@ class ProfileController extends AbstractController
             // Remove old file
             if ($transaction->hasPaymentProofFile()) {
                 $filename = $transaction->getPaymentProofFile();
-                $filePath = $uploadDir.'/'.$filename;
+                $filePath = $uploadDir . '/' . $filename;
                 if (file_exists($filePath)) {
                     unlink($filePath);
                 }
             }
 
             if ($uploadedFile) {
-                $filename = md5(uniqid(true).microtime()).'.'.$uploadedFile->guessExtension();
+                $filename = md5(uniqid(true) . microtime()) . '.' . $uploadedFile->guessExtension();
                 $uploadedFile->move($uploadDir, $filename);
 
                 $transaction->setPaymentProofFile($filename);
@@ -161,13 +180,12 @@ class ProfileController extends AbstractController
     {
         /* @var User $user */
         $user = $this->getUser();
-
         if ($transaction->getUser() !== $user) {
             throw $this->createAccessDeniedException();
         }
 
         $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
-        $filePath = $uploadDir.'/'.$transaction->getPaymentProofFile();
+        $filePath = $uploadDir . '/' . $transaction->getPaymentProofFile();
         if (!file_exists($filePath)) {
             throw $this->createNotFoundException();
         }
@@ -180,13 +198,12 @@ class ProfileController extends AbstractController
     {
         /* @var User $user */
         $user = $this->getUser();
-
         if ($transaction->getUser() !== $user) {
             throw $this->createAccessDeniedException();
         }
 
-        if (!$transaction->hasPaymentProofFile()) {
-            throw $this->createNotFoundException();
+        if (!$transaction->allowDeletePaymentProof()) {
+            throw $this->createAccessDeniedException();
         }
 
         $form = $this->createForm(ConfirmType::class, null, [
@@ -198,7 +215,7 @@ class ProfileController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
-            $filePath = $uploadDir.'/'.$transaction->getPaymentProofFile();
+            $filePath = $uploadDir . '/' . $transaction->getPaymentProofFile();
             if (file_exists($filePath)) {
                 unlink($filePath);
             }

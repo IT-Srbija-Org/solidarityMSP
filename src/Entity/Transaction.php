@@ -8,18 +8,18 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ORM\Table(name: '`transaction`')]
-#[ORM\Index(name: 'idx_status', columns: ['status', 'has_payment_proof_file', 'created_at', 'id'])]
+#[ORM\Index(name: 'idx_status', columns: ['status', 'created_at', 'id'])]
 #[ORM\HasLifecycleCallbacks]
 class Transaction
 {
     public const STATUS_NEW = 1;
-    public const STATUS_VALIDATED = 2;
+    public const STATUS_WAITING_CONFIRMATION = 2;
     public const STATUS_CONFIRMED = 3;
     public const STATUS_CANCELLED = 4;
 
     public const STATUS = [
         self::STATUS_NEW => 'New',
-        self::STATUS_VALIDATED => 'Validated',
+        self::STATUS_WAITING_CONFIRMATION => 'WaitingConfirmation',
         self::STATUS_CONFIRMED => 'Confirmed',
         self::STATUS_CANCELLED => 'Cancelled',
     ];
@@ -186,8 +186,72 @@ class Transaction
     #[ORM\PreUpdate]
     public function setHasPaymentProofFile(): static
     {
-        $this->hasPaymentProofFile = !empty($this->paymentProofFile);
+        $this->hasPaymentProofFile = !empty($this->getPaymentProofFile());
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function setWaitingConfirmationStatus(): static
+    {
+        if ($this->getStatus() == self::STATUS_NEW && $this->hasPaymentProofFile()) {
+            $this->setStatus(self::STATUS_WAITING_CONFIRMATION);
+
+            return $this;
+        }
+
+        if ($this->getStatus() == self::STATUS_WAITING_CONFIRMATION && !$this->hasPaymentProofFile()) {
+            $this->setStatus(self::STATUS_NEW);
+
+            return $this;
+        }
+
+        return $this;
+    }
+
+    public function allowDeletePaymentProof(): bool
+    {
+        if (!$this->hasPaymentProofFile()) {
+            return false;
+        }
+
+        if (!$this->getStatus() == self::STATUS_NEW && !$this->getStatus() == self::STATUS_WAITING_CONFIRMATION) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function allowShowPrint(): bool
+    {
+        if ($this->getStatus() == self::STATUS_NEW) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function allowShowQR(): bool
+    {
+        if ($this->getStatus() == self::STATUS_NEW) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function allowUpdatePaymentProof(): bool
+    {
+        if ($this->getStatus() == self::STATUS_NEW) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isStatusCancelled(): bool
+    {
+        return $this->status === self::STATUS_CANCELLED;
     }
 }

@@ -61,7 +61,6 @@ class CancelledTransactionCommand extends Command
             ->from(Transaction::class, 't')
             ->where('t.status = :status')
             ->setParameter('status', Transaction::STATUS_NEW)
-            ->andWhere('t.hasPaymentProofFile = 0')
             ->andWhere('t.createdAt < :createdAt')
             ->setParameter('createdAt', new \DateTimeImmutable('-72 hours'))
             ->andWhere('t.id > :lastId')
