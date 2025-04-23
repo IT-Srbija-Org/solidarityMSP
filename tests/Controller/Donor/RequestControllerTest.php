@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\Donor;
 
 use App\DataFixtures\UserFixtures;
 use App\Entity\User;
@@ -15,7 +15,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class DonorControllerTest extends WebTestCase
+class RequestControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
     private AbstractDatabaseTool $databaseTool;
@@ -85,7 +85,7 @@ class DonorControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="user_donor"]');
 
         // Subscribe
-        $form = $crawler->selectButton('Sačuvaj')->form([
+        $form = $crawler->filter('form[name="user_donor"]')->form([
             'user_donor[email]' => $email,
             'user_donor[isMonthly]' => 1,
             'user_donor[amount]' => 10000,

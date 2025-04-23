@@ -52,7 +52,7 @@
     {% if app.user %}
         {% if app.user.userDonor %}
             <li>
-                <a href="{{ path('profile_transactions') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
+                <a href="{{ path('donor_transaction_list') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
                     <span class="ti ti-credit-card-pay text-xl"></span>
                     Instrukcije za uplatu
                 </a>
