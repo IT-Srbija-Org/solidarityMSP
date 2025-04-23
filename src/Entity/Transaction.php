@@ -142,7 +142,7 @@ class Transaction
     #[ORM\PreUpdate]
     public function cleanStatusComment(): static
     {
-        if ($this->getStatus() != self::STATUS_CANCELLED) {
+        if (self::STATUS_CANCELLED != $this->getStatus()) {
             $this->setStatusComment(null);
         }
 
@@ -204,7 +204,7 @@ class Transaction
 
     public function allowConfirmPayment(): bool
     {
-        if ($this->getStatus() == self::STATUS_NEW) {
+        if (self::STATUS_NEW == $this->getStatus()) {
             return true;
         }
 
@@ -213,7 +213,7 @@ class Transaction
 
     public function allowDeletePaymentConfirmation(): bool
     {
-        if ($this->getStatus() == self::STATUS_WAITING_CONFIRMATION) {
+        if (self::STATUS_WAITING_CONFIRMATION == $this->getStatus()) {
             return true;
         }
 
@@ -222,7 +222,7 @@ class Transaction
 
     public function allowShowPrint(): bool
     {
-        if ($this->getStatus() == self::STATUS_NEW) {
+        if (self::STATUS_NEW == $this->getStatus()) {
             return true;
         }
 
@@ -231,7 +231,7 @@ class Transaction
 
     public function allowShowQR(): bool
     {
-        if ($this->getStatus() == self::STATUS_NEW) {
+        if (self::STATUS_NEW == $this->getStatus()) {
             return true;
         }
 
@@ -240,17 +240,17 @@ class Transaction
 
     public function isStatusWaitingConfirmation(): bool
     {
-        return $this->status === self::STATUS_WAITING_CONFIRMATION;
+        return self::STATUS_WAITING_CONFIRMATION === $this->status;
     }
 
     public function isStatusCancelled(): bool
     {
-        return $this->status === self::STATUS_CANCELLED;
+        return self::STATUS_CANCELLED === $this->status;
     }
 
     public function allowToChangeStatus(): bool
     {
-        if ($this->getStatus() == self::STATUS_WAITING_CONFIRMATION) {
+        if (self::STATUS_WAITING_CONFIRMATION == $this->getStatus()) {
             return true;
         }
 

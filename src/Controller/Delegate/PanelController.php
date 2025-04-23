@@ -213,7 +213,7 @@ class PanelController extends AbstractController
     }
 
     #[Route('/osteceni/{id}/instrukcija-za-uplatu', name: 'damaged_educator_transactions')]
-    public function damagedEducatorTransactions(DamagedEducator $damagedEducator, TransactionRepository $transactionRepository,): Response
+    public function damagedEducatorTransactions(DamagedEducator $damagedEducator, TransactionRepository $transactionRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -227,22 +227,22 @@ class PanelController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $hasCancelledTransactions = (bool)$transactionRepository->count([
+        $hasCancelledTransactions = (bool) $transactionRepository->count([
             'damagedEducator' => $damagedEducator,
-            'status' => Transaction::STATUS_CANCELLED
+            'status' => Transaction::STATUS_CANCELLED,
         ]);
 
         return $this->render('delegate/damaged_educator_transactions.html.twig', [
             'damagedEducator' => $damagedEducator,
             'transactions' => $transactionRepository->findBy(['damagedEducator' => $damagedEducator]),
-            'hasCancelledTransactions' => $hasCancelledTransactions
+            'hasCancelledTransactions' => $hasCancelledTransactions,
         ]);
     }
 
     #[Route('/osteceni/instrukcija-za-uplatu/{id}/promena-statusa', name: 'damaged_educator_transaction_change_status')]
     public function damagedEducatorTransactionChangeStatus(Request $request, Transaction $transaction): Response
     {
-        if(!$transaction->allowToChangeStatus()){
+        if (!$transaction->allowToChangeStatus()) {
             throw $this->createAccessDeniedException();
         }
 

@@ -42,6 +42,6 @@ class FormatPeriodExtension extends AbstractExtension
 
         $year = $period->getYear();
 
-        return $month . $type . ', ' . $year;
+        return $month.$type.', '.$year;
     }
 }

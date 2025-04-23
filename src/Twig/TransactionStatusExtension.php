@@ -22,7 +22,7 @@ class TransactionStatusExtension extends AbstractExtension
 
     public function getStatus(int $status): string
     {
-        if($status === Transaction::STATUS_NEW){
+        if (Transaction::STATUS_NEW === $status) {
             return '-';
         }
 
@@ -35,6 +35,6 @@ class TransactionStatusExtension extends AbstractExtension
             Transaction::STATUS_CANCELLED => '<span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>',
         };
 
-        return $icon . ' ' . $statusName;
+        return $icon.' '.$statusName;
     }
 }
