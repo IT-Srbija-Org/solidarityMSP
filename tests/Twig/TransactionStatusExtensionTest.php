@@ -1,54 +1,71 @@
 <?php
 
-namespace App\Tests\Unit\Twig;
+namespace App\Tests\Twig;
 
 use App\Entity\Transaction;
 use App\Twig\TransactionStatusExtension;
 use PHPUnit\Framework\TestCase;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TransactionStatusExtensionTest extends TestCase
 {
     private TransactionStatusExtension $extension;
+    private TranslatorInterface $translator;
 
     protected function setUp(): void
     {
-        $this->extension = new TransactionStatusExtension();
+        $this->translator = $this->createMock(TranslatorInterface::class);
+        $this->extension = new TransactionStatusExtension($this->translator);
     }
 
-    public function testGetStatusWithAllValidStatuses(): void
+    public function testGetFilters()
     {
-        $statuses = [
-            Transaction::STATUS_NEW => 'New',
-            Transaction::STATUS_VALIDATED => 'Validated',
-            Transaction::STATUS_CONFIRMED => 'Confirmed',
-            Transaction::STATUS_CANCELLED => 'Cancelled',
-        ];
+        $filters = $this->extension->getFilters();
 
-        foreach ($statuses as $code => $label) {
-            $this->assertSame($label, $this->extension->getStatus($code));
-        }
+        $this->assertCount(1, $filters);
+        $this->assertSame('transactionStatus', $filters[0]->getName());
+        $this->assertSame([$this->extension, 'getStatus'], $filters[0]->getCallable());
     }
 
-    public function testGetStatusWithInvalidStatus(): void
+    public function testGetStatusForNew()
     {
-        $this->assertSame('None', $this->extension->getStatus(0));
-        $this->assertSame('None', $this->extension->getStatus(999));
-        $this->assertSame('None', $this->extension->getStatus(-1));
+        $result = $this->extension->getStatus(Transaction::STATUS_NEW);
+        $this->assertSame('-', $result);
     }
 
-    public function testGetStatusWithNonIntegerInput(): void
+    public function testGetStatusForWaitingConfirmation()
     {
-        $this->expectException(\TypeError::class);
-        $this->extension->getStatus('invalid');
+        $this->translator->method('trans')
+            ->with('WaitingConfirmation')
+            ->willReturn('Waiting Confirmation');
+
+        $result = $this->extension->getStatus(Transaction::STATUS_WAITING_CONFIRMATION);
+
+        $this->assertStringContainsString('loading-spinner', $result);
+        $this->assertStringContainsString('Waiting Confirmation', $result);
     }
 
-    public function testStatusLabelsMatchTransactionConstants(): void
+    public function testGetStatusForConfirmed()
     {
-        $reflection = new \ReflectionClass(Transaction::class);
-        $constants = $reflection->getConstants();
+        $this->translator->method('trans')
+            ->with('Confirmed')
+            ->willReturn('Confirmed');
 
-        foreach ($constants['STATUS'] as $code => $label) {
-            $this->assertSame($label, $this->extension->getStatus($code));
-        }
+        $result = $this->extension->getStatus(Transaction::STATUS_CONFIRMED);
+
+        $this->assertStringContainsString('circle-check', $result);
+        $this->assertStringContainsString('Confirmed', $result);
+    }
+
+    public function testGetStatusForCancelled()
+    {
+        $this->translator->method('trans')
+            ->with('Cancelled')
+            ->willReturn('Cancelled');
+
+        $result = $this->extension->getStatus(Transaction::STATUS_CANCELLED);
+
+        $this->assertStringContainsString('circle-x', $result);
+        $this->assertStringContainsString('Cancelled', $result);
     }
 }
