@@ -7,21 +7,27 @@
     <div class="card card-lg bg-base-100 shadow m-10 mt-0">
         <div class="card-body">
             <h2 class="card-title mb-4">
-                <span class="ti ti-file-plus text-2xl"></span>
-                Priloži potvrdu o uplate
+                <span class="ti ti-checkbox text-2xl"></span>
+                Potvrdi uplate
             </h2>
 
             {{ include('flashes.html.twig') }}
 
+            <div class="mb-2 text-gray-500">
+                Na ovoj stranici možete potvrditi da ste izvršili uplatu. Dodavanje uplatnice (PDF, JPG, PNG) nije obavezno. Nakon što pošaljete potvrdu, administrator će dodatno proveriti podatke pre konačne evidencije uplate.
+            </div>
+
             <div>
                 {% form_theme form 'form.html.twig' %}
                 {{ form_start(form) }}
+                    {{ form_widget(form.confirm) }}
+
                     <div class="mb-4">
                         <fieldset class="fieldset">
-                            <legend class="fieldset-legend">Izaberite fajl</legend>
-                            {{ form_widget(form.paymentProofFile) }}
-                            {{ form_label(form.paymentProofFile) }}
-                            {{ form_errors(form.paymentProofFile) }}
+                            <legend class="fieldset-legend">Uplatnica nije obavezna</legend>
+                            {{ form_widget(form.file) }}
+                            {{ form_label(form.file) }}
+                            {{ form_errors(form.file) }}
                         </fieldset>
                     </div>
 

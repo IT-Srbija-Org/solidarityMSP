@@ -3,10 +3,12 @@
 namespace App\Controller\Delegate;
 
 use App\Entity\DamagedEducator;
+use App\Entity\Transaction;
 use App\Entity\User;
 use App\Form\ConfirmType;
 use App\Form\DamagedEducatorEditType;
 use App\Form\DamagedEducatorSearchType;
+use App\Form\TransactionChangeStatusType;
 use App\Repository\DamagedEducatorPeriodRepository;
 use App\Repository\DamagedEducatorRepository;
 use App\Repository\TransactionRepository;
@@ -210,11 +212,9 @@ class PanelController extends AbstractController
         ]);
     }
 
-    #[Route('/osteceni/{id}/transakcije', name: 'damaged_educator_transactions')]
-    public function damagedEducatorTransactions(
-        DamagedEducator $damagedEducator,
-        TransactionRepository $transactionRepository,
-    ): Response {
+    #[Route('/osteceni/{id}/instrukcija-za-uplatu', name: 'damaged_educator_transactions')]
+    public function damagedEducatorTransactions(DamagedEducator $damagedEducator, TransactionRepository $transactionRepository): Response
+    {
         /** @var User $user */
         $user = $this->getUser();
 
@@ -227,9 +227,56 @@ class PanelController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        $hasCancelledTransactions = (bool) $transactionRepository->count([
+            'damagedEducator' => $damagedEducator,
+            'status' => Transaction::STATUS_CANCELLED,
+        ]);
+
         return $this->render('delegate/damaged_educator_transactions.html.twig', [
             'damagedEducator' => $damagedEducator,
             'transactions' => $transactionRepository->findBy(['damagedEducator' => $damagedEducator]),
+            'hasCancelledTransactions' => $hasCancelledTransactions,
+        ]);
+    }
+
+    #[Route('/osteceni/instrukcija-za-uplatu/{id}/promena-statusa', name: 'damaged_educator_transaction_change_status')]
+    public function damagedEducatorTransactionChangeStatus(Request $request, Transaction $transaction): Response
+    {
+        if (!$transaction->allowToChangeStatus()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $allowedSchools = [];
+        foreach ($user->getUserDelegateSchools() as $delegateSchool) {
+            $allowedSchools[] = $delegateSchool->getSchool()->getId();
+        }
+
+        $damagedEducator = $transaction->getDamagedEducator();
+        if (!in_array($damagedEducator->getSchool()->getId(), $allowedSchools)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $form = $this->createForm(TransactionChangeStatusType::class, $transaction);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($transaction);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Uspešno ste promenili status instrukcije za uplatu.');
+
+            return $this->redirectToRoute('delegate_panel_damaged_educator_transactions', [
+                'id' => $damagedEducator->getId(),
+            ]);
+        }
+
+        return $this->render('delegate/damaged_educator_transaction_change_status.html.twig', [
+            'form' => $form,
+            'transaction' => $transaction,
+            'damagedEducator' => $damagedEducator,
         ]);
     }
 }

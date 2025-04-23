@@ -77,7 +77,7 @@
                             -
                         {% endif %}
                     </td>
-                    <td>{{ transaction.status|transactionStatus }}</td>
+                    <td class="whitespace-nowrap">{{ transaction.status|transactionStatus|raw }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">
                             <a href="{{ path('admin_transaction_edit', { 'id': transaction.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Izmeni">

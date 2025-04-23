@@ -3,19 +3,24 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\File;
 
-class ProfileTransactionPaymentProofType extends AbstractType
+class ProfileTransactionConfirmPaymentType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('paymentProofFile', FileType::class, [
+            ->add('confirm', CheckboxType::class, [
+                'label' => 'Potvrđujem da sam izvršio uplatu',
+                'required' => true,
+            ])
+            ->add('file', FileType::class, [
+                'required' => false,
                 'label' => 'Uplatnica (PDF, JPG, PNG)',
-                'mapped' => false,
                 'constraints' => [
                     new File([
                         'maxSize' => '1M',
@@ -34,7 +39,7 @@ class ProfileTransactionPaymentProofType extends AbstractType
                 ],
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Sačuvaj',
+                'label' => 'Potvrdi',
             ]);
     }
 }

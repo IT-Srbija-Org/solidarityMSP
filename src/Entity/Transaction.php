@@ -8,17 +8,18 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ORM\Table(name: '`transaction`')]
+#[ORM\Index(name: 'idx_status', columns: ['status', 'created_at', 'id'])]
 #[ORM\HasLifecycleCallbacks]
 class Transaction
 {
     public const STATUS_NEW = 1;
-    public const STATUS_VALIDATED = 2;
+    public const STATUS_WAITING_CONFIRMATION = 2;
     public const STATUS_CONFIRMED = 3;
     public const STATUS_CANCELLED = 4;
 
     public const STATUS = [
         self::STATUS_NEW => 'New',
-        self::STATUS_VALIDATED => 'Validated',
+        self::STATUS_WAITING_CONFIRMATION => 'WaitingConfirmation',
         self::STATUS_CONFIRMED => 'Confirmed',
         self::STATUS_CANCELLED => 'Cancelled',
     ];
@@ -52,7 +53,7 @@ class Transaction
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $comment = null;
+    private ?string $statusComment = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $paymentProofFile = null;
@@ -125,14 +126,25 @@ class Transaction
         return $this;
     }
 
-    public function getComment(): ?string
+    public function getStatusComment(): ?string
     {
-        return $this->comment;
+        return $this->statusComment;
     }
 
-    public function setComment(?string $comment): static
+    public function setStatusComment(?string $statusComment): static
     {
-        $this->comment = $comment;
+        $this->statusComment = $statusComment;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function cleanStatusComment(): static
+    {
+        if (self::STATUS_CANCELLED != $this->getStatus()) {
+            $this->setStatusComment(null);
+        }
 
         return $this;
     }
@@ -185,8 +197,67 @@ class Transaction
     #[ORM\PreUpdate]
     public function setHasPaymentProofFile(): static
     {
-        $this->hasPaymentProofFile = !empty($this->paymentProofFile);
+        $this->hasPaymentProofFile = !empty($this->getPaymentProofFile());
 
         return $this;
+    }
+
+    public function allowConfirmPayment(): bool
+    {
+        if (self::STATUS_NEW == $this->getStatus()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function allowDeletePaymentConfirmation(): bool
+    {
+        if (self::STATUS_WAITING_CONFIRMATION == $this->getStatus()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function allowShowPrint(): bool
+    {
+        if (self::STATUS_NEW == $this->getStatus()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function allowShowQR(): bool
+    {
+        if (self::STATUS_NEW == $this->getStatus()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isStatusWaitingConfirmation(): bool
+    {
+        return self::STATUS_WAITING_CONFIRMATION === $this->status;
+    }
+
+    public function isStatusCancelled(): bool
+    {
+        return self::STATUS_CANCELLED === $this->status;
+    }
+
+    public function allowToChangeStatus(): bool
+    {
+        if (self::STATUS_WAITING_CONFIRMATION == $this->getStatus()) {
+            return true;
+        }
+
+        if ($this->getUpdatedAt()->diff(new \DateTime())->days < 10) {
+            return true;
+        }
+
+        return false;
     }
 }

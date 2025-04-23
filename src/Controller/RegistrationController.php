@@ -2,12 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Form\RegistrationType;
 use App\Repository\UserDonorRepository;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,10 +15,8 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    public function __construct(
-        private EmailVerifier $emailVerifier,
-        private EntityManagerInterface $entityManager,
-    ) {
+    public function __construct(private EmailVerifier $emailVerifier)
+    {
     }
 
     #[Route('/ponovna-verifikacija-email', name: 'resend_verification')]
@@ -73,33 +68,6 @@ class RegistrationController extends AbstractController
         $this->addFlash('success', 'Verifikacioni email je ponovo poslat na vašu adresu. Molimo proverite vaš inbox.');
 
         return $this->redirectToRoute('login');
-    }
-
-    #[Route('/registracija', name: 'register')]
-    public function register(Request $request, UserRepository $userRepository): Response
-    {
-        $user = new User();
-        $form = $this->createForm(RegistrationType::class, $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($user);
-            $this->entityManager->flush();
-
-            $userRepository->sendVerificationLink($user, null);
-
-            return $this->redirectToRoute('verify_email_send');
-        }
-
-        return $this->render('registration/register.html.twig', [
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/verifikacija-email', name: 'verify_email_send')]
-    public function verifyEmailSend(): Response
-    {
-        return $this->render('registration/verify_email_send.html.twig');
     }
 
     #[Route('/uspesna-verifikacija-emaila', name: 'verify_email_success')]

@@ -12,7 +12,7 @@
             </h2>
 
             <div class="text-gray-500 mb-4">
-                Na stranici možete da vidite spisak svih vaših instrukcija za uplatu ka oštećenim prosvetnim radnicima. Takođe možete da dodate potvrdu o plaćanju za svaku upplatu.
+                Na ovoj stranici možete videti spisak svih vaših instrukcija za uplatu ka oštećenim prosvetnim radnicima, potvrditi izvršene uplate i po želji dodati potvrdu o plaćanju za svaku pojedinačnu transakciju.
             </div>
 
             {% if transactions.total == 0 %}
@@ -23,7 +23,15 @@
             {% else %}
                 {{ include('flashes.html.twig') }}
 
-                <div class="overflow-x-auto mt-6">
+                {% if hasCancelledTransactions %}
+                    <div class="alert alert-info alert-soft">
+                        <span class="ti ti-info-circle text-2xl"></span>
+                        Neke od vaših instrukcija za uplatu su otkazane. Do otkazivanja može doći ako je administrator poništio instrukciju ili je prošlo više od 72 sata bez prilaganja potvrde o uplati. Biće vam prosleđena nova instrukcija za uplatu uskoro.
+                        Ukoliko ste ipak izvršili uplatu, nema razloga za brigu, administrator će proveriti sve instrukcije svakako i ukoliko je plaćena status će joj biti promenjen.
+                    </div>
+                {% endif %}
+
+                <div class="overflow-x-auto mt-4">
                     <div class="text-gray-500 mb-2 total-results">
                         Ukupno rezultata: <span class="font-bold">{{ transactions.total }}</span>
                     </div>
@@ -52,10 +60,6 @@
                                     <span class="ti ti-calendar-event text-xl"></span>
                                     Kreirano
                                 </th>
-                                <th>
-                                    <span class="ti ti-file text-xl"></span>
-                                    Potvrda o uplati
-                                </th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -64,43 +68,50 @@
                         {% for transaction in transactions.items %}
                             <tr class="hover:bg-gray-100">
                                 <td>{{ transaction.id }}</td>
-                                <td>{{ transaction.damagedEducator.name }}</td>
                                 <td>
-                                    <div>{{ transaction.damagedEducator.school.name }}</div>
-                                    <div class="text-gray-500">{{ transaction.damagedEducator.school.city.name }}</div>
-                                </td>
-                                <td>{{ transaction.accountNumber }}</td>
-                                <td>{{ transaction.amount|number_format }}</td>
-                                <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
-                                <td>
-                                    {% if transaction.hasPaymentProofFile %}
-                                        <a href="{{ path('profile_transaction_payment_proof_download', { 'id': transaction.id }) }}" class="link link-primary no-underline">
-                                            <span class="ti ti-download text-xl"></span>
-                                            Preuzmi
-                                        </a>
+                                    {% if transaction.isStatusCancelled %}
+                                        <span class="text-gray-500 tracking-widest">{{ transaction.damagedEducator.name|mask }}</span>
                                     {% else %}
-                                        -
+                                        {{ transaction.damagedEducator.name }}
                                     {% endif %}
                                 </td>
-                                <td>{{ transaction.status|transactionStatus }}</td>
+                                <td>
+                                    {% if transaction.isStatusCancelled %}
+                                        <div class="text-gray-500 tracking-widest">{{ transaction.damagedEducator.school.name|mask }}</div>
+                                        <div class="text-gray-500 tracking-widest">{{ transaction.damagedEducator.school.city.name|mask }}</div>
+                                    {% else %}
+                                        <div>{{ transaction.damagedEducator.school.name }}</div>
+                                        <div class="text-gray-500">{{ transaction.damagedEducator.school.city.name }}</div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if transaction.isStatusCancelled %}
+                                        <span class="text-gray-500 tracking-widest">{{ transaction.accountNumber|mask }}</span>
+                                    {% else %}
+                                        {{ transaction.accountNumber }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ transaction.amount|number_format }}</td>
+                                <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
+                                <td class="whitespace-nowrap">
+                                    {{ transaction.status|transactionStatus|raw }}</td>
                                 <td>
                                     <div class="flex gap-2 justify-end">
-                                        {% if transaction.hasPaymentProofFile %}
-                                            <a href="{{ path('profile_transaction_payment_proof_delete', { 'id': transaction.id }) }}" class="btn btn-error btn-sm flex tooltip" data-tip="Obriši potvrdu o uplate">
-                                                <span class="ti ti-file-x text-xl"></span>
+                                        {% if transaction.isStatusWaitingConfirmation %}
+                                            <a href="{{ path('profile_transaction_delete_payment_confirmation', { 'id': transaction.id }) }}" class="btn {% if transaction.allowDeletePaymentConfirmation %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Obriši potvrdu o uplate">
+                                                <span class="ti ti-square-x text-xl"></span>
                                             </a>
                                         {% else %}
-                                            <a href="{{ path('profile_transaction_payment_proof_upload', { 'id': transaction.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Priloži potvrdu o uplate">
-                                                <span class="ti ti-file-plus text-xl"></span>
+                                            <a href="{{ path('profile_transaction_confirm_payment', { 'id': transaction.id }) }}" class="btn {% if transaction.allowConfirmPayment %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Potvrdi uplatu">
+                                                <span class="ti ti-checkbox text-xl"></span>
                                             </a>
                                         {% endif %}
 
-
-                                        <a href="{{ path('profile_transaction_invoice_print', { 'id': transaction.id }) }}" target="_blank" class="btn btn-primary btn-sm flex tooltip" data-tip="Oštampaj">
+                                        <a href="{{ path('profile_transaction_invoice_print', { 'id': transaction.id }) }}" target="_blank" class="btn {% if transaction.allowShowPrint %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Oštampaj">
                                             <span class="ti ti-printer text-xl"></span>
                                         </a>
 
-                                        <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="NBS QR" onclick="openQrModal('{{ transaction.id }}'); return false;">
+                                        <a href="#" class="btn {% if transaction.allowShowQR %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="NBS QR" onclick="openQrModal('{{ transaction.id }}'); return false;">
                                             <span class="ti ti-qrcode text-xl"></span>
                                         </a>
                                     </div>

@@ -3,9 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Transaction;
+use App\Entity\User;
 use App\Form\ConfirmType;
 use App\Form\ProfileEditType;
-use App\Form\ProfileTransactionPaymentProofType;
+use App\Form\ProfileTransactionConfirmPaymentType;
 use App\Repository\TransactionRepository;
 use App\Service\InvoiceSlipService;
 use App\Service\IpsQrCodeService;
@@ -36,6 +37,10 @@ class ProfileController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        if (!$transaction->allowShowPrint()) {
+            throw $this->createAccessDeniedException();
+        }
+
         // Prepare slip data and background info using the service
         $data = $this->invoiceSlipService->prepareSlipData($transaction, $user);
         $bgInfo = $this->invoiceSlipService->getSlipBackgroundInfo();
@@ -61,8 +66,13 @@ class ProfileController extends AbstractController
     #[Route('/qr-kod/{id}', name: 'transaction_qr', requirements: ['id' => '\d+'])]
     public function transactionQr(Transaction $transaction): Response
     {
+        /* @var User $user */
         $user = $this->getUser();
         if ($transaction->getUser() !== $user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$transaction->allowShowQR()) {
             throw $this->createAccessDeniedException();
         }
 
@@ -106,87 +116,68 @@ class ProfileController extends AbstractController
         $criteria = ['user' => $this->getUser()];
         $page = $request->query->getInt('page', 1);
 
+        $hasCancelledTransactions = (bool) $transactionRepository->count([
+            'user' => $this->getUser(),
+            'status' => Transaction::STATUS_CANCELLED,
+        ]);
+
         return $this->render('profile/transactions.html.twig', [
             'transactions' => $transactionRepository->search($criteria, $page),
+            'hasCancelledTransactions' => $hasCancelledTransactions,
         ]);
     }
 
-    #[Route('/prilozi-potvrdu-o-uplati/{id}', name: 'transaction_payment_proof_upload', requirements: ['id' => '\d+'])]
-    public function uploadPaymentProof(Request $request, Transaction $transaction, EntityManagerInterface $entityManager): Response
+    #[Route('/potvrdi-uplatu/{id}', name: 'transaction_confirm_payment', requirements: ['id' => '\d+'])]
+    public function confirmPayment(Request $request, Transaction $transaction, EntityManagerInterface $entityManager): Response
     {
         /* @var User $user */
         $user = $this->getUser();
-
         if ($transaction->getUser() !== $user) {
             throw $this->createAccessDeniedException();
         }
 
-        $form = $this->createForm(ProfileTransactionPaymentProofType::class);
+        if (!$transaction->allowConfirmPayment()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $form = $this->createForm(ProfileTransactionConfirmPaymentType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $uploadedFile = $form->get('paymentProofFile')->getData();
-            $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
+            $transaction->setStatus(Transaction::STATUS_WAITING_CONFIRMATION);
 
-            // Remove old file
-            if ($transaction->hasPaymentProofFile()) {
-                $filename = $transaction->getPaymentProofFile();
-                $filePath = $uploadDir.'/'.$filename;
-                if (file_exists($filePath)) {
-                    unlink($filePath);
-                }
-            }
+            $uploadedFile = $form->get('file')->getData();
+            $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
 
             if ($uploadedFile) {
                 $filename = md5(uniqid(true).microtime()).'.'.$uploadedFile->guessExtension();
                 $uploadedFile->move($uploadDir, $filename);
-
                 $transaction->setPaymentProofFile($filename);
-                $entityManager->flush();
-
-                $this->addFlash('success', 'Potvrda je uspešno uploadovan.');
-
-                return $this->redirectToRoute('profile_transactions');
             }
+
+            $entityManager->flush();
+            $this->addFlash('success', 'Uspešno ste potvrdili uplatu.');
+
+            return $this->redirectToRoute('profile_transactions');
         }
 
-        return $this->render('profile/transaction_file.html.twig', [
+        return $this->render('profile/transaction_confirm_payment.html.twig', [
             'form' => $form->createView(),
             'transaction' => $transaction,
         ]);
     }
 
-    #[Route('/preuzmi-potvrdu-o-uplati/{id}', name: 'transaction_payment_proof_download', requirements: ['id' => '\d+'])]
-    public function downloadPaymentProof(Transaction $transaction): Response
+    #[Route('/obrisi-potvrdu-o-uplati/{id}', name: 'transaction_delete_payment_confirmation', requirements: ['id' => '\d+'])]
+    public function deletePaymentConfirmation(Request $request, Transaction $transaction): Response
     {
         /* @var User $user */
         $user = $this->getUser();
-
         if ($transaction->getUser() !== $user) {
             throw $this->createAccessDeniedException();
         }
 
-        $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
-        $filePath = $uploadDir.'/'.$transaction->getPaymentProofFile();
-        if (!file_exists($filePath)) {
-            throw $this->createNotFoundException();
-        }
-
-        return $this->file($filePath);
-    }
-
-    #[Route('/obrisi-potvrdu-o-uplati/{id}', name: 'transaction_payment_proof_delete', requirements: ['id' => '\d+'])]
-    public function deletePaymentProof(Request $request, Transaction $transaction): Response
-    {
-        /* @var User $user */
-        $user = $this->getUser();
-
-        if ($transaction->getUser() !== $user) {
+        if (!$transaction->allowDeletePaymentConfirmation()) {
             throw $this->createAccessDeniedException();
-        }
-
-        if (!$transaction->hasPaymentProofFile()) {
-            throw $this->createNotFoundException();
         }
 
         $form = $this->createForm(ConfirmType::class, null, [
@@ -197,12 +188,15 @@ class ProfileController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
-            $filePath = $uploadDir.'/'.$transaction->getPaymentProofFile();
-            if (file_exists($filePath)) {
-                unlink($filePath);
+            if ($transaction->hasPaymentProofFile()) {
+                $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
+                $filePath = $uploadDir.'/'.$transaction->getPaymentProofFile();
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
             }
 
+            $transaction->setStatus(Transaction::STATUS_NEW);
             $transaction->setPaymentProofFile(null);
             $this->entityManager->flush();
 

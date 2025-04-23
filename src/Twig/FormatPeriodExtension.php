@@ -11,7 +11,6 @@ class FormatPeriodExtension extends AbstractExtension
 {
     public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     public function getFilters(): array

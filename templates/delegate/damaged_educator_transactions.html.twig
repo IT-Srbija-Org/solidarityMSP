@@ -11,7 +11,7 @@
                 Spisak svih instrukcija za uplatu oštećenom za period {{ damagedEducator.period|format_period }}
             </h2>
 
-            <div>
+            <div class="mb-4">
                 <div>
                     Ime: <span class="font-bold">{{ damagedEducator.name }}</span>
                 </div>
@@ -25,7 +25,12 @@
                 </div>
             </div>
 
-            <div class="divider"></div>
+            {% if hasCancelledTransactions %}
+                <div class="alert alert-info alert-soft mb-4">
+                    <span class="ti ti-info-circle text-2xl"></span>
+                    Neke od instrukcija za uplatu su otkazane. Do otkazivanja može doći ukoliko je administrator (ili delegat) poništio instrukciju, ili ako je prošlo više od 72 sata bez potvrde donatora da je uplata izvršena. Ukoliko je oštećeni primio uplatu, a instrukcija za uplatu je u međuvremenu otkazana, potrebno je da promenite njen status u „Potvrđeno“. Ako oštećeni nije primio uplatu, sistem će uskoro poslati novu instrukciju donatorima.
+                </div>
+            {% endif %}
 
             <div class="overflow-x-auto">
                 <div class="flex justify-between items-center mb-4">
@@ -44,34 +49,52 @@
                                     Cifra
                                 </th>
                                 <th>
-                                    <span class="ti ti-credit-card text-xl"></span>
-                                    Status
+                                    <span class="ti ti-file text-xl"></span>
+                                    Potvrda o uplati
                                 </th>
+                                <th>Status</th>
                                 <th>
                                     <span class="ti ti-calendar-event text-xl"></span>
                                     Napravljeno
                                 </th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% set total = 0 %}
                         {% for transaction in transactions %}
-                            {% set total = total + transaction.amount %}
-
                             <tr class="hover:bg-gray-100">
                                 <td>{{ transaction.id }}</td>
                                 <td>{{ transaction.amount|number_format }}</td>
-                                <td>{{ transaction.status|transactionStatus }}</td>
+                                <td>
+                                    {% if transaction.hasPaymentProofFile %}
+                                        <a href="{{ path('profile_transaction_payment_proof_download', { 'id': transaction.id }) }}" class="link link-primary no-underline">
+                                            <span class="ti ti-download text-xl"></span>
+                                            Preuzmi
+                                        </a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="whitespace-nowrap">{{ transaction.status|transactionStatus|raw }}</div>
+                                    <div class="text-gray-500 max-w-[200px]">
+                                        {% if transaction.statusComment %}
+                                            {{ transaction.statusComment }}
+                                        {% else %}
+
+                                        {% endif %}
+                                    </div>
+                                </td>
                                 <td>{{ transaction.createdAt|date('H:i d.m.Y.') }}</td>
+                                <td>
+                                    <div class="flex gap-2 justify-end">
+                                        <a href="{{ path('delegate_panel_damaged_educator_transaction_change_status', { 'id': transaction.id }) }}" class="btn {% if transaction.allowToChangeStatus %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Promeni status">
+                                            <span class="ti ti-edit text-xl"></span> Promeni status
+                                        </a>
+                                    </div>
+                                </td>
                             </tr>
                         {% endfor %}
-
-                        <tr class="bg-gray-100 font-bold">
-                            <td>Ukupno:</td>
-                            <td>{{ total|number_format }}</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
                         </tbody>
                     </table>
                 {% endif %}
