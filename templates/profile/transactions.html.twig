@@ -12,7 +12,7 @@
             </h2>
 
             <div class="text-gray-500 mb-4">
-                Na stranici možete da vidite spisak svih vaših instrukcija za uplatu ka oštećenim prosvetnim radnicima. Takođe možete da dodate potvrdu o plaćanju za svaku upplatu.
+                Na ovoj stranici možete videti spisak svih vaših instrukcija za uplatu ka oštećenim prosvetnim radnicima, potvrditi izvršene uplate i po želji dodati potvrdu o plaćanju za svaku pojedinačnu transakciju.
             </div>
 
             {% if transactions.total == 0 %}
@@ -25,7 +25,9 @@
 
                 {% if hasCancelledTransactions %}
                     <div class="alert alert-info alert-soft">
+                        <span class="ti ti-info-circle text-2xl"></span>
                         Neke od vaših instrukcija za uplatu su otkazane. Do otkazivanja može doći ako je administrator poništio instrukciju ili je prošlo više od 72 sata bez prilaganja potvrde o uplati. Biće vam prosleđena nova instrukcija za uplatu uskoro.
+                        Ukoliko ste ipak izvršili uplatu, nema razloga za brigu, administrator će proveriti sve instrukcije svakako i ukoliko je plaćena status će joj biti promenjen.
                     </div>
                 {% endif %}
 
@@ -57,10 +59,6 @@
                                 <th>
                                     <span class="ti ti-calendar-event text-xl"></span>
                                     Kreirano
-                                </th>
-                                <th>
-                                    <span class="ti ti-file text-xl"></span>
-                                    Potvrda o uplati
                                 </th>
                                 <th>Status</th>
                                 <th></th>
@@ -95,27 +93,17 @@
                                 </td>
                                 <td>{{ transaction.amount|number_format }}</td>
                                 <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
-                                <td>
-                                    {% if transaction.hasPaymentProofFile %}
-                                        <a href="{{ path('profile_transaction_payment_proof_download', { 'id': transaction.id }) }}" class="link link-primary no-underline">
-                                            <span class="ti ti-download text-xl"></span>
-                                            Preuzmi
-                                        </a>
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
                                 <td class="whitespace-nowrap">
                                     {{ transaction.status|transactionStatus|raw }}</td>
                                 <td>
                                     <div class="flex gap-2 justify-end">
-                                        {% if transaction.hasPaymentProofFile %}
-                                            <a href="{{ path('profile_transaction_payment_proof_delete', { 'id': transaction.id }) }}" class="btn {% if transaction.allowDeletePaymentProof %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Obriši potvrdu o uplate">
-                                                <span class="ti ti-file-x text-xl"></span>
+                                        {% if transaction.isStatusWaitingConfirmation %}
+                                            <a href="{{ path('profile_transaction_delete_payment_confirmation', { 'id': transaction.id }) }}" class="btn {% if transaction.allowDeletePaymentConfirmation %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Obriši potvrdu o uplate">
+                                                <span class="ti ti-square-x text-xl"></span>
                                             </a>
                                         {% else %}
-                                            <a href="{{ path('profile_transaction_payment_proof_upload', { 'id': transaction.id }) }}" class="btn {% if transaction.allowUpdatePaymentProof %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Priloži potvrdu o uplate">
-                                                <span class="ti ti-file-plus text-xl"></span>
+                                            <a href="{{ path('profile_transaction_confirm_payment', { 'id': transaction.id }) }}" class="btn {% if transaction.allowConfirmPayment %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Potvrdi uplatu">
+                                                <span class="ti ti-checkbox text-xl"></span>
                                             </a>
                                         {% endif %}
 

@@ -6,6 +6,7 @@ use App\Entity\Transaction;
 use App\Entity\User;
 use App\Form\ConfirmType;
 use App\Form\ProfileEditType;
+use App\Form\ProfileTransactionConfirmPaymentType;
 use App\Form\ProfileTransactionPaymentProofType;
 use App\Repository\TransactionRepository;
 use App\Service\InvoiceSlipService;
@@ -127,8 +128,8 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    #[Route('/prilozi-potvrdu-o-uplati/{id}', name: 'transaction_payment_proof_upload', requirements: ['id' => '\d+'])]
-    public function uploadPaymentProof(Request $request, Transaction $transaction, EntityManagerInterface $entityManager): Response
+    #[Route('/potvrdi-uplatu/{id}', name: 'transaction_confirm_payment', requirements: ['id' => '\d+'])]
+    public function confirmPayment(Request $request, Transaction $transaction, EntityManagerInterface $entityManager): Response
     {
         /* @var User $user */
         $user = $this->getUser();
@@ -136,47 +137,38 @@ class ProfileController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        if (!$transaction->allowUpdatePaymentProof()) {
+        if (!$transaction->allowConfirmPayment()) {
             throw $this->createAccessDeniedException();
         }
 
-        $form = $this->createForm(ProfileTransactionPaymentProofType::class);
+        $form = $this->createForm(ProfileTransactionConfirmPaymentType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $uploadedFile = $form->get('paymentProofFile')->getData();
-            $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
+            $transaction->setStatus(Transaction::STATUS_WAITING_CONFIRMATION);
 
-            // Remove old file
-            if ($transaction->hasPaymentProofFile()) {
-                $filename = $transaction->getPaymentProofFile();
-                $filePath = $uploadDir . '/' . $filename;
-                if (file_exists($filePath)) {
-                    unlink($filePath);
-                }
-            }
+            $uploadedFile = $form->get('file')->getData();
+            $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
 
             if ($uploadedFile) {
                 $filename = md5(uniqid(true) . microtime()) . '.' . $uploadedFile->guessExtension();
                 $uploadedFile->move($uploadDir, $filename);
-
                 $transaction->setPaymentProofFile($filename);
-                $entityManager->flush();
-
-                $this->addFlash('success', 'Potvrda je uspešno uploadovan.');
-
-                return $this->redirectToRoute('profile_transactions');
             }
+
+            $entityManager->flush();
+            $this->addFlash('success', 'Uspešno ste potvrdili uplatu.');
+            return $this->redirectToRoute('profile_transactions');
         }
 
-        return $this->render('profile/transaction_file.html.twig', [
+        return $this->render('profile/transaction_confirm_payment.html.twig', [
             'form' => $form->createView(),
             'transaction' => $transaction,
         ]);
     }
 
-    #[Route('/preuzmi-potvrdu-o-uplati/{id}', name: 'transaction_payment_proof_download', requirements: ['id' => '\d+'])]
-    public function downloadPaymentProof(Transaction $transaction): Response
+    #[Route('/obrisi-potvrdu-o-uplati/{id}', name: 'transaction_delete_payment_confirmation', requirements: ['id' => '\d+'])]
+    public function deletePaymentConfirmation(Request $request, Transaction $transaction): Response
     {
         /* @var User $user */
         $user = $this->getUser();
@@ -184,25 +176,7 @@ class ProfileController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
-        $filePath = $uploadDir . '/' . $transaction->getPaymentProofFile();
-        if (!file_exists($filePath)) {
-            throw $this->createNotFoundException();
-        }
-
-        return $this->file($filePath);
-    }
-
-    #[Route('/obrisi-potvrdu-o-uplati/{id}', name: 'transaction_payment_proof_delete', requirements: ['id' => '\d+'])]
-    public function deletePaymentProof(Request $request, Transaction $transaction): Response
-    {
-        /* @var User $user */
-        $user = $this->getUser();
-        if ($transaction->getUser() !== $user) {
-            throw $this->createAccessDeniedException();
-        }
-
-        if (!$transaction->allowDeletePaymentProof()) {
+        if (!$transaction->allowDeletePaymentConfirmation()) {
             throw $this->createAccessDeniedException();
         }
 
@@ -214,12 +188,16 @@ class ProfileController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
-            $filePath = $uploadDir . '/' . $transaction->getPaymentProofFile();
-            if (file_exists($filePath)) {
-                unlink($filePath);
+
+            if($transaction->hasPaymentProofFile()){
+                $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
+                $filePath = $uploadDir . '/' . $transaction->getPaymentProofFile();
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
             }
 
+            $transaction->setStatus(Transaction::STATUS_NEW);
             $transaction->setPaymentProofFile(null);
             $this->entityManager->flush();
 

@@ -138,6 +138,17 @@ class Transaction
         return $this;
     }
 
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function cleanStatusComment(): static
+    {
+        if ($this->getStatus() != self::STATUS_CANCELLED) {
+            $this->setStatusComment(null);
+        }
+
+        return $this;
+    }
+
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
@@ -191,36 +202,22 @@ class Transaction
         return $this;
     }
 
-    #[ORM\PrePersist]
-    #[ORM\PreUpdate]
-    public function setWaitingConfirmationStatus(): static
+    public function allowConfirmPayment(): bool
     {
-        if ($this->getStatus() == self::STATUS_NEW && $this->hasPaymentProofFile()) {
-            $this->setStatus(self::STATUS_WAITING_CONFIRMATION);
-
-            return $this;
+        if ($this->getStatus() == self::STATUS_NEW) {
+            return true;
         }
 
-        if ($this->getStatus() == self::STATUS_WAITING_CONFIRMATION && !$this->hasPaymentProofFile()) {
-            $this->setStatus(self::STATUS_NEW);
-
-            return $this;
-        }
-
-        return $this;
+        return false;
     }
 
-    public function allowDeletePaymentProof(): bool
+    public function allowDeletePaymentConfirmation(): bool
     {
-        if (!$this->hasPaymentProofFile()) {
-            return false;
+        if ($this->getStatus() == self::STATUS_WAITING_CONFIRMATION) {
+            return true;
         }
 
-        if (!$this->getStatus() == self::STATUS_NEW && !$this->getStatus() == self::STATUS_WAITING_CONFIRMATION) {
-            return false;
-        }
-
-        return true;
+        return false;
     }
 
     public function allowShowPrint(): bool
@@ -241,17 +238,26 @@ class Transaction
         return false;
     }
 
-    public function allowUpdatePaymentProof(): bool
+    public function isStatusWaitingConfirmation(): bool
     {
-        if ($this->getStatus() == self::STATUS_NEW) {
-            return true;
-        }
-
-        return false;
+        return $this->status === self::STATUS_WAITING_CONFIRMATION;
     }
 
     public function isStatusCancelled(): bool
     {
         return $this->status === self::STATUS_CANCELLED;
+    }
+
+    public function allowToChangeStatus(): bool
+    {
+        if ($this->getStatus() == self::STATUS_WAITING_CONFIRMATION) {
+            return true;
+        }
+
+        if ($this->getUpdatedAt()->diff(new \DateTime())->days < 10) {
+            return true;
+        }
+
+        return false;
     }
 }

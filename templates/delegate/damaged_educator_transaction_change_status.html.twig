@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% import "macro.html.twig" as macro %}
+    {{ macro.back('delegate_panel_damaged_educator_transactions', { 'id': damagedEducator.id }) }}
+
+    <div class="card card-lg bg-base-100 shadow m-10 mt-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-edit text-3xl"></span>
+                Promena statusa instrukcije za plaćanje za oštećenog "{{ damagedEducator.name }}"
+            </h2>
+
+            <div class="mb-4">
+                <div>
+                    Ime: <span class="font-bold">{{ damagedEducator.name }}</span>
+                </div>
+
+                <div>
+                    Cifra: <span class="font-bold">{{ transaction.amount|number_format }}</span>
+                </div>
+
+                <div>
+                    Broj računa: <span class="font-bold">{{ damagedEducator.accountNumber }}</span>
+                </div>
+            </div>
+
+            <div>
+                {% form_theme form 'form.html.twig' %}
+                {{ form(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
