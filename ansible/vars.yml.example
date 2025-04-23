@@ -5,8 +5,6 @@ domain_name: mrezasolidarnosti.org
 admin_email: admin@example.com
 git_repo: https://github.com/IT-Srbija-Org/solidaritySF.git
 git_branch: main
-payment_proof_dir: public/uploads/payment_proof
-
 
 # Redis settings
 redis_host: 127.0.0.1

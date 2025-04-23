@@ -48,10 +48,6 @@
                                     <span class="ti ti-cash text-xl"></span>
                                     Cifra
                                 </th>
-                                <th>
-                                    <span class="ti ti-file text-xl"></span>
-                                    Potvrda o uplati
-                                </th>
                                 <th>Status</th>
                                 <th>
                                     <span class="ti ti-calendar-event text-xl"></span>
@@ -65,16 +61,6 @@
                             <tr class="hover:bg-gray-100">
                                 <td>{{ transaction.id }}</td>
                                 <td>{{ transaction.amount|number_format }}</td>
-                                <td>
-                                    {% if transaction.hasPaymentProofFile %}
-                                        <a href="{{ path('profile_transaction_payment_proof_download', { 'id': transaction.id }) }}" class="link link-primary no-underline">
-                                            <span class="ti ti-download text-xl"></span>
-                                            Preuzmi
-                                        </a>
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
                                 <td>
                                     <div class="whitespace-nowrap">{{ transaction.status|transactionStatus|raw }}</div>
                                     <div class="text-gray-500 max-w-[200px]">

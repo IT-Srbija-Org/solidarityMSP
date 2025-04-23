@@ -21,15 +21,6 @@ fi
 # Install dependencies
 docker exec solidarity-php-container php composer.phar install;
 
-# Load PAYMENT_PROOF_DIR from .env and .env.local if present by sourcing
-for envfile in .env .env.local; do
-    [ -f "$envfile" ] && { set -a; source "$envfile"; set +a; }
-done
-
-if [ -n "$PAYMENT_PROOF_DIR" ]; then
-    docker exec solidarity-php-container chmod 777 "$PAYMENT_PROOF_DIR"
-fi
-
 # Create database
 docker exec solidarity-php-container php bin/console doctrine:database:create --if-not-exists;
 

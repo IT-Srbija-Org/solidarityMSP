@@ -55,12 +55,6 @@ class Transaction
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $statusComment = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $paymentProofFile = null;
-
-    #[ORM\Column]
-    private ?bool $hasPaymentProofFile = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -172,32 +166,6 @@ class Transaction
     public function setUpdatedAt(): static
     {
         $this->updatedAt = new \DateTime();
-
-        return $this;
-    }
-
-    public function getPaymentProofFile(): ?string
-    {
-        return $this->paymentProofFile;
-    }
-
-    public function setPaymentProofFile(?string $paymentProofFile): static
-    {
-        $this->paymentProofFile = $paymentProofFile;
-
-        return $this;
-    }
-
-    public function hasPaymentProofFile(): ?bool
-    {
-        return $this->hasPaymentProofFile;
-    }
-
-    #[ORM\PrePersist]
-    #[ORM\PreUpdate]
-    public function setHasPaymentProofFile(): static
-    {
-        $this->hasPaymentProofFile = !empty($this->getPaymentProofFile());
 
         return $this;
     }

@@ -128,17 +128,9 @@ class TransactionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $transaction->setStatus(Transaction::STATUS_WAITING_CONFIRMATION);
-
-            $uploadedFile = $form->get('file')->getData();
-            $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
-
-            if ($uploadedFile) {
-                $filename = md5(uniqid(true).microtime()).'.'.$uploadedFile->guessExtension();
-                $uploadedFile->move($uploadDir, $filename);
-                $transaction->setPaymentProofFile($filename);
-            }
-
+            $entityManager->persist($transaction);
             $entityManager->flush();
+
             $this->addFlash('success', 'Uspešno ste potvrdili uplatu.');
 
             return $this->redirectToRoute('donor_transaction_list');
@@ -171,16 +163,8 @@ class TransactionController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($transaction->hasPaymentProofFile()) {
-                $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
-                $filePath = $uploadDir.'/'.$transaction->getPaymentProofFile();
-                if (file_exists($filePath)) {
-                    unlink($filePath);
-                }
-            }
-
             $transaction->setStatus(Transaction::STATUS_NEW);
-            $transaction->setPaymentProofFile(null);
+            $this->entityManager->persist($transaction);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Uspešno ste obrisali potvrdu o uplati.');
@@ -189,7 +173,7 @@ class TransactionController extends AbstractController
         }
 
         return $this->render('confirm_message.html.twig', [
-            'iconClass' => 'file-x',
+            'iconClass' => 'square-x',
             'title' => 'Brisanje potvrde o uplati',
             'form' => $form->createView(),
         ]);

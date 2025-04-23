@@ -39,10 +39,6 @@
                         <span class="ti ti-calendar-event text-xl"></span>
                         Kreirano
                     </th>
-                    <th>
-                        <span class="ti ti-file text-xl"></span>
-                        Potvrda o uplati
-                    </th>
                     <th>Status</th>
                     <th></th>
                 </tr>
@@ -67,16 +63,6 @@
                     <td>{{ transaction.accountNumber }}</td>
                     <td>{{ transaction.amount|number_format }}</td>
                     <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
-                    <td>
-                        {% if transaction.hasPaymentProofFile %}
-                            <a href="{{ path('admin_transaction_payment_proof_download', { 'id': transaction.id }) }}" class="link link-primary no-underline">
-                                <span class="ti ti-download text-xl"></span>
-                                Preuzmi
-                            </a>
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
                     <td class="whitespace-nowrap">{{ transaction.status|transactionStatus|raw }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">

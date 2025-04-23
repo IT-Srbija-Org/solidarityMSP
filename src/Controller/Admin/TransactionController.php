@@ -54,16 +54,4 @@ final class TransactionController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
-    #[Route('/preuzmi-potvrdu-o-uplati/{id}', name: 'payment_proof_download', requirements: ['id' => '\d+'])]
-    public function paymentProof(Transaction $transaction): Response
-    {
-        $uploadDir = $this->getParameter('PAYMENT_PROOF_DIR');
-        $filePath = $uploadDir.'/'.$transaction->getPaymentProofFile();
-        if (!file_exists($filePath)) {
-            throw $this->createNotFoundException();
-        }
-
-        return $this->file($filePath);
-    }
 }

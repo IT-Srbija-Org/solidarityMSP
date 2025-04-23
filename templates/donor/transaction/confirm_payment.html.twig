@@ -14,25 +14,12 @@
             {{ include('flashes.html.twig') }}
 
             <div class="mb-2 text-gray-500">
-                Na ovoj stranici možete potvrditi da ste izvršili uplatu. Dodavanje uplatnice (PDF, JPG, PNG) nije obavezno. Nakon što pošaljete potvrdu, administrator će dodatno proveriti podatke pre konačne evidencije uplate.
+                Na ovoj stranici možete potvrditi da ste izvršili uplatu. Nakon što potvrdite uplatu, administrator će dodatno proveriti podatke pre konačne evidencije uplate.
             </div>
 
             <div>
                 {% form_theme form 'form.html.twig' %}
-                {{ form_start(form) }}
-                    {{ form_widget(form.confirm) }}
-
-                    <div class="mb-4">
-                        <fieldset class="fieldset">
-                            <legend class="fieldset-legend">Uplatnica nije obavezna</legend>
-                            {{ form_widget(form.file) }}
-                            {{ form_label(form.file) }}
-                            {{ form_errors(form.file) }}
-                        </fieldset>
-                    </div>
-
-                    {{ form_row(form.submit) }}
-                {{ form_end(form) }}
+                {{ form(form) }}
             </div>
         </div>
     </div>
