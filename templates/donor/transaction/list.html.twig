@@ -98,16 +98,16 @@
                                 <td>
                                     <div class="flex gap-2 justify-end">
                                         {% if transaction.isStatusWaitingConfirmation %}
-                                            <a href="{{ path('profile_transaction_delete_payment_confirmation', { 'id': transaction.id }) }}" class="btn {% if transaction.allowDeletePaymentConfirmation %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Obriši potvrdu o uplate">
+                                            <a href="{{ path('donor_transaction_delete_payment_confirmation', { 'id': transaction.id }) }}" class="btn {% if transaction.allowDeletePaymentConfirmation %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Obriši potvrdu o uplate">
                                                 <span class="ti ti-square-x text-xl"></span>
                                             </a>
                                         {% else %}
-                                            <a href="{{ path('profile_transaction_confirm_payment', { 'id': transaction.id }) }}" class="btn {% if transaction.allowConfirmPayment %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Potvrdi uplatu">
+                                            <a href="{{ path('donor_transaction_confirm_payment', { 'id': transaction.id }) }}" class="btn {% if transaction.allowConfirmPayment %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Potvrdi uplatu">
                                                 <span class="ti ti-checkbox text-xl"></span>
                                             </a>
                                         {% endif %}
 
-                                        <a href="{{ path('profile_transaction_invoice_print', { 'id': transaction.id }) }}" target="_blank" class="btn {% if transaction.allowShowPrint %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Oštampaj">
+                                        <a href="{{ path('donor_transaction_print', { 'id': transaction.id }) }}" target="_blank" class="btn {% if transaction.allowShowPrint %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Oštampaj">
                                             <span class="ti ti-printer text-xl"></span>
                                         </a>
 
@@ -152,7 +152,7 @@
             const contentDiv = document.getElementById('qr_modal_content');
             contentDiv.innerHTML = '<div class="text-center my-4">Učitavanje...</div>';
 
-            fetch('/profil/qr-kod/' + transactionId)
+            fetch('/instrukcije-za-uplatu/qr/' + transactionId)
                 .then(response => response.text())
                 .then(html => {
                     contentDiv.innerHTML = html;
