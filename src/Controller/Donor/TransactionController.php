@@ -141,7 +141,7 @@ class TransactionController extends AbstractController
             $entityManager->flush();
             $this->addFlash('success', 'Uspešno ste potvrdili uplatu.');
 
-            return $this->redirectToRoute('profile_transactions');
+            return $this->redirectToRoute('donor_transaction_list');
         }
 
         return $this->render('donor/transaction/confirm_payment.html.twig', [
@@ -185,7 +185,7 @@ class TransactionController extends AbstractController
 
             $this->addFlash('success', 'Uspešno ste obrisali potvrdu o uplati.');
 
-            return $this->redirectToRoute('profile_transactions');
+            return $this->redirectToRoute('donor_transaction_list');
         }
 
         return $this->render('confirm_message.html.twig', [
