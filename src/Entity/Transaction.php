@@ -18,7 +18,7 @@ class Transaction
     public const STATUS_CANCELLED = 4;
 
     public const STATUS = [
-        self::STATUS_NEW => 'New',
+        self::STATUS_NEW => 'WaitingPayment',
         self::STATUS_WAITING_CONFIRMATION => 'WaitingConfirmation',
         self::STATUS_CONFIRMED => 'Confirmed',
         self::STATUS_CANCELLED => 'Cancelled',

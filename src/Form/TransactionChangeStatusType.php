@@ -17,6 +17,7 @@ class TransactionChangeStatusType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'label' => 'Status',
                 'required' => true,
+                'placeholder' => '',
                 'choices' => [
                     'Potvrđena' => Transaction::STATUS_CONFIRMED,
                     'Otkazana' => Transaction::STATUS_CANCELLED,
