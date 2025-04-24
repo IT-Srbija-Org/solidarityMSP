@@ -2,7 +2,7 @@
 
 {% block body %}
     {% import "macro.html.twig" as macro %}
-    {{ macro.back('delegate_panel_damaged_educators', { 'period': damagedEducator.period.id }) }}
+    {{ macro.back('delegate_damaged_educator_list', { 'period': damagedEducator.period.id }) }}
 
     <div class="card card-lg bg-base-100 shadow m-10 mt-0">
         <div class="card-body">
@@ -76,7 +76,7 @@
                                 <td>{{ transaction.createdAt|date('H:i d.m.Y.') }}</td>
                                 <td>
                                     <div class="flex gap-2 justify-end">
-                                        <a href="{{ path('delegate_panel_damaged_educator_transaction_change_status', { 'id': transaction.id }) }}" class="btn {% if transaction.allowToChangeStatus %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Promeni status">
+                                        <a href="{{ path('delegate_damaged_educator_transaction_change_status', { 'id': transaction.id }) }}" class="btn {% if transaction.allowToChangeStatus %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Promeni status">
                                             <span class="ti ti-edit text-xl"></span> Promeni status
                                         </a>
                                     </div>

@@ -19,7 +19,7 @@ class RedirectController extends AbstractController
     #[Route('/obrazacDonatori')]
     public function redirectDonor(): Response
     {
-        return $this->redirectToRoute('donor_subscribe', [], Response::HTTP_MOVED_PERMANENTLY);
+        return $this->redirectToRoute('donor_request_form', [], Response::HTTP_MOVED_PERMANENTLY);
     }
 
     #[Route('/obrazacDelegati')]
@@ -27,6 +27,6 @@ class RedirectController extends AbstractController
     #[Route('/obrazacOsteceni')]
     public function redirectDelegate(): Response
     {
-        return $this->redirectToRoute('delegate_request', [], Response::HTTP_MOVED_PERMANENTLY);
+        return $this->redirectToRoute('delegate_request_form', [], Response::HTTP_MOVED_PERMANENTLY);
     }
 }

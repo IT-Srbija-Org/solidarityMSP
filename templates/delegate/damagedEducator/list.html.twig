@@ -2,7 +2,7 @@
 
 {% block body %}
     {% import "macro.html.twig" as macro %}
-    {{ macro.back('delegate_panel_damaged_educator_period') }}
+    {{ macro.back('delegate_damaged_educator_choose_period') }}
 
     <div class="card card-lg bg-base-100 shadow m-10 mt-0">
         <div class="card-body">
@@ -22,7 +22,7 @@
                         Ukupno rezultata: <span class="font-bold">{{ damagedEducators.total }}</span>
                     </div>
 
-                    <a href="{{ path('delegate_panel_new_damaged_educator', { 'period': period.id }) }}" class="btn {% if period.active %}btn-primary{% else %}btn-disabled{% endif %}">
+                    <a href="{{ path('delegate_damaged_educator_new', { 'period': period.id }) }}" class="btn {% if period.active %}btn-primary{% else %}btn-disabled{% endif %}">
                         <span class="ti ti-plus text-xl"></span>
                         Dodaj
                     </a>
@@ -73,13 +73,13 @@
                                 <td>{{ damagedEducator.createdBy.fullName }}</td>
                                 <td>
                                     <div class="flex gap-2 justify-end">
-                                        <a href="{{ path('delegate_panel_damaged_educator_transactions', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-disabled{% else %}btn-primary{% endif %} btn-sm flex tooltip" data-tip="Spisak IZU">
+                                        <a href="{{ path('delegate_damaged_educator_transactions', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-disabled{% else %}btn-primary{% endif %} btn-sm flex tooltip" data-tip="Spisak IZU">
                                             <span class="ti ti-credit-card text-xl"></span>
                                         </a>
-                                        <a href="{{ path('delegate_panel_delete_damaged_educator', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Brisanje">
+                                        <a href="{{ path('delegate_damaged_educator_delete', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Brisanje">
                                             <span class="ti ti-trash text-xl"></span>
                                         </a>
-                                        <a href="{{ path('delegate_panel_edit_damaged_educator', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Izmeni">
+                                        <a href="{{ path('delegate_damaged_educator_edit', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Izmeni">
                                             <span class="ti ti-edit text-xl"></span>
                                         </a>
                                     </div>

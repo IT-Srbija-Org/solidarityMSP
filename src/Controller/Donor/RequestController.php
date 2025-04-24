@@ -14,15 +14,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route(name: 'donor_')]
+#[Route(name: 'donor_request_')]
 class RequestController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
     }
 
-    #[Route('/postani-donator', name: 'subscribe')]
-    public function subscribe(Request $request, UserRepository $userRepository, UserDonorRepository $userDonorRepository): Response
+    #[Route('/postani-donator', name: 'form')]
+    public function form(Request $request, UserRepository $userRepository, UserDonorRepository $userDonorRepository): Response
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -64,7 +64,7 @@ class RequestController extends AbstractController
             return $this->redirectToRoute('donor_success');
         }
 
-        return $this->render('donor/request/subscribe.html.twig', [
+        return $this->render('donor/request/form.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -101,6 +101,6 @@ class RequestController extends AbstractController
 
         $this->addFlash('success', 'Uspešno ste se odjavili sa liste donora');
 
-        return $this->redirectToRoute('donor_subscribe');
+        return $this->redirectToRoute('donor_form');
     }
 }

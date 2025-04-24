@@ -13,7 +13,7 @@
 
             <div class="space-y-4">
                 {% for item in items %}
-                    <a href="{{ path('delegate_panel_damaged_educators', { 'period': item.id }) }}" class="flex items-center justify-between w-full p-6 transition-all rounded-lg shadow-sm hover:shadow-md {% if not item.active %}opacity-50 grayscale{% endif %} bg-info/10 border-l-4 border-info">
+                    <a href="{{ path('delegate_damaged_educator_list', { 'period': item.id }) }}" class="flex items-center justify-between w-full p-6 transition-all rounded-lg shadow-sm hover:shadow-md {% if not item.active %}opacity-50 grayscale{% endif %} bg-info/10 border-l-4 border-info">
                         <div>
                             <h3 class="text-5xl text-gray-500">
                                 {{ item.date|date('F')|trans }}
