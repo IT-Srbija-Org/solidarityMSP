@@ -26,6 +26,7 @@ class DuplicateDamagedEducatorValidator extends ConstraintValidator
 
         $items = $this->damagedEducatorRepository->findBy([
             'period' => $damagedEducator->getPeriod(),
+            'school' => $damagedEducator->getSchool(),
             'accountNumber' => $damagedEducator->getAccountNumber(),
         ]);
 
