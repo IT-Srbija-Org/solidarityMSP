@@ -74,7 +74,7 @@ class RequestController extends AbstractController
             $this->addFlash('error', 'Došlo je do greške, molimo Vas da proverite unešene podatke.');
         }
 
-        return $this->render('form.html.twig', [
+        return $this->render('delegate/request/form.html.twig', [
             'form' => $form->createView(),
         ]);
     }
