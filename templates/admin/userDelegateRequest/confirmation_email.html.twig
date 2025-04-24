@@ -1,0 +1,11 @@
+{% extends 'base_email.html.twig' %}
+
+{% block body %}
+    <p>Poštovani/a,</p>
+
+    <div>Vaš zahtev za status delegata je uspešno odobren.</div>
+    <div>Od sada imate ulogu delegata na našem sistemu i možete da unosite oštećene za školu "<b>{{ userDelegateRequest.school.name }}</b>", "<b>{{ userDelegateRequest.school.city.name }}</b>".</div>
+    <div>Ukoliko imate bilo kakvih pitanja, slobodno nas kontaktirajte na adresi: <a href="mailto:delegati@mrezasolidarnosti.org" target="_blank">delegati@mrezasolidarnosti.org</a>.</div>
+
+    <p>Možete se ulogovani na sledećem linku: <a href="{{ absolute_url(path('login')) }}">Uloguj se</a></p>
+{% endblock %}

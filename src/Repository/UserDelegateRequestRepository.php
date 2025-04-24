@@ -6,15 +6,28 @@ use App\Entity\UserDelegateRequest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
 
 /**
  * @extends ServiceEntityRepository<UserDelegateRequest>
  */
 class UserDelegateRequestRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private MailerInterface $mailer)
     {
         parent::__construct($registry, UserDelegateRequest::class);
+    }
+
+    public function sendConfirmationEmail(UserDelegateRequest $userDelegateRequest): void
+    {
+        $message = (new TemplatedEmail())
+            ->to($userDelegateRequest->getUser()->getEmail())
+            ->subject('Vaš zahtev za delegata je odobren')
+            ->htmlTemplate('admin/userDelegateRequest/confirmation_email.html.twig')
+            ->context(['userDelegateRequest' => $userDelegateRequest]);
+
+        $this->mailer->send($message);
     }
 
     public function search(array $criteria, int $page = 1, int $limit = 50): array
