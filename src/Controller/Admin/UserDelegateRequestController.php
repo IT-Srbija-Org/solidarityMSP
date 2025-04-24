@@ -63,7 +63,6 @@ final class UserDelegateRequestController extends AbstractController
             $entityManager->flush();
 
             if (UserDelegateRequest::STATUS_CONFIRMED == $userDelegateRequest->getStatus()) {
-
                 // Add role "ROLE_DELEGATE" to user
                 $user->addRole('ROLE_DELEGATE');
                 $entityManager->persist($user);
