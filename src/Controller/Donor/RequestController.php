@@ -61,7 +61,7 @@ class RequestController extends AbstractController
                 $userDonorRepository->sendSuccessEmail($user);
             }
 
-            return $this->redirectToRoute('donor_success');
+            return $this->redirectToRoute('donor_request_success');
         }
 
         return $this->render('donor/request/form.html.twig', [
@@ -101,6 +101,6 @@ class RequestController extends AbstractController
 
         $this->addFlash('success', 'Uspešno ste se odjavili sa liste donora');
 
-        return $this->redirectToRoute('donor_form');
+        return $this->redirectToRoute('donor_request_form');
     }
 }

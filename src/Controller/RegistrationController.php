@@ -100,7 +100,7 @@ class RegistrationController extends AbstractController
             if ('donor' == $action) {
                 $userDonorRepository->sendSuccessEmail($user);
 
-                return $this->redirectToRoute('donor_success');
+                return $this->redirectToRoute('donor_request_success');
             }
 
             if ('delegate' == $action) {
