@@ -11,9 +11,16 @@
                 Izaberite period
             </h2>
 
+            <div class="alert alert-info alert-soft">
+                <span class="ti ti-info-circle text-2xl"></span>
+                Period za predhodni mesec se kreira automatski svakog 23. u mesecu.
+            </div>
+
+            <div class="divider"></div>
+
             <div class="space-y-4">
                 {% for item in items %}
-                    <a href="{{ path('delegate_damaged_educator_list', { 'period': item.id }) }}" class="flex items-center justify-between w-full p-6 transition-all rounded-lg shadow-sm hover:shadow-md {% if not item.active %}opacity-50 grayscale{% endif %} bg-info/10 border-l-4 border-info">
+                    <a href="{{ path('delegate_damaged_educator_list', { 'period': item.id }) }}" class="flex items-center justify-between w-full px-6 py-4 transition-all shadow-sm hover:shadow-lg {% if not item.active %}opacity-50 grayscale{% endif %} bg-info/10 border-l-10 rounded-xl border-info">
                         <div>
                             <h3 class="text-5xl text-gray-500">
                                 {{ item.date|date('F')|trans }}
