@@ -29,8 +29,14 @@ class TransactionStatusExtensionTest extends TestCase
 
     public function testGetStatusForNew()
     {
+        $this->translator->method('trans')
+            ->with('WaitingPayment')
+            ->willReturn('Waiting Payment');
+
         $result = $this->extension->getStatus(Transaction::STATUS_NEW);
-        $this->assertSame('-', $result);
+
+        $this->assertStringContainsString('clock', $result);
+        $this->assertStringContainsString('Waiting Payment', $result);
     }
 
     public function testGetStatusForWaitingConfirmation()
