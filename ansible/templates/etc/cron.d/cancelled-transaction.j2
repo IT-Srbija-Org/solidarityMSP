@@ -1,0 +1,1 @@
+0 * * * * www-data cd {{ app_root }} && php bin/console app:cancelled-transaction --env={{ app_env }} --no-interaction 2>&1 | logger -t cancelled-transaction-cron

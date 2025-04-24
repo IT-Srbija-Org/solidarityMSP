@@ -2,7 +2,7 @@
 
 {% block body %}
     {% import "macro.html.twig" as macro %}
-    {{ macro.back('delegate_panel_damaged_educators', { 'period': damagedEducator.period.id }) }}
+    {{ macro.back('delegate_damaged_educator_list', { 'period': damagedEducator.period.id }) }}
 
     <div class="card card-lg bg-base-100 shadow m-10 mt-0">
         <div class="card-body">
@@ -24,6 +24,8 @@
                     Broj računa: <span class="font-bold">{{ damagedEducator.accountNumber }}</span>
                 </div>
             </div>
+
+            {{ include('flashes.html.twig') }}
 
             {% if hasCancelledTransactions %}
                 <div class="alert alert-info alert-soft mb-4">
@@ -48,10 +50,6 @@
                                     <span class="ti ti-cash text-xl"></span>
                                     Cifra
                                 </th>
-                                <th>
-                                    <span class="ti ti-file text-xl"></span>
-                                    Potvrda o uplati
-                                </th>
                                 <th>Status</th>
                                 <th>
                                     <span class="ti ti-calendar-event text-xl"></span>
@@ -66,16 +64,6 @@
                                 <td>{{ transaction.id }}</td>
                                 <td>{{ transaction.amount|number_format }}</td>
                                 <td>
-                                    {% if transaction.hasPaymentProofFile %}
-                                        <a href="{{ path('profile_transaction_payment_proof_download', { 'id': transaction.id }) }}" class="link link-primary no-underline">
-                                            <span class="ti ti-download text-xl"></span>
-                                            Preuzmi
-                                        </a>
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
-                                <td>
                                     <div class="whitespace-nowrap">{{ transaction.status|transactionStatus|raw }}</div>
                                     <div class="text-gray-500 max-w-[200px]">
                                         {% if transaction.statusComment %}
@@ -88,7 +76,7 @@
                                 <td>{{ transaction.createdAt|date('H:i d.m.Y.') }}</td>
                                 <td>
                                     <div class="flex gap-2 justify-end">
-                                        <a href="{{ path('delegate_panel_damaged_educator_transaction_change_status', { 'id': transaction.id }) }}" class="btn {% if transaction.allowToChangeStatus %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Promeni status">
+                                        <a href="{{ path('delegate_damaged_educator_transaction_change_status', { 'id': transaction.id }) }}" class="btn {% if transaction.allowToChangeStatus %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Promeni status">
                                             <span class="ti ti-edit text-xl"></span> Promeni status
                                         </a>
                                     </div>

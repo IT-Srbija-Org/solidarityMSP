@@ -30,7 +30,3 @@ phpstan*neon
 # Ansible
 .ansible/.lock
 .vagrant/
-
-# Payment proof files
-/public/uploads/payment_proof/*
-!/public/uploads/payment_proof/.gitignore

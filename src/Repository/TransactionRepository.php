@@ -64,11 +64,6 @@ class TransactionRepository extends ServiceEntityRepository
                 ->setParameter('status', $criteria['status']);
         }
 
-        if (!empty($criteria['hasPaymentProofFile'])) {
-            $qb->andWhere('t.hasPaymentProofFile = :hasPaymentProofFile')
-                ->setParameter('hasPaymentProofFile', $criteria['hasPaymentProofFile']);
-        }
-
         // Set the sorting
         $qb->orderBy('t.id', 'DESC');
 

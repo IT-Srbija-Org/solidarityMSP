@@ -32,7 +32,7 @@ class InvoiceSlipHtmlTest extends KernelTestCase
             'img_height' => 1181,
         ];
 
-        $html = $twig->render('profile/invoice_slip.html.twig', $data);
+        $html = $twig->render('donor/transaction/print.html.twig', $data);
         $crawler = new Crawler($html);
 
         $this->assertSame('Test User', $crawler->filter('#payer')->text());

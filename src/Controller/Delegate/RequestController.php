@@ -13,25 +13,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(name: 'delegate_')]
+#[Route(name: 'delegate_request_')]
 class RequestController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
     }
 
-    #[Route('/postani-delegat', name: 'request')]
-    public function request(Request $request, UserRepository $userRepository): Response
+    #[Route('/postani-delegat', name: 'form')]
+    public function form(Request $request, UserRepository $userRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
         if ($user && in_array('ROLE_DELEGATE', $user->getRoles())) {
-            return $this->render('delegate/request_approved.html.twig');
+            return $this->render('delegate/request/approved.html.twig');
         }
 
         if ($user && $user->getUserDelegateRequest() && UserDelegateRequest::STATUS_NEW != $user->getUserDelegateRequest()->getStatus()) {
-            return $this->render('delegate/request_already_exist.html.twig');
+            return $this->render('delegate/request/already_exist.html.twig');
         }
 
         $userDelegateRequest = new UserDelegateRequest();
@@ -74,21 +74,21 @@ class RequestController extends AbstractController
             $this->addFlash('error', 'Došlo je do greške, molimo Vas da proverite unešene podatke.');
         }
 
-        return $this->render('delegate/request.html.twig', [
+        return $this->render('delegate/request/form.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/uspesna-registracija-delegata', name: 'request_success')]
+    #[Route('/uspesna-registracija-delegata', name: 'success')]
     public function messageSuccess(): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
         if ($user && $user->isEmailVerified()) {
-            return $this->render('delegate/request_success.html.twig');
+            return $this->render('delegate/request/success.html.twig');
         }
 
-        return $this->render('delegate/request_success_need_verify.html.twig');
+        return $this->render('delegate/request/success_need_verify.html.twig');
     }
 }

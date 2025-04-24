@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Donor;
 
 use App\Entity\UserDonor;
 use App\Form\UserDonorType;
@@ -14,15 +14,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route(name: 'donor_')]
-class DonorController extends AbstractController
+#[Route(name: 'donor_request_')]
+class RequestController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
     }
 
-    #[Route('/postani-donator', name: 'subscribe')]
-    public function subscribe(Request $request, UserRepository $userRepository, UserDonorRepository $userDonorRepository): Response
+    #[Route('/postani-donator', name: 'form')]
+    public function form(Request $request, UserRepository $userRepository, UserDonorRepository $userDonorRepository): Response
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -61,10 +61,10 @@ class DonorController extends AbstractController
                 $userDonorRepository->sendSuccessEmail($user);
             }
 
-            return $this->redirectToRoute('donor_success');
+            return $this->redirectToRoute('donor_request_success');
         }
 
-        return $this->render('donor/subscribe.html.twig', [
+        return $this->render('donor/request/form.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -76,10 +76,10 @@ class DonorController extends AbstractController
         $user = $this->getUser();
 
         if ($user && $user->isEmailVerified()) {
-            return $this->render('donor/success.html.twig');
+            return $this->render('donor/request/success.html.twig');
         }
 
-        return $this->render('donor/success_need_verify.html.twig');
+        return $this->render('donor/request/success_need_verify.html.twig');
     }
 
     #[IsGranted('ROLE_USER')]
@@ -101,6 +101,6 @@ class DonorController extends AbstractController
 
         $this->addFlash('success', 'Uspešno ste se odjavili sa liste donora');
 
-        return $this->redirectToRoute('donor_subscribe');
+        return $this->redirectToRoute('donor_request_form');
     }
 }

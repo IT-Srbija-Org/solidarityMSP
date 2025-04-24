@@ -5,6 +5,13 @@ server {
 
     client_max_body_size {{ nginx_client_max_body_size }};
 
+{% if enable_tor_blocking %}
+    # Check for Tor exit nodes
+    if ($blocked_tor = 1) {
+        return 403 "Access denied";
+    }
+{% endif %}
+
     location / {
         try_files $uri /index.php$is_args$args;
     }

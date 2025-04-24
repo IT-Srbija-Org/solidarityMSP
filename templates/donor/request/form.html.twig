@@ -107,7 +107,7 @@
             {% if app.user and app.user.userDonor %}
                 <div class="mt-8 text-gray-500 text-sm text-right">
                     Ako želite da se odjavite sa liste donatora kliknite na sledeći link:
-                    <a href="{{ path('donor_unsubscribe', { '_token': csrf_token('unsubscribe') }) }}" onclick="confirm('Da li ste sigurni da želite da se odjavite sa liste donatora?');" class="link link-primary link-hover test-link1">odjava</a>
+                    <a href="{{ path('donor_request_unsubscribe', { '_token': csrf_token('unsubscribe') }) }}" onclick="confirm('Da li ste sigurni da želite da se odjavite sa liste donatora?');" class="link link-primary link-hover test-link1">odjava</a>
                 </div>
             {% endif %}
         </div>

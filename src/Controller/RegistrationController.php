@@ -100,7 +100,7 @@ class RegistrationController extends AbstractController
             if ('donor' == $action) {
                 $userDonorRepository->sendSuccessEmail($user);
 
-                return $this->redirectToRoute('donor_success');
+                return $this->redirectToRoute('donor_request_success');
             }
 
             if ('delegate' == $action) {
@@ -109,7 +109,7 @@ class RegistrationController extends AbstractController
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('error', $exception->getReason());
 
-            return $this->redirectToRoute('register');
+            return $this->redirectToRoute('login');
         }
 
         return $this->redirectToRoute('verify_email_success');

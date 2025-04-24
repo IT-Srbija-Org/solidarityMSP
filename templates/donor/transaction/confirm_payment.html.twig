@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% import "macro.html.twig" as macro %}
+    {{ macro.back('donor_transaction_list') }}
+
+    <div class="card card-lg bg-base-100 shadow m-10 mt-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-checkbox text-2xl"></span>
+                Potvrdi uplate
+            </h2>
+
+            {{ include('flashes.html.twig') }}
+
+            <div class="mb-2 text-gray-500">
+                Na ovoj stranici možete potvrditi da ste izvršili uplatu. Nakon što potvrdite uplatu, administrator će dodatno proveriti podatke pre konačne evidencije uplate.
+            </div>
+
+            <div>
+                {% form_theme form 'form.html.twig' %}
+                {{ form(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

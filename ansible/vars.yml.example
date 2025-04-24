@@ -6,8 +6,6 @@ admin_email: admin@example.com
 git_repo: https://github.com/IT-Srbija-Org/solidaritySF.git
 git_branch: main
 
-
-
 # Redis settings
 redis_host: 127.0.0.1
 redis_port: 6379
@@ -26,6 +24,9 @@ load_fixtures: true
 # if you want to use CF SSL, set this to false
 enable_ssl: false
 enable_ufw: false
+
+# Enable Tor exit node blocking in Nginx
+enable_tor_blocking: false
 
 # Backup settings
 backup_dir: /backup
@@ -57,7 +58,6 @@ mysql_users:
     priv: "{{ mysql_database }}.*:ALL"
     state: present
 
-# geerlingguy.swap
- role variables
+# geerlingguy.swap role variables
 # This will create a swap file of 2x the size of the total RAM
 swap_file_size_mb: "{{ ansible_memtotal_mb * 2 }}"

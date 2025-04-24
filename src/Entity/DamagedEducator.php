@@ -11,7 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DamagedEducatorRepository::class)]
-#[ORM\Index(name: 'idx_period', columns: ['period_id', 'account_number'])]
+#[ORM\Index(name: 'idx_period', columns: ['period_id', 'school_id', 'account_number'])]
 #[CustomAssert\DuplicateDamagedEducator]
 #[ORM\HasLifecycleCallbacks]
 class DamagedEducator

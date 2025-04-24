@@ -85,3 +85,12 @@
     - var
     - public
   tags: [deploy]
+
+- name: Deploy cron job for cancelled transactions
+  ansible.builtin.template:
+    src: templates/etc/cron.d/cancelled-transaction.j2
+    dest: /etc/cron.d/cancelled-transaction
+    owner: root
+    group: root
+    mode: "0644"
+  tags: [deploy]

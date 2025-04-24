@@ -44,7 +44,7 @@ final class UserDelegateRequestController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'])]
-    public function edit(Request $request, UserDelegateRequest $userDelegateRequest, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, UserDelegateRequest $userDelegateRequest, UserDelegateRequestRepository $userDelegateRequestRepository, EntityManagerInterface $entityManager): Response
     {
         if (UserDelegateRequest::STATUS_NEW != $userDelegateRequest->getStatus()) {
             throw $this->createAccessDeniedException();
@@ -72,8 +72,11 @@ final class UserDelegateRequestController extends AbstractController
                 $userDelegateSchool->setUser($user);
                 $userDelegateSchool->setSchool($userDelegateRequest->getSchool());
                 $entityManager->persist($userDelegateSchool);
-
                 $entityManager->flush();
+
+                // Send confirmation email
+                $userDelegateRequestRepository->sendConfirmationEmail($userDelegateRequest);
+
                 $this->addFlash('success', 'Zahtev za delegata je prihvaćen. Korisniku je dodeljena privilegija za delegata kao i škola.');
             }
 

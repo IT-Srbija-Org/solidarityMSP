@@ -57,7 +57,7 @@
     - name: Include Nginx tasks
       ansible.builtin.include_tasks:
         file: tasks/nginx.yml
-      tags: [nginx, ssl]
+      tags: [nginx, ssl, tor]
 
     - name: Application setup tasks
       ansible.builtin.include_tasks:

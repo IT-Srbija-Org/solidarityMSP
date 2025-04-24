@@ -20,15 +20,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_DELEGATE')]
-#[Route('/delegat', name: 'delegate_panel_')]
-class PanelController extends AbstractController
+#[Route('/delegat', name: 'delegate_damaged_educator_')]
+class DamagedEducatorController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
     }
 
-    #[Route('/odabir-perioda', name: 'damaged_educator_period')]
-    public function damagedEducatorPeriod(DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository): Response
+    #[Route('/odabir-perioda', name: 'choose_period')]
+    public function choosePeriod(DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository): Response
     {
         $items = $damagedEducatorPeriodRepository->findBy([], [
             'year' => 'DESC',
@@ -36,21 +36,18 @@ class PanelController extends AbstractController
             'id' => 'DESC',
         ]);
 
-        return $this->render('delegate/damaged_educator_period.html.twig', [
+        return $this->render('delegate/damagedEducator/choose_period.html.twig', [
             'items' => $items,
         ]);
     }
 
-    #[Route('/osteceni', name: 'damaged_educators')]
-    public function damagedEducators(
-        Request $request,
-        DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository,
-        DamagedEducatorRepository $damagedEducatorRepository,
-    ): Response {
+    #[Route('/osteceni', name: 'list')]
+    public function list(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, DamagedEducatorRepository $damagedEducatorRepository): Response
+    {
         $periodId = $request->query->getInt('period');
         $period = $damagedEducatorPeriodRepository->find($periodId);
         if (empty($period)) {
-            return $this->redirectToRoute('delegate_panel_damaged_educator_period');
+            return $this->redirectToRoute('delegate_damaged_educator_choose_period');
         }
 
         $form = $this->createForm(DamagedEducatorSearchType::class, null, [
@@ -75,14 +72,14 @@ class PanelController extends AbstractController
         $criteria['period'] = $period;
         $page = $request->query->getInt('page', 1);
 
-        return $this->render('delegate/damaged_educators.html.twig', [
+        return $this->render('delegate/damagedEducator/list.html.twig', [
             'damagedEducators' => $damagedEducatorRepository->search($criteria, $page),
             'period' => $period,
             'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/prijavi-ostecenog', name: 'new_damaged_educator')]
+    #[Route('/prijavi-ostecenog', name: 'new')]
     public function newDamagedEducator(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, DamagedEducatorRepository $damagedEducatorRepository): Response
     {
         $periodId = $request->query->getInt('period');
@@ -107,7 +104,7 @@ class PanelController extends AbstractController
 
             $this->addFlash('success', 'Uspešno ste sačuvali oštećenog.');
 
-            return $this->redirectToRoute('delegate_panel_damaged_educators', [
+            return $this->redirectToRoute('delegate_damaged_educator_list', [
                 'period' => $damagedEducator->getPeriod()->getId(),
             ]);
         }
@@ -115,14 +112,14 @@ class PanelController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        return $this->render('delegate/edit_damaged_educator.html.twig', [
+        return $this->render('delegate/damagedEducator/edit.html.twig', [
             'form' => $form->createView(),
             'damagedEducator' => $damagedEducator,
             'damagedEducators' => $damagedEducatorRepository->getFromUser($user),
         ]);
     }
 
-    #[Route('/osteceni/{id}/izmeni-podatke', name: 'edit_damaged_educator')]
+    #[Route('/osteceni/{id}/izmeni-podatke', name: 'edit')]
     public function editDamagedEducator(Request $request, DamagedEducator $damagedEducator, DamagedEducatorRepository $damagedEducatorRepository): Response
     {
         if (!$damagedEducator->getPeriod()->isActive()) {
@@ -154,7 +151,7 @@ class PanelController extends AbstractController
 
             $this->addFlash('success', 'Uspešno ste izmenili podatke od oštećenog.');
 
-            return $this->redirectToRoute('delegate_panel_damaged_educators', [
+            return $this->redirectToRoute('delegate_damaged_educator_list', [
                 'period' => $damagedEducator->getPeriod()->getId(),
             ]);
         }
@@ -162,14 +159,14 @@ class PanelController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        return $this->render('delegate/edit_damaged_educator.html.twig', [
+        return $this->render('delegate/damagedEducator/edit.html.twig', [
             'form' => $form->createView(),
             'damagedEducator' => $damagedEducator,
             'damagedEducators' => $damagedEducatorRepository->getFromUser($user),
         ]);
     }
 
-    #[Route('/osteceni/{id}/brisanje', name: 'delete_damaged_educator')]
+    #[Route('/osteceni/{id}/brisanje', name: 'delete')]
     public function deleteDamagedEducator(Request $request, DamagedEducator $damagedEducator): Response
     {
         if (!$damagedEducator->getPeriod()->isActive()) {
@@ -201,18 +198,18 @@ class PanelController extends AbstractController
 
             $this->addFlash('success', 'Uspešno ste obrisali oštećenog.');
 
-            return $this->redirectToRoute('delegate_panel_damaged_educators', [
+            return $this->redirectToRoute('delegate_damaged_educator_list', [
                 'period' => $damagedEducator->getPeriod()->getId(),
             ]);
         }
 
-        return $this->render('delegate/delete_damaged_educator.html.twig', [
+        return $this->render('delegate/damagedEducator/delete.html.twig', [
             'form' => $form->createView(),
             'damagedEducator' => $damagedEducator,
         ]);
     }
 
-    #[Route('/osteceni/{id}/instrukcija-za-uplatu', name: 'damaged_educator_transactions')]
+    #[Route('/osteceni/{id}/instrukcija-za-uplatu', name: 'transactions')]
     public function damagedEducatorTransactions(DamagedEducator $damagedEducator, TransactionRepository $transactionRepository): Response
     {
         /** @var User $user */
@@ -232,14 +229,14 @@ class PanelController extends AbstractController
             'status' => Transaction::STATUS_CANCELLED,
         ]);
 
-        return $this->render('delegate/damaged_educator_transactions.html.twig', [
+        return $this->render('delegate/damagedEducator/transactions.html.twig', [
             'damagedEducator' => $damagedEducator,
             'transactions' => $transactionRepository->findBy(['damagedEducator' => $damagedEducator]),
             'hasCancelledTransactions' => $hasCancelledTransactions,
         ]);
     }
 
-    #[Route('/osteceni/instrukcija-za-uplatu/{id}/promena-statusa', name: 'damaged_educator_transaction_change_status')]
+    #[Route('/osteceni/instrukcija-za-uplatu/{id}/promena-statusa', name: 'transaction_change_status')]
     public function damagedEducatorTransactionChangeStatus(Request $request, Transaction $transaction): Response
     {
         if (!$transaction->allowToChangeStatus()) {
@@ -268,12 +265,12 @@ class PanelController extends AbstractController
 
             $this->addFlash('success', 'Uspešno ste promenili status instrukcije za uplatu.');
 
-            return $this->redirectToRoute('delegate_panel_damaged_educator_transactions', [
+            return $this->redirectToRoute('delegate_damaged_educator_transactions', [
                 'id' => $damagedEducator->getId(),
             ]);
         }
 
-        return $this->render('delegate/damaged_educator_transaction_change_status.html.twig', [
+        return $this->render('delegate/damagedEducator/transaction_change_status.html.twig', [
             'form' => $form,
             'transaction' => $transaction,
             'damagedEducator' => $damagedEducator,
