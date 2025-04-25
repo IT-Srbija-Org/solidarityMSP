@@ -10,6 +10,7 @@ use App\DataFixtures\SchoolTypeFixtures;
 use App\DataFixtures\UserDelegateRequestFixtures;
 use App\DataFixtures\UserDelegateSchoolFixtures;
 use App\DataFixtures\UserFixtures;
+use App\Entity\DamagedEducator;
 use App\Repository\DamagedEducatorPeriodRepository;
 use App\Repository\DamagedEducatorRepository;
 use App\Repository\UserDelegateSchoolRepository;
@@ -214,8 +215,9 @@ class PanelControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/delegat/osteceni/'.$damagedEducator->getId().'/brisanje');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $form = $crawler->filter('form[name="confirm"]')->form([
-            'confirm[confirm]' => true,
+        $form = $crawler->filter('form[name="damaged_educator_delete"]')->form([
+            'damaged_educator_delete[confirm]' => true,
+            'damaged_educator_delete[comment]' => 'Test komentar',
         ]);
 
         $this->client->submit($form);
@@ -225,7 +227,7 @@ class PanelControllerTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $damagedEducator = $this->damagedEducatorRepository->findOneBy(['accountNumber' => '150000002501288698']);
-        $this->assertNull($damagedEducator);
+        $damagedEducator = $this->damagedEducatorRepository->find($damagedEducator->getId());
+        $this->assertEquals(DamagedEducator::STATUS_DELETED, $damagedEducator->getStatus());
     }
 }
