@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ORM\Table(name: '`transaction`')]
 #[ORM\Index(name: 'idx_status', columns: ['status', 'created_at', 'id'])]
+#[ORM\Index(name: 'idx_damaged_educator', columns: ['damaged_educator_id', 'status'])]
 #[ORM\HasLifecycleCallbacks]
 class Transaction
 {
@@ -44,7 +45,7 @@ class Transaction
     private ?int $amount = null;
 
     #[ORM\Column]
-    private ?int $status = 1;
+    private ?int $status = self::STATUS_NEW;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;

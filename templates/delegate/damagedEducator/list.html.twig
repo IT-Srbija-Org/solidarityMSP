@@ -59,6 +59,7 @@
                                     <span class="ti ti-calendar-event text-xl"></span>
                                     Registrovan
                                 </th>
+                                <th>Status</th>
                                 <th>
                                     <span class="ti ti-user-cog text-xl"></span>
                                     Delegat
@@ -77,6 +78,9 @@
                                 <td>{{ damagedEducator.amount|number_format }}</td>
                                 <td>{{ damagedEducator.accountNumber }}</td>
                                 <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
+                                <td class="whitespace-nowrap">
+                                    {{ damagedEducator.status|damagedEducatorStatus|raw }}
+                                </td>
                                 <td>
                                     {% if damagedEducator.createdBy %}
                                         {{ damagedEducator.createdBy.fullName }}
@@ -89,7 +93,7 @@
                                         <a href="{{ path('delegate_damaged_educator_transactions', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-disabled{% else %}btn-primary{% endif %} btn-sm flex tooltip" data-tip="Spisak IZU">
                                             <span class="ti ti-credit-card text-xl"></span>
                                         </a>
-                                        <a href="{{ path('delegate_damaged_educator_delete', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Brisanje">
+                                        <a href="{{ path('delegate_damaged_educator_delete', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToDelete %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Brisanje">
                                             <span class="ti ti-trash text-xl"></span>
                                         </a>
                                         <a href="{{ path('delegate_damaged_educator_edit', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.period.active %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Izmeni">

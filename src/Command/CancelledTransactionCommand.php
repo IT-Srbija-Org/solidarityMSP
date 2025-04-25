@@ -29,7 +29,7 @@ class CancelledTransactionCommand extends Command
         $io->section('Command started at '.date('Y-m-d H:i:s'));
 
         // Cancelled comment
-        $comment = 'Transakcija je automatski otkazana jer je prošlo više od 72 sata.';
+        $comment = 'Instruckija za uplatu je automatski otkazana jer je prošlo više od 72 sata.';
 
         while (true) {
             $items = $this->getItems();

@@ -335,7 +335,7 @@ class DatabaseMigrationCommand extends Command
             }
 
             $smtp = $this->oldConnection->prepare('
-                SELECT e.name, e.accountNumber, er.amount, e.city, e.schoolName, e.createdAt, e.updatedAt
+                SELECT e.name, e.accountNumber, er.amount, e.city, e.schoolName, e.createdAt, e.updatedAt, e.status, e.comment
                 FROM educator_roundImport AS er
                  INNER JOIN educatorImport AS e ON e.id = er.educatorId
                 WHERE er.roundId = :roundId
@@ -353,11 +353,26 @@ class DatabaseMigrationCommand extends Command
                     continue;
                 }
 
+                $status = match ($item['status']) {
+                    1 => DamagedEducator::STATUS_NEW,
+                    2 => DamagedEducator::STATUS_NEW,
+                    3 => DamagedEducator::STATUS_NEW,
+                    4 => DamagedEducator::STATUS_DELETED,
+                    5 => DamagedEducator::STATUS_NEW,
+                    6 => DamagedEducator::STATUS_DELETED,
+                    7 => DamagedEducator::STATUS_DELETED,
+                };
+
                 $entity = new DamagedEducator();
                 $entity->setName($item['name']);
                 $entity->setAccountNumber($item['accountNumber']);
                 $entity->setAmount($item['amount']);
                 $entity->setPeriod($period);
+                $entity->setStatus($status);
+
+                if ($status == DamagedEducator::STATUS_DELETED) {
+                    $entity->setStatusComment($item['comment']);
+                }
 
                 $city = $this->entityManager->getRepository(City::class)->findOneBy(['name' => $item['city']]);
                 $school = $this->entityManager->getRepository(School::class)->findOneBy([

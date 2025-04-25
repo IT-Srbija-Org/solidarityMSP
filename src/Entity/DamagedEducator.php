@@ -19,6 +19,13 @@ use Doctrine\ORM\Mapping as ORM;
 class DamagedEducator
 {
     public const MONTHLY_LIMIT = 120000;
+    public const STATUS_NEW = 1;
+    public const STATUS_DELETED = 2;
+
+    public const STATUS = [
+        self::STATUS_NEW => 'DamagedEducatorNew',
+        self::STATUS_DELETED => 'DamagedEducatorDeleted',
+    ];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -38,6 +45,12 @@ class DamagedEducator
     #[ORM\Column(length: 50)]
     #[Mod97]
     private ?string $accountNumber = null;
+
+    #[ORM\Column]
+    private ?int $status = self::STATUS_NEW;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $statusComment = null;
 
     #[ORM\ManyToOne(inversedBy: 'damagedEducators')]
     #[ORM\JoinColumn]
@@ -117,6 +130,30 @@ class DamagedEducator
         return $this;
     }
 
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStatusComment(): ?string
+    {
+        return $this->statusComment;
+    }
+
+    public function setStatusComment(?string $statusComment): static
+    {
+        $this->statusComment = $statusComment;
+
+        return $this;
+    }
+
     public function getCreatedBy(): ?User
     {
         return $this->createdBy;
@@ -174,5 +211,10 @@ class DamagedEducator
         $this->period = $period;
 
         return $this;
+    }
+
+    public function allowToDelete(): bool
+    {
+        return $this->status !== self::STATUS_DELETED;
     }
 }

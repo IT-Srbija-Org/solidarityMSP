@@ -57,6 +57,11 @@ class DamagedEducatorRepository extends ServiceEntityRepository
                 ->setParameter('school', $criteria['school']);
         }
 
+        if (!empty($criteria['status'])) {
+            $qb->andWhere('e.status = :status')
+                ->setParameter('status', $criteria['status']);
+        }
+
         if (isset($criteria['schools'])) {
             $qb->andWhere('e.school IN (:schools)')
                 ->setParameter('schools', $criteria['schools']);
