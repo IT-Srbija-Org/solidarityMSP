@@ -26,6 +26,10 @@ class DelegateSearchType extends AbstractType
                 'required' => false,
                 'label' => 'Email',
             ])
+            ->add('school', TextType::class, [
+                'required' => false,
+                'label' => 'Škola',
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => '<i class="ti ti-search text-2xl"></i> Pretraži',
                 'label_html' => true,
