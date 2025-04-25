@@ -100,3 +100,12 @@
     group: root
     mode: "0644"
   tags: [deploy]
+
+- name: Deploy cron job for create damaged educator period
+  ansible.builtin.template:
+    src: templates/etc/cron.d/create-damaged-educator-period.j2
+    dest: /etc/cron.d/create-damaged-educator-period
+    owner: root
+    group: root
+    mode: "0644"
+  tags: [deploy]
