@@ -15,8 +15,15 @@ class InvoiceSlipServiceTest extends TestCase
         $user = $this->createMock(User::class);
         $user->method('getFullName')->willReturn('Test User');
 
+        $city = $this->createMock(\App\Entity\City::class);
+        $city->method('getName')->willReturn('Test City');
+
+        $school = $this->createMock(\App\Entity\School::class);
+        $school->method('getCity')->willReturn($city);
+
         $damagedEducator = $this->createMock(\App\Entity\DamagedEducator::class);
         $damagedEducator->method('getName')->willReturn('Recipient Name');
+        $damagedEducator->method('getSchool')->willReturn($school);
 
         $transaction = $this->createMock(Transaction::class);
         $transaction->method('getDamagedEducator')->willReturn($damagedEducator);
@@ -31,7 +38,7 @@ class InvoiceSlipServiceTest extends TestCase
 
         $this->assertSame([
             'payer' => 'Test User',
-            'recipient' => 'Recipient Name',
+            'recipient' => 'Recipient Name, Test City',
             'purpose' => 'Transakcija po nalogu građana',
             'amount' => '123456,00',
             'account' => '123-4567890123456-11',
