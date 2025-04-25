@@ -11,7 +11,7 @@ class UserDelegateRequestStatusExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('userDelegateRequestStatus', [$this, 'getStatus']),
+            new TwigFilter('user_delegate_request_status', [$this, 'getStatus']),
         ];
     }
 

@@ -16,7 +16,7 @@ class TransactionStatusExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('transactionStatus', [$this, 'getStatus']),
+            new TwigFilter('transaction_status', [$this, 'getStatus']),
         ];
     }
 

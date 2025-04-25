@@ -82,17 +82,17 @@
                                         <div>{{ transaction.damagedEducator.school.city.name }}</div>
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td class="whitespace-nowrap">
                                     {% if transaction.isStatusCancelled %}
                                         <span class="text-gray-500 tracking-widest">{{ transaction.accountNumber|mask }}</span>
                                     {% else %}
-                                        {{ transaction.accountNumber }}
+                                        {{ transaction.accountNumber|account_number_format }}
                                     {% endif %}
                                 </td>
                                 <td>{{ transaction.amount|number_format }}</td>
                                 <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
                                 <td class="whitespace-nowrap">
-                                    {{ transaction.status|transactionStatus|raw }}</td>
+                                    {{ transaction.status|transaction_status|raw }}</td>
                                 <td>
                                     <div class="flex gap-2 justify-end">
                                         {% if transaction.isStatusWaitingConfirmation %}

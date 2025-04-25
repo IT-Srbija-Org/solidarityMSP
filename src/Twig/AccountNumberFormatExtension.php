@@ -10,7 +10,7 @@ class AccountNumberFormatExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('account_format', [$this, 'formatAccountNumber']),
+            new TwigFilter('account_number_format', [$this, 'formatAccountNumber']),
         ];
     }
 

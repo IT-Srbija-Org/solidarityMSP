@@ -16,7 +16,7 @@ class DamagedEducatorStatusExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('damagedEducatorStatus', [$this, 'getStatus']),
+            new TwigFilter('damaged_educator_status', [$this, 'getStatus']),
         ];
     }
 

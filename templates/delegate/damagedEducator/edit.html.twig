@@ -60,7 +60,7 @@
                                         <div>{{ item.name }}</div>
                                         <div class="text-gray-500">{{ item.school.name }}</div>
                                     </td>
-                                    <td>{{ item.accountNumber|account_format }}</td>
+                                    <td>{{ item.accountNumber|account_number_format }}</td>
                                     <td>
                                         <a href="#" class="btn btn-primary btn-soft btn-sm js-model-choose" data-name="{{ item.name }}" data-school="{{ item.school.id }}" data-account-number="{{ item.accountNumber }}">Izaberi</a>
                                     </td>

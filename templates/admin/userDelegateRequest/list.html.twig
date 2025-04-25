@@ -62,7 +62,7 @@
                         <div class="text-gray-500">{{ userDelegateRequest.school.city.name }}</div>
                     </td>
                     <td>{{ userDelegateRequest.createdAt|date('d.m.Y.') }}</td>
-                    <td>{{ userDelegateRequest.status|userDelegateRequestStatus|raw }}</td>
+                    <td>{{ userDelegateRequest.status|user_delegate_request_status|raw }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">
                             <a href="{{ path('admin_user_delegate_request_detail', { 'id': userDelegateRequest.id }) }}" class="btn btn-ghost btn-sm flex tooltip" data-tip="Detalji">

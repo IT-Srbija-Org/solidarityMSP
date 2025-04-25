@@ -63,7 +63,7 @@
                     <td>{{ transaction.accountNumber }}</td>
                     <td>{{ transaction.amount|number_format }}</td>
                     <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
-                    <td class="whitespace-nowrap">{{ transaction.status|transactionStatus|raw }}</td>
+                    <td class="whitespace-nowrap">{{ transaction.status|transaction_status|raw }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">
                             <a href="{{ path('admin_transaction_edit', { 'id': transaction.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Izmeni">

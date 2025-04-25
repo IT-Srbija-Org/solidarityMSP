@@ -64,7 +64,7 @@
                                 <td>{{ transaction.id }}</td>
                                 <td>{{ transaction.amount|number_format }}</td>
                                 <td>
-                                    <div class="whitespace-nowrap">{{ transaction.status|transactionStatus|raw }}</div>
+                                    <div class="whitespace-nowrap">{{ transaction.status|transaction_status|raw }}</div>
                                     <div class="text-gray-500 max-w-[200px]">
                                         {% if transaction.statusComment %}
                                             {{ transaction.statusComment }}
