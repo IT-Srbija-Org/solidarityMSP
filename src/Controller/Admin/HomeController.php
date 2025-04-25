@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\City;
-use App\Entity\DamagedEducator;
 use App\Entity\School;
 use App\Entity\User;
 use App\Entity\UserDonor;

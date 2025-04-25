@@ -5,7 +5,6 @@ namespace App\Controller\Delegate;
 use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
 use App\Entity\User;
-use App\Form\ConfirmType;
 use App\Form\DamagedEducatorDeleteType;
 use App\Form\DamagedEducatorEditType;
 use App\Form\DamagedEducatorSearchType;
@@ -170,7 +169,7 @@ class DamagedEducatorController extends AbstractController
     #[Route('/osteceni/{id}/brisanje', name: 'delete')]
     public function deleteDamagedEducator(Request $request, DamagedEducator $damagedEducator, TransactionRepository $transactionRepository): Response
     {
-        if(!$damagedEducator->allowToDelete()){
+        if (!$damagedEducator->allowToDelete()) {
             throw $this->createAccessDeniedException();
         }
 
@@ -224,7 +223,7 @@ class DamagedEducatorController extends AbstractController
     #[Route('/osteceni/{id}/instrukcija-za-uplatu', name: 'transactions')]
     public function damagedEducatorTransactions(DamagedEducator $damagedEducator, TransactionRepository $transactionRepository): Response
     {
-        if(!$damagedEducator->allowToViewTransactions()){
+        if (!$damagedEducator->allowToViewTransactions()) {
             throw $this->createAccessDeniedException();
         }
 

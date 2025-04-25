@@ -3,7 +3,6 @@
 namespace App\Twig;
 
 use App\Entity\DamagedEducator;
-use App\Entity\Transaction;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;

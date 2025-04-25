@@ -15,7 +15,7 @@ class DamagedEducatorDeleteType extends AbstractType
     {
         $builder
             ->add('confirm', CheckboxType::class, [
-                'label' => 'Potvrđujem da želim da obrisem oštećenog "' . $options['damagedEducator']->getName() . '"',
+                'label' => 'Potvrđujem da želim da obrisem oštećenog "'.$options['damagedEducator']->getName().'"',
             ])
             ->add('comment', TextareaType::class, [
                 'label' => 'Komentar',
