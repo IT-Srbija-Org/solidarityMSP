@@ -37,8 +37,9 @@
                     </th>
                     <th>
                         <span class="ti ti-calendar-event text-xl"></span>
-                        Unešen/a
+                        Kreiran
                     </th>
+                    <th>Status</th>
                     <th>
                         <span class="ti ti-user-cog text-xl"></span>
                         Delegat
@@ -56,8 +57,9 @@
                         <div class="text-gray-500">{{ damagedEducator.school.city.name }}</div>
                     </td>
                     <td>{{ damagedEducator.amount|number_format }}</td>
-                    <td>{{ damagedEducator.accountNumber }}</td>
+                    <td class="whitespace-nowrap">{{ damagedEducator.accountNumber|account_number_format }}</td>
                     <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
+                    <td>{{ damagedEducator.status|damaged_educator_status|raw }}</td>
                     <td>
                         {% if damagedEducator.createdBy %}
                             <div>{{ damagedEducator.createdBy.fullName }}</div>

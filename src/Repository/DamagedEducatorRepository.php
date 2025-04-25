@@ -68,6 +68,8 @@ class DamagedEducatorRepository extends ServiceEntityRepository
         }
 
         if (!empty($criteria['accountNumber'])) {
+            $criteria['accountNumber'] = str_replace('-', '', $criteria['accountNumber']);
+
             $qb->andWhere('e.accountNumber LIKE :accountNumber')
                 ->setParameter('accountNumber', '%'.$criteria['accountNumber'].'%');
         }

@@ -60,7 +60,7 @@
                             {{ transaction.damagedEducator.school.name }} ({{ transaction.damagedEducator.school.city.name }})
                         </div>
                     </td>
-                    <td>{{ transaction.accountNumber }}</td>
+                    <td class="whitespace-nowrap">{{ transaction.accountNumber|account_number_format }}</td>
                     <td>{{ transaction.amount|number_format }}</td>
                     <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
                     <td class="whitespace-nowrap">{{ transaction.status|transaction_status|raw }}</td>
