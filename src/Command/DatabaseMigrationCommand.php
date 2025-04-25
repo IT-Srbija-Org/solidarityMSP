@@ -44,7 +44,7 @@ class DatabaseMigrationCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $this->oldConnection = $this->getOldConnection();
 
-        $io->writeln('Migration started at ' . date('Y-m-d H:i:s'));
+        $io->writeln('Migration started at '.date('Y-m-d H:i:s'));
 
         $this->clearDatabases();
         $this->createPeriod($io);
@@ -57,7 +57,7 @@ class DatabaseMigrationCommand extends Command
         $this->syncDamagedEducators($io);
         $this->syncTransactions($io);
 
-        $io->success('Migration completed at ' . date('Y-m-d H:i:s'));
+        $io->success('Migration completed at '.date('Y-m-d H:i:s'));
 
         return Command::SUCCESS;
     }
@@ -116,8 +116,8 @@ class DatabaseMigrationCommand extends Command
 
             $this->updateDates('user', $entity->getId(), $item['createdAt'], $item['updatedAt']);
 
-            $count++;
-            if ($count % 25 == 0) {
+            ++$count;
+            if (0 == $count % 25) {
                 $this->entityManager->clear();
             }
         }
@@ -140,8 +140,8 @@ class DatabaseMigrationCommand extends Command
 
             $this->updateDates('city', $entity->getId(), $item['createdAt'], $item['updatedAt']);
 
-            $count++;
-            if ($count % 25 == 0) {
+            ++$count;
+            if (0 == $count % 25) {
                 $this->entityManager->clear();
             }
         }
@@ -164,8 +164,8 @@ class DatabaseMigrationCommand extends Command
 
             $this->updateDates('school_type', $entity->getId(), $item['createdAt'], $item['updatedAt']);
 
-            $count++;
-            if ($count % 25 == 0) {
+            ++$count;
+            if (0 == $count % 25) {
                 $this->entityManager->clear();
             }
         }
@@ -177,23 +177,21 @@ class DatabaseMigrationCommand extends Command
     public function syncDelegate(SymfonyStyle $io): void
     {
         $io->writeln('Syncing delegates...');
-        $items = $this->oldConnection->executeQuery('SELECT * FROM delegate')->iterateAssociative();
+        $items = $this->oldConnection->executeQuery('
+            SELECT d.name, d.email, d.status, s.name AS school, c.name AS city,
+             d.createdAt, d.updatedAt, d.phone, d.comment, d.verifiedBy, d.countBlocking, d.count
+            FROM delegate AS d
+             INNER JOIN school AS s ON s.id = d.schoolId
+             INNER JOIN city AS c ON c.id = s.cityId
+            ')->iterateAssociative();
 
         $count = 0;
         foreach ($items as $item) {
             $city = $this->entityManager->getRepository(City::class)->findOneBy(['name' => $item['city']]);
-            if (empty($city)) {
-                continue;
-            }
-
             $school = $this->entityManager->getRepository(School::class)->findOneBy([
                 'city' => $city,
-                'name' => $item['schoolName']
+                'name' => $item['school'],
             ]);
-
-            if (empty($school)) {
-                continue;
-            }
 
             $explodedName = explode(' ', $item['name']);
 
@@ -212,7 +210,7 @@ class DatabaseMigrationCommand extends Command
             $entity->setFirstName(empty($firstName) ? null : $firstName);
             $entity->setLastName(empty($lastName) ? null : $lastName);
 
-            if ($item['status'] == 2) {
+            if (2 == $item['status']) {
                 $entity->addRole('ROLE_DELEGATE');
             }
 
@@ -238,9 +236,9 @@ class DatabaseMigrationCommand extends Command
                 $delegateRequest->setSchool($school);
                 $delegateRequest->setComment($item['comment'] ?? null);
 
-                if ($item['status'] == 1) {
+                if (1 == $item['status']) {
                     $delegateRequest->setStatus(UserDelegateRequest::STATUS_NEW);
-                } elseif ($item['status'] == 2) {
+                } elseif (2 == $item['status']) {
                     $delegateRequest->setStatus(UserDelegateRequest::STATUS_CONFIRMED);
                     $delegateRequest->setAdminComment($item['verifiedBy'] ?? null);
                 } else {
@@ -248,8 +246,8 @@ class DatabaseMigrationCommand extends Command
                     $delegateRequest->setAdminComment($item['verifiedBy'] ?? null);
                 }
 
-                $totalEducators = empty((int)$item['count']) ? null : (int)$item['count'];
-                $totalBlockedEducators = empty((int)$item['countBlocking']) ? null : (int)$item['countBlocking'];
+                $totalEducators = empty((int) $item['count']) ? null : (int) $item['count'];
+                $totalBlockedEducators = empty((int) $item['countBlocking']) ? null : (int) $item['countBlocking'];
 
                 if ($totalBlockedEducators > $totalEducators) {
                     $totalBlockedEducators = $totalEducators;
@@ -264,7 +262,7 @@ class DatabaseMigrationCommand extends Command
             }
 
             // Create connection between Delegate and School if approved
-            if ($item['status'] == 2) {
+            if (2 == $item['status']) {
                 $userDelegateSchool = new UserDelegateSchool();
                 $userDelegateSchool->setUser($entity);
                 $userDelegateSchool->setSchool($school);
@@ -275,8 +273,8 @@ class DatabaseMigrationCommand extends Command
                     $item['updatedAt']);
             }
 
-            $count++;
-            if ($count % 25 == 0) {
+            ++$count;
+            if (0 == $count % 25) {
                 $this->entityManager->clear();
             }
         }
@@ -313,8 +311,8 @@ class DatabaseMigrationCommand extends Command
 
             $this->updateDates('school', $entity->getId(), $item['createdAt'], $item['updatedAt']);
 
-            $count++;
-            if ($count % 25 == 0) {
+            ++$count;
+            if (0 == $count % 25) {
                 $this->entityManager->clear();
             }
         }
@@ -330,14 +328,16 @@ class DatabaseMigrationCommand extends Command
 
         foreach ([DamagedEducatorPeriod::TYPE_FIRST_HALF, DamagedEducatorPeriod::TYPE_SECOND_HALF] as $type) {
             $roundId = 1;
-            if ($type == DamagedEducatorPeriod::TYPE_SECOND_HALF) {
+            if (DamagedEducatorPeriod::TYPE_SECOND_HALF == $type) {
                 $roundId = 2;
             }
 
             $smtp = $this->oldConnection->prepare('
-                SELECT e.name, e.accountNumber, er.amount, e.city, e.schoolName, e.createdAt, e.updatedAt, e.status, e.comment
+                SELECT e.name, e.accountNumber, er.amount, c.name AS city, s.name AS school, e.createdAt, e.updatedAt, e.status, e.comment
                 FROM educator_roundImport AS er
                  INNER JOIN educatorImport AS e ON e.id = er.educatorId
+                 INNER JOIN school AS s ON s.id = e.schoolId
+                 INNER JOIN city AS c ON c.id = s.cityId
                 WHERE er.roundId = :roundId
                 ');
             $items = $smtp->executeQuery(['roundId' => $roundId])->fetchAllAssociative();
@@ -345,14 +345,10 @@ class DatabaseMigrationCommand extends Command
             $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
                 'month' => 2,
                 'year' => 2025,
-                'type' => $type
+                'type' => $type,
             ]);
 
             foreach ($items as $item) {
-                if ($item['amount'] < 500) {
-                    continue;
-                }
-
                 $status = match ($item['status']) {
                     1 => DamagedEducator::STATUS_NEW,
                     2 => DamagedEducator::STATUS_NEW,
@@ -370,14 +366,14 @@ class DatabaseMigrationCommand extends Command
                 $entity->setPeriod($period);
                 $entity->setStatus($status);
 
-                if ($status == DamagedEducator::STATUS_DELETED) {
+                if (DamagedEducator::STATUS_DELETED == $status) {
                     $entity->setStatusComment($item['comment']);
                 }
 
                 $city = $this->entityManager->getRepository(City::class)->findOneBy(['name' => $item['city']]);
                 $school = $this->entityManager->getRepository(School::class)->findOneBy([
                     'city' => $city,
-                    'name' => $item['schoolName']
+                    'name' => $item['school'],
                 ]);
 
                 $entity->setSchool($school);
@@ -387,14 +383,14 @@ class DatabaseMigrationCommand extends Command
 
                 $this->updateDates('damaged_educator', $entity->getId(), $item['createdAt'], $item['updatedAt']);
 
-                $count++;
-                if ($count % 25 == 0) {
+                ++$count;
+                if (0 == $count % 25) {
                     $this->entityManager->clear();
 
                     $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
                         'month' => 2,
                         'year' => 2025,
-                        'type' => $type
+                        'type' => $type,
                     ]);
                 }
             }
@@ -411,7 +407,7 @@ class DatabaseMigrationCommand extends Command
 
         foreach ([DamagedEducatorPeriod::TYPE_FIRST_HALF, DamagedEducatorPeriod::TYPE_SECOND_HALF] as $type) {
             $roundId = 1;
-            if ($type == DamagedEducatorPeriod::TYPE_SECOND_HALF) {
+            if (DamagedEducatorPeriod::TYPE_SECOND_HALF == $type) {
                 $roundId = 2;
             }
 
@@ -425,7 +421,7 @@ class DatabaseMigrationCommand extends Command
             $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
                 'month' => 2,
                 'year' => 2025,
-                'type' => $type
+                'type' => $type,
             ]);
 
             foreach ($items as $item) {
@@ -467,14 +463,14 @@ class DatabaseMigrationCommand extends Command
 
                 $this->updateDates('transaction', $entity->getId(), $item['createdAt'], $item['updatedAt']);
 
-                $count++;
-                if ($count % 25 == 0) {
+                ++$count;
+                if (0 == $count % 10) {
                     $this->entityManager->clear();
 
                     $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
                         'month' => 2,
                         'year' => 2025,
-                        'type' => $type
+                        'type' => $type,
                     ]);
                 }
             }
@@ -507,15 +503,15 @@ class DatabaseMigrationCommand extends Command
                 $userDonor = new UserDonor();
                 $userDonor->setUser($user);
                 $userDonor->setAmount($item['amount']);
-                $userDonor->setIsMonthly((bool)$item['monthly']);
+                $userDonor->setIsMonthly((bool) $item['monthly']);
                 $this->entityManager->persist($userDonor);
                 $this->entityManager->flush();
 
                 $this->updateDates('user_donor', $userDonor->getId(), $item['createdAt'], $item['updatedAt']);
             }
 
-            $count++;
-            if ($count % 25 == 0) {
+            ++$count;
+            if (0 == $count % 25) {
                 $this->entityManager->clear();
             }
         }
@@ -536,7 +532,7 @@ class DatabaseMigrationCommand extends Command
     public function updateDates($tableName, $id, $createdAt, $updatedAt): void
     {
         $this->entityManager->getConnection()->executeQuery('
-            UPDATE ' . $tableName . ' SET created_at = :createdAt, updated_at = :updatedAt WHERE id = :id
+            UPDATE '.$tableName.' SET created_at = :createdAt, updated_at = :updatedAt WHERE id = :id
         ', [
             'id' => $id,
             'createdAt' => $createdAt,
@@ -555,7 +551,7 @@ class DatabaseMigrationCommand extends Command
             }
 
             // Convert to international format for libphonenumber
-            $phoneNumber = '+381' . substr($phoneNumber, 1);
+            $phoneNumber = '+381'.substr($phoneNumber, 1);
 
             $numberProto = $phoneUtil->parse($phoneNumber, 'RS');
 
