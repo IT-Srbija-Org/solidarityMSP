@@ -97,6 +97,25 @@ class UserRepository extends ServiceEntityRepository
                 ->setParameter('isEmailVerified', $criteria['isEmailVerified']);
         }
 
+        $hasSchool = isset($criteria['school']);
+        $hasCity = isset($criteria['city']);
+
+        if ($hasSchool || $hasCity) {
+            $qb->join('u.userDelegateSchools', 'uds')
+                ->join('uds.school', 's');
+
+            if ($hasSchool) {
+                $qb->andWhere('s.id = :school')
+                    ->setParameter(':school', $criteria['school']);
+            }
+
+            if ($hasCity) {
+                $qb->join('s.city', 'c')
+                    ->andWhere('c.id = :city')
+                    ->setParameter(':city', $criteria['city']);
+            }
+        }
+
         // Set the sorting
         $qb->orderBy('u.id', 'ASC');
 
