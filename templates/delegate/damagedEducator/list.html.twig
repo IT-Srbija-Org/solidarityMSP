@@ -4,7 +4,7 @@
     {% import "macro.html.twig" as macro %}
     {{ macro.back('delegate_damaged_educator_choose_period') }}
 
-    <div class="card card-lg bg-base-100 shadow m-10 mt-0">
+    <div class="card card-lg bg-base-100 shadow m-4 mt-0">
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <span class="ti ti-school text-3xl"></span>
@@ -15,6 +15,13 @@
 
             {% form_theme form with ['form.html.twig', 'form_inline.html.twig'] %}
             {{ form(form) }}
+
+            {% if not period.active %}
+                <div class="alert alert-info alert-soft mt-6">
+                    <span class="ti ti-info-circle text-2xl"></span>
+                    Izabrani period je zatvoren za unos, izmenu i brisanje oštećenih, jer je započeto slanje instrukcija za uplatu donatorima. Molimo Vas da ispratite sve oštećene i potvrdite kada im legne donacija.
+                </div>
+            {% endif %}
 
             <div class="overflow-x-auto mt-6">
                 <div class="flex justify-between items-center mb-4">

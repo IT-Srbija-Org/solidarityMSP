@@ -4,15 +4,16 @@ Ovaj dokument opisuje kako da podesite automatski deploy aplikacije Mreže Solid
 
 ## Načini deploy-a (modovi)
 
-Workflow podržava dva moda rada:
+Workflow sada podržava tri moda rada preko opcije **deploy_mode**:
 
-- **Full deployment**: Pokreće se samo prvi put u produkciji ili kada se menjaju sistemski fajlovi, konfiguracije, šabloni ili bilo šta van samog aplikacionog koda. Ovaj mod radi kompletan deploy i postavlja sve servise, konfiguracije i zavisnosti. Koristite ga kada uvodite nove servise, menjate konfiguracije servera ili radite veće izmene infrastrukture.
+- **code-deploy** (podrazumevano): Pokreće samo taskove označene sa `deploy` tagom. Ovaj mod se koristi za update aplikacionog koda bez menjanja sistemskih servisa ili konfiguracija.
+- **no-code-deploy**: Pokreće sve taskove osim onih sa `deploy` tagom (npr. ažuriranje sistema, servisa ili konfiguracija bez redeploy-a aplikacije). Ovim se izbegava kratkotrajno isključivanje aplikacije prilikom deploy-a.
+- **all**: Pokreće sve taskove (potpuni redeploy, uključuje i deploy koda i sve sistemske izmene).
 
-- **Redeployment koda (code update)**: Pokreće se redovno za update aplikacionog koda (npr. novi commit na branch). Ovaj mod koristi samo `--tags app` i deploy-uje samo aplikacioni kod bez menjanja sistemskih servisa ili konfiguracija. Brži je i bezbedniji za svakodnevni rad.
-
-Izbor moda se vrši preko opcije **tags_deploy** prilikom pokretanja workflow-a na GitHub-u:
-- `tags_deploy: true` — redeployment koda (samo aplikacija, podrazumevano)
-- `tags_deploy: false` — full deployment (kompletan sistem)
+Izbor moda se vrši preko opcije **deploy_mode** prilikom pokretanja workflow-a na GitHub-u:
+- `code-deploy` — samo aplikacioni kod (default)
+- `no-code-deploy` — sve osim redeploy-a aplikacije
+- `all` — kompletan sistem i aplikacija
 
 > **Napomena:** Samo admin repozitorijuma ima pravo da pokrene deploy workflow na GitHub-u.
 
@@ -39,7 +40,7 @@ Po potrebi dodajte i druge Secrets za varijable iz `vars.yml.example`.
 2. Izaberite workflow "Ansible Deploy".
 3. Kliknite na **Run workflow**.
 4. Unesite željeni branch (podrazumevano je `main`).
-5. Izaberite da li želite samo update aplikacije (`tags_deploy: true`) ili kompletan deploy (`tags_deploy: false`).
+5. Izaberite željeni režim za `deploy_mode` (npr. `code-deploy`, `no-code-deploy`, ili `all`).
 6. Pokrenite workflow.
 
 ## Šta workflow radi
@@ -48,7 +49,10 @@ Po potrebi dodajte i druge Secrets za varijable iz `vars.yml.example`.
 - Klonira repozitorijum i priprema Ansible fajlove.
 - Kopira `vars.yml.example` u `vars.yml` i koristi vrednosti iz GitHub Secrets za sensitive podatke.
 - Pokreće Ansible playbook na serveru definisanom u `DOMAIN_NAME` secretu.
-- Po potrebi koristi samo određene tagove (`--tags deploy`) ili radi kompletan deploy.
+- Pokreće Ansible playbook sa odgovarajućim tagovima u zavisnosti od izabranog `deploy_mode`:
+  - `code-deploy`: koristi `--tags deploy`
+  - `no-code-deploy`: koristi `--skip-tags deploy`
+  - `all`: bez tag filtera (sve taskove)
 
 ## Primer podešavanja inventara
 

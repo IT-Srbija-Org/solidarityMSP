@@ -7,11 +7,19 @@ on:
         description: 'Git branch to deploy'
         required: false
         default: 'main'
-      tags_deploy:
-        description: 'Run only code deployment, not full redeployment'
+      # Deployment mode selector:
+      # - all: run all tasks (full redeployment)
+      # - code-deploy: run only tasks tagged with 'deploy' (minimal downtime)
+      # - no-code-deploy: run all tasks except those tagged with 'deploy' (skip code deployment)
+      deploy_mode:
+        description: "Choose which tasks to run: 'code-deploy' (only update app code), 'no-code-deploy' (all except code update), or 'all' (full redeploy including code and system changes)."
         required: false
-        type: boolean
-        default: true
+        default: 'code-deploy'
+        type: choice
+        options:
+          - all
+          - code-deploy
+          - no-code-deploy
 
 jobs:
   check-admin:
@@ -55,7 +63,7 @@ jobs:
             [all:vars]
             ansible_python_interpreter=/usr/bin/python3
           options: >
-            ${{ github.event.inputs.tags_deploy == 'true' && '--tags deploy' || '' }}
+            ${{ github.event.inputs.deploy_mode == 'code-deploy' && '--tags deploy' || github.event.inputs.deploy_mode == 'no-code-deploy' && '--skip-tags deploy' || '' }}
             --extra-vars "domain_name=${{ secrets.DOMAIN_NAME }}"
             --extra-vars "mysql_password=${{ secrets.MYSQL_PASSWORD }}"
             --extra-vars "app_secret=${{ secrets.APP_SECRET }}"

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\DamagedEducatorRepository;
 use App\Validator as CustomAssert;
 use App\Validator\Mod97;
+use App\Validator\MonthlyLimit;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -13,9 +14,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: DamagedEducatorRepository::class)]
 #[ORM\Index(name: 'idx_period', columns: ['period_id', 'school_id', 'account_number'])]
 #[CustomAssert\DuplicateDamagedEducator]
+#[MonthlyLimit]
 #[ORM\HasLifecycleCallbacks]
 class DamagedEducator
 {
+    public const MONTHLY_LIMIT = 120000;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

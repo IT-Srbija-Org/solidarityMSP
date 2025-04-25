@@ -3,36 +3,31 @@
   ansible.builtin.debug:
     msg: "git_branch is {{ git_branch }}"
 
-- name: Check if application directory exists
-  ansible.builtin.stat:
-    path: "{{ app_root }}"
-  register: app_dir
+- name: Create temporary deploy directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: app_deploy
+  register: tmp_deploy
   tags: [deploy]
 
-- name: Remove existing application directory
-  ansible.builtin.file:
-    path: "{{ app_root }}"
-    state: absent
-  when: app_dir.stat.exists
-  tags: [deploy]
-
-- name: Add application directory to Git safe directories
-  ansible.builtin.command: git config --global --add safe.directory {{ app_root }}
+- name: Add temporary directory to Git safe directories
+  # ansible-lint: skip=command-instead-of-module
+  ansible.builtin.command: git config --global --add safe.directory {{ tmp_deploy.path }}
   changed_when: false
   tags: [deploy]
 
-- name: Clone application repository
+- name: Clone application repository to temporary directory
   ansible.builtin.git:
     repo: "{{ git_repo }}"
-    dest: "{{ app_root }}"
+    dest: "{{ tmp_deploy.path }}"
     version: "{{ git_branch }}"
     force: false
     update: true
   tags: [deploy]
 
-- name: Set application directory ownership
+- name: Set temporary directory ownership
   ansible.builtin.file:
-    path: "{{ app_root }}"
+    path: "{{ tmp_deploy.path }}"
     state: directory
     owner: www-data
     group: www-data
@@ -52,7 +47,7 @@
 - name: Create .env.local from template
   ansible.builtin.template:
     src: templates/var/www/solidarity/.env.local.j2
-    dest: "{{ app_root }}/.env.local"
+    dest: "{{ tmp_deploy.path }}/.env.local"
     owner: www-data
     group: www-data
     mode: "0640"
@@ -61,7 +56,7 @@
 - name: Install Composer dependencies
   community.general.composer:
     command: install
-    working_dir: "{{ app_root }}"
+    working_dir: "{{ tmp_deploy.path }}"
     no_dev: "{{ app_env != 'dev' }}"
     optimize_autoloader: true
     prefer_dist: true
@@ -75,7 +70,7 @@
 
 - name: Set directory permissions
   ansible.builtin.file:
-    path: "{{ app_root }}/{{ item }}"
+    path: "{{ tmp_deploy.path }}/{{ item }}"
     state: directory
     owner: www-data
     group: www-data
@@ -84,6 +79,17 @@
   with_items:
     - var
     - public
+  tags: [deploy]
+
+- name: Remove existing application directory (atomic swap)
+  ansible.builtin.file:
+    path: "{{ app_root }}"
+    state: absent
+  tags: [deploy]
+
+- name: Move new release into place (atomic swap)
+  ansible.builtin.command:
+    cmd: mv "{{ tmp_deploy.path }}" "{{ app_root }}"
   tags: [deploy]
 
 - name: Deploy cron job for cancelled transactions

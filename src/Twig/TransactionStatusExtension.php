@@ -22,19 +22,16 @@ class TransactionStatusExtension extends AbstractExtension
 
     public function getStatus(int $status): string
     {
-        if (Transaction::STATUS_NEW === $status) {
-            return '-';
-        }
-
         $allStatus = Transaction::STATUS;
         $statusName = $this->translator->trans($allStatus[$status]) ?? 'None';
 
         $icon = match ($status) {
+            Transaction::STATUS_NEW => '<span class="ti ti-clock text-xl text-gray-500 relative top-0.5"></span>',
             Transaction::STATUS_WAITING_CONFIRMATION => '<span class="loading loading-spinner text-primary relative -top-0.5"></span>',
             Transaction::STATUS_CONFIRMED => '<span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>',
             Transaction::STATUS_CANCELLED => '<span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>',
         };
 
-        return $icon.' '.$statusName;
+        return $icon.' <span class="text-gray-500">'.$statusName.'</span>';
     }
 }
