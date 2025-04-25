@@ -31,8 +31,12 @@ class DelegateSearchType extends AbstractType
             ->add('schoolId', EntityType::class, [
                 'class' => School::class,
                 'required' => false,
-                'choice_label' => 'name',
+                'placeholder' => '',
                 'label' => 'Škola',
+                'choice_value' => 'id',
+                'choice_label' => function (School $school): string {
+                    return $school->getName().' ('.$school->getCity()->getName().')';
+                },
             ])
             ->add('submit', SubmitType::class, [
                 'label' => '<i class="ti ti-search text-2xl"></i> Pretraži',
