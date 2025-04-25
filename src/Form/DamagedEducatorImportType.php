@@ -25,7 +25,7 @@ class DamagedEducatorImportType extends AbstractType
 
         $schoolChoices = [];
         foreach ($schools as $school) {
-            $schoolChoices[$school->getName() . ' (' . $school->getCity()->getName() . ')'] = $school;
+            $schoolChoices[$school->getName().' ('.$school->getCity()->getName().')'] = $school;
         }
 
         $builder
@@ -45,7 +45,7 @@ class DamagedEducatorImportType extends AbstractType
                             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                         ],
                         'mimeTypesMessage' => 'Molimo upload-ujte isključivo  fajl (.xls ili .xlsx)',
-                    ])
+                    ]),
                 ],
             ])
             ->add('submit', SubmitType::class, [
