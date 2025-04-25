@@ -123,7 +123,7 @@ class DamagedEducatorController extends AbstractController
     #[Route('/osteceni/{id}/izmeni-podatke', name: 'edit')]
     public function editDamagedEducator(Request $request, DamagedEducator $damagedEducator, DamagedEducatorRepository $damagedEducatorRepository): Response
     {
-        if (!$damagedEducator->getPeriod()->isActive()) {
+        if (!$damagedEducator->allowToEdit()) {
             throw $this->createAccessDeniedException();
         }
 

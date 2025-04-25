@@ -213,6 +213,15 @@ class DamagedEducator
         return $this;
     }
 
+    public function allowToEdit(): bool
+    {
+        if (!$this->getPeriod()->isActive()) {
+            return false;
+        }
+
+        return $this->status !== self::STATUS_DELETED;
+    }
+
     public function allowToDelete(): bool
     {
         return $this->status !== self::STATUS_DELETED;
