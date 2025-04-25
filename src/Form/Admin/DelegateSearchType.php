@@ -5,8 +5,10 @@ namespace App\Form\Admin;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Entity\School;
 
 class DelegateSearchType extends AbstractType
 {
@@ -26,8 +28,10 @@ class DelegateSearchType extends AbstractType
                 'required' => false,
                 'label' => 'Email',
             ])
-            ->add('school', TextType::class, [
+            ->add('schoolId', EntityType::class, [
+                'class' => School::class,
                 'required' => false,
+                'choice_label' => 'name',
                 'label' => 'Škola',
             ])
             ->add('submit', SubmitType::class, [

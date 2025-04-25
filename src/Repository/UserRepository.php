@@ -97,11 +97,11 @@ class UserRepository extends ServiceEntityRepository
                 ->setParameter('isEmailVerified', $criteria['isEmailVerified']);
         }
 
-        if (isset($criteria['school'])) {
+        if (isset($criteria['schoolId'])) {
             $qb->join('u.userDelegateSchools', 'uds')
                 ->join('uds.school', 's')
-                ->andWhere('s.name like :schoolName')
-                ->setParameter(':schoolName', '%' . $criteria['school'] . '%');
+                ->andWhere('s.id = :schoolId')
+                ->setParameter(':schoolId', $criteria['schoolId']);
         }
 
         // Set the sorting
