@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% import "macro.html.twig" as macro %}
+    {{ macro.back('delegate_damaged_educator_list', { 'period': period.id }) }}
+
+    <div class="card card-lg bg-base-100 shadow m-4 mt-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-school text-3xl"></span>
+                Oštećeni za {{ period|format_period }}
+            </h2>
+
+            {{ include('flashes.html.twig') }}
+
+            {% if errors is defined %}
+                <div class="mb-4">
+                    {% for row,messages in errors %}
+                        <div class="alert alert-error mb-2">
+                            <span class="ti ti-info-circle text-2xl"></span>
+
+                            <div>
+                                <h3 class="font-bold">Red #{{ row }}:</h3>
+
+                                {% for message in messages %}
+                                    <div class="ms-2"> - {{ message }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div>
+                {% form_theme form 'form.html.twig' %}
+                {{ form_start(form) }}
+                    {{ form_row(form.school) }}
+
+                    <div class="mb-4">
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Spisak oštećenih (Excel)</legend>
+                            {{ form_widget(form.file) }}
+                            {{ form_label(form.file) }}
+                            {{ form_errors(form.file) }}
+                        </fieldset>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

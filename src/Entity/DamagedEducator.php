@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DamagedEducatorRepository::class)]
 #[ORM\Index(name: 'idx_period', columns: ['period_id', 'school_id', 'account_number'])]
@@ -32,6 +33,7 @@ class DamagedEducator
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(message: 'Ime je obavezno polje')]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -39,9 +41,11 @@ class DamagedEducator
     #[ORM\JoinColumn(nullable: false)]
     private ?School $school = null;
 
+    #[Assert\NotBlank(message: 'Cifra je obavezno polje')]
     #[ORM\Column]
     private ?int $amount = null;
 
+    #[Assert\NotBlank(message: 'Broj računa je obavezno polje')]
     #[ORM\Column(length: 50)]
     #[Mod97]
     private ?string $accountNumber = null;

@@ -6,6 +6,7 @@ use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
 use App\Entity\User;
 use App\Form\DamagedEducatorDeleteType;
+use App\Form\DamagedEducatorImportType;
 use App\Form\DamagedEducatorEditType;
 use App\Form\DamagedEducatorSearchType;
 use App\Form\TransactionChangeStatusType;
@@ -13,11 +14,13 @@ use App\Repository\DamagedEducatorPeriodRepository;
 use App\Repository\DamagedEducatorRepository;
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[IsGranted('ROLE_DELEGATE')]
 #[Route('/delegat', name: 'delegate_damaged_educator_')]
@@ -116,6 +119,80 @@ class DamagedEducatorController extends AbstractController
             'form' => $form->createView(),
             'damagedEducator' => $damagedEducator,
             'damagedEducators' => $damagedEducatorRepository->getFromUser($user),
+        ]);
+    }
+
+    #[Route('/prijavi-ostecene', name: 'import')]
+    public function importDamagedEducators(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, ValidatorInterface $validator): Response
+    {
+        $periodId = $request->query->getInt('period');
+        $period = $damagedEducatorPeriodRepository->find($periodId);
+        if (empty($period) || !$period->isActive()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $form = $this->createForm(DamagedEducatorImportType::class, null, [
+            'user' => $this->getUser(),
+            'entityManager' => $this->entityManager,
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('file')->getData();
+            $school = $form->get('school')->getData();
+
+            $spreadsheet = IOFactory::load($file->getPathname());
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            // Get the total rows
+            $totalRows = $worksheet->getHighestRow();
+
+            $errors = [];
+            $this->entityManager->beginTransaction();
+
+            for ($row = 1; $row <= $totalRows; $row++) {
+                $rowData = $worksheet->rangeToArray('A' . $row . ':' . $worksheet->getHighestColumn() . $row, null,
+                    true, false)[0];
+
+                $damagedEducator = new DamagedEducator();
+                $damagedEducator->setName($rowData[0] ?? '');
+                $damagedEducator->setAccountNumber($rowData[1] ?? '');
+                $damagedEducator->setAmount((int)$rowData[2] ?? '');
+                $damagedEducator->setSchool($school);
+                $damagedEducator->setCreatedBy($this->getUser());
+                $damagedEducator->setPeriod($period);
+
+                $validations = $validator->validate($damagedEducator);
+                foreach ($validations as $validation) {
+                    $errors[$row][] = $validation->getMessage();
+                }
+
+                if (count($validations) == 0) {
+                    $this->entityManager->persist($damagedEducator);
+                    $this->entityManager->flush();
+                }
+            }
+
+            if (!empty($errors)) {
+                $this->entityManager->rollBack();
+
+                return $this->render('delegate/damagedEducator/import.html.twig', [
+                    'form' => $form->createView(),
+                    'period' => $period,
+                    'errors' => $errors,
+                ]);
+            }
+
+            $this->entityManager->commit();
+            $this->addFlash('success', 'Uspešno ste sačuvali sve oštećene iz fajla (Ukupno: ' . $totalRows . ').');
+            return $this->redirectToRoute('delegate_damaged_educator_list', [
+                'period' => $period->getId(),
+            ]);
+        }
+
+        return $this->render('delegate/damagedEducator/import.html.twig', [
+            'form' => $form->createView(),
+            'period' => $period,
         ]);
     }
 
@@ -239,7 +316,7 @@ class DamagedEducatorController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $hasCancelledTransactions = (bool) $transactionRepository->count([
+        $hasCancelledTransactions = (bool)$transactionRepository->count([
             'damagedEducator' => $damagedEducator,
             'status' => Transaction::STATUS_CANCELLED,
         ]);
