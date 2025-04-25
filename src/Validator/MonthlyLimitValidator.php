@@ -20,7 +20,7 @@ class MonthlyLimitValidator extends ConstraintValidator
         }
 
         $monthlyLimit = DamagedEducator::MONTHLY_LIMIT;
-        if ($damagedEducator->getPeriod()->getType() != 'full') {
+        if ('full' != $damagedEducator->getPeriod()->getType()) {
             $monthlyLimit = $monthlyLimit / 2;
         }
 
@@ -29,7 +29,7 @@ class MonthlyLimitValidator extends ConstraintValidator
         }
 
         $this->context
-            ->buildViolation('Cifra ne može da bude veća od ' . number_format($monthlyLimit, 2, ',', '.'))
+            ->buildViolation('Cifra ne može da bude veća od '.number_format($monthlyLimit, 2, ',', '.'))
             ->atPath('amount')
             ->addViolation();
     }

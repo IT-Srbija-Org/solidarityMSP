@@ -23,7 +23,7 @@ class InvoiceSlipService
 
         return [
             'payer' => $user->getFullName(),
-            'recipient' => $transaction->getDamagedEducator()->getName() . ', ' . $cityName,
+            'recipient' => $transaction->getDamagedEducator()->getName().', '.$cityName,
             'purpose' => 'Transakcija po nalogu građana',
             'amount' => number_format($transaction->getAmount(), 2, ',', ''),
             'account' => $transaction->getAccountNumber(),
