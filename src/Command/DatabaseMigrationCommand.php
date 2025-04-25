@@ -90,12 +90,6 @@ class DatabaseMigrationCommand extends Command
         $entity->setMonth(2);
         $entity->setYear(2025);
         $entity->setType(DamagedEducatorPeriod::TYPE_SECOND_HALF);
-        $entity->setActive(false);
-        $this->entityManager->persist($entity);
-
-        $entity = new DamagedEducatorPeriod();
-        $entity->setMonth(3);
-        $entity->setYear(2025);
         $entity->setActive(true);
         $this->entityManager->persist($entity);
 
@@ -342,8 +336,8 @@ class DatabaseMigrationCommand extends Command
 
             $smtp = $this->oldConnection->prepare('
                 SELECT e.name, e.accountNumber, er.amount, e.city, e.schoolName, e.createdAt, e.updatedAt
-                FROM educator_round AS er
-                 INNER JOIN educator AS e ON e.id = er.educatorId
+                FROM educator_roundImport AS er
+                 INNER JOIN educatorImport AS e ON e.id = er.educatorId
                 WHERE er.roundId = :roundId
                 ');
             $items = $smtp->executeQuery(['roundId' => $roundId])->fetchAllAssociative();
@@ -408,7 +402,7 @@ class DatabaseMigrationCommand extends Command
 
             $smtp = $this->oldConnection->prepare('
                 SELECT *
-                FROM transaction
+                FROM transactionImport
                 WHERE roundId = :roundId
                 ');
             $items = $smtp->executeQuery(['roundId' => $roundId])->fetchAllAssociative();
@@ -438,11 +432,20 @@ class DatabaseMigrationCommand extends Command
                     continue;
                 }
 
+                $status = match ($item['status']) {
+                    1 => Transaction::STATUS_WAITING_CONFIRMATION,
+                    2 => Transaction::STATUS_WAITING_CONFIRMATION,
+                    3 => Transaction::STATUS_CONFIRMED,
+                    4 => Transaction::STATUS_CANCELLED,
+                    default => Transaction::STATUS_WAITING_CONFIRMATION,
+                };
+
                 $entity = new Transaction();
                 $entity->setUser($user);
                 $entity->setDamagedEducator($damagedEducator);
                 $entity->setAccountNumber($item['accountNumber']);
                 $entity->setAmount($item['amount']);
+                $entity->setStatus($status);
 
                 $this->entityManager->persist($entity);
                 $this->entityManager->flush();
