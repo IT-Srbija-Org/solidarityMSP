@@ -1,6 +1,11 @@
 twig:
     file_name_pattern: '*.twig'
 
+when@prod:
+    twig:
+        globals:
+            umami_tracking: '775ac248-d1eb-4779-9e22-1ae08ede6310'
+
 when@test:
     twig:
         strict_variables: true

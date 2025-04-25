@@ -36,6 +36,10 @@
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.2"></script>
         <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
 
+        {% if umami_tracking is defined %}
+            <script defer src="https://cloud.umami.is/script.js" data-website-id="{{ umami_tracking }}"></script>
+        {% endif %}
+
         <link href="{{ asset('stylesheet/general.css') }}" rel="stylesheet" type="text/css" />
         {% block stylesheets %}{% endblock %}
     </head>
