@@ -18,6 +18,9 @@ else
     exit 1
 fi
 
+# Set git safe.directory
+docker exec solidarity-php-container git config --global --add safe.directory /var/www/project
+
 # Install dependencies
 docker exec solidarity-php-container php composer.phar install;
 
