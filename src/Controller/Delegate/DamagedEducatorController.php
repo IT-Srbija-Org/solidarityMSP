@@ -224,6 +224,10 @@ class DamagedEducatorController extends AbstractController
     #[Route('/osteceni/{id}/instrukcija-za-uplatu', name: 'transactions')]
     public function damagedEducatorTransactions(DamagedEducator $damagedEducator, TransactionRepository $transactionRepository): Response
     {
+        if(!$damagedEducator->allowToViewTransactions()){
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 

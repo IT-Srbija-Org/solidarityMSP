@@ -213,6 +213,11 @@ class DamagedEducator
         return $this;
     }
 
+    public function allowToViewTransactions(): bool
+    {
+        return $this->getPeriod()->isActive() === false;
+    }
+
     public function allowToEdit(): bool
     {
         if (!$this->getPeriod()->isActive()) {
