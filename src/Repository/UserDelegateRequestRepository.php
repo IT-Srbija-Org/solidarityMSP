@@ -23,7 +23,7 @@ class UserDelegateRequestRepository extends ServiceEntityRepository
     {
         $message = (new TemplatedEmail())
             ->to($userDelegateRequest->getUser()->getEmail())
-            ->subject('Vaš zahtev za delegata je odobren')
+            ->subject('Tvoja uloga delegata je verifikovana')
             ->htmlTemplate('admin/userDelegateRequest/confirmation_email.html.twig')
             ->context(['userDelegateRequest' => $userDelegateRequest]);
 

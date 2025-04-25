@@ -1,11 +1,20 @@
 {% extends 'base_email.html.twig' %}
 
 {% block body %}
-    <p>Poštovani/a,</p>
+    <p>Zdravo,</p>
 
-    <div>Vaš zahtev za status delegata je uspešno odobren.</div>
-    <div>Od sada imate ulogu delegata na našem sistemu i možete da unosite oštećene za školu "<b>{{ userDelegateRequest.school.name }}</b>", "<b>{{ userDelegateRequest.school.city.name }}</b>".</div>
-    <div>Ukoliko imate bilo kakvih pitanja, slobodno nas kontaktirajte na adresi: <a href="mailto:delegati@mrezasolidarnosti.org" target="_blank">delegati@mrezasolidarnosti.org</a>.</div>
+    <div>Tvoj status delegata za školu <b>{{ userDelegateRequest.school.name }}</b> je uspešno potvrđen od strane članova zajednice. 🎉</div>
+    <div>Sada možeš da prijavljuješ kolege koji su ostali bez plate i kojima je potrebna pomoć.</div>
 
-    <p>Možete se ulogovani na sledećem linku: <a href="{{ absolute_url(path('login')) }}">Uloguj se</a></p>
+    <div style="margin-top: 20px; margin-bottom: 30px; background: #E7E7E7; padding: 20px 20px;">
+        <div style="margin-bottom: 15px;"><b>Evo šta možeš da uradiš:</b></div>
+
+        <div style="margin-bottom: 5px;">📝 Prijavi kolege na <a href="{{ absolute_url(path('delegate_damaged_educator_choose_period')) }}">Spisak oštećenih</a></div>
+        <div style="margin-bottom: 5px;">📅 Izaberi mesec za koji se prijavljuju</div>
+        <div style="margin-bottom: 5px;">➕ Klikni na dugme „Dodaj“ i unesi podatke</div>
+    </div>
+
+    <div><b>Imaš pitanje?</b></div>
+    <div><a href="mailto:delegati@mrezasolidarnosti.org">delegati@mrezasolidarnosti.org</a></div>
+    <div>Hvala ti što si deo Mreže solidarnosti 💙</div>
 {% endblock %}
