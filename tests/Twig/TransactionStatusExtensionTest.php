@@ -23,7 +23,7 @@ class TransactionStatusExtensionTest extends TestCase
         $filters = $this->extension->getFilters();
 
         $this->assertCount(1, $filters);
-        $this->assertSame('transactionStatus', $filters[0]->getName());
+        $this->assertSame('transaction_status', $filters[0]->getName());
         $this->assertSame([$this->extension, 'getStatus'], $filters[0]->getCallable());
     }
 
