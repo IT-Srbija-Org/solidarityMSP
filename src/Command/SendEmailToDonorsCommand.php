@@ -28,7 +28,7 @@ class SendEmailToDonorsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $io->section('Command started at ' . date('Y-m-d H:i:s'));
+        $io->section('Command started at '.date('Y-m-d H:i:s'));
 
         while (true) {
             $items = $this->getItems();
@@ -37,7 +37,7 @@ class SendEmailToDonorsCommand extends Command
             }
 
             foreach ($items as $item) {
-                $output->writeln('Send email to: ' . $item->getUser()->getEmail() . ' at ' . date('Y-m-d H:i:s'));
+                $output->writeln('Send email to: '.$item->getUser()->getEmail().' at '.date('Y-m-d H:i:s'));
 
                 $message = (new TemplatedEmail())
                     ->to($item->getUser()->getEmail())
@@ -51,7 +51,7 @@ class SendEmailToDonorsCommand extends Command
             $this->entityManager->flush();
         }
 
-        $io->success('Command finished at ' . date('Y-m-d H:i:s'));
+        $io->success('Command finished at '.date('Y-m-d H:i:s'));
 
         return Command::SUCCESS;
     }
