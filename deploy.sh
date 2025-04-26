@@ -12,4 +12,4 @@ sudo -u www-data php bin/console cache:clear;
 sudo -u www-data php bin/console doctrine:schema:update --force;
 
 # Update crontab
-crontab -u www-data < config/crontab.sh;
+sudo -u www-data crontab < config/crontab.sh;
