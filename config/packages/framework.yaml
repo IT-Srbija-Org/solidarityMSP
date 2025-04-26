@@ -4,6 +4,8 @@ framework:
     annotations: false
     http_method_override: false
     handle_all_throwables: true
+    trusted_proxies: '127.0.0.1,REMOTE_ADDR'
+    trusted_headers: ['x-forwarded-all']
 
     # Explicitly configure php_errors.log to address deprecation
     php_errors:
