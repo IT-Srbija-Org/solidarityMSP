@@ -1,3 +1,5 @@
+# Set permissions
+sudo chown -R www-data:www-data ./;
 
 # Update repository
 sudo -u www-data git pull;
