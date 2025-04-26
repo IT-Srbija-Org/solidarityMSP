@@ -427,7 +427,6 @@ class DatabaseMigrationCommand extends Command
             foreach ($items as $item) {
                 $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $item['email']]);
                 if (empty($user)) {
-
                     // Create user
                     $user = new User();
                     $user->setEmail($item['email']);
