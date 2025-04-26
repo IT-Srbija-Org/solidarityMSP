@@ -483,7 +483,7 @@ class DatabaseMigrationCommand extends Command
     public function syncDonors(SymfonyStyle $io): void
     {
         $io->writeln('Syncing donors...');
-        $items = $this->oldConnection->executeQuery('SELECT * FROM donor WHERE status = 1')->iterateAssociative();
+        $items = $this->oldConnection->executeQuery('SELECT * FROM donor')->iterateAssociative();
         $count = 0;
 
         foreach ($items as $item) {
@@ -499,7 +499,7 @@ class DatabaseMigrationCommand extends Command
                 $this->updateDates('user', $user->getId(), $item['createdAt'], $item['updatedAt']);
             }
 
-            if ($item['amount'] >= 500) {
+            if ($item['status'] != 3 && $item['amount'] >= 500) {
                 $userDonor = new UserDonor();
                 $userDonor->setUser($user);
                 $userDonor->setAmount($item['amount']);
