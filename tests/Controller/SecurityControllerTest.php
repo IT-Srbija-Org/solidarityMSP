@@ -55,8 +55,8 @@ class SecurityControllerTest extends WebTestCase
         // Check are email is sent
         $this->assertEmailCount(1);
         $mailerMessage = $this->getMailerMessage();
-        $this->assertEmailSubjectContains($mailerMessage, 'Link za prijavu');
-        $this->assertEmailTextBodyContains($mailerMessage, 'Kliknite na link ispod kako bi se prijavili na svoj nalog');
+        $this->assertEmailSubjectContains($mailerMessage, 'Link za logovanje');
+        $this->assertEmailTextBodyContains($mailerMessage, 'Klikni na dugme ispod kako bi se ulogovao/la na svoj nalog');
 
         // Extract login link
         $crawler = new Crawler($mailerMessage->getHtmlBody());
