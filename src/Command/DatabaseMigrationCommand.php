@@ -425,13 +425,15 @@ class DatabaseMigrationCommand extends Command
             ]);
 
             foreach ($items as $item) {
-                if ($item['amount'] < 500) {
-                    continue;
-                }
-
                 $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $item['email']]);
                 if (empty($user)) {
-                    continue;
+
+                    // Create user
+                    $user = new User();
+                    $user->setEmail($item['email']);
+                    $user->setIsEmailVerified(true);
+                    $this->entityManager->persist($user);
+                    $this->entityManager->flush();
                 }
 
                 $damagedEducator = $this->entityManager->getRepository(DamagedEducator::class)->findOneBy([
