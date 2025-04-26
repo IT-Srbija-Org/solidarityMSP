@@ -499,7 +499,7 @@ class DatabaseMigrationCommand extends Command
                 $this->updateDates('user', $user->getId(), $item['createdAt'], $item['updatedAt']);
             }
 
-            if ($item['status'] != 3 && $item['amount'] >= 500) {
+            if (3 != $item['status'] && $item['amount'] >= 500) {
                 $userDonor = new UserDonor();
                 $userDonor->setUser($user);
                 $userDonor->setAmount($item['amount']);
