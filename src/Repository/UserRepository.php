@@ -56,7 +56,7 @@ class UserRepository extends ServiceEntityRepository
 
         $message = (new TemplatedEmail())
             ->to($user->getEmail())
-            ->subject('Link za prijavu')
+            ->subject('Link za logovanje')
             ->htmlTemplate('security/login_link_email.html.twig')
             ->context(['link' => $loginLink]);
 

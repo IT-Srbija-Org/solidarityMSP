@@ -1,12 +1,12 @@
 {% extends 'base_email.html.twig' %}
 
 {% block body %}
-    <p>Poštovani/a,</p>
+    <p>Zdravo,</p>
 
-    <p>Kako bismo potvrdili da je ova email adresa ispravna i da pripada Vama, molimo Vas da kliknete na link ispod:</p>
+    <p>Kako bismo potvrdili da je ova email adresa ispravna i da pripada tebi, zamolićemo te da klikneš na dugme ispod:</p>
 
-    <p>
-        <a href="{{ signedUrl|raw }}" id="link">Verifikuj ovu email adresu</a>
+    <p style="margin-bottom: 30px;">
+        <a href="{{ signedUrl|raw }}" class="link" style="padding: 8px;border-radius: 8px;background: #06C;text-decoration: none;color: #FFF;font-weight: 700;">Verifikuj email adresu</a>
     </p>
 
     <p style="color: #888;">Ako niste vi kreirali nalog, slobodno ignorišite ovu poruku.</p>
