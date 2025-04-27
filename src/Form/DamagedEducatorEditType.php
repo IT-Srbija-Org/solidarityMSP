@@ -2,9 +2,11 @@
 
 namespace App\Form;
 
+use App\Entity\City;
 use App\Entity\DamagedEducator;
 use App\Entity\School;
 use App\Form\DataTransformer\AccountNumberTransformer;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -46,6 +48,13 @@ class DamagedEducatorEditType extends AbstractType
                 'label' => 'Škola',
                 'choices' => $schoolChoices,
                 'choice_value' => 'id',
+            ])
+            ->add('city', EntityType::class, [
+                'class' => City::class,
+                'placeholder' => '',
+                'label' => 'Grad (Prebivalište oštećenog)',
+                'choice_value' => 'id',
+                'choice_label' => 'name',
             ])
             ->add('amount', IntegerType::class, [
                 'label' => 'Cifra',

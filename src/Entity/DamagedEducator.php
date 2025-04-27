@@ -76,6 +76,10 @@ class DamagedEducator
     #[ORM\JoinColumn(nullable: false)]
     private ?DamagedEducatorPeriod $period = null;
 
+    #[Assert\NotBlank(message: 'Grad je obavezno polje')]
+    #[ORM\ManyToOne]
+    private ?City $city = null;
+
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
@@ -234,5 +238,17 @@ class DamagedEducator
     public function allowToDelete(): bool
     {
         return self::STATUS_DELETED !== $this->status;
+    }
+
+    public function getCity(): ?City
+    {
+        return $this->city;
+    }
+
+    public function setCity(?City $city): static
+    {
+        $this->city = $city;
+
+        return $this;
     }
 }
