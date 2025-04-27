@@ -31,6 +31,7 @@
                         <span class="ti ti-calendar-event text-xl"></span>
                         Datum
                     </th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -54,6 +55,17 @@
                     </td>
                     <td>{{ donor.amount|number_format }}</td>
                     <td>{{ donor.updatedAt|date('d.m.Y.') }}</td>
+                    <td>
+                        <div class="flex gap-2 justify-end">
+                            <a href="{{ path('admin_donor_delete', { 'id': donor.id }) }}" class="btn btn-error btn-sm flex tooltip" data-tip="Obriši">
+                                <span class="ti ti-trash text-xl"></span>
+                            </a>
+
+                            <a href="{{ path('admin_donor_edit', { 'id': donor.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Izmeni">
+                                <span class="ti ti-edit text-xl"></span>
+                            </a>
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>

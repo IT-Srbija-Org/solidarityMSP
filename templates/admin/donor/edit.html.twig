@@ -1,0 +1,15 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block content %}
+    <div class="text-xl">
+        <span class="ti ti-user-heart text-2xl"></span>
+        Donator
+    </div>
+
+    <div class="divider"></div>
+
+    {{ include('flashes.html.twig') }}
+
+    {% form_theme form with ['form.html.twig'] %}
+    {{ form(form) }}
+{% endblock %}
