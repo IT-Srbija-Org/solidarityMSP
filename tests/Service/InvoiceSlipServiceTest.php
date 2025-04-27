@@ -18,12 +18,9 @@ class InvoiceSlipServiceTest extends TestCase
         $city = $this->createMock(\App\Entity\City::class);
         $city->method('getName')->willReturn('Test City');
 
-        $school = $this->createMock(\App\Entity\School::class);
-        $school->method('getCity')->willReturn($city);
-
         $damagedEducator = $this->createMock(\App\Entity\DamagedEducator::class);
         $damagedEducator->method('getName')->willReturn('Recipient Name');
-        $damagedEducator->method('getSchool')->willReturn($school);
+        $damagedEducator->method('getCity')->willReturn($city);
 
         $transaction = $this->createMock(Transaction::class);
         $transaction->method('getDamagedEducator')->willReturn($damagedEducator);
