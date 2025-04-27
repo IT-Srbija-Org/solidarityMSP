@@ -20,6 +20,7 @@ class IpsQrCodeService
         $required = [
             'bankAccountNumber',
             'payeeName',
+            'payeeCityName',
             'amount',
             'payerName',
             'paymentPurpose',
@@ -40,7 +41,7 @@ class IpsQrCodeService
             'V:'.$version,
             'C:'.$characterSet,
             'R:'.$data['bankAccountNumber'],
-            'N:'.$data['payeeName'],
+            'N:'.$data['payeeName'] . "\r\nBB\r\n" . $data['payeeCityName'],
             'I:RSD'.$data['amount'],
         ];
 
