@@ -5,8 +5,6 @@ namespace App\Tests\Service;
 use App\Service\IpsQrCodeService;
 use PHPUnit\Framework\TestCase;
 
-// Adapted from: https://github.com/ArtBIT/ips-qr-code/blob/master/lib/ips.test.js
-
 class IpsQrCodeServiceTest extends TestCase
 {
     private IpsQrCodeService $service;
@@ -27,12 +25,16 @@ class IpsQrCodeServiceTest extends TestCase
         $args = [
             'bankAccountNumber' => '123456789012345611',
             'payeeName' => 'JEST Ltd., Test',
+            'payeeCityName' => 'Beograd',
             'amount' => '1295,',
             'payerName' => 'Test Payer',
             'paymentPurpose' => 'Test Purpose',
         ];
-        $expected = 'K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test|I:RSD1295,|P:Test Payer|S:Test Purpose';
-        $this->assertSame($expected, $this->service->createIpsQrString($args));
+
+        $expected = "K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test\n\rBB\n\rBeograd|I:RSD1295,|P:Test Payer|S:Test Purpose";
+        $actual = $this->service->createIpsQrString($args);
+
+        $this->assertSame($this->removeNewlines($expected), $this->removeNewlines($actual));
     }
 
     public function testWorksWithAllArgumentsProvided(): void
@@ -45,11 +47,15 @@ class IpsQrCodeServiceTest extends TestCase
             'payeeName' => 'JEST Ltd., Test',
             'amount' => '1295,',
             'payerName' => 'Test Payer',
+            'payeeCityName' => 'Beograd',
             'paymentCode' => '123',
             'paymentPurpose' => 'Testing',
         ];
-        $expected = 'K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test|I:RSD1295,|P:Test Payer|SF:123|S:Testing';
-        $this->assertSame($expected, $this->service->createIpsQrString($args));
+
+        $expected = "K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test\n\rBB\n\rBeograd|I:RSD1295,|P:Test Payer|SF:123|S:Testing";
+        $actual = $this->service->createIpsQrString($args);
+
+        $this->assertSame($this->removeNewlines($expected), $this->removeNewlines($actual));
     }
 
     public function testWorksWithReferenceCode(): void
@@ -59,10 +65,19 @@ class IpsQrCodeServiceTest extends TestCase
             'payeeName' => 'JEST Ltd., Test',
             'amount' => '1295,',
             'payerName' => 'Test Payer',
+            'payeeCityName' => 'Beograd',
             'paymentPurpose' => 'Test Purpose',
             'referenceCode' => '972012345',
         ];
-        $expected = 'K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test|I:RSD1295,|P:Test Payer|S:Test Purpose|RO:972012345';
-        $this->assertSame($expected, $this->service->createIpsQrString($args));
+
+        $expected = "K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test\n\rBB\n\rBeograd|I:RSD1295,|P:Test Payer|S:Test Purpose|RO:972012345";
+        $actual = $this->service->createIpsQrString($args);
+
+        $this->assertSame($this->removeNewlines($expected), $this->removeNewlines($actual));
+    }
+
+    private function removeNewlines(string $string): string
+    {
+        return preg_replace('/\s+/', ' ', $string);
     }
 }
