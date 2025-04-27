@@ -2,6 +2,7 @@
 
 namespace App\Controller\Delegate;
 
+use App\Entity\City;
 use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
 use App\Entity\User;
@@ -151,20 +152,28 @@ class DamagedEducatorController extends AbstractController
             $this->entityManager->beginTransaction();
 
             for ($row = 1; $row <= $totalRows; ++$row) {
-                $rowData = $worksheet->rangeToArray('A'.$row.':'.$worksheet->getHighestColumn().$row, null,
-                    true, false)[0];
+                $rowData = $worksheet->rangeToArray('A' . $row . ':' . $worksheet->getHighestColumn() . $row, null, true, false)[0];
 
                 $damagedEducator = new DamagedEducator();
                 $damagedEducator->setName($rowData[0] ?? '');
-                $damagedEducator->setAccountNumber($rowData[1] ?? '');
-                $damagedEducator->setAmount((int) $rowData[2] ?? '');
+                $damagedEducator->setAccountNumber($rowData[2] ?? '');
+                $damagedEducator->setAmount(empty($rowData[3]) ? 0 : (int)$rowData[3]);
                 $damagedEducator->setSchool($school);
+
+                $cityName = $rowData[1] ?? '';
+                $city = $this->entityManager->getRepository(City::class)->findOneBy(['name' => $cityName]);
+                $damagedEducator->setCity($city);
+
                 $damagedEducator->setCreatedBy($this->getUser());
                 $damagedEducator->setPeriod($period);
 
                 $validations = $validator->validate($damagedEducator);
                 foreach ($validations as $validation) {
                     $errors[$row][] = $validation->getMessage();
+                }
+
+                if ($cityName && empty($city)) {
+                    $errors[$row][] = 'Grad nije pronađen u bazi';
                 }
 
                 if (0 == count($validations)) {
@@ -184,7 +193,7 @@ class DamagedEducatorController extends AbstractController
             }
 
             $this->entityManager->commit();
-            $this->addFlash('success', 'Uspešno ste sačuvali sve oštećene iz fajla (Ukupno: '.$totalRows.').');
+            $this->addFlash('success', 'Uspešno ste sačuvali sve oštećene iz fajla (Ukupno: ' . $totalRows . ').');
 
             return $this->redirectToRoute('delegate_damaged_educator_list', [
                 'period' => $period->getId(),
@@ -317,7 +326,7 @@ class DamagedEducatorController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $hasCancelledTransactions = (bool) $transactionRepository->count([
+        $hasCancelledTransactions = (bool)$transactionRepository->count([
             'damagedEducator' => $damagedEducator,
             'status' => Transaction::STATUS_CANCELLED,
         ]);

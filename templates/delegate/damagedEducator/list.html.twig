@@ -53,6 +53,10 @@
                                     Ime
                                 </th>
                                 <th>
+                                    <span class="ti ti-building-community text-xl"></span>
+                                    Grad
+                                </th>
+                                <th>
                                     <span class="ti ti-building text-xl"></span>
                                     Škola
                                 </th>
@@ -80,10 +84,8 @@
                         {% for damagedEducator in damagedEducators.items %}
                             <tr class="hover:bg-gray-100">
                                 <td>{{ damagedEducator.name }}</td>
-                                <td>
-                                    <div>{{ damagedEducator.school.name }}</div>
-                                    <div class="text-gray-500">{{ damagedEducator.school.city.name }}</div>
-                                </td>
+                                <td>{{ damagedEducator.city.name }}</td>
+                                <td>{{ damagedEducator.school.name }}</td>
                                 <td>{{ damagedEducator.amount|number_format }}</td>
                                 <td class="whitespace-nowrap">{{ damagedEducator.accountNumber|account_number_format }}</td>
                                 <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
