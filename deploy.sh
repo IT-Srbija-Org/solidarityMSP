@@ -15,3 +15,4 @@ sudo -u www-data php bin/console doctrine:schema:update --force;
 
 # Update crontab
 sudo -u www-data crontab < config/crontab.sh;
+sudo crontab < config/crontab-root.sh;
