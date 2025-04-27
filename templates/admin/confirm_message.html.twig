@@ -1,17 +1,13 @@
 {% extends 'admin/base.html.twig' %}
 
 {% block content %}
-    <div class="card card-lg bg-base-100 shadow m-4 {% if backRouteName is defined %}mt-0{% endif %}">
-        <div class="card-body">
-            <h2 class="card-title mb-4">
-                <span class="ti ti-{{ iconClass}} text-2xl"></span>
-                {{ title }}
-            </h2>
+    <h2 class="card-title mb-4">
+        <span class="ti ti-{{ iconClass}} text-2xl"></span>
+        {{ title }}
+    </h2>
 
-            <div>
-                {% form_theme form 'form.html.twig' %}
-                {{ form(form) }}
-            </div>
-        </div>
+    <div>
+        {% form_theme form 'form.html.twig' %}
+        {{ form(form) }}
     </div>
 {% endblock %}

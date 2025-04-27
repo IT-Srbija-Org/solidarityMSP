@@ -76,7 +76,9 @@ final class DonorController extends AbstractController
             return $this->redirectToRoute('admin_donor_list');
         }
 
-        return $this->render('admin/donor/edit.html.twig', [
+        return $this->render('admin/confirm_message.html.twig', [
+            'iconClass' => 'trash',
+            'title' => 'Brisanje donatora #' . $userDonor->getId(),
             'form' => $form->createView(),
         ]);
     }
