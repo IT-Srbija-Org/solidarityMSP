@@ -6,6 +6,7 @@ use App\Entity\UserDonor;
 use App\Form\UserDonorType;
 use App\Repository\UserDonorRepository;
 use App\Repository\UserRepository;
+use App\Service\CloudFlareTurnstileService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -22,7 +23,7 @@ class RequestController extends AbstractController
     }
 
     #[Route('/postani-donator', name: 'form')]
-    public function form(Request $request, UserRepository $userRepository, UserDonorRepository $userDonorRepository): Response
+    public function form(Request $request, UserRepository $userRepository, UserDonorRepository $userDonorRepository, CloudFlareTurnstileService $cloudFlareTurnstileService): Response
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -37,6 +38,13 @@ class RequestController extends AbstractController
         ]);
 
         $form->handleRequest($request);
+        if (!$user && $form->isSubmitted() && $form->isValid()) {
+            $captchaToken = $request->getPayload()->get('cf-turnstile-response');
+            if (!$cloudFlareTurnstileService->isValid($captchaToken)) {
+                $form->addError(new FormError('Captcha nije validna.'));
+            }
+        }
+
         if (!$user && $form->isSubmitted() && $form->isValid()) {
             $email = $form->get('email')->getData();
 

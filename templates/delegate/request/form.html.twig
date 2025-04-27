@@ -26,7 +26,9 @@
 
             {% form_theme form 'form.html.twig' %}
             {{ form_start(form) }}
-                <div class="space-y-5">
+                <div class="space-y-4">
+                    {{ form_errors(form) }}
+
                     <div>
                         {{ form_label(form.firstName) }}
                         {{ form_widget(form.firstName, { 'attr': { 'class': 'input input-md input-bordered rounded-md w-full' } }) }}
@@ -95,6 +97,7 @@
                         <span class="text-gray-500 text-sm">Unesi dodatni komentar ili sugestiju</span>
                     </div>
 
+                    {{ include('captcha.html.twig') }}
                     {{ form_row(form.submit, { 'attr': { 'class': 'btn btn-primary w-full' } }) }}
                 </div>
             {{ form_end(form) }}

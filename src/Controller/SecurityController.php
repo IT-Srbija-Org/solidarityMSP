@@ -12,9 +12,19 @@ use Symfony\Component\Routing\Attribute\Route;
 class SecurityController extends AbstractController
 {
     #[Route(path: '/logovanje', name: 'login')]
-    public function login(Request $request, UserRepository $userRepository): Response
+    public function login(Request $request, UserRepository $userRepository, CloudFlareTurnstileService $cloudFlareTurnstileService): Response
     {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('home');
+        }
+
         if ($request->isMethod('POST')) {
+            $captchaToken = $request->getPayload()->get('cf-turnstile-response');
+            if (!$cloudFlareTurnstileService->isValid($captchaToken)) {
+                $this->addFlash('error', 'Captcha nije validna.');
+                return $this->redirectToRoute('login');
+            }
+
             $email = $request->getPayload()->get('email');
             $user = $userRepository->findOneBy(['email' => $email]);
 
@@ -44,48 +54,6 @@ class SecurityController extends AbstractController
         }
 
         return $this->render('security/login.html.twig');
-    }
-
-    #[Route(path: '/logovanje2', name: 'login2')]
-    public function login2(Request $request, UserRepository $userRepository, CloudFlareTurnstileService $cloudFlareTurnstileService): Response
-    {
-        if ($request->isMethod('POST')) {
-            $captchaToken = $request->getPayload()->get('cf-turnstile-response');
-            if (!$cloudFlareTurnstileService->isValid($captchaToken)) {
-                $this->addFlash('error', 'Captcha nije validna.');
-
-                return $this->redirectToRoute('login2');
-            }
-
-            $email = $request->getPayload()->get('email');
-            $user = $userRepository->findOneBy(['email' => $email]);
-
-            if ($user && $user->isActive() && $user->isEmailVerified()) {
-                $userRepository->sendLoginLink($user);
-
-                $this->addFlash('success', 'Link za prijavu je poslat na vašu email adresu.');
-
-                return $this->redirectToRoute('login2');
-            }
-
-            if ($user && !$user->isActive()) {
-                $this->addFlash('error', 'Korisnik sa ovom email adresom nije aktivan i ne može da se uloguje.');
-
-                return $this->redirectToRoute('login2');
-            }
-
-            if ($user && !$user->isEmailVerified()) {
-                $this->addFlash('unverified_user', $email);
-
-                return $this->redirectToRoute('login2');
-            }
-
-            $this->addFlash('error', 'Korisnik sa ovom email adresom ne postoji. Molimo da se registrujete.');
-
-            return $this->redirectToRoute('login2');
-        }
-
-        return $this->render('security/login2.html.twig');
     }
 
     #[Route('/login_check', name: 'login_check')]

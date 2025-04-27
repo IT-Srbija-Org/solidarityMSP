@@ -68,40 +68,45 @@
 
             {% form_theme form 'form.html.twig' %}
             {{ form_start(form) }}
-                <div class="mb-4">
-                    {{ form_label(form.email) }}
-                    {{ form_widget(form.email, { 'attr': { 'class': 'input input-md input-bordered rounded-md w-full' } }) }}
-                    {{ form_errors(form.email) }}
+                <div class="space-y-4">
+                    {{ form_errors(form) }}
 
-                    {% if not app.user %}
-                        <span class="text-gray-500 text-sm">Biće Vam poslat email za verifikaciju. Ako već imate nalog na sajtu možete se ulogovati <a href="{{ path('login') }}" class="link link-primary link-hover">ovde</a></span>
-                    {% endif %}
+                    <div>
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email, { 'attr': { 'class': 'input input-md input-bordered rounded-md w-full' } }) }}
+                        {{ form_errors(form.email) }}
+
+                        {% if not app.user %}
+                            <span class="text-gray-500 text-sm">Biće Vam poslat email za verifikaciju. Ako već imate nalog na sajtu možete se ulogovati <a href="{{ path('login') }}" class="link link-primary link-hover">ovde</a></span>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        {{ form_label(form.amount) }}
+                        {{ form_widget(form.amount, { 'attr': { 'class': 'input input-md input-bordered rounded-md w-full' } }) }}
+                        {{ form_errors(form.amount) }}
+
+                        <span class="text-gray-500 text-sm">Iznos sa kojim sam spreman/a da pomognem u dinarima (RSD).</span>
+                    </div>
+
+                    <div>
+                        {{ form_label(form.isMonthly) }}
+                        {{ form_widget(form.isMonthly, { 'attr': { 'class': 'checkbox checkbox-primary' } }) }}
+                        {{ form_errors(form.isMonthly) }}
+
+                        <div class="text-gray-500 text-sm">Čekiranjem ove opcije prihvatate mesečno izdvajanje dogovorenog iznosa (Kasnije se može promeniti).</div>
+                    </div>
+
+                    <div>
+                        {{ form_label(form.comment) }}
+                        {{ form_widget(form.comment) }}
+                        {{ form_errors(form.comment) }}
+                        <span class="text-gray-500 text-sm">Unesi dodatni komentar ili sugestiju</span>
+                    </div>
+
+                    {{ include('captcha.html.twig') }}
+                    {{ form_row(form.submit, { 'attr': { 'class': 'btn btn-primary w-full' } }) }}
                 </div>
-
-                <div>
-                    {{ form_label(form.amount) }}
-                    {{ form_widget(form.amount, { 'attr': { 'class': 'input input-md input-bordered rounded-md w-full' } }) }}
-                    {{ form_errors(form.amount) }}
-
-                    <span class="text-gray-500 text-sm">Iznos sa kojim sam spreman/a da pomognem u dinarima (RSD).</span>
-                </div>
-
-                <div class="my-4">
-                    {{ form_label(form.isMonthly) }}
-                    {{ form_widget(form.isMonthly, { 'attr': { 'class': 'checkbox checkbox-primary' } }) }}
-                    {{ form_errors(form.isMonthly) }}
-
-                    <div class="text-gray-500 text-sm">Čekiranjem ove opcije prihvatate mesečno izdvajanje dogovorenog iznosa (Kasnije se može promeniti).</div>
-                </div>
-
-                <div class="mb-4">
-                    {{ form_label(form.comment) }}
-                    {{ form_widget(form.comment) }}
-                    {{ form_errors(form.comment) }}
-                    <span class="text-gray-500 text-sm">Unesi dodatni komentar ili sugestiju</span>
-                </div>
-
-                {{ form_row(form.submit, { 'attr': { 'class': 'btn btn-primary w-full' } }) }}
             {{ form_end(form) }}
 
             {% if app.user and app.user.userDonor %}
