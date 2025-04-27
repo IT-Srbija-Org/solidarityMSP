@@ -2,11 +2,7 @@ twig:
     file_name_pattern: '*.twig'
     globals:
         CLOUDFLARE_TURNSTILE_SITEKEY: '%env(CLOUDFLARE_TURNSTILE_SITEKEY)%'
-
-when@prod:
-    twig:
-        globals:
-            umami_tracking: '775ac248-d1eb-4779-9e22-1ae08ede6310'
+        UMAMI_TRACKING_ID: '%env(UMAMI_TRACKING_ID)%'
 
 when@test:
     twig:
