@@ -19,7 +19,7 @@ class InvoiceSlipService
      */
     public function prepareSlipData(Transaction $transaction, User $user): array
     {
-        $cityName = $transaction->getDamagedEducator()->getSchool()->getCity()->getName();
+        $cityName = $transaction->getDamagedEducator()->getCity()->getName();
 
         return [
             'payer' => $user->getFullName(),

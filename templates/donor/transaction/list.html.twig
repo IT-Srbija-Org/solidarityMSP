@@ -77,9 +77,9 @@
                                 </td>
                                 <td>
                                     {% if transaction.isStatusCancelled %}
-                                        <div class="text-gray-500 tracking-widest">{{ transaction.damagedEducator.school.city.name|mask }}</div>
+                                        <div class="text-gray-500 tracking-widest">{{ transaction.damagedEducator.city.name|mask }}</div>
                                     {% else %}
-                                        <div>{{ transaction.damagedEducator.school.city.name }}</div>
+                                        <div>{{ transaction.damagedEducator.city.name }}</div>
                                     {% endif %}
                                 </td>
                                 <td class="whitespace-nowrap">
