@@ -1,0 +1,6 @@
+{% if show_captcha() %}
+    <div>
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+        <div class="cf-turnstile" data-sitekey="{{ CLOUDFLARE_TURNSTILE_SITEKEY }}"></div>
+    </div>
+{% endif %}
