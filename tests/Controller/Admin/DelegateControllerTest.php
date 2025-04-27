@@ -160,7 +160,7 @@ class DelegateControllerTest extends WebTestCase
         // Check the flash message content - Note: This is a bug in the controller
         // It says "odvezali" (disconnected) when it should say "povezali" (connected)
         $flashContent = $this->client->getCrawler()->filter('.alert-success')->text();
-        $this->assertStringContainsString('odvezali', $flashContent, 'Bug: Flash message indicates disconnecting a school, not connecting');
+        $this->assertStringContainsString('povezali', $flashContent, 'Bug: Flash message indicates disconnecting a school, not connecting');
 
         // Verify that a new connection was created in the database
         $connection = $this->userDelegateSchoolRepository->findOneBy([
