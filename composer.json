@@ -15,6 +15,7 @@
         "endroid/qr-code": "^6.0",
         "giggsey/libphonenumber-for-php": "^9.0",
         "phpoffice/phpspreadsheet": "^4.2",
+        "sentry/sentry-symfony": "^5.2",
         "symfony/asset": "6.4.*",
         "symfony/console": "6.4.*",
         "symfony/dotenv": "6.4.*",
