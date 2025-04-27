@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    CLOUDFLARE_TURNSTILE_SITEKEY: '%env(CLOUDFLARE_TURNSTILE_SITEKEY)%'
+    CLOUDFLARE_TURNSTILE_SECRET_KEY: '%env(CLOUDFLARE_TURNSTILE_SECRET_KEY)%'
 
 services:
     # default configuration for services in *this* file

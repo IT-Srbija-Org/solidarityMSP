@@ -53,6 +53,7 @@ class SecurityController extends AbstractController
             $captchaToken = $request->getPayload()->get('cf-turnstile-response');
             if (!$cloudFlareTurnstileService->isValid($captchaToken)) {
                 $this->addFlash('error', 'Captcha nije validna.');
+
                 return $this->redirectToRoute('login2');
             }
 

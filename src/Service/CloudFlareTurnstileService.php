@@ -39,7 +39,7 @@ class CloudFlareTurnstileService
             ],
         ]);
 
-        if ($response->getStatusCode() !== 200) {
+        if (200 !== $response->getStatusCode()) {
             return false;
         }
 
