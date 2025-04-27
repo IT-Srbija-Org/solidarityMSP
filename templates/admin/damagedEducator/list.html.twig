@@ -51,11 +51,11 @@
                 <tr class="hover:bg-gray-100">
                     <td>{{ damagedEducator.id }}</td>
                     <td>{{ damagedEducator.period|format_period(true) }}</td>
-                    <td>{{ damagedEducator.name }}</td>
                     <td>
-                        <div>{{ damagedEducator.school.name }}</div>
-                        <div class="text-gray-500">{{ damagedEducator.school.city.name }}</div>
+                        <div>{{ damagedEducator.name }}</div>
+                        <div class="text-gray-500">{{ damagedEducator.city.name }}</div>
                     </td>
+                    <td>{{ damagedEducator.school.name }}</td>
                     <td>{{ damagedEducator.amount|number_format }}</td>
                     <td class="whitespace-nowrap">{{ damagedEducator.accountNumber|account_number_format }}</td>
                     <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
