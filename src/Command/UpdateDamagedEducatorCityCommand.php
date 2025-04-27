@@ -32,7 +32,7 @@ class UpdateDamagedEducatorCityCommand extends Command
         while (true) {
             /** @var DamagedEducator[] $damagedEducators */
             $damagedEducators = $damagedEducatorRepository->findBy([
-                'city' => null
+                'city' => null,
             ], [], 500);
 
             if (empty($damagedEducators)) {
@@ -44,13 +44,12 @@ class UpdateDamagedEducatorCityCommand extends Command
                 $damagedEducator->setCity($school->getCity());
                 $this->entityManager->flush();
 
-                $output->writeln('Update DamagedEducator ID: ' . $damagedEducator->getId());
-                $countUpdated += 1;
+                $output->writeln('Update DamagedEducator ID: '.$damagedEducator->getId());
+                ++$countUpdated;
             }
 
             $this->entityManager->clear();
         }
-
 
         $output->writeln(sprintf('Total updated %d DamagedEducator entities.', $countUpdated));
 
