@@ -161,6 +161,7 @@ class PanelControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="damaged_educator_edit"]')->form([
             'damaged_educator_edit[name]' => 'Milan Janjic',
             'damaged_educator_edit[school]' => $userDelegateSchool->getSchool()->getId(),
+            'damaged_educator_edit[city]' => $userDelegateSchool->getSchool()->getCity()->getId(),
             'damaged_educator_edit[amount]' => 10000,
             'damaged_educator_edit[accountNumber]' => '150000002501288698',
         ]);

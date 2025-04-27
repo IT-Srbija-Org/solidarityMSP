@@ -98,6 +98,7 @@ class DamagedEducatorFixtures extends Fixture implements FixtureGroupInterface
                 $educator = new DamagedEducator();
                 $educator->setName($this->generateName());
                 $educator->setSchool($userDelegateSchool->getSchool());
+                $educator->setCity($userDelegateSchool->getSchool()->getCity());
                 $educator->setAmount(Amounts::generate(30000, null, 15, 50000));
                 $educator->setAccountNumber($this->generateAccountNumber());
                 $educator->setPeriod($activePeriod);
@@ -114,6 +115,7 @@ class DamagedEducatorFixtures extends Fixture implements FixtureGroupInterface
                 $educator = new DamagedEducator();
                 $educator->setName($this->generateName());
                 $educator->setSchool($school);
+                $educator->setCity($school->getCity());
                 $educator->setAmount(Amounts::generate(30000, null, 15, 50000));
                 $educator->setAccountNumber($this->generateAccountNumber());
                 $educator->setPeriod($periods[array_rand($periods)]);
