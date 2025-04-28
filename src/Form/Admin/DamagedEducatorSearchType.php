@@ -3,6 +3,7 @@
 namespace App\Form\Admin;
 
 use App\Entity\City;
+use App\Entity\DamagedEducator;
 use App\Entity\DamagedEducatorPeriod;
 use App\Entity\School;
 use App\Entity\User;
@@ -10,6 +11,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,6 +21,9 @@ class DamagedEducatorSearchType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $status = DamagedEducator::STATUS;
+        unset($status[DamagedEducator::STATUS_NEW]);
+
         $builder
             ->setMethod('GET')
             ->add('period', EntityType::class, [
@@ -48,6 +53,11 @@ class DamagedEducatorSearchType extends AbstractType
             ->add('name', TextType::class, [
                 'required' => false,
                 'label' => 'Ime',
+            ])
+            ->add('status', ChoiceType::class, [
+                'required' => false,
+                'label' => 'Status',
+                'choices' => array_flip($status)
             ])
             ->add('city', EntityType::class, [
                 'required' => false,

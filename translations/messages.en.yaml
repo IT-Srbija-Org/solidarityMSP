@@ -34,4 +34,5 @@ WaitingConfirmation: Čeka se potvrda
 Confirmed: Potvrđena
 Cancelled: Otkazana
 
-DamagedEducatorDeleted: Obrisan
+DamagedEducatorNew: '-'
+DamagedEducatorDeleted: 'Obrisan'
