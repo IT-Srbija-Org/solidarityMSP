@@ -1,22 +1,13 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
 
     <title>Mreža Solidarnosti - IT Srbija</title>
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Srbija+Sans:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;1,700&display=swap" />
-    <style>
-        * {
-            font-family: Inter, serif;
-            line-height: 22px;
-            color: #000000;
-        }
-    </style>
 </head>
-<body style="padding: 40px; background: #EFEFEF;">
-    <img src="{{ absolute_url(asset('image/logo-email.png')) }}" style="width: 200px;">
+<body style="padding: 20px; background: #FFFFFF;">
+    <img src="https://mrezasolidarnosti.org{{ asset('image/logo-email.jpg') }}" style="width: 200px;">
 
     <div style="margin: 24px 0;">
         {% block body %}{% endblock %}
