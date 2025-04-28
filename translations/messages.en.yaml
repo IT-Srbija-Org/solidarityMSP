@@ -29,10 +29,9 @@ Fri: Pet
 Sat: Sub
 Sun: Ned
 
-WaitingPayment: Čeka se uplata
-WaitingConfirmation: Čeka se potvrda
-Confirmed: Potvrđena
-Cancelled: Otkazana
+TransactionWaitingPayment: Čeka se uplata
+TransactionWaitingConfirmation: Čeka se potvrda od prosvetnog radnika
+TransactionConfirmed: Potvrđena
+TransactionCancelled: Otkazana
 
-DamagedEducatorNew: '-'
-DamagedEducatorDeleted: 'Obrisan'
+DamagedEducatorDeleted: Obrisan

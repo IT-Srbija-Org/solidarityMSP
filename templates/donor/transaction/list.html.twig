@@ -91,7 +91,7 @@
                                 </td>
                                 <td>{{ transaction.amount|number_format }}</td>
                                 <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
-                                <td class="whitespace-nowrap">
+                                <td class="max-w-[180px]">
                                     {{ transaction.status|transaction_status|raw }}</td>
                                 <td>
                                     <div class="flex gap-2 justify-end">

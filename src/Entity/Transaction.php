@@ -19,10 +19,10 @@ class Transaction
     public const STATUS_CANCELLED = 4;
 
     public const STATUS = [
-        self::STATUS_NEW => 'WaitingPayment',
-        self::STATUS_WAITING_CONFIRMATION => 'WaitingConfirmation',
-        self::STATUS_CONFIRMED => 'Confirmed',
-        self::STATUS_CANCELLED => 'Cancelled',
+        self::STATUS_NEW => 'TransactionWaitingPayment',
+        self::STATUS_WAITING_CONFIRMATION => 'TransactionWaitingConfirmation',
+        self::STATUS_CONFIRMED => 'TransactionConfirmed',
+        self::STATUS_CANCELLED => 'TransactionCancelled',
     ];
 
     #[ORM\Id]
