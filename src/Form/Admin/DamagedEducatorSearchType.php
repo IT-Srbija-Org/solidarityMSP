@@ -57,7 +57,7 @@ class DamagedEducatorSearchType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Status',
-                'choices' => array_flip($status)
+                'choices' => array_flip($status),
             ])
             ->add('city', EntityType::class, [
                 'required' => false,
