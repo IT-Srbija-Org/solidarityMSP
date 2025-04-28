@@ -70,7 +70,7 @@ class DelegateDoubleCheckCommand extends Command
             ->where('e.school = :school')
             ->setParameter(':school', $school)
             ->getQuery()
-            ->getSingleResult();
+            ->getOneOrNullResult();
     }
 
     public function deleteDamagedEducator(DamagedEducator $damagedEducator)
@@ -112,6 +112,8 @@ class DelegateDoubleCheckCommand extends Command
             ->setParameter(':period', $period)
             ->andWhere('e.accountNumber LIKE :prefix')
             ->setParameter('prefix', '150%')
+            ->andWhere('e.status = :status')
+            ->setParameter(':status', DamagedEducator::STATUS_NEW)
             ->getQuery()
             ->getResult();
     }
@@ -130,6 +132,8 @@ class DelegateDoubleCheckCommand extends Command
             ->setParameter(':period', $period)
             ->andWhere('e.accountNumber LIKE :prefix')
             ->setParameter('prefix', '840%')
+            ->andWhere('e.status = :status')
+            ->setParameter(':status', DamagedEducator::STATUS_NEW)
             ->getQuery()
             ->getResult();
     }
