@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\DamagedEducator;
+use App\Entity\DamagedEducatorPeriod;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -27,9 +28,17 @@ class ConvertEurobankAccountsCommand extends Command
 
         $io->section('Fetching DamagedEducator entities with accountNumber starting with 150...');
 
+        $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
+            'month' => 2,
+            'year' => 2025,
+            'type' => DamagedEducatorPeriod::TYPE_SECOND_HALF,
+        ]);
+
         $educators = $this->entityManager->getRepository(DamagedEducator::class)
             ->createQueryBuilder('e')
-            ->where('e.accountNumber LIKE :prefix')
+            ->where('e.period = :period')
+            ->setParameter(':period', $period)
+            ->andWhere('e.accountNumber LIKE :prefix')
             ->setParameter('prefix', '150%')
             ->getQuery()
             ->getResult();
