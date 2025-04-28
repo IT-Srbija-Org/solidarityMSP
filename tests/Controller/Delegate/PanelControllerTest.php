@@ -163,7 +163,7 @@ class PanelControllerTest extends WebTestCase
             'damaged_educator_edit[school]' => $userDelegateSchool->getSchool()->getId(),
             'damaged_educator_edit[city]' => $userDelegateSchool->getSchool()->getCity()->getId(),
             'damaged_educator_edit[amount]' => 10000,
-            'damaged_educator_edit[accountNumber]' => '150000002501288698',
+            'damaged_educator_edit[accountNumber]' => '265104031000361092',
         ]);
 
         $this->client->submit($form);
@@ -190,7 +190,7 @@ class PanelControllerTest extends WebTestCase
             'damaged_educator_edit[name]' => 'Milan Janjic',
             'damaged_educator_edit[school]' => $userDelegateSchool->getSchool()->getId(),
             'damaged_educator_edit[amount]' => 100000,
-            'damaged_educator_edit[accountNumber]' => '150000002501288698',
+            'damaged_educator_edit[accountNumber]' => '265104031000361092',
         ]);
 
         $this->client->submit($form);
@@ -200,7 +200,7 @@ class PanelControllerTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $damagedEducator = $this->damagedEducatorRepository->findOneBy(['accountNumber' => '150000002501288698']);
+        $damagedEducator = $this->damagedEducatorRepository->findOneBy(['accountNumber' => '265104031000361092']);
         $this->assertEquals($damagedEducator->getAmount(), 100000);
     }
 
