@@ -59,7 +59,14 @@
                     <td>{{ damagedEducator.amount|number_format }}</td>
                     <td class="whitespace-nowrap">{{ damagedEducator.accountNumber|account_number_format }}</td>
                     <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
-                    <td>{{ damagedEducator.status|damaged_educator_status|raw }}</td>
+                    <td>
+                        {% if damagedEducator.isStatusDeleted %}
+                            <div class="whitespace-nowrap">{{ damagedEducator.status|damaged_educator_status|raw }}</div>
+                            <div class="text-gray-500 mt-2">{{ damagedEducator.statusComment }}</div>
+                        {% else %}
+                            <div class="whitespace-nowrap">{{ damagedEducator.status|damaged_educator_status|raw }}</div>
+                        {% endif %}
+                    </td>
                     <td>
                         {% if damagedEducator.createdBy %}
                             <div>{{ damagedEducator.createdBy.fullName }}</div>

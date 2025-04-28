@@ -253,4 +253,9 @@ class DamagedEducator
 
         return $this;
     }
+
+    public function isStatusDeleted(): bool
+    {
+        return self::STATUS_DELETED === $this->status;
+    }
 }
