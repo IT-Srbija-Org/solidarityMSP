@@ -58,4 +58,9 @@
             </tbody>
         </table>
     </div>
+
+
+
+    {% import "macro.html.twig" as macro %}
+    {{ macro.pagination('admin_school_list', schools.total_pages, schools.current_page) }}
 {% endblock %}
