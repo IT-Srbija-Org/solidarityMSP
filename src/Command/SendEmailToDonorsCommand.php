@@ -10,6 +10,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Mailer\MailerInterface;
@@ -30,6 +31,7 @@ class SendEmailToDonorsCommand extends Command
     protected function configure(): void
     {
         $this
+            ->addOption('lastId', null, InputOption::VALUE_REQUIRED)
             ->addArgument('test-email', InputArgument::OPTIONAL, 'Email address to send test email instead of real donors');
     }
 
@@ -38,6 +40,7 @@ class SendEmailToDonorsCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->section('Command started at '.date('Y-m-d H:i:s'));
 
+        $this->lastId = $input->getOption('lastId') ? $input->getOption('lastId') : 0;
         $testEmail = $input->getArgument('test-email');
 
         if ($testEmail) {
@@ -68,7 +71,7 @@ class SendEmailToDonorsCommand extends Command
             }
 
             foreach ($items as $item) {
-                $output->writeln('Send email to: '.$item->getUser()->getEmail().' at '.date('Y-m-d H:i:s'));
+                $output->writeln('ID: '.$item->getId().' | Send email to: '.$item->getUser()->getEmail().' at '.date('Y-m-d H:i:s'));
 
                 $message = (new TemplatedEmail())
                     ->to($item->getUser()->getEmail())
@@ -76,7 +79,11 @@ class SendEmailToDonorsCommand extends Command
                     ->htmlTemplate('email/donor_new_website.html.twig')
                     ->context(['user' => $item]);
 
-                $this->mailer->send($message);
+                try {
+                    $this->mailer->send($message);
+                } catch (\Exception $exception) {
+                    $output->writeln('Send email to: '.$item->getUser()->getEmail().' at '.date('Y-m-d H:i:s').' HAS A ERROR -> '.$exception->getMessage());
+                }
             }
 
             $this->entityManager->flush();
