@@ -33,11 +33,11 @@ class InvalidAccountNumberValidator extends ConstraintValidator
 
     private function isValid(string $accountNumber): bool
     {
-        if(str_starts_with($accountNumber, '840')) {
+        if (str_starts_with($accountNumber, '840')) {
             return false;
         }
 
-        if(str_starts_with($accountNumber, '150')) {
+        if (str_starts_with($accountNumber, '150')) {
             return false;
         }
 

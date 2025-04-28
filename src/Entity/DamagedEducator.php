@@ -4,8 +4,8 @@ namespace App\Entity;
 
 use App\Repository\DamagedEducatorRepository;
 use App\Validator as CustomAssert;
-use App\Validator\Mod97;
 use App\Validator\InvalidAccountNumber;
+use App\Validator\Mod97;
 use App\Validator\MonthlyLimit;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
