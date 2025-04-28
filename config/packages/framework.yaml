@@ -7,6 +7,9 @@ framework:
     trusted_proxies: '127.0.0.1'
     trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto']
 
+    assets:
+        version: v2
+
     # Explicitly configure php_errors.log to address deprecation
     php_errors:
         log: true
