@@ -36,10 +36,11 @@ final class UserDelegateRequestController extends AbstractController
     }
 
     #[Route('/{id}', name: 'detail', requirements: ['id' => '\d+'])]
-    public function detail(UserDelegateRequest $userDelegateRequest, UserDelegateRequestRepository $userDelegateRequestRepository, int $id): Response
+    public function detail(UserDelegateRequest $userDelegateRequest, UserDelegateRequestRepository $userDelegateRequestRepository): Response
     {
+        $id = $userDelegateRequest->getId();
         $school = $userDelegateRequest->getSchool()->getId();
-        $existingDelegateRequests = $userDelegateRequestRepository->getExistingDelegateRequestsForSchool($school);
+        $existingDelegateRequests = $userDelegateRequestRepository->findBy(['school' => $school]);
         $filteredExistingDelegateRequests = array_filter($existingDelegateRequests, function ($item) use ($id) {
             return $item->getId() != $id;
         });
