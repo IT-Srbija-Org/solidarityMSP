@@ -40,13 +40,13 @@ final class UserDelegateRequestController extends AbstractController
     {
         $school = $userDelegateRequest->getSchool()->getId();
         $existingDelegateRequests = $userDelegateRequestRepository->getExistingDelegateRequestsForSchool($school);
-        $filteredExistingDelegateRequests = array_filter($existingDelegateRequests, function($item) use ($id) {
+        $filteredExistingDelegateRequests = array_filter($existingDelegateRequests, function ($item) use ($id) {
             return $item->getId() != $id;
         });
 
         return $this->render('admin/userDelegateRequest/detail.html.twig', [
             'userDelegateRequest' => $userDelegateRequest,
-            'existingDelegateRequests' => $filteredExistingDelegateRequests
+            'existingDelegateRequests' => $filteredExistingDelegateRequests,
         ]);
     }
 
