@@ -140,8 +140,8 @@ class CreateTransactionCommand extends Command
             $transaction->setAccountNumber($damagedEducator['account_number']);
 
             $transaction->setAmount($amount);
-            $donorRemainingAmount -= $amount;
-            $this->damagedEducators[$damagedEducator['id']]['remainingAmount'] -= $amount;
+            $donorRemainingAmount -= $transaction->getAmount();
+            $this->damagedEducators[$damagedEducator['id']]['remainingAmount'] -= $transaction->getAmount();
 
             $this->entityManager->persist($transaction);
             ++$totalCreated;
@@ -252,7 +252,7 @@ class CreateTransactionCommand extends Command
                 ->setParameter('dateLimit', new \DateTime('-30 days'));
         }
 
-        return (float) $qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     public function getUserDonors(): array
