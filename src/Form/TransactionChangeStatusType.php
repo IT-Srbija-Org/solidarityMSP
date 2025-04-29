@@ -20,7 +20,7 @@ class TransactionChangeStatusType extends AbstractType
                 'placeholder' => '',
                 'choices' => [
                     'Potvrđena' => Transaction::STATUS_CONFIRMED,
-                    'Otkazana' => Transaction::STATUS_CANCELLED,
+                    'Nije plaćena' => Transaction::STATUS_NOT_PAID,
                 ],
             ])
             ->add('submit', SubmitType::class, [

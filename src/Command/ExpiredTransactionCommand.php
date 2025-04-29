@@ -11,10 +11,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:cancelled-transaction',
-    description: 'Cancelled transaction after 72h',
+    name: 'app:expired-transaction',
+    description: 'Transaction automatically expired after 72 hours',
 )]
-class CancelledTransactionCommand extends Command
+class ExpiredTransactionCommand extends Command
 {
     private int $lastId = 0;
 
@@ -29,7 +29,7 @@ class CancelledTransactionCommand extends Command
         $io->section('Command started at '.date('Y-m-d H:i:s'));
 
         // Cancelled comment
-        $comment = 'Instruckija za uplatu je automatski otkazana jer je prošlo više od 72 sata.';
+        $comment = 'Instruckija za uplatu je automatski istekla jer je prošlo više od 72 sata.';
 
         while (true) {
             $items = $this->getItems();
@@ -38,9 +38,9 @@ class CancelledTransactionCommand extends Command
             }
 
             foreach ($items as $item) {
-                $io->comment('Cancelled transaction ID: '.$item->getId());
+                $io->comment('Transaction ID: '.$item->getId());
 
-                $item->setStatus(Transaction::STATUS_CANCELLED);
+                $item->setStatus(Transaction::STATUS_EXPIRED);
                 $item->setStatusComment($comment);
                 $this->entityManager->persist($item);
             }

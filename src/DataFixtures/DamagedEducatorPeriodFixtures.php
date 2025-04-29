@@ -17,13 +17,14 @@ class DamagedEducatorPeriodFixtures extends Fixture implements FixtureGroupInter
     public function load(ObjectManager $manager): void
     {
         for ($x = 5; $x >= 1; --$x) {
-            $date = date('Y-m-d', strtotime("-$x month"));
+            $days = 30 * $x;
+            $date = date('Y-m-d', strtotime("-$days days"));
             $isActive = (1 === $x);
 
             $month = date('m', strtotime($date));
             $year = date('Y', strtotime($date));
 
-            if ($month == date('m', strtotime('-2 month'))) {
+            if ($month == date('m', strtotime('-60 days'))) {
                 $this->createPeriod($month, $year, $isActive, DamagedEducatorPeriod::TYPE_FIRST_HALF);
                 $this->createPeriod($month, $year, $isActive, DamagedEducatorPeriod::TYPE_SECOND_HALF);
                 continue;

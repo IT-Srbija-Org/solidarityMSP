@@ -10,6 +10,7 @@ class Schools
             'Osnovna škola',
             'Srednja stručna škola',
             'Gimnazija',
+            'Univerzitet',
         ];
     }
 
@@ -21,6 +22,7 @@ class Schools
                 'Osnovna muzička škola Petar Konjović',
                 'Gimnazija Veljko Petrović',
                 'Druga ekonomska škola',
+                'Saobraćajni fakultet',
             ],
             'Beograd - Vračar' => [
                 'Osnovna škola Vladislav Ribnikar',

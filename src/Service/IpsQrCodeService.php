@@ -41,7 +41,7 @@ class IpsQrCodeService
             'V:'.$version,
             'C:'.$characterSet,
             'R:'.$data['bankAccountNumber'],
-            'N:'.$data['payeeName']."\r\nBB\r\n".$data['payeeCityName'],
+            'N:'.$data['payeeName']."\r\nNOTPROVIDED\r\n".$data['payeeCityName'],
             'I:RSD'.$data['amount'],
         ];
 

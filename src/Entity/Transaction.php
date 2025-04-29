@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: '`transaction`')]
 #[ORM\Index(name: 'idx_status', columns: ['status', 'created_at', 'id'])]
 #[ORM\Index(name: 'idx_damaged_educator', columns: ['damaged_educator_id', 'status'])]
+#[ORM\Index(name: 'idx_remaining_amount', columns: ['user_id', 'status', 'created_at'])]
+#[ORM\Index(name: 'idx_user_total_amount', columns: ['user_id', 'account_number', 'status', 'created_at'])]
 #[ORM\HasLifecycleCallbacks]
 class Transaction
 {
@@ -17,10 +19,14 @@ class Transaction
     public const STATUS_WAITING_CONFIRMATION = 2;
     public const STATUS_CONFIRMED = 3;
     public const STATUS_CANCELLED = 4;
+    public const STATUS_NOT_PAID = 5;
+    public const STATUS_EXPIRED = 6;
 
     public const STATUS = [
         self::STATUS_NEW => 'TransactionWaitingPayment',
         self::STATUS_WAITING_CONFIRMATION => 'TransactionWaitingConfirmation',
+        self::STATUS_EXPIRED => 'TransactionExpired',
+        self::STATUS_NOT_PAID => 'TransactionNotPaid',
         self::STATUS_CONFIRMED => 'TransactionConfirmed',
         self::STATUS_CANCELLED => 'TransactionCancelled',
     ];
@@ -212,18 +218,22 @@ class Transaction
         return self::STATUS_WAITING_CONFIRMATION === $this->status;
     }
 
-    public function isStatusCancelled(): bool
+    public function hideDetails(): bool
     {
-        return self::STATUS_CANCELLED === $this->status;
+        if (in_array($this->getStatus(), [self::STATUS_CANCELLED, self::STATUS_EXPIRED])) {
+            return true;
+        }
+
+        return false;
     }
 
     public function allowToChangeStatus(): bool
     {
-        if (self::STATUS_WAITING_CONFIRMATION == $this->getStatus()) {
+        if (in_array($this->getStatus(), [self::STATUS_EXPIRED, self::STATUS_WAITING_CONFIRMATION])) {
             return true;
         }
 
-        if ($this->getUpdatedAt()->diff(new \DateTime())->days < 10) {
+        if (in_array($this->getStatus(), [self::STATUS_CONFIRMED, self::STATUS_NOT_PAID]) && $this->getUpdatedAt()->diff(new \DateTime())->days < 7) {
             return true;
         }
 
