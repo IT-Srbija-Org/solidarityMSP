@@ -159,12 +159,12 @@ class DamagedEducatorController extends AbstractController
             $this->entityManager->beginTransaction();
 
             for ($row = 2; $row <= $totalRows; ++$row) {
-                $rowData = $worksheet->rangeToArray('A' . $row . ':' . $worksheet->getHighestColumn() . $row, null, true, false)[0];
+                $rowData = $worksheet->rangeToArray('A'.$row.':'.$worksheet->getHighestColumn().$row, null, true, false)[0];
 
                 $damagedEducator = new DamagedEducator();
                 $damagedEducator->setName($rowData[0] ?? '');
                 $damagedEducator->setAccountNumber($rowData[2] ?? '');
-                $damagedEducator->setAmount(empty($rowData[3]) ? 0 : (int)$rowData[3]);
+                $damagedEducator->setAmount(empty($rowData[3]) ? 0 : (int) $rowData[3]);
                 $damagedEducator->setSchool($school);
 
                 $cityName = $rowData[1] ?? '';
@@ -200,7 +200,7 @@ class DamagedEducatorController extends AbstractController
             }
 
             $this->entityManager->commit();
-            $this->addFlash('success', 'Uspešno ste sačuvali sve oštećene iz fajla (Ukupno: ' . $totalRows . ').');
+            $this->addFlash('success', 'Uspešno ste sačuvali sve oštećene iz fajla (Ukupno: '.$totalRows.').');
 
             return $this->redirectToRoute('delegate_damaged_educator_list', [
                 'period' => $period->getId(),

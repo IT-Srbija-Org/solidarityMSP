@@ -10,7 +10,7 @@ class Schools
             'Osnovna škola',
             'Srednja stručna škola',
             'Gimnazija',
-            'Univerzitet'
+            'Univerzitet',
         ];
     }
 
