@@ -126,21 +126,21 @@
                     <div>
                         <div class="text-sm text-gray-500">
                             <span class="ti ti-user"></span>
-                            Ostali zahtevi za delegata u ovoj školi
+                            Postojeći delegati u ovoj školi
                         </div>
                         {% if existingDelegateRequests %}
                         {% for item in existingDelegateRequests %}
                         <div>
                             <a
                                 target="_blank"
-                                href="{{ path('admin_user_delegate_request_detail', { 'id': item.id }) }}"
+                                href="{{ path('admin_user_edit', { 'id': item.user.id }) }}"
                             >
-                                {{ item.firstName }} {{ item.lastName }} {{  item.status|user_delegate_request_status|raw  }}
+                                {{ item.user.firstName }} {{ item.user.lastName }}
                             </a>
                         </div>
                         {% endfor %}
                         {% else %}
-                        Nema drugih zahteva za delegate u ovoj školi
+                        Nema postojećih delegata u ovoj školi
                         {% endif %}
                     </div>
                 </div>

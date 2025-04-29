@@ -7,6 +7,7 @@ use App\Entity\UserDelegateSchool;
 use App\Form\Admin\UserDelegateRequestEditType;
 use App\Form\Admin\UserDelegateRequestSearchType;
 use App\Repository\UserDelegateRequestRepository;
+use App\Repository\UserDelegateSchoolRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,18 +37,14 @@ final class UserDelegateRequestController extends AbstractController
     }
 
     #[Route('/{id}', name: 'detail', requirements: ['id' => '\d+'])]
-    public function detail(UserDelegateRequest $userDelegateRequest, UserDelegateRequestRepository $userDelegateRequestRepository): Response
+    public function detail(UserDelegateRequest $userDelegateRequest, UserDelegateSchoolRepository $userDelegateSchoolRepository): Response
     {
-        $id = $userDelegateRequest->getId();
         $school = $userDelegateRequest->getSchool()->getId();
-        $existingDelegateRequests = $userDelegateRequestRepository->findBy(['school' => $school]);
-        $filteredExistingDelegateRequests = array_filter($existingDelegateRequests, function ($item) use ($id) {
-            return $item->getId() != $id;
-        });
+        $existingDelegateRequests = $userDelegateSchoolRepository->findBy(['school' => $school]);
 
         return $this->render('admin/userDelegateRequest/detail.html.twig', [
             'userDelegateRequest' => $userDelegateRequest,
-            'existingDelegateRequests' => $filteredExistingDelegateRequests,
+            'existingDelegateRequests' => $existingDelegateRequests,
         ]);
     }
 
