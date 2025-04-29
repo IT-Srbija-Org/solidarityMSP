@@ -40,11 +40,11 @@ final class UserDelegateRequestController extends AbstractController
     public function detail(UserDelegateRequest $userDelegateRequest, UserDelegateSchoolRepository $userDelegateSchoolRepository): Response
     {
         $school = $userDelegateRequest->getSchool()->getId();
-        $existingDelegateRequests = $userDelegateSchoolRepository->findBy(['school' => $school]);
+        $existingDelegates = $userDelegateSchoolRepository->findBy(['school' => $school]);
 
         return $this->render('admin/userDelegateRequest/detail.html.twig', [
             'userDelegateRequest' => $userDelegateRequest,
-            'existingDelegateRequests' => $existingDelegateRequests,
+            'existingDelegates' => $existingDelegates,
         ]);
     }
 
