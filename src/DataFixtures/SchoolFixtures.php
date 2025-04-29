@@ -27,6 +27,10 @@ class SchoolFixtures extends Fixture implements FixtureGroupInterface
             return 'Gimnazija';
         }
 
+        if (str_contains($schoolName, 'fakultet')) {
+            return 'Univerzitet';
+        }
+
         return 'Srednja stručna škola';
     }
 

@@ -66,8 +66,8 @@ class SchoolRepositoryTest extends KernelTestCase
         $this->assertArrayHasKey('current_page', $result);
         $this->assertArrayHasKey('total_pages', $result);
 
-        // Test the total count is 16 (from school fixtures)
-        $this->assertEquals(16, $result['total']);
+        // Test the total count is 17 (from school fixtures)
+        $this->assertEquals(17, $result['total']);
 
         // Test search with name criteria
         $result = $schoolRepository->search(['name' => 'Medicinska']);
@@ -94,9 +94,9 @@ class SchoolRepositoryTest extends KernelTestCase
         // Test pagination
         $result = $schoolRepository->search([], 1, 1);   // Page 1, limit 1
         $this->assertEquals(1, count($result['items'])); // 1 item per page
-        $this->assertEquals(16, $result['total']);       // 16 schools total
+        $this->assertEquals(17, $result['total']);       // 17 schools total
         $this->assertEquals(1, $result['current_page']); // Current page is 1
-        $this->assertEquals(16, $result['total_pages']); // 16 pages total (16 items with 1 per page)
+        $this->assertEquals(17, $result['total_pages']); // 17 pages total (17 items with 1 per page)
     }
 
     protected function tearDown(): void

@@ -27,13 +27,6 @@
 
             {{ include('flashes.html.twig') }}
 
-            {% if hasCancelledTransactions %}
-                <div class="alert alert-info alert-soft mb-4">
-                    <span class="ti ti-info-circle text-2xl"></span>
-                    Neke od instrukcija za uplatu su otkazane. Do otkazivanja može doći ukoliko je administrator (ili delegat) poništio instrukciju, ili ako je prošlo više od 72 sata bez potvrde donatora da je uplata izvršena. Ukoliko je oštećeni primio uplatu, a instrukcija za uplatu je u međuvremenu otkazana, potrebno je da promenite njen status u „Potvrđeno“. Ako oštećeni nije primio uplatu, sistem će uskoro poslati novu instrukciju donatorima.
-                </div>
-            {% endif %}
-
             <div class="overflow-x-auto">
                 <div class="flex justify-between items-center mb-4">
                     <div class="text-gray-500">

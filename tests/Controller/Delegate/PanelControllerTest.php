@@ -189,7 +189,7 @@ class PanelControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="damaged_educator_edit"]')->form([
             'damaged_educator_edit[name]' => 'Milan Janjic',
             'damaged_educator_edit[school]' => $userDelegateSchool->getSchool()->getId(),
-            'damaged_educator_edit[amount]' => 100000,
+            'damaged_educator_edit[amount]' => 50000,
             'damaged_educator_edit[accountNumber]' => '265104031000361092',
         ]);
 
@@ -201,7 +201,7 @@ class PanelControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $damagedEducator = $this->damagedEducatorRepository->findOneBy(['accountNumber' => '265104031000361092']);
-        $this->assertEquals($damagedEducator->getAmount(), 100000);
+        $this->assertEquals($damagedEducator->getAmount(), 50000);
     }
 
     public function testDeleteDamagedEducatorForm(): void

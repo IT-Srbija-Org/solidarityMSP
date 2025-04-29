@@ -26,8 +26,15 @@
                 {% if hasCancelledTransactions %}
                     <div class="alert alert-info alert-soft">
                         <span class="ti ti-info-circle text-2xl"></span>
-                        Neke od vaših instrukcija za uplatu su otkazane. Do otkazivanja može doći ako je administrator poništio instrukciju ili je prošlo više od 72 sata bez prilaganja potvrde o uplati. Biće vam prosleđena nova instrukcija za uplatu uskoro.
-                        Ukoliko ste ipak izvršili uplatu, nema razloga za brigu, administrator će proveriti sve instrukcije svakako i ukoliko je plaćena status će joj biti promenjen.
+                        Neke od vaših instrukcija za uplatu su otkazane. Do otkazivanja može doći ako je administrator poništio instrukciju. Nemojte da britene, ovo je normalna korekcija koja se može desiti. Biće vam prosleđena nova instrukcija za uplatu uskoro.
+                    </div>
+                {% endif %}
+
+                {% if hasExpiredTransactions %}
+                    <div class="alert alert-info alert-soft">
+                        <span class="ti ti-info-circle text-2xl"></span>
+                        Neke od vaših instrukcija za uplatu su istekle. Do isteka instrukcija za uplatu dolazi kada prođe više od 72 sata bez potvrde donatora da je uplata izvršena.
+                        Ukoliko ste ipak izvršili uplatu bez da ste je potvrdili, nema razloga za brigu, administrator će proveriti sve instrukcije i ukoliko je plaćena status će joj biti promenjen.
                     </div>
                 {% endif %}
 
@@ -69,21 +76,21 @@
                             <tr class="hover:bg-gray-100">
                                 <td>{{ transaction.id }}</td>
                                 <td>
-                                    {% if transaction.isStatusCancelled %}
+                                    {% if transaction.hideDetails %}
                                         <span class="text-gray-500 tracking-widest">{{ transaction.damagedEducator.name|mask }}</span>
                                     {% else %}
                                         {{ transaction.damagedEducator.name }}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if transaction.isStatusCancelled %}
+                                    {% if transaction.hideDetails %}
                                         <div class="text-gray-500 tracking-widest">{{ transaction.damagedEducator.city.name|mask }}</div>
                                     {% else %}
                                         <div>{{ transaction.damagedEducator.city.name }}</div>
                                     {% endif %}
                                 </td>
                                 <td class="whitespace-nowrap">
-                                    {% if transaction.isStatusCancelled %}
+                                    {% if transaction.hideDetails %}
                                         <span class="text-gray-500 tracking-widest">{{ transaction.accountNumber|mask }}</span>
                                     {% else %}
                                         {{ transaction.accountNumber|account_number_format }}
