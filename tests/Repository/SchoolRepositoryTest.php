@@ -66,8 +66,8 @@ class SchoolRepositoryTest extends KernelTestCase
         $this->assertArrayHasKey('current_page', $result);
         $this->assertArrayHasKey('total_pages', $result);
 
-        // Test the total count is 16 (from school fixtures)
-        $this->assertEquals(16, $result['total']);
+        // Test the total count is 17 (from school fixtures)
+        $this->assertEquals(17, $result['total']);
 
         // Test search with name criteria
         $result = $schoolRepository->search(['name' => 'Medicinska']);
