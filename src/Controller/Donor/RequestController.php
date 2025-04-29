@@ -51,7 +51,7 @@ class RequestController extends AbstractController
             $user = $userRepository->findOneBy(['email' => $email]);
             if ($user) {
                 $form->get('email')->addError(new FormError('Korisnik sa ovom email adresom vec postoji, molimo Vas da se ulogujete i da nastavite proces.'));
-                $userRepository->sendLoginLink($user);
+                $userRepository->sendLoginLink($user, $email);
             } else {
                 $user = $userRepository->createUser(null, null, $email);
                 $userRepository->sendVerificationLink($user, 'donor');
