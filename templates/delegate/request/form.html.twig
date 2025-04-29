@@ -110,7 +110,9 @@
 
     <script>
         $(function(){
-            bindSchool();
+            bindSchool('registration_delegate_city', 'registration_delegate_school', {
+                emptyLabel: 'Izaberite školu',
+            });
         });
     </script>
 {% endblock %}

@@ -80,3 +80,13 @@
     {% import "macro.html.twig" as macro %}
     {{ macro.pagination('admin_transaction_list', transactions.total_pages, transactions.current_page) }}
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $(function(){
+            bindSchool('city', 'school');
+        });
+    </script>
+{% endblock %}

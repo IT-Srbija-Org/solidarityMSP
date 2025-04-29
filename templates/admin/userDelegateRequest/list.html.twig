@@ -82,3 +82,13 @@
     {% import "macro.html.twig" as macro %}
     {{ macro.pagination('admin_user_delegate_request_list', userDelegateRequests.total_pages, userDelegateRequests.current_page) }}
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $(function(){
+            bindSchool('city', 'school');
+        });
+    </script>
+{% endblock %}

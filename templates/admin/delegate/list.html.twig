@@ -60,3 +60,13 @@
     {% import "macro.html.twig" as macro %}
     {{ macro.pagination('admin_delegate_list', delegates.total_pages, delegates.current_page) }}
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $(function(){
+            bindSchool('city', 'school');
+        });
+    </script>
+{% endblock %}
