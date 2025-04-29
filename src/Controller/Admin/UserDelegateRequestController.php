@@ -39,7 +39,7 @@ final class UserDelegateRequestController extends AbstractController
     public function detail(UserDelegateRequest $userDelegateRequest, UserDelegateRequestRepository $userDelegateRequestRepository, int $id): Response
     {
         $school = $userDelegateRequest->getSchool()->getId();
-        $existingDelegateRequests = $userDelegateRequestRepository->getExistingDelegatesForSchool($school);
+        $existingDelegateRequests = $userDelegateRequestRepository->getExistingDelegateRequestsForSchool($school);
         $filteredExistingDelegateRequests = array_filter($existingDelegateRequests, function($item) use ($id) {
             return $item->getId() != $id;
         });

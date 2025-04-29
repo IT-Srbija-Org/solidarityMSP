@@ -102,7 +102,7 @@ class UserDelegateRequestRepository extends ServiceEntityRepository
         ];
     }
 
-    public function getExistingDelegatesForSchool(int $school): array
+    public function getExistingDelegateRequestsForSchool(int $school): array
     {
         $query = $this->createQueryBuilder('udr')
                         ->select('udr')
