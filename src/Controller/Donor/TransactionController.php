@@ -38,9 +38,15 @@ class TransactionController extends AbstractController
             'status' => Transaction::STATUS_CANCELLED,
         ]);
 
+        $hasExpiredTransactions = (bool) $transactionRepository->count([
+            'user' => $this->getUser(),
+            'status' => Transaction::STATUS_EXPIRED,
+        ]);
+
         return $this->render('donor/transaction/list.html.twig', [
             'transactions' => $transactionRepository->search($criteria, $page),
             'hasCancelledTransactions' => $hasCancelledTransactions,
+            'hasExpiredTransactions' => $hasExpiredTransactions,
         ]);
     }
 

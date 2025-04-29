@@ -1,0 +1,14 @@
+{% extends 'base_email.html.twig' %}
+
+{% block body %}
+    <p>Zdravo,</p>
+
+    <div>stigle su vam nove instrukcije za uplatu za nastavnike</div>
+    <div>Da biste ih videli, potrebno je da se prijavite na svoj nalog:</div>
+
+    <div style="margin-top: 20px; margin-bottom: 30px;">
+        <a href="https://mrezasolidarnosti.org{{ path('donor_transaction_list') }}" id="link" style="padding: 8px;border-radius: 8px;background: #06C;text-decoration: none;color: #FFF;font-weight: 700;">Pristupi nalogu</a>
+    </div>
+
+    <div>Hvala vam što ste deo naše zajednice i što zajedno čuvamo obrazovanje! ✊</div>
+{% endblock %}

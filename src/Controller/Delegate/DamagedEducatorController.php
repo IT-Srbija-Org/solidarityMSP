@@ -326,15 +326,9 @@ class DamagedEducatorController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $hasCancelledTransactions = (bool) $transactionRepository->count([
-            'damagedEducator' => $damagedEducator,
-            'status' => Transaction::STATUS_CANCELLED,
-        ]);
-
         return $this->render('delegate/damagedEducator/transactions.html.twig', [
             'damagedEducator' => $damagedEducator,
             'transactions' => $transactionRepository->findBy(['damagedEducator' => $damagedEducator]),
-            'hasCancelledTransactions' => $hasCancelledTransactions,
         ]);
     }
 

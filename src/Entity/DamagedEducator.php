@@ -15,6 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DamagedEducatorRepository::class)]
 #[ORM\Index(name: 'idx_period', columns: ['period_id', 'school_id', 'account_number'])]
+#[ORM\Index(name: 'idx_create_transaction', columns: ['period_id', 'status'])]
 #[CustomAssert\DuplicateDamagedEducator]
 #[MonthlyLimit]
 #[ORM\HasLifecycleCallbacks]
