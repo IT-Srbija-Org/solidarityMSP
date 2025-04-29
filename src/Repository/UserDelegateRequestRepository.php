@@ -101,4 +101,14 @@ class UserDelegateRequestRepository extends ServiceEntityRepository
             'total_pages' => 1,
         ];
     }
+
+    public function getExistingDelegatesForSchool(int $school): array
+    {
+        $query = $this->createQueryBuilder('udr')
+                        ->select('udr')
+                        ->andWhere('udr.school = :school')
+                        ->setParameter('school', $school);
+
+        return $query->getQuery()->getResult();
+    }
 }

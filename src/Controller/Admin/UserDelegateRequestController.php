@@ -36,10 +36,17 @@ final class UserDelegateRequestController extends AbstractController
     }
 
     #[Route('/{id}', name: 'detail', requirements: ['id' => '\d+'])]
-    public function detail(UserDelegateRequest $userDelegateRequest): Response
+    public function detail(UserDelegateRequest $userDelegateRequest, UserDelegateRequestRepository $userDelegateRequestRepository, int $id): Response
     {
+        $school = $userDelegateRequest->getSchool()->getId();
+        $existingDelegateRequests = $userDelegateRequestRepository->getExistingDelegatesForSchool($school);
+        $filteredExistingDelegateRequests = array_filter($existingDelegateRequests, function($item) use ($id) {
+            return $item->getId() != $id;
+        });
+
         return $this->render('admin/userDelegateRequest/detail.html.twig', [
             'userDelegateRequest' => $userDelegateRequest,
+            'existingDelegateRequests' => $filteredExistingDelegateRequests
         ]);
     }
 
