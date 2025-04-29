@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\School;
+use App\Entity\UserDelegateRequest;
 use App\Entity\UserDelegateSchool;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -21,10 +22,10 @@ class UserDelegateSchoolFixtures extends Fixture implements FixtureGroupInterfac
         mt_srand(1234);
 
         // Get all delegates with confirmed delegate requests
-        $confirmedRequests = $this->entityManager->getRepository(\App\Entity\UserDelegateRequest::class)
+        $confirmedRequests = $this->entityManager->getRepository(UserDelegateRequest::class)
             ->createQueryBuilder('r')
             ->where('r.status = :status')
-            ->setParameter('status', \App\Entity\UserDelegateRequest::STATUS_CONFIRMED)
+            ->setParameter('status', UserDelegateRequest::STATUS_CONFIRMED)
             ->getQuery()
             ->getResult();
 

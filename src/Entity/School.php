@@ -155,4 +155,13 @@ class School
     {
         return $this->userDelegateRequests;
     }
+
+    public function showImport(): bool
+    {
+        if (preg_match('/Univerzitet|Akademija/i', $this->getType()->getName())) {
+            return true;
+        }
+
+        return false;
+    }
 }

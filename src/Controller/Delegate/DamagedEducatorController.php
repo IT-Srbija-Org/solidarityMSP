@@ -69,8 +69,14 @@ class DamagedEducatorController extends AbstractController
         $user = $this->getUser();
 
         $criteria['schools'] = [];
+        $showImport = false;
+
         foreach ($user->getUserDelegateSchools() as $delegateSchool) {
             $criteria['schools'][] = $delegateSchool->getSchool()->getId();
+
+            if ($delegateSchool->getSchool()->showImport()) {
+                $showImport = true;
+            }
         }
 
         $criteria['period'] = $period;
@@ -78,6 +84,7 @@ class DamagedEducatorController extends AbstractController
 
         return $this->render('delegate/damagedEducator/list.html.twig', [
             'damagedEducators' => $damagedEducatorRepository->search($criteria, $page),
+            'showImport' => $showImport,
             'period' => $period,
             'form' => $form->createView(),
         ]);
@@ -151,13 +158,13 @@ class DamagedEducatorController extends AbstractController
             $errors = [];
             $this->entityManager->beginTransaction();
 
-            for ($row = 1; $row <= $totalRows; ++$row) {
-                $rowData = $worksheet->rangeToArray('A'.$row.':'.$worksheet->getHighestColumn().$row, null, true, false)[0];
+            for ($row = 2; $row <= $totalRows; ++$row) {
+                $rowData = $worksheet->rangeToArray('A' . $row . ':' . $worksheet->getHighestColumn() . $row, null, true, false)[0];
 
                 $damagedEducator = new DamagedEducator();
                 $damagedEducator->setName($rowData[0] ?? '');
                 $damagedEducator->setAccountNumber($rowData[2] ?? '');
-                $damagedEducator->setAmount(empty($rowData[3]) ? 0 : (int) $rowData[3]);
+                $damagedEducator->setAmount(empty($rowData[3]) ? 0 : (int)$rowData[3]);
                 $damagedEducator->setSchool($school);
 
                 $cityName = $rowData[1] ?? '';
@@ -193,7 +200,7 @@ class DamagedEducatorController extends AbstractController
             }
 
             $this->entityManager->commit();
-            $this->addFlash('success', 'Uspešno ste sačuvali sve oštećene iz fajla (Ukupno: '.$totalRows.').');
+            $this->addFlash('success', 'Uspešno ste sačuvali sve oštećene iz fajla (Ukupno: ' . $totalRows . ').');
 
             return $this->redirectToRoute('delegate_damaged_educator_list', [
                 'period' => $period->getId(),
