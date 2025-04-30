@@ -129,18 +129,15 @@
                             Postojeći delegati u ovoj školi
                         </div>
                         {% if existingDelegates %}
-                        {% for item in existingDelegates %}
-                        <div>
-                            <a
-                                target="_blank"
-                                href="{{ path('admin_user_edit', { 'id': item.user.id }) }}"
-                            >
-                                {{ item.user.firstName }} {{ item.user.lastName }}
-                            </a>
-                        </div>
-                        {% endfor %}
+                            {% for item in existingDelegates %}
+                                <div>
+                                    <a target="_blank" href="{{ path('admin_user_edit', { 'id': item.user.id }) }}">
+                                        {{ item.user.firstName }} {{ item.user.lastName }}
+                                    </a>
+                                </div>
+                            {% endfor %}
                         {% else %}
-                        Nema postojećih delegata u ovoj školi
+                            Nema postojećih delegata u ovoj školi
                         {% endif %}
                     </div>
                 </div>
