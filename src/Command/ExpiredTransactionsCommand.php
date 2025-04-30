@@ -3,7 +3,6 @@
 namespace App\Command;
 
 use App\Entity\Transaction;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -36,7 +35,7 @@ class ExpiredTransactionsCommand extends Command
         }
 
         $io = new SymfonyStyle($input, $output);
-        $io->section('Command started at ' . date('Y-m-d H:i:s'));
+        $io->section('Command started at '.date('Y-m-d H:i:s'));
 
         // Cancelled comment
         $comment = 'Instruckija za uplatu je automatski istekla jer je prošlo više od 72 sata.';
@@ -48,7 +47,7 @@ class ExpiredTransactionsCommand extends Command
             }
 
             foreach ($transactions as $transaction) {
-                $io->comment('Transaction ID: ' . $transaction->getId());
+                $io->comment('Transaction ID: '.$transaction->getId());
                 $status = Transaction::STATUS_EXPIRED;
 
                 $user = $transaction->getUser();
@@ -64,7 +63,7 @@ class ExpiredTransactionsCommand extends Command
             $this->entityManager->flush();
         }
 
-        $io->success('Command finished at ' . date('Y-m-d H:i:s'));
+        $io->success('Command finished at '.date('Y-m-d H:i:s'));
 
         return Command::SUCCESS;
     }
