@@ -9,7 +9,7 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final class LastVisitListener
+final class LogLastVisitListener
 {
     public function __construct(private Security $security, private EntityManagerInterface $entityManager)
     {
