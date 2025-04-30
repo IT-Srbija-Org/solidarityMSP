@@ -4,12 +4,12 @@
     <div class="space-y-4">
         <div>
             <span class="ti ti-user-heart text-xl relative top-0.5"></span>
-            Ukupno donatora: <span class="font-bold">{{ totalDonors }}</span>
+            Ukupno donatora: <span class="font-bold">{{ totalDonors|number_format }}</span>
         </div>
 
         <div>
             <span class="ti ti-user-heart text-xl relative top-0.5"></span>
-            Ukupno donatora (mesečni donatori): <span class="font-bold">{{ totalMonthlyDonors }}</span>
+            Ukupno donatora (mesečni donatori): <span class="font-bold">{{ totalMonthlyDonors|number_format }}</span>
         </div>
 
         <div>
@@ -19,12 +19,12 @@
 
         <div>
             <span class="ti ti-user-cog text-xl relative top-0.5"></span>
-            Ukupno delegata: <span class="font-bold">{{ totalDelegate }}</span>
+            Ukupno delegata: <span class="font-bold">{{ totalDelegate|number_format }}</span>
         </div>
 
         <div>
             <span class="ti ti-building text-xl relative top-0.5"></span>
-            Ukupno škola (koje imaju delegata): <span class="font-bold">{{ totalActiveSchools }}</span>
+            Ukupno škola (koje imaju delegata): <span class="font-bold">{{ totalActiveSchools|number_format }}</span>
         </div>
 
         <div>
@@ -56,7 +56,7 @@
             {% for period in periodItems %}
                 <tr class="hover:bg-gray-100">
                     <td>{{ period.entity|format_period }}</td>
-                    <td>{{ period.totalDamagedEducators }}</td>
+                    <td>{{ period.totalDamagedEducators|number_format }}</td>
                     <td>{{ period.sumAmountDamagedEducators|number_format }}</td>
                     <td>{{ period.sumAmountConfirmedTransactions|number_format }}</td>
                 </tr>
