@@ -132,7 +132,7 @@
                             {% for item in existingDelegates %}
                                 <div>
                                     <a target="_blank" href="{{ path('admin_user_edit', { 'id': item.user.id }) }}">
-                                        {{ item.user.firstName }} {{ item.user.lastName }}
+                                        {{ item.user.fullName }}
                                     </a>
                                 </div>
                             {% endfor %}
