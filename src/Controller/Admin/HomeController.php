@@ -2,10 +2,8 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\City;
 use App\Entity\DamagedEducator;
 use App\Entity\DamagedEducatorPeriod;
-use App\Entity\School;
 use App\Entity\Transaction;
 use App\Entity\User;
 use App\Entity\UserDelegateSchool;
@@ -29,7 +27,6 @@ final class HomeController extends AbstractController
             ->andWhere('u.isEmailVerified = 1')
             ->getQuery()
             ->getSingleScalarResult();
-
 
         $qb = $entityManager->createQueryBuilder();
         $totalMonthlyDonors = $qb->select('COUNT(ud.id)')
@@ -79,8 +76,7 @@ final class HomeController extends AbstractController
         $period = $entityManager->getRepository(DamagedEducatorPeriod::class)->findAll();
         $periodItems = [];
 
-        foreach($period as $pData) {
-
+        foreach ($period as $pData) {
             $qb = $entityManager->createQueryBuilder();
             $sumAmountDamagedEducators = $qb->select('SUM(de.amount)')
                 ->from(DamagedEducator::class, 'de')
@@ -104,7 +100,7 @@ final class HomeController extends AbstractController
                 'entity' => $pData,
                 'totalDamagedEducators' => $entityManager->getRepository(DamagedEducator::class)->count(['period' => $pData]),
                 'sumAmountDamagedEducators' => $sumAmountDamagedEducators,
-                'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions
+                'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
             ];
         }
 
@@ -116,7 +112,7 @@ final class HomeController extends AbstractController
             'totalActiveSchools' => $totalActiveSchools,
             'totalUsers' => $entityManager->getRepository(User::class)->count(['isActive' => 1, 'isEmailVerified' => 1]),
             'totalAdmins' => $totalAdmins,
-            'periodItems' => $periodItems
+            'periodItems' => $periodItems,
         ]);
     }
 }

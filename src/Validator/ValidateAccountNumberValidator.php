@@ -41,7 +41,7 @@ class ValidateAccountNumberValidator extends ConstraintValidator
             return false;
         }
 
-        if(!$this->validateAccountNumber($accountNumber)) {
+        if (!$this->validateAccountNumber($accountNumber)) {
             return false;
         }
 

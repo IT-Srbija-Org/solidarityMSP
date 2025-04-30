@@ -56,6 +56,7 @@ class SecurityController extends AbstractController
         }
 
         $email = $request->query->get('email', $authenticationUtils->getLastUsername());
+
         return $this->render('security/login.html.twig', [
             'email' => $email,
         ]);
