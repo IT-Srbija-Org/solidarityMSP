@@ -31,9 +31,11 @@ final class CityController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+        $sort = $request->query->get('sort', 'id');
+        $direction = $request->query->get('direction', 'asc');
 
         return $this->render('admin/city/list.html.twig', [
-            'cities' => $cityRepository->search($criteria, $page),
+            'cities' => $cityRepository->search($criteria, $page, 50, $sort, $direction),
             'form' => $form->createView(),
         ]);
     }

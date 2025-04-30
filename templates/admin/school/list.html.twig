@@ -19,17 +19,28 @@
         </div>
 
         <table class="table rounded-xl border border-base-200">
+            {% set current_sort = app.request.get('sort', 'id') %}
+            {% set current_direction = app.request.get('direction', 'asc') %}
+            {% set reverse_direction = current_direction == 'asc' ? 'desc' : 'asc' %}
             <thead class="bg-gray-100">
                 <tr>
                     <th>ID</th>
-                    <th>Naziv</th>
                     <th>
-                        <span class="ti ti-building-community text-xl"></span>
-                        Grad
+                        <a href="{{ path('admin_school_list', { sort: 'name', direction: current_sort == 'name' ? reverse_direction : 'asc' }) }}">
+                            Naziv {{ include('sort.html.twig', { 'sort': 'name', 'current_sort': current_sort, 'current_direction': current_direction }) }}
+                        </a>
                     </th>
                     <th>
-                        <span class="ti ti-building-cog text-xl"></span>
-                        Tip škole
+                        <a href="{{ path('admin_school_list', { sort: 'cityName', direction: current_sort == 'cityName' ? reverse_direction : 'asc' }) }}">
+                            <span class="ti ti-building-community text-xl"></span>
+                            Grad {{ include('sort.html.twig', { 'sort': 'cityName', 'current_sort': current_sort, 'current_direction': current_direction }) }}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ path('admin_school_list', { sort: 'typeName', direction: current_sort == 'typeName' ? reverse_direction : 'asc' }) }}">
+                            <span class="ti ti-building-cog text-xl"></span>
+                            Tip škole {{ include('sort.html.twig', { 'sort': 'typeName', 'current_sort': current_sort, 'current_direction': current_direction }) }}
+                        </a>
                     </th>
                     <th>
                         <span class="ti ti-calendar-event text-xl"></span>

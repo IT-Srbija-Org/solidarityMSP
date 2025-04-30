@@ -17,8 +17,19 @@ class CityRepository extends ServiceEntityRepository
         parent::__construct($registry, City::class);
     }
 
-    public function search(array $criteria, int $page = 1, int $limit = 50): array
+    public function search(array $criteria, int $page = 1, int $limit = 50, string $sort = 'id', string $direction = 'ASC'): array
     {
+        $allowedSorts = ['id', 'name'];
+        $allowedDirections = ['ASC', 'DESC'];
+
+        if (!in_array($sort, $allowedSorts, true)) {
+            $sort = 'id';
+        }
+
+        if (!in_array(strtoupper($direction), $allowedDirections, true)) {
+            $direction = 'ASC';
+        }
+
         $qb = $this->createQueryBuilder('c');
 
         if (!empty($criteria['name'])) {
@@ -27,7 +38,7 @@ class CityRepository extends ServiceEntityRepository
         }
 
         // Set the sorting
-        $qb->orderBy('c.id', 'ASC');
+        $qb->orderBy('c.'.$sort, $direction);
 
         // Apply pagination only if $limit is set and greater than 0
         if ($limit && $limit > 0) {

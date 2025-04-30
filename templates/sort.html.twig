@@ -1,0 +1,8 @@
+{% if current_sort == sort %}
+    {{ current_direction == 'asc'
+    ? '<span class="ti ti-arrow-narrow-up"></span>'
+    : '<span class="ti ti-arrow-narrow-down"></span>'
+    | raw }}
+{% else %}
+    <span class="ti ti-arrows-sort"></span>
+{% endif %}

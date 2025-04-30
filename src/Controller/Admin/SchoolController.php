@@ -31,9 +31,11 @@ final class SchoolController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+        $sort = $request->query->get('sort', 'id');
+        $direction = $request->query->get('direction', 'asc');
 
         return $this->render('admin/school/list.html.twig', [
-            'schools' => $schoolRepository->search($criteria, $page),
+            'schools' => $schoolRepository->search($criteria, $page, 50, $sort, $direction),
             'form' => $form->createView(),
         ]);
     }
