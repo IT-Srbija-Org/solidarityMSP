@@ -1,8 +1,4 @@
 {% extends 'base.html.twig' %}
-{% block stylesheets %}
-    {{ parent() }}
-    <link href="{{ asset('stylesheet/select2.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
 
 {% block title %}Admin panel | Mreža Solidarnosti{% endblock %}
 {% block navbar %}{% endblock %}
@@ -120,9 +116,4 @@
             </ul>
         </div>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('javascript/select2.full.min.js') }}"></script>
 {% endblock %}

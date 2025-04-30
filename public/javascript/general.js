@@ -10,7 +10,7 @@
     function initSelect2() {
         var select = $( '.select2-item' );
 
-        if ( select.length ) {
+        if ( select.length && typeof select.select2 === 'function' ) {
             select.select2();
         }
     }
@@ -37,5 +37,7 @@
             }
         );
     }
+
+    window.bindSchool = bindSchool;
 
 })( jQuery );

@@ -41,6 +41,7 @@
         <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.12" rel="stylesheet" type="text/css" />
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.2"></script>
         <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('stylesheet/select2.min.css') }}" rel="stylesheet" type="text/css" />
 
         {% if UMAMI_TRACKING_ID is not empty %}
             <script defer src="https://stats.uikraft.com/script.js" data-website-id="{{ UMAMI_TRACKING_ID }}"></script>
@@ -90,6 +91,7 @@
         {% endblock %}
 
         <script src="{{ asset('javascript/jquery.min.js') }}"></script>
+        <script src="{{ asset('javascript/select2.full.min.js') }}"></script>
         <script src="{{ asset('javascript/general.js') }}"></script>
         {% block javascripts %}{% endblock %}
     </body>
