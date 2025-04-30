@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Transaction;
 use App\Entity\User;
 use App\Entity\UserDonor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -43,17 +44,17 @@ class UserDonorRepository extends ServiceEntityRepository
 
         if (!empty($criteria['firstName'])) {
             $qb->andWhere('u.firstName LIKE :firstName')
-                ->setParameter('firstName', '%'.$criteria['firstName'].'%');
+                ->setParameter('firstName', '%' . $criteria['firstName'] . '%');
         }
 
         if (!empty($criteria['lastName'])) {
             $qb->andWhere('u.lastName LIKE :lastName')
-                ->setParameter('lastName', '%'.$criteria['lastName'].'%');
+                ->setParameter('lastName', '%' . $criteria['lastName'] . '%');
         }
 
         if (!empty($criteria['email'])) {
             $qb->andWhere('u.email LIKE :email')
-                ->setParameter('email', '%'.$criteria['email'].'%');
+                ->setParameter('email', '%' . $criteria['email'] . '%');
         }
 
         // Set the sorting
@@ -75,7 +76,7 @@ class UserDonorRepository extends ServiceEntityRepository
                 'items' => iterator_to_array($paginator),
                 'total' => count($paginator),
                 'current_page' => $page,
-                'total_pages' => (int) ceil(count($paginator) / $limit),
+                'total_pages' => (int)ceil(count($paginator) / $limit),
             ];
         }
 
@@ -85,5 +86,60 @@ class UserDonorRepository extends ServiceEntityRepository
             'current_page' => 1,
             'total_pages' => 1,
         ];
+    }
+
+    public function unsubscribe(UserDonor $userDonor): void
+    {
+        $transactions = $this->getEntityManager()->getRepository(Transaction::class)->findBy([
+            'user' => $userDonor->getUser(),
+            'status' => Transaction::STATUS_NEW,
+        ]);
+
+        foreach ($transactions as $transaction) {
+            $transaction->setStatus(Transaction::STATUS_CANCELLED);
+            $transaction->setStatusComment('Instruckija za uplatu je automatski otkazana pošto se donator odjavio sa liste donatora.');
+            $this->getEntityManager()->persist($transaction);
+        }
+
+        $this->getEntityManager()->remove($userDonor);
+        $this->getEntityManager()->flush();
+    }
+
+    public function getTotal(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        return $qb->select('COUNT(ud.id)')
+            ->from(UserDonor::class, 'ud')
+            ->innerJoin('ud.user', 'u')
+            ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getTotalMonthly(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        return $qb->select('COUNT(ud.id)')
+            ->from(UserDonor::class, 'ud')
+            ->innerJoin('ud.user', 'u')
+            ->andWhere('ud.isMonthly = 1')
+            ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function sumAmountMonthlyDonors(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        return $qb->select('SUM(ud.amount)')
+            ->from(UserDonor::class, 'ud')
+            ->innerJoin('ud.user', 'u')
+            ->andWhere('ud.isMonthly = 1')
+            ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

@@ -58,7 +58,7 @@ final class DonorController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete')]
-    public function delete(Request $request, EntityManagerInterface $entityManager, UserDonor $userDonor): Response
+    public function delete(Request $request, UserDonorRepository $userDonorRepository, UserDonor $userDonor): Response
     {
         $form = $this->createForm(ConfirmType::class, null, [
             'message' => 'Potvrđujem da želim da obrišem donatora',
@@ -68,8 +68,7 @@ final class DonorController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->remove($userDonor);
-            $entityManager->flush();
+            $userDonorRepository->unsubscribe($userDonor);
 
             $this->addFlash('success', 'Uspešno ste obrišali donatora');
 

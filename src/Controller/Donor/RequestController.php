@@ -92,7 +92,7 @@ class RequestController extends AbstractController
 
     #[IsGranted('ROLE_USER')]
     #[Route('/odjava-donatora', name: 'unsubscribe')]
-    public function unsubscribe(Request $request): Response
+    public function unsubscribe(Request $request, UserDonorRepository $userDonorRepository): Response
     {
         if (!$this->isCsrfTokenValid('unsubscribe', $request->query->get('_token'))) {
             throw $this->createAccessDeniedException();
@@ -103,8 +103,7 @@ class RequestController extends AbstractController
         $userDonor = $user->getUserDonor();
 
         if ($userDonor) {
-            $this->entityManager->remove($userDonor);
-            $this->entityManager->flush();
+            $userDonorRepository->unsubscribe($userDonor);
         }
 
         $this->addFlash('success', 'Uspešno ste se odjavili sa liste donora');

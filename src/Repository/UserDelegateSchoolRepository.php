@@ -15,4 +15,13 @@ class UserDelegateSchoolRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, UserDelegateSchool::class);
     }
+
+    public function getTotalActiveSchools(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        return $qb->select('COUNT(DISTINCT uds.school)')
+            ->from(UserDelegateSchool::class, 'uds')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

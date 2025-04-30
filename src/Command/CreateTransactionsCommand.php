@@ -18,10 +18,10 @@ use Symfony\Component\Lock\Store\FlockStore;
 use Symfony\Component\Mailer\MailerInterface;
 
 #[AsCommand(
-    name: 'app:create-transaction',
+    name: 'app:create-transactions',
     description: 'Create transaction for donors',
 )]
-class CreateTransactionCommand extends Command
+class CreateTransactionsCommand extends Command
 {
     private const MIN_DONATION_AMOUNT = 500;
     private const MAX_YEAR_DONATION_AMOUNT = 30000;

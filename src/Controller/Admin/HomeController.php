@@ -19,59 +19,16 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        $qb = $entityManager->createQueryBuilder();
-        $totalDonors = $qb->select('COUNT(ud.id)')
-            ->from(UserDonor::class, 'ud')
-            ->innerJoin('ud.user', 'u')
-            ->andWhere('u.isActive = 1')
-            ->andWhere('u.isEmailVerified = 1')
-            ->getQuery()
-            ->getSingleScalarResult();
+        $userDonorRepository = $entityManager->getRepository(UserDonor::class);
+        $userRepository = $entityManager->getRepository(User::class);
+        $userDelegateSchoolRepository = $entityManager->getRepository(UserDelegateSchool::class);
 
-        $qb = $entityManager->createQueryBuilder();
-        $totalMonthlyDonors = $qb->select('COUNT(ud.id)')
-            ->from(UserDonor::class, 'ud')
-            ->innerJoin('ud.user', 'u')
-            ->andWhere('ud.isMonthly = 1')
-            ->andWhere('u.isActive = 1')
-            ->andWhere('u.isEmailVerified = 1')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $qb = $entityManager->createQueryBuilder();
-        $sumAmountMonthlyDonors = $qb->select('SUM(ud.amount)')
-            ->from(UserDonor::class, 'ud')
-            ->innerJoin('ud.user', 'u')
-            ->andWhere('ud.isMonthly = 1')
-            ->andWhere('u.isActive = 1')
-            ->andWhere('u.isEmailVerified = 1')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $qb = $entityManager->createQueryBuilder();
-        $totalDelegates = $qb->select('COUNT(u.id)')
-            ->from(User::class, 'u')
-            ->andWhere('u.roles LIKE :role')
-            ->setParameter('role', '%ROLE_DELEGATE%')
-            ->andWhere('u.isActive = 1')
-            ->andWhere('u.isEmailVerified = 1')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $qb = $entityManager->createQueryBuilder();
-        $totalActiveSchools = $qb->select('COUNT(DISTINCT uds.school)')
-            ->from(UserDelegateSchool::class, 'uds')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $qb = $entityManager->createQueryBuilder();
-        $totalAdmins = $qb->select('COUNT(u.id)')
-            ->from(User::class, 'u')
-            ->andWhere('u.roles LIKE :role')
-            ->setParameter('role', '%ROLE_ADMIN%')
-            ->andWhere('u.isActive = 1')
-            ->getQuery()
-            ->getSingleScalarResult();
+        $totalDonors = $userDonorRepository->getTotal();
+        $totalMonthlyDonors = $userDonorRepository->getTotalMonthly();
+        $sumAmountMonthlyDonors = $userDonorRepository->sumAmountMonthlyDonors();
+        $totalDelegates = $userRepository->getTotalDelegates();
+        $totalActiveSchools = $userDelegateSchoolRepository->getTotalActiveSchools();
+        $totalAdmins = $userRepository->getTotalAdmins();
 
         $period = $entityManager->getRepository(DamagedEducatorPeriod::class)->findAll();
         $periodItems = [];
@@ -110,7 +67,6 @@ final class HomeController extends AbstractController
             'sumAmountMonthlyDonors' => $sumAmountMonthlyDonors,
             'totalDelegate' => $totalDelegates,
             'totalActiveSchools' => $totalActiveSchools,
-            'totalUsers' => $entityManager->getRepository(User::class)->count(['isActive' => 1, 'isEmailVerified' => 1]),
             'totalAdmins' => $totalAdmins,
             'periodItems' => $periodItems,
         ]);
