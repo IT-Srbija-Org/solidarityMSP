@@ -4,3 +4,25 @@ html, body, head {
     font-weight: 400;
     font-style: normal;
 }
+
+.select2-container.select2-container--default .select2-selection--single {
+    height: 40px;
+}
+
+.select2-container.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+}
+
+.select2-container.select2-container--default .select2-selection--single .select2-selection__rendered {
+    font-size: 14px;
+    line-height: 38px;
+}
+
+.select2-container.select2-container--default .select2-results__option {
+    min-height: 2rem;
+    font-size: 13px;
+}
+
+.select2-container.select2-container--default .select2-results__option:empty:before {
+    content: 'Default';
+}
