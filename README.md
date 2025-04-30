@@ -21,6 +21,8 @@ podrška zajednici i kreiranje prilika za profesionalni razvoj.
 
 ## 🚀 Instalacija
 
+Za korišćenje na Windows Operativnom Sistemu potrebno je da imate instaliran WSL2 linux podsistem. Uputstvo i link za instalaciju mozete naci ovde [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install). Bash komande se mogu koristiti na više načina Poweshell,Command Prompt,a možete i instalirati [Git Bash](https://gitforwindows.org/) koji je posle moguce koristiti u VSCODE.
+
 Pre pokretanja projekta, potrebno je da na vašem računaru bude instaliran [Docker](https://www.docker.com/). 
 Kompletna instalacija i inicijalna konfiguracija se vrši automatski pokretanjem sledeće komande:
 
