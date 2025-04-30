@@ -24,6 +24,7 @@ use Symfony\Component\Mailer\MailerInterface;
 class CreateTransactionsCommand extends Command
 {
     private const MIN_DONATION_AMOUNT = 500;
+    private const MAX_DONATION_AMOUNT = 6000;
     private const MAX_YEAR_DONATION_AMOUNT = 30000;
     private int $userDonorLastId = 0;
     private array $damagedEducators = [];
@@ -223,6 +224,10 @@ class CreateTransactionsCommand extends Command
                 continue;
             }
 
+            if ($item['amount'] > self::MAX_DONATION_AMOUNT) {
+                $item['amount'] = self::MAX_DONATION_AMOUNT;
+            }
+
             $item['remainingAmount'] = $item['amount'] - $item['transactionSum'];
             if ($item['remainingAmount'] < self::MIN_DONATION_AMOUNT) {
                 continue;
@@ -231,6 +236,11 @@ class CreateTransactionsCommand extends Command
             unset($item['transactionSum']);
             $items[$item['id']] = $item;
         }
+
+        // Sort by remaining amount
+        uasort($items, function ($a, $b) {
+            return $b['remainingAmount'] <=> $a['remainingAmount'];
+        });
 
         return $items;
     }
