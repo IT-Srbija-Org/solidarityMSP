@@ -150,6 +150,7 @@ class UserRepository extends ServiceEntityRepository
     public function getTotalDelegates(): int
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
+
         return $qb->select('COUNT(u.id)')
             ->from(User::class, 'u')
             ->andWhere('u.roles LIKE :role')
@@ -163,6 +164,7 @@ class UserRepository extends ServiceEntityRepository
     public function getTotalAdmins(): int
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
+
         return $qb->select('COUNT(u.id)')
             ->from(User::class, 'u')
             ->andWhere('u.roles LIKE :role')

@@ -44,17 +44,17 @@ class UserDonorRepository extends ServiceEntityRepository
 
         if (!empty($criteria['firstName'])) {
             $qb->andWhere('u.firstName LIKE :firstName')
-                ->setParameter('firstName', '%' . $criteria['firstName'] . '%');
+                ->setParameter('firstName', '%'.$criteria['firstName'].'%');
         }
 
         if (!empty($criteria['lastName'])) {
             $qb->andWhere('u.lastName LIKE :lastName')
-                ->setParameter('lastName', '%' . $criteria['lastName'] . '%');
+                ->setParameter('lastName', '%'.$criteria['lastName'].'%');
         }
 
         if (!empty($criteria['email'])) {
             $qb->andWhere('u.email LIKE :email')
-                ->setParameter('email', '%' . $criteria['email'] . '%');
+                ->setParameter('email', '%'.$criteria['email'].'%');
         }
 
         // Set the sorting
@@ -76,7 +76,7 @@ class UserDonorRepository extends ServiceEntityRepository
                 'items' => iterator_to_array($paginator),
                 'total' => count($paginator),
                 'current_page' => $page,
-                'total_pages' => (int)ceil(count($paginator) / $limit),
+                'total_pages' => (int) ceil(count($paginator) / $limit),
             ];
         }
 
@@ -108,6 +108,7 @@ class UserDonorRepository extends ServiceEntityRepository
     public function getTotal(): int
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
+
         return $qb->select('COUNT(ud.id)')
             ->from(UserDonor::class, 'ud')
             ->innerJoin('ud.user', 'u')
@@ -120,6 +121,7 @@ class UserDonorRepository extends ServiceEntityRepository
     public function getTotalMonthly(): int
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
+
         return $qb->select('COUNT(ud.id)')
             ->from(UserDonor::class, 'ud')
             ->innerJoin('ud.user', 'u')
@@ -133,6 +135,7 @@ class UserDonorRepository extends ServiceEntityRepository
     public function sumAmountMonthlyDonors(): int
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
+
         return $qb->select('SUM(ud.amount)')
             ->from(UserDonor::class, 'ud')
             ->innerJoin('ud.user', 'u')

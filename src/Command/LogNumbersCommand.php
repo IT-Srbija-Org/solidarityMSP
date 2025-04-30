@@ -61,5 +61,4 @@ class LogNumbersCommand extends Command
 
         return Command::SUCCESS;
     }
-
 }
