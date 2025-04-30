@@ -16,8 +16,10 @@
                 <tr>
                     <th>ID</th>
                     <th>
-                        <span class="ti ti-user text-xl"></span>
-                        Ime
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_user_list', 'sort': 'fullName', 'title': 'Ime', 'title_icon': 'ti-user' }
+                        ) }}
                     </th>
                     <th>
                         <span class="ti ti-military-rank text-xl"></span>

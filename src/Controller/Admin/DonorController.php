@@ -28,9 +28,11 @@ final class DonorController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+        $sort = $request->query->get('sort', 'id');
+        $direction = $request->query->get('direction', 'desc');
 
         return $this->render('admin/donor/list.html.twig', [
-            'donors' => $userDonorRepository->search($criteria, $page),
+            'donors' => $userDonorRepository->search($criteria, $page, 50, $sort, $direction),
             'form' => $form->createView(),
         ]);
     }

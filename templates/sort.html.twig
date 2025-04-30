@@ -1,8 +1,17 @@
-{% if current_sort == sort %}
-    {{ current_direction == 'asc'
-    ? '<span class="ti ti-arrow-narrow-up"></span>'
-    : '<span class="ti ti-arrow-narrow-down"></span>'
-    | raw }}
-{% else %}
-    <span class="ti ti-arrows-sort"></span>
-{% endif %}
+{% set current_sort = app.request.get('sort', 'id') %}
+{% set current_direction = app.request.get('direction', 'asc') %}
+{% set reverse_direction = current_direction == 'asc' ? 'desc' : 'asc' %}
+<a href="{{ path( path, { sort: sort, direction: current_sort == sort ? reverse_direction : 'asc' }) }}">
+    {% if title_icon is defined and title_icon %}
+        <span class="ti {{ title_icon }} text-xl"></span>
+    {% endif %}
+    {{ title }}
+    {% if current_sort == sort %}
+        {{ current_direction == 'asc'
+        ? '<span class="ti ti-arrow-narrow-up"></span>'
+        : '<span class="ti ti-arrow-narrow-down"></span>'
+        | raw }}
+    {% else %}
+        <span class="ti ti-arrows-sort"></span>
+    {% endif %}
+</a>

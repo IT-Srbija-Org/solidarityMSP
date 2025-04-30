@@ -36,9 +36,11 @@ final class DelegateController extends AbstractController
         $criteria['isActive'] = true;
 
         $page = $request->query->getInt('page', 1);
+        $sort = $request->query->get('sort', 'id');
+        $direction = $request->query->get('direction', 'asc');
 
         return $this->render('admin/delegate/list.html.twig', [
-            'delegates' => $userRepository->search($criteria, $page),
+            'delegates' => $userRepository->search($criteria, $page, 50, $sort, $direction),
             'form' => $form->createView(),
         ]);
     }

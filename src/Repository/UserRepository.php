@@ -63,8 +63,19 @@ class UserRepository extends ServiceEntityRepository
         $this->mailer->send($message);
     }
 
-    public function search(array $criteria, int $page = 1, int $limit = 50): array
+    public function search(array $criteria, int $page = 1, int $limit = 50, string $sort = 'id', string $direction = 'ASC'): array
     {
+        $allowedSorts = ['id', 'fullName'];
+        $allowedDirections = ['ASC', 'DESC'];
+
+        if (!in_array($sort, $allowedSorts, true)) {
+            $sort = 'id';
+        }
+
+        if (!in_array(strtoupper($direction), $allowedDirections, true)) {
+            $direction = 'ASC';
+        }
+
         $qb = $this->createQueryBuilder('u');
 
         if (!empty($criteria['firstName'])) {
@@ -117,7 +128,14 @@ class UserRepository extends ServiceEntityRepository
         }
 
         // Set the sorting
-        $qb->orderBy('u.id', 'ASC');
+        switch ($sort) {
+            case 'fullName':
+                $qb->addSelect('CONCAT(u.firstName, \' \', u.lastName) AS HIDDEN fullName')
+                   ->orderBy('fullName', $direction);
+                break;
+            default:
+                $qb->orderBy('u.'.$sort, $direction);
+        }
 
         // Apply pagination only if $limit is set and greater than 0
         if ($limit && $limit > 0) {

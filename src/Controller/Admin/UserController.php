@@ -27,9 +27,11 @@ final class UserController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+        $sort = $request->query->get('sort', 'id');
+        $direction = $request->query->get('direction', 'asc');
 
         return $this->render('admin/user/list.html.twig', [
-            'users' => $userRepository->search($criteria, $page),
+            'users' => $userRepository->search($criteria, $page, 50, $sort, $direction),
             'form' => $form->createView(),
         ]);
     }
