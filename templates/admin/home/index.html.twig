@@ -1,66 +1,67 @@
 {% extends 'admin/base.html.twig' %}
 
 {% block content %}
-    <div class="bg-error/10 stats stats-vertical lg:stats-horizontal bg-base-100 shadow border border-error/50 w-fit">
-        <div class="stat">
-            <div class="stat-figure text-secondary">
-                <span class="ti ti-user-heart text-4xl relative top-1"></span>
-            </div>
-            <div class="stat-title">Ukupno donatora</div>
-            <div class="stat-value">{{ totalDonors }}</div>
+    <div class="space-y-4">
+        <div>
+            <span class="ti ti-user-heart text-xl relative top-0.5"></span>
+            Ukupno donatora: <span class="font-bold">{{ totalDonors }}</span>
         </div>
 
-        <div class="stat">
-            <div class="stat-figure text-secondary">
-                <span class="ti ti-cash text-4xl relative top-1"></span>
-            </div>
-            <div class="stat-title">Ukupno skupljeno</div>
-            <div class="stat-value">{{ totalDonorsSum|number_format }}</div>
+        <div>
+            <span class="ti ti-user-heart text-xl relative top-0.5"></span>
+            Ukupno donatora (mesečni donatori): <span class="font-bold">{{ totalMonthlyDonors }}</span>
+        </div>
+
+        <div>
+            <span class="ti ti-cash text-xl relative top-0.5"></span>
+            Ukupno para (od mesečnih donatora): <span class="font-bold">{{ sumAmountMonthlyDonors|number_format }}</span>
+        </div>
+
+        <div>
+            <span class="ti ti-user-cog text-xl relative top-0.5"></span>
+            Ukupno delegata: <span class="font-bold">{{ totalDelegate }}</span>
+        </div>
+
+        <div>
+            <span class="ti ti-building text-xl relative top-0.5"></span>
+            Ukupno škola (koje imaju delegata): <span class="font-bold">{{ totalActiveSchools }}</span>
+        </div>
+
+        <div>
+            <span class="ti ti-user text-xl relative top-0.5"></span>
+            Ukupno admina: <span class="font-bold">{{ totalAdmins }}</span>
         </div>
     </div>
 
-    <div class="bg-accent/10 stats bg-base-100 shadow border border-accent/50 w-fit">
-        <div class="stat">
-            <div class="stat-figure text-secondary">
-                <span class="ti ti-user-cog text-4xl relative top-1"></span>
-            </div>
-            <div class="stat-title">Ukupno delegata</div>
-            <div class="stat-value">{{ totalDelegate }}</div>
-        </div>
-    </div>
-
-    <div class="bg-accent/10 stats stats-vertical lg:stats-horizontal bg-base-100 shadow border border-accent/50 w-fit">
-        <div class="stat">
-            <div class="stat-figure text-secondary">
-                <span class="ti ti-building text-4xl relative top-1"></span>
-            </div>
-            <div class="stat-title">Ukupno škola</div>
-            <div class="stat-value">{{ totalSchool }}</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-figure text-secondary">
-                <span class="ti ti-building-community text-4xl relative top-1"></span>
-            </div>
-            <div class="stat-title">Ukupno gradova</div>
-            <div class="stat-value">{{ totalCities }}</div>
-        </div>
-    </div>
-
-    <div class="bg-primary/10 stats stats-vertical lg:stats-horizontal bg-base-100 shadow border border-primary/50 w-fit">
-        <div class="stat">
-            <div class="stat-figure text-secondary">
-                <span class="ti ti-users text-4xl relative top-1"></span>
-            </div>
-            <div class="stat-title">Ukupno korisnika</div>
-            <div class="stat-value">{{ totalUsers }}</div>
-        </div>
-        <div class="stat">
-            <div class="stat-figure text-secondary">
-                <span class="ti ti-military-rank text-4xl relative top-1"></span>
-            </div>
-            <div class="stat-title">Ukupno admina</div>
-            <div class="stat-value">{{ totalAdmins }}</div>
-        </div>
+    <div class="mt-8">
+        <table class="table rounded-xl border border-base-200">
+            <thead class="bg-gray-100">
+            <tr>
+                <th>Period</th>
+                <th>
+                    <span class="ti ti-school text-xl"></span>
+                    Ukupno oštećenih
+                </th>
+                <th>
+                    <span class="ti ti-cash text-xl"></span>
+                    Ukupno potrebno para
+                </th>
+                <th>
+                    <span class="ti ti-cash text-xl"></span>
+                    Potvrđeno da je primljeno
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for period in periodItems %}
+                <tr class="hover:bg-gray-100">
+                    <td>{{ period.entity|format_period }}</td>
+                    <td>{{ period.totalDamagedEducators }}</td>
+                    <td>{{ period.sumAmountDamagedEducators|number_format }}</td>
+                    <td>{{ period.sumAmountConfirmedTransactions|number_format }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}

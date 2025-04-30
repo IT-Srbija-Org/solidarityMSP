@@ -103,7 +103,10 @@ class CreateTransactionCommand extends Command
         $message = (new TemplatedEmail())
             ->to($userDonor->getUser()->getEmail())
             ->subject('Stigle su vam nove instrukcije za uplatu')
-            ->htmlTemplate('email/donor-new-transactions.html.twig');
+            ->htmlTemplate('email/donor-new-transactions.html.twig')
+            ->context([
+                'user' => $userDonor->getUser(),
+            ]);
 
         try {
             $this->mailer->send($message);

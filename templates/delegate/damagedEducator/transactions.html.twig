@@ -19,10 +19,6 @@
                 <div>
                     Ukupna cifra: <span class="font-bold">{{ damagedEducator.amount|number_format }}</span>
                 </div>
-
-                <div>
-                    Broj računa: <span class="font-bold">{{ damagedEducator.accountNumber }}</span>
-                </div>
             </div>
 
             {{ include('flashes.html.twig') }}
@@ -40,6 +36,10 @@
                             <tr>
                                 <th>ID</th>
                                 <th>
+                                    <span class="ti ti-credit-card text-xl"></span>
+                                    Broj računa
+                                </th>
+                                <th>
                                     <span class="ti ti-cash text-xl"></span>
                                     Cifra
                                 </th>
@@ -55,6 +55,7 @@
                         {% for transaction in transactions %}
                             <tr class="hover:bg-gray-100">
                                 <td>{{ transaction.id }}</td>
+                                <td class="whitespace-nowrap">{{ transaction.accountNumber|account_number_format }}</td>
                                 <td>{{ transaction.amount|number_format }}</td>
                                 <td>
                                     <div class="whitespace-nowrap">{{ transaction.status|transaction_status|raw }}</div>

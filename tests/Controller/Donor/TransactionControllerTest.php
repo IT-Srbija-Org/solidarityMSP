@@ -56,12 +56,6 @@ class TransactionControllerTest extends WebTestCase
         ]);
     }
 
-    private function loginAsUser(): void
-    {
-        $user = $this->userRepository->findOneBy(['email' => 'korisnik@gmail.com']);
-        $this->client->loginUser($user);
-    }
-
     private function getLoginUser(): ?UserInterface
     {
         return static::getContainer()->get('security.token_storage')->getToken()->getUser();

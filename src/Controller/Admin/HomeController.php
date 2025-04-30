@@ -3,8 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\City;
+use App\Entity\DamagedEducator;
+use App\Entity\DamagedEducatorPeriod;
 use App\Entity\School;
+use App\Entity\Transaction;
 use App\Entity\User;
+use App\Entity\UserDelegateSchool;
 use App\Entity\UserDonor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,14 +26,28 @@ final class HomeController extends AbstractController
             ->from(UserDonor::class, 'ud')
             ->innerJoin('ud.user', 'u')
             ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+
+        $qb = $entityManager->createQueryBuilder();
+        $totalMonthlyDonors = $qb->select('COUNT(ud.id)')
+            ->from(UserDonor::class, 'ud')
+            ->innerJoin('ud.user', 'u')
+            ->andWhere('ud.isMonthly = 1')
+            ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
             ->getQuery()
             ->getSingleScalarResult();
 
         $qb = $entityManager->createQueryBuilder();
-        $totalDelegatesSum = $qb->select('SUM(ud.amount)')
+        $sumAmountMonthlyDonors = $qb->select('SUM(ud.amount)')
             ->from(UserDonor::class, 'ud')
             ->innerJoin('ud.user', 'u')
+            ->andWhere('ud.isMonthly = 1')
             ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -39,6 +57,13 @@ final class HomeController extends AbstractController
             ->andWhere('u.roles LIKE :role')
             ->setParameter('role', '%ROLE_DELEGATE%')
             ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $qb = $entityManager->createQueryBuilder();
+        $totalActiveSchools = $qb->select('COUNT(DISTINCT uds.school)')
+            ->from(UserDelegateSchool::class, 'uds')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -51,14 +76,47 @@ final class HomeController extends AbstractController
             ->getQuery()
             ->getSingleScalarResult();
 
+        $period = $entityManager->getRepository(DamagedEducatorPeriod::class)->findAll();
+        $periodItems = [];
+
+        foreach($period as $pData) {
+
+            $qb = $entityManager->createQueryBuilder();
+            $sumAmountDamagedEducators = $qb->select('SUM(de.amount)')
+                ->from(DamagedEducator::class, 'de')
+                ->andWhere('de.period = :period')
+                ->setParameter('period', $pData)
+                ->getQuery()
+                ->getSingleScalarResult();
+
+            $qb = $entityManager->createQueryBuilder();
+            $sumAmountConfirmedTransactions = $qb->select('SUM(t.amount)')
+                ->from(Transaction::class, 't')
+                ->innerJoin('t.damagedEducator', 'de')
+                ->andWhere('de.period = :period')
+                ->setParameter('period', $pData)
+                ->andWhere('t.status = :status')
+                ->setParameter('status', Transaction::STATUS_CONFIRMED)
+                ->getQuery()
+                ->getSingleScalarResult();
+
+            $periodItems[] = [
+                'entity' => $pData,
+                'totalDamagedEducators' => $entityManager->getRepository(DamagedEducator::class)->count(['period' => $pData]),
+                'sumAmountDamagedEducators' => $sumAmountDamagedEducators,
+                'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions
+            ];
+        }
+
         return $this->render('admin/home/index.html.twig', [
             'totalDonors' => $totalDonors,
-            'totalDonorsSum' => $totalDelegatesSum,
+            'totalMonthlyDonors' => $totalMonthlyDonors,
+            'sumAmountMonthlyDonors' => $sumAmountMonthlyDonors,
             'totalDelegate' => $totalDelegates,
-            'totalSchool' => $entityManager->getRepository(School::class)->count(),
-            'totalCities' => $entityManager->getRepository(City::class)->count(),
-            'totalUsers' => $entityManager->getRepository(User::class)->count(['isActive' => 1]),
+            'totalActiveSchools' => $totalActiveSchools,
+            'totalUsers' => $entityManager->getRepository(User::class)->count(['isActive' => 1, 'isEmailVerified' => 1]),
             'totalAdmins' => $totalAdmins,
+            'periodItems' => $periodItems
         ]);
     }
 }

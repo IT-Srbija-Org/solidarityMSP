@@ -6,12 +6,12 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class Mod97Validator extends ConstraintValidator
+class ValidateAccountNumberValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint): void
     {
-        if (!$constraint instanceof Mod97) {
-            throw new UnexpectedTypeException($constraint, Mod97::class);
+        if (!$constraint instanceof ValidateAccountNumber) {
+            throw new UnexpectedTypeException($constraint, ValidateAccountNumber::class);
         }
 
         if (null === $value) {
@@ -25,10 +25,27 @@ class Mod97Validator extends ConstraintValidator
             return;
         }
 
-        if (!$this->validateAccountNumber($value)) {
+        if (!$this->isValid($value)) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
         }
+    }
+
+    private function isValid(string $accountNumber): bool
+    {
+        if (str_starts_with($accountNumber, '840')) {
+            return false;
+        }
+
+        if (str_starts_with($accountNumber, '150')) {
+            return false;
+        }
+
+        if(!$this->validateAccountNumber($accountNumber)) {
+            return false;
+        }
+
+        return true;
     }
 
     private function validateAccountNumber(string $accountNumber): bool

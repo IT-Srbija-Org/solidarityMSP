@@ -46,7 +46,6 @@
                     <table class="table rounded-xl border border-base-200">
                         <thead class="bg-gray-100">
                             <tr>
-                                <th>ID</th>
                                 <th>
                                     <span class="ti ti-school text-xl"></span>
                                     Oštećeni/a
@@ -74,7 +73,6 @@
                         <tbody>
                         {% for transaction in transactions.items %}
                             <tr class="hover:bg-gray-100">
-                                <td>{{ transaction.id }}</td>
                                 <td>
                                     {% if transaction.hideDetails %}
                                         <span class="text-gray-500 tracking-widest">{{ transaction.damagedEducator.name|mask }}</span>
