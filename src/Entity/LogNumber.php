@@ -36,7 +36,7 @@ class LogNumber
     #[ORM\Column]
     private ?int $totalActiveSchools = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
     public function getCreatedAt(): ?\DateTimeInterface

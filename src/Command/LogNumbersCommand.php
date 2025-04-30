@@ -46,7 +46,11 @@ class LogNumbersCommand extends Command
         $totalDelegates = $this->userRepository->getTotalDelegates();
         $totalActiveSchools = $this->userDelegateSchoolRepository->getTotalActiveSchools();
 
-        $entity = new LogNumber();
+        $entity = $this->entityManager->getRepository(LogNumber::class)->findOneBy(['createdAt' => new \DateTime()]);
+        if (!$entity) {
+            $entity = new LogNumber();
+        }
+
         $entity->setTotalDonors($totalDonors);
         $entity->setTotalMonthlyDonors($totalMonthlyDonors);
         $entity->setTotalNonMonthlyDonors($totalNonMonthlyDonors);
