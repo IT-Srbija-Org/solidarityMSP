@@ -132,6 +132,20 @@ class UserDonorRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function getTotalNonMonthly(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return (int) $qb->select('COUNT(ud.id)')
+            ->from(UserDonor::class, 'ud')
+            ->innerJoin('ud.user', 'u')
+            ->andWhere('ud.isMonthly = 0')
+            ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function sumAmountMonthlyDonors(): int
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
@@ -140,6 +154,20 @@ class UserDonorRepository extends ServiceEntityRepository
             ->from(UserDonor::class, 'ud')
             ->innerJoin('ud.user', 'u')
             ->andWhere('ud.isMonthly = 1')
+            ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function sumAmountNonMonthlyDonors(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return (int) $qb->select('SUM(ud.amount)')
+            ->from(UserDonor::class, 'ud')
+            ->innerJoin('ud.user', 'u')
+            ->andWhere('ud.isMonthly = 0')
             ->andWhere('u.isActive = 1')
             ->andWhere('u.isEmailVerified = 1')
             ->getQuery()

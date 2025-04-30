@@ -13,8 +13,18 @@
         </div>
 
         <div>
+            <span class="ti ti-user-heart text-xl relative top-0.5"></span>
+            Ukupno donatora (ne-mesečni donatori): <span class="font-bold">{{ totalNonMonthlyDonors|number_format }}</span>
+        </div>
+
+        <div>
             <span class="ti ti-cash text-xl relative top-0.5"></span>
-            Ukupno para (od mesečnih donatora): <span class="font-bold">{{ sumAmountMonthlyDonors|number_format }}</span>
+            Ukupno prijavljeno para (od mesečnih donatora): <span class="font-bold">{{ sumAmountMonthlyDonors|number_format }}</span>
+        </div>
+
+        <div>
+            <span class="ti ti-cash text-xl relative top-0.5"></span>
+            Ukupno prijavljeno para (od ne-mesečnih donatora): <span class="font-bold">{{ sumAmountNonMonthlyDonors|number_format }}</span>
         </div>
 
         <div>

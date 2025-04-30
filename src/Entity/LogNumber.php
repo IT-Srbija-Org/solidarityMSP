@@ -21,8 +21,14 @@ class LogNumber
     #[ORM\Column]
     private ?int $totalMonthlyDonors = null;
 
+    #[ORM\Column]
+    private ?int $totalNonMonthlyDonors = null;
+
     #[ORM\Column(type: Types::BIGINT)]
     private ?string $sumAmountMonthlyDonors = null;
+
+    #[ORM\Column(type: Types::BIGINT)]
+    private ?string $sumAmountNonMonthlyDonors = null;
 
     #[ORM\Column]
     private ?int $totalDelegates = null;
@@ -75,6 +81,18 @@ class LogNumber
         return $this;
     }
 
+    public function getTotalNonMonthlyDonors(): ?int
+    {
+        return $this->totalNonMonthlyDonors;
+    }
+
+    public function setTotalNonMonthlyDonors(int $totalNonMonthlyDonors): static
+    {
+        $this->totalNonMonthlyDonors = $totalNonMonthlyDonors;
+
+        return $this;
+    }
+
     public function getSumAmountMonthlyDonors(): ?string
     {
         return $this->sumAmountMonthlyDonors;
@@ -83,6 +101,18 @@ class LogNumber
     public function setSumAmountMonthlyDonors(string $sumAmountMonthlyDonors): static
     {
         $this->sumAmountMonthlyDonors = $sumAmountMonthlyDonors;
+
+        return $this;
+    }
+
+    public function getSumAmountNonMonthlyDonors(): ?string
+    {
+        return $this->sumAmountNonMonthlyDonors;
+    }
+
+    public function setSumAmountNonMonthlyDonors(string $sumAmountNonMonthlyDonors): static
+    {
+        $this->sumAmountNonMonthlyDonors = $sumAmountNonMonthlyDonors;
 
         return $this;
     }
