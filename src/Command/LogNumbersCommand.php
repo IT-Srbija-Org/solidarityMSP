@@ -3,9 +3,9 @@
 namespace App\Command;
 
 use App\Entity\LogNumber;
-use App\Entity\User;
-use App\Entity\UserDelegateSchool;
-use App\Entity\UserDonor;
+use App\Repository\UserDelegateSchoolRepository;
+use App\Repository\UserDonorRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,7 +21,7 @@ use Symfony\Component\Lock\Store\FlockStore;
 )]
 class LogNumbersCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager, private UserDonorRepository $userDonorRepository, private UserRepository $userRepository, private UserDelegateSchoolRepository $userDelegateSchoolRepository)
     {
         parent::__construct();
     }
@@ -38,15 +38,11 @@ class LogNumbersCommand extends Command
             return Command::FAILURE;
         }
 
-        $userDonorRepository = $this->entityManager->getRepository(UserDonor::class);
-        $userRepository = $this->entityManager->getRepository(User::class);
-        $userDelegateSchoolRepository = $this->entityManager->getRepository(UserDelegateSchool::class);
-
-        $totalDonors = $userDonorRepository->getTotal();
-        $totalMonthlyDonors = $userDonorRepository->getTotalMonthly();
-        $sumAmountMonthlyDonors = $userDonorRepository->sumAmountMonthlyDonors();
-        $totalDelegates = $userRepository->getTotalDelegates();
-        $totalActiveSchools = $userDelegateSchoolRepository->getTotalActiveSchools();
+        $totalDonors = $this->userDonorRepository->getTotal();
+        $totalMonthlyDonors = $this->userDonorRepository->getTotalMonthly();
+        $sumAmountMonthlyDonors = $this->userDonorRepository->sumAmountMonthlyDonors();
+        $totalDelegates = $this->userRepository->getTotalDelegates();
+        $totalActiveSchools = $this->userDelegateSchoolRepository->getTotalActiveSchools();
 
         $entity = new LogNumber();
         $entity->setTotalDonors($totalDonors);

@@ -109,7 +109,7 @@ class UserDonorRepository extends ServiceEntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
 
-        return $qb->select('COUNT(ud.id)')
+        return (int) $qb->select('COUNT(ud.id)')
             ->from(UserDonor::class, 'ud')
             ->innerJoin('ud.user', 'u')
             ->andWhere('u.isActive = 1')
@@ -122,7 +122,7 @@ class UserDonorRepository extends ServiceEntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
 
-        return $qb->select('COUNT(ud.id)')
+        return (int) $qb->select('COUNT(ud.id)')
             ->from(UserDonor::class, 'ud')
             ->innerJoin('ud.user', 'u')
             ->andWhere('ud.isMonthly = 1')
@@ -136,7 +136,7 @@ class UserDonorRepository extends ServiceEntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
 
-        return $qb->select('SUM(ud.amount)')
+        return (int) $qb->select('SUM(ud.amount)')
             ->from(UserDonor::class, 'ud')
             ->innerJoin('ud.user', 'u')
             ->andWhere('ud.isMonthly = 1')

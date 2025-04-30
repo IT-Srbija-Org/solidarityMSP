@@ -151,7 +151,7 @@ class UserRepository extends ServiceEntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
 
-        return $qb->select('COUNT(u.id)')
+        return (int) $qb->select('COUNT(u.id)')
             ->from(User::class, 'u')
             ->andWhere('u.roles LIKE :role')
             ->setParameter('role', '%ROLE_DELEGATE%')
@@ -165,7 +165,7 @@ class UserRepository extends ServiceEntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
 
-        return $qb->select('COUNT(u.id)')
+        return (int) $qb->select('COUNT(u.id)')
             ->from(User::class, 'u')
             ->andWhere('u.roles LIKE :role')
             ->setParameter('role', '%ROLE_ADMIN%')

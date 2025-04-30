@@ -20,7 +20,7 @@ class UserDelegateSchoolRepository extends ServiceEntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
 
-        return $qb->select('COUNT(DISTINCT uds.school)')
+        return (int) $qb->select('COUNT(DISTINCT uds.school)')
             ->from(UserDelegateSchool::class, 'uds')
             ->getQuery()
             ->getSingleScalarResult();

@@ -5,9 +5,9 @@ namespace App\Controller\Admin;
 use App\Entity\DamagedEducator;
 use App\Entity\DamagedEducatorPeriod;
 use App\Entity\Transaction;
-use App\Entity\User;
-use App\Entity\UserDelegateSchool;
-use App\Entity\UserDonor;
+use App\Repository\UserDelegateSchoolRepository;
+use App\Repository\UserDonorRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,12 +17,8 @@ use Symfony\Component\Routing\Attribute\Route;
 final class HomeController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, UserDonorRepository $userDonorRepository, UserRepository $userRepository, UserDelegateSchoolRepository $userDelegateSchoolRepository): Response
     {
-        $userDonorRepository = $entityManager->getRepository(UserDonor::class);
-        $userRepository = $entityManager->getRepository(User::class);
-        $userDelegateSchoolRepository = $entityManager->getRepository(UserDelegateSchool::class);
-
         $totalDonors = $userDonorRepository->getTotal();
         $totalMonthlyDonors = $userDonorRepository->getTotalMonthly();
         $sumAmountMonthlyDonors = $userDonorRepository->sumAmountMonthlyDonors();

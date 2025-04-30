@@ -24,7 +24,7 @@ class DamagedEducatorPeriodFixtures extends Fixture implements FixtureGroupInter
             $month = date('m', strtotime($date));
             $year = date('Y', strtotime($date));
 
-            if ($month == date('m', strtotime('-60 days'))) {
+            if ($month == date('m', strtotime("-$days days"))) {
                 $this->createPeriod($month, $year, $isActive, DamagedEducatorPeriod::TYPE_FIRST_HALF);
                 $this->createPeriod($month, $year, $isActive, DamagedEducatorPeriod::TYPE_SECOND_HALF);
                 continue;
