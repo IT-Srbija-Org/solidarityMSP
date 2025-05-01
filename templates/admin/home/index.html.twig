@@ -58,6 +58,10 @@
                 </th>
                 <th>
                     <span class="ti ti-cash text-xl"></span>
+                    Ukupno čeka potvrdu od prosvetnog radnika
+                </th>
+                <th>
+                    <span class="ti ti-cash text-xl"></span>
                     Potvrđeno da je primljeno
                 </th>
             </tr>
@@ -68,6 +72,7 @@
                     <td>{{ period.entity|format_period }}</td>
                     <td>{{ period.totalDamagedEducators|number_format }}</td>
                     <td>{{ period.sumAmountDamagedEducators|number_format }}</td>
+                    <td>{{ period.sumAmountWaitingConfirmationTransactions|number_format }}</td>
                     <td>{{ period.sumAmountConfirmedTransactions|number_format }}</td>
                 </tr>
             {% endfor %}

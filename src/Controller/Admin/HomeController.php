@@ -51,11 +51,23 @@ final class HomeController extends AbstractController
                 ->getQuery()
                 ->getSingleScalarResult();
 
+            $qb = $entityManager->createQueryBuilder();
+            $sumAmountWaitingConfirmationTransactions = $qb->select('SUM(t.amount)')
+                ->from(Transaction::class, 't')
+                ->innerJoin('t.damagedEducator', 'de')
+                ->andWhere('de.period = :period')
+                ->setParameter('period', $pData)
+                ->andWhere('t.status = :status')
+                ->setParameter('status', Transaction::STATUS_WAITING_CONFIRMATION)
+                ->getQuery()
+                ->getSingleScalarResult();
+
             $periodItems[] = [
                 'entity' => $pData,
                 'totalDamagedEducators' => $entityManager->getRepository(DamagedEducator::class)->count(['period' => $pData]),
                 'sumAmountDamagedEducators' => $sumAmountDamagedEducators,
                 'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
+                'sumAmountWaitingConfirmationTransactions' => $sumAmountWaitingConfirmationTransactions,
             ];
         }
 
