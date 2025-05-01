@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -23,15 +24,21 @@ use Symfony\Component\Mailer\MailerInterface;
 )]
 class CreateTransactionsCommand extends Command
 {
-    private const MIN_DONATION_AMOUNT = 500;
-    private const MAX_DONATION_AMOUNT = 6000;
-    private const MAX_YEAR_DONATION_AMOUNT = 30000;
+    private int $minTransactionDonationAmount = 500;
+    private $maxDonationAmount;
+    private int $maxYearDonationAmount = 30000;
     private int $userDonorLastId = 0;
     private array $damagedEducators = [];
 
     public function __construct(private EntityManagerInterface $entityManager, private MailerInterface $mailer)
     {
         parent::__construct();
+    }
+
+    protected function configure(): void
+    {
+        $this
+            ->addArgument('maxDonationAmount', InputArgument::REQUIRED, 'Maximum amount that the donor will send to the damaged educator');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -43,6 +50,19 @@ class CreateTransactionsCommand extends Command
         $factory = new LockFactory($store);
         $lock = $factory->createLock($this->getName(), 0);
         if (!$lock->acquire()) {
+            return Command::FAILURE;
+        }
+
+        $this->maxDonationAmount = (int) $input->getArgument('maxDonationAmount');
+        if ($this->maxDonationAmount < $this->minTransactionDonationAmount) {
+            $io->error('Maximum donation amount must be greater than '.$this->minTransactionDonationAmount);
+
+            return Command::FAILURE;
+        }
+
+        if($this->maxDonationAmount > 100000){
+            $io->error('Maximum donation amount must be less than 100000');
+
             return Command::FAILURE;
         }
 
@@ -65,21 +85,21 @@ class CreateTransactionsCommand extends Command
 
                 $sumTransactions = $this->getSumTransactions($userDonor);
                 $donorRemainingAmount = $userDonor->getAmount() - $sumTransactions;
-                if ($donorRemainingAmount < self::MIN_DONATION_AMOUNT) {
-                    $output->writeln(' | remaining amount is less than '.self::MIN_DONATION_AMOUNT);
+                if ($donorRemainingAmount < $this->minTransactionDonationAmount) {
+                    $output->writeln(' | remaining amount is less than '.$this->minTransactionDonationAmount);
                     continue;
                 }
 
                 $totalTransactions = 0;
                 foreach ($this->damagedEducators as $damagedEducator) {
                     $sumTransactionAmount = $this->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
-                    if ($sumTransactionAmount >= self::MAX_YEAR_DONATION_AMOUNT) {
+                    if ($sumTransactionAmount >= $this->maxYearDonationAmount) {
                         continue;
                     }
 
                     $totalTransactions += $this->createTransactions($userDonor, $donorRemainingAmount, $damagedEducator['id']);
 
-                    if ($donorRemainingAmount < self::MIN_DONATION_AMOUNT) {
+                    if ($donorRemainingAmount < $this->minTransactionDonationAmount) {
                         break;
                     }
                 }
@@ -118,11 +138,11 @@ class CreateTransactionsCommand extends Command
     public function createTransactions(UserDonor $userDonor, int &$donorRemainingAmount, int $damagedEducatorId): int
     {
         $totalCreated = 0;
-        while ($donorRemainingAmount >= self::MIN_DONATION_AMOUNT) {
+        while ($donorRemainingAmount >= $this->minTransactionDonationAmount) {
             $damagedEducator = $this->damagedEducators[$damagedEducatorId];
 
             $amount = $damagedEducator['remainingAmount'];
-            if ($amount <= self::MIN_DONATION_AMOUNT) {
+            if ($amount < $this->minTransactionDonationAmount) {
                 // All transaction created for this educator
                 unset($this->damagedEducators[$damagedEducatorId]);
                 break;
@@ -132,8 +152,8 @@ class CreateTransactionsCommand extends Command
                 $amount = $donorRemainingAmount;
             }
 
-            if ($amount > self::MAX_YEAR_DONATION_AMOUNT) {
-                $amount = self::MAX_YEAR_DONATION_AMOUNT;
+            if ($amount >= $this->maxYearDonationAmount) {
+                $amount = $this->maxYearDonationAmount;
             }
 
             $transaction = new Transaction();
@@ -150,7 +170,7 @@ class CreateTransactionsCommand extends Command
             $this->entityManager->persist($transaction);
             ++$totalCreated;
 
-            if ($amount >= self::MAX_YEAR_DONATION_AMOUNT) {
+            if ($amount >= $this->maxYearDonationAmount) {
                 break;
             }
         }
@@ -173,11 +193,10 @@ class CreateTransactionsCommand extends Command
             FROM transaction AS t
             WHERE t.user_id = :userId
              AND t.account_number = :accountNumber
-             AND t.status IN (:transactionStatuses)
+             AND t.status IN (' . implode(',', $transactionStatuses) . ')
              AND t.created_at > DATE(NOW() - INTERVAL 1 YEAR)
             ', [
             'userId' => $userDonor->getUser()->getId(),
-            'transactionStatuses' => implode(',', $transactionStatuses),
             'accountNumber' => $accountNumber,
         ]);
 
@@ -198,7 +217,7 @@ class CreateTransactionsCommand extends Command
               (SELECT SUM(amount)
                FROM transaction
                WHERE damaged_educator_id = de.id
-                AND status IN (:transactionStatuses)),
+                AND status IN (' . implode(',', $transactionStatuses) . ')),
               0) AS transactionSum
             FROM damaged_educator AS de
              INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id
@@ -208,7 +227,6 @@ class CreateTransactionsCommand extends Command
             ORDER BY de.id ASC
             ', [
             'status' => DamagedEducator::STATUS_NEW,
-            'transactionStatuses' => implode(',', $transactionStatuses),
         ]);
 
         // Temporary ignore first half of the February 2025
@@ -224,12 +242,12 @@ class CreateTransactionsCommand extends Command
                 continue;
             }
 
-            if ($item['amount'] > self::MAX_DONATION_AMOUNT) {
-                $item['amount'] = self::MAX_DONATION_AMOUNT;
+            if ($item['amount'] > $this->maxDonationAmount) {
+                $item['amount'] = $this->maxDonationAmount;
             }
 
             $item['remainingAmount'] = $item['amount'] - $item['transactionSum'];
-            if ($item['remainingAmount'] < self::MIN_DONATION_AMOUNT) {
+            if ($item['remainingAmount'] < $this->minTransactionDonationAmount) {
                 continue;
             }
 
