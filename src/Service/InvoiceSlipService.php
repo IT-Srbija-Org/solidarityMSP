@@ -65,7 +65,12 @@ class InvoiceSlipService
         $options->set('isRemoteEnabled', true);
         $options->set('defaultFont', 'Courier');
         $dompdf = new Dompdf($options);
+
+        // Convert to valid UTF-8
+        $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
+
         $dompdf->loadHtml($html);
+
         // Set paper size to match image pixel dimensions at 96 DPI (1pt = 1/72in)
         $pageWidthPt = $imgWidth * 72 / 96;
         $pageHeightPt = $imgHeight * 72 / 96;
