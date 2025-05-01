@@ -43,28 +43,28 @@
         </div>
     </div>
 
-    <div class="mt-8">
+    <div class="overflow-x-auto mt-8">
         <table class="table rounded-xl border border-base-200">
             <thead class="bg-gray-100">
-            <tr>
-                <th>Period</th>
-                <th>
-                    <span class="ti ti-school text-xl"></span>
-                    Ukupno oštećenih
-                </th>
-                <th>
-                    <span class="ti ti-cash text-xl"></span>
-                    Ukupno potrebno para
-                </th>
-                <th>
-                    <span class="ti ti-cash text-xl"></span>
-                    Ukupno čeka potvrdu od prosvetnog radnika
-                </th>
-                <th>
-                    <span class="ti ti-cash text-xl"></span>
-                    Potvrđeno da je primljeno
-                </th>
-            </tr>
+                <tr>
+                    <th>Period</th>
+                    <th>
+                        <span class="ti ti-school text-xl"></span>
+                        Oštećenih
+                    </th>
+                    <th>
+                        <span class="ti ti-cash text-xl"></span>
+                        Potrebno para
+                    </th>
+                    <th>
+                        <span class="ti ti-cash text-xl"></span>
+                        Čeka potvrdu od prosvetnog radnika
+                    </th>
+                    <th>
+                        <span class="ti ti-cash text-xl"></span>
+                        Potvrđeno
+                    </th>
+                </tr>
             </thead>
             <tbody>
             {% for period in periodItems %}
