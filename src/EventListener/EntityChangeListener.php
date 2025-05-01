@@ -98,6 +98,11 @@ class EntityChangeListener
             $changeSet[$field][1] = $this->transformValue($newValue);
         }
 
+        unset($changeSet['lastVisit']);
+        if (empty($changeSet)) {
+            return;
+        }
+
         $log = new LogEntityChange();
         $log->setAction($action);
         $log->setEntityName(get_class($entity));
