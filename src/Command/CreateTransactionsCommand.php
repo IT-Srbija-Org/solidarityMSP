@@ -60,7 +60,7 @@ class CreateTransactionsCommand extends Command
             return Command::FAILURE;
         }
 
-        if($this->maxDonationAmount > 100000){
+        if ($this->maxDonationAmount > 100000) {
             $io->error('Maximum donation amount must be less than 100000');
 
             return Command::FAILURE;
@@ -193,7 +193,7 @@ class CreateTransactionsCommand extends Command
             FROM transaction AS t
             WHERE t.user_id = :userId
              AND t.account_number = :accountNumber
-             AND t.status IN (' . implode(',', $transactionStatuses) . ')
+             AND t.status IN ('.implode(',', $transactionStatuses).')
              AND t.created_at > DATE(NOW() - INTERVAL 1 YEAR)
             ', [
             'userId' => $userDonor->getUser()->getId(),
@@ -217,7 +217,7 @@ class CreateTransactionsCommand extends Command
               (SELECT SUM(amount)
                FROM transaction
                WHERE damaged_educator_id = de.id
-                AND status IN (' . implode(',', $transactionStatuses) . ')),
+                AND status IN ('.implode(',', $transactionStatuses).')),
               0) AS transactionSum
             FROM damaged_educator AS de
              INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id
