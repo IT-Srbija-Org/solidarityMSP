@@ -41,8 +41,8 @@
                         </a>
                     </td>
                     <td>{{ delegate.userDelegateSchools|length }}</td>
-                    <td>
-                        {{ delegate.createdAt|date('d.m.Y.') }}
+                    <td class="whitespace-nowrap">
+                        {{ delegate.createdAt|date('H:i d.m.Y.') }}
                     </td>
                     <td>
                         <div class="flex gap-2 justify-end">

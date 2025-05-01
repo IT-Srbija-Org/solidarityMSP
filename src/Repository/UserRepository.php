@@ -117,7 +117,7 @@ class UserRepository extends ServiceEntityRepository
         }
 
         // Set the sorting
-        $qb->orderBy('u.id', 'ASC');
+        $qb->orderBy('u.id', 'DESC');
 
         // Apply pagination only if $limit is set and greater than 0
         if ($limit && $limit > 0) {

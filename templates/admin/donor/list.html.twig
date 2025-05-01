@@ -54,7 +54,7 @@
                         {% endif %}
                     </td>
                     <td>{{ donor.amount|number_format }}</td>
-                    <td>{{ donor.updatedAt|date('d.m.Y.') }}</td>
+                    <td class="whitespace-nowrap">{{ donor.updatedAt|date('H:i d.m.Y.') }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">
                             <a href="{{ path('admin_donor_delete', { 'id': donor.id }) }}" class="btn btn-error btn-sm flex tooltip" data-tip="Obriši">

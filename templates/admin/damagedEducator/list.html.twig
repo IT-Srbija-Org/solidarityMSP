@@ -58,7 +58,7 @@
                     <td>{{ damagedEducator.school.name }}</td>
                     <td>{{ damagedEducator.amount|number_format }}</td>
                     <td class="whitespace-nowrap">{{ damagedEducator.accountNumber|account_number_format }}</td>
-                    <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
+                    <td class="whitespace-nowrap">{{ damagedEducator.createdAt|date('H:i d.m.Y.') }}</td>
                     <td>
                         {% if damagedEducator.isStatusDeleted %}
                             <div class="whitespace-nowrap">{{ damagedEducator.status|damaged_educator_status|raw }}</div>

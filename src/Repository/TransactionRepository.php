@@ -23,6 +23,11 @@ class TransactionRepository extends ServiceEntityRepository
         $qb->leftJoin('t.damagedEducator', 'e')
             ->leftJoin('e.school', 's');
 
+        if (isset($criteria['id'])) {
+            $qb->andWhere('t.id = :id')
+                ->setParameter('id', $criteria['id']);
+        }
+
         if (isset($criteria['user'])) {
             $qb->andWhere('t.user = :user')
                 ->setParameter('user', $criteria['user']);

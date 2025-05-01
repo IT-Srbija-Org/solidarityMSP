@@ -27,6 +27,10 @@
                         <span class="ti ti-calendar-event text-xl"></span>
                         Registrovan
                     </th>
+                    <th>
+                        <span class="ti ti-calendar-event text-xl"></span>
+                        Poslednji put viđen
+                    </th>
                     <th>Aktivan?</th>
                     <th>Verifikovan?</th>
                     <th></th>
@@ -43,8 +47,15 @@
                             </a>
                         </td>
                         <td>{{ user.getRoles|roleTranslate }}</td>
-                        <td>
-                            {{ user.createdAt|date('d.m.Y.') }}
+                        <td class="whitespace-nowrap">
+                            {{ user.createdAt|date('H:i d.m.Y.') }}
+                        </td>
+                        <td class="whitespace-nowrap">
+                            {% if user.lastVisit %}
+                                {{ user.lastVisit|date('H:i d.m.Y.') }}
+                            {% else %}
+                                -
+                            {% endif %}
                         </td>
                         <td>
                             {% if user.isActive %}

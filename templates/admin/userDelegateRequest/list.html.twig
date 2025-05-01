@@ -61,7 +61,7 @@
                         <div>{{ userDelegateRequest.school.name }}</div>
                         <div class="text-gray-500">{{ userDelegateRequest.school.city.name }}</div>
                     </td>
-                    <td>{{ userDelegateRequest.createdAt|date('d.m.Y.') }}</td>
+                    <td class="whitespace-nowrap">{{ userDelegateRequest.createdAt|date('H:i d.m.Y.') }}</td>
                     <td class="whitespace-nowrap">{{ userDelegateRequest.status|user_delegate_request_status|raw }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">

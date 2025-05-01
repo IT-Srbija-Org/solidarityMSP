@@ -62,7 +62,7 @@
                     </td>
                     <td class="whitespace-nowrap">{{ transaction.accountNumber|account_number_format }}</td>
                     <td>{{ transaction.amount|number_format }}</td>
-                    <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
+                    <td class="whitespace-nowrap">{{ transaction.createdAt|date('H:i d.m.Y.') }}</td>
                     <td class="whitespace-nowrap">{{ transaction.status|transaction_status|raw }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">
