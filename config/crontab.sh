@@ -1,6 +1,6 @@
 
 # Create transactions
-*/10 7-21 * * * php /var/www/solidaritySF/bin/console app:create-transactions 10000 >> /var/www/solidaritySF/var/log/crontab-create-transactions-`date +\%d-\%m-\%Y`.txt
+*/10 7-21 * * * php /var/www/solidaritySF/bin/console app:create-transactions 10000 > /var/www/solidaritySF/var/log/crontab-create-transactions-`date +\%d-\%m-\%Y`.txt
 
 # Cancelled transactions
 0 * * * * php /var/www/solidaritySF/bin/console app:expired-transactions >> /var/www/solidaritySF/var/log/crontab-expired-transaction-`date +\%d-\%m-\%Y`.txt

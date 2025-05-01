@@ -41,8 +41,8 @@
                     <td>{{ log.action }}</td>
                     <td>{{ log.entityName }}</td>
                     <td>{{ log.entityId }}</td>
-                    <td>
-                        {{ log.createdAt|date('d.m.Y.') }}
+                    <td class="whitespace-nowrap">
+                        {{ log.createdAt|date('H:i d.m.Y.') }}
                     </td>
                     <td>
                         <button class="btn" onclick="my_modal_{{ log.id }}.showModal()" data->Prikaži</button>
