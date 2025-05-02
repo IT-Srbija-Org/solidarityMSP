@@ -109,6 +109,10 @@
                                             <span class="ti ti-qrcode text-xl"></span> NBS QR
                                         </a>
 
+                                        <a href="{{ path('donor_transaction_print', { 'id': transaction.id }) }}" target="_blank" class="btn {% if transaction.allowShowPrint %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Oštampaj">
+                                            <span class="ti ti-printer text-xl"></span>
+                                        </a>
+
                                         {% if transaction.isStatusWaitingConfirmation %}
                                             <a href="{{ path('donor_transaction_delete_payment_confirmation', { 'id': transaction.id }) }}" class="btn {% if transaction.allowDeletePaymentConfirmation %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex">
                                                 <span class="ti ti-square-x text-xl"></span> Obriši potvrdu
