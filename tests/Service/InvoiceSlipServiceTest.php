@@ -39,10 +39,10 @@ class InvoiceSlipServiceTest extends TestCase
             'purpose' => 'Transakcija po nalogu građana',
             'amount' => '123456,00',
             'account' => '123-4567890123456-11',
-            'reference' => 0,
+            'reference' => '',
             'place' => '',
             'date' => '19.04.2024',
-            'model' => '',
+            'model' => '00',
             'currency' => 'RSD',
             'payment_code' => '289',
         ], $result);

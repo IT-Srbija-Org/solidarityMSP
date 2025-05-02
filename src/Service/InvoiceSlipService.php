@@ -30,7 +30,7 @@ class InvoiceSlipService
             'reference' => $transaction->getReferenceCode(),
             'place' => '',
             'date' => $transaction->getCreatedAt() ? $transaction->getCreatedAt()->format('d.m.Y') : '',
-            'model' => '',
+            'model' => '00',
             'currency' => 'RSD',
             'payment_code' => '289',
         ];
