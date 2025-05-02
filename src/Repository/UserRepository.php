@@ -174,4 +174,31 @@ class UserRepository extends ServiceEntityRepository
             'total_pages' => 1,
         ];
     }
+
+    public function getTotalDelegates(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return (int) $qb->select('COUNT(u.id)')
+            ->from(User::class, 'u')
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_DELEGATE%')
+            ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getTotalAdmins(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return (int) $qb->select('COUNT(u.id)')
+            ->from(User::class, 'u')
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_ADMIN%')
+            ->andWhere('u.isActive = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

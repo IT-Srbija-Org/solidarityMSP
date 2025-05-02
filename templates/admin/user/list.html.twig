@@ -39,6 +39,10 @@
                         ) }}
                     </th>
                     <th>
+                        <span class="ti ti-calendar-event text-xl"></span>
+                        Poslednji put viđen
+                    </th>
+                    <th>
                         {{ include(
                             'sort.html.twig',
                             { 'path': 'admin_user_list', 'sort': 'isActive', 'title': 'Aktivan?' }
@@ -61,6 +65,13 @@
                         <td>{{ user.getRoles|roleTranslate }}</td>
                         <td>
                             {{ user.createdAt|date('d.m.Y.') }}
+                        </td>
+                        <td class="whitespace-nowrap">
+                            {% if user.lastVisit %}
+                                {{ user.lastVisit|date('H:i d.m.Y.') }}
+                            {% else %}
+                                -
+                            {% endif %}
                         </td>
                         <td>
                             {% if user.isActive %}
