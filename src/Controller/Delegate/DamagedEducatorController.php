@@ -135,7 +135,7 @@ class DamagedEducatorController extends AbstractController
     {
         $periodId = $request->query->getInt('period');
         $period = $damagedEducatorPeriodRepository->find($periodId);
-        if (empty($period) || !$period->isActive()) {
+        if (empty($period)) {
             throw $this->createAccessDeniedException();
         }
 

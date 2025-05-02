@@ -3,7 +3,6 @@
 namespace App\Command\Transaction;
 
 use App\Entity\DamagedEducator;
-use App\Entity\DamagedEducatorPeriod;
 use App\Entity\Transaction;
 use App\Entity\UserDonor;
 use Doctrine\ORM\EntityManagerInterface;
@@ -223,7 +222,7 @@ class CreateCommand extends Command
               0) AS transactionSum
             FROM damaged_educator AS de
              INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id
-            WHERE dep.active = 0
+            WHERE dep.active = 1
              AND de.status = :status
             HAVING transactionSum < de.amount
             ORDER BY de.id ASC
@@ -231,19 +230,8 @@ class CreateCommand extends Command
             'status' => DamagedEducator::STATUS_NEW,
         ]);
 
-        // Temporary ignore first half of the February 2025
-        $period = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy([
-            'month' => 2,
-            'year' => 2025,
-            'type' => DamagedEducatorPeriod::TYPE_FIRST_HALF,
-        ]);
-
         $items = [];
         foreach ($stmt->fetchAllAssociative() as $item) {
-            if ($period && $period->getId() == $item['period_id']) {
-                continue;
-            }
-
             if ($item['amount'] > $this->maxDonationAmount) {
                 $item['amount'] = $this->maxDonationAmount;
             }
