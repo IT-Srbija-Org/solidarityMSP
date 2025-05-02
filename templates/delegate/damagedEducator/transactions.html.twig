@@ -54,7 +54,7 @@
                     <table class="table rounded-xl border border-base-200">
                         <thead class="bg-gray-100">
                             <tr>
-                                <th>ID</th>
+                                <th>Poziv na broj</th>
                                 <th>
                                     <span class="ti ti-credit-card text-xl"></span>
                                     Broj računa
@@ -74,7 +74,7 @@
                         <tbody>
                         {% for transaction in transactions %}
                             <tr class="hover:bg-gray-100">
-                                <td>{{ transaction.id }}</td>
+                                <td>{{ transaction.referenceCode }}</td>
                                 <td class="whitespace-nowrap">{{ transaction.accountNumber|account_number_format }}</td>
                                 <td>{{ transaction.amount|number_format }}</td>
                                 <td>

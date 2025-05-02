@@ -27,7 +27,7 @@ class InvoiceSlipService
             'purpose' => 'Transakcija po nalogu građana',
             'amount' => number_format($transaction->getAmount(), 2, ',', ''),
             'account' => $transaction->getAccountNumber(),
-            'reference' => '',
+            'reference' => $transaction->getReferenceCode(),
             'place' => '',
             'date' => $transaction->getCreatedAt() ? $transaction->getCreatedAt()->format('d.m.Y') : '',
             'model' => '',

@@ -67,6 +67,7 @@
                                     <span class="ti ti-cash text-xl"></span>
                                     Cifra
                                 </th>
+                                <th>Poziv na broj</th>
                                 <th>
                                     <span class="ti ti-calendar-event text-xl"></span>
                                     Kreirano
@@ -100,10 +101,12 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ transaction.amount|number_format }}</td>
+                                <td>{{ transaction.referenceCode }}</td>
                                 <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
-                                <td class="max-w-[180px]">
-                                    {{ transaction.status|transaction_status|raw }}</td>
-                                <td>
+                                <td class="min-w-[180px] break-words whitespace-normal">
+                                    {{ transaction.status|transaction_status|raw }}
+                                </td>
+                                <td class="whitespace-nowrap">
                                     <div class="flex gap-2 justify-end">
                                         <a href="#" class="btn {% if transaction.allowShowQR %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="NBS QR" onclick="openQrModal('{{ transaction.id }}'); return false;">
                                             <span class="ti ti-qrcode text-xl"></span> NBS QR

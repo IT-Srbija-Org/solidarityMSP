@@ -106,6 +106,7 @@ class TransactionController extends AbstractController
             'payerName' => $user->getFullName(),
             'paymentCode' => '289',
             'paymentPurpose' => 'Transakcija po nalogu građana',
+            'referenceCode' => $transaction->getReferenceCode(),
         ];
 
         $qrString = $this->qrCodeService->createIpsQrString($paymentData);
