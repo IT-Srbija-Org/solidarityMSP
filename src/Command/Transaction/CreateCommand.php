@@ -124,7 +124,7 @@ class CreateCommand extends Command
         $message = (new TemplatedEmail())
             ->to($userDonor->getUser()->getEmail())
             ->from(new Address('donatori@mrezasolidarnosti.org', 'Mreža Solidarnosti'))
-            ->subject('Stigle su vam nove instrukcije za uplatu')
+            ->subject('Stigle su ti nove instrukcije za uplatu')
             ->htmlTemplate('email/donor-new-transactions.html.twig')
             ->context([
                 'user' => $userDonor->getUser(),
