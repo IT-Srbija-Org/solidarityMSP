@@ -41,14 +41,20 @@ class NotifyDonorsCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->section('Command started at '.date('Y-m-d H:i:s'));
 
-        $donors = $this->getDonors();
-        foreach ($donors as $donor) {
-            if (!$this->hasTransactionsFromYesterday($donor)) {
+        while (true) {
+            $donors = $this->getDonors();
+            if (empty($donors)) {
                 continue;
             }
 
-            $output->writeln('Send email to '.$donor->getUser()->getEmail());
-            $this->sendEmail($donor->getUser());
+            foreach ($donors as $donor) {
+                if (!$this->hasTransactionsFromYesterday($donor)) {
+                    continue;
+                }
+
+                $output->writeln('Send email to '.$donor->getUser()->getEmail());
+                $this->sendEmail($donor->getUser());
+            }
         }
 
         $io->success('Command finished at '.date('Y-m-d H:i:s'));
