@@ -105,9 +105,9 @@ class NotifyDonorsCommand extends Command
             ->innerJoin('ud.user', 'u')
             ->andWhere('u.isActive = 1')
             ->andWhere('u.isEmailVerified = 1')
-            ->andWhere('u.id > :lastId')
+            ->andWhere('ud.id > :lastId')
             ->setParameter('lastId', $this->lastId)
-            ->orderBy('u.id', 'ASC')
+            ->orderBy('ud.id', 'ASC')
             ->setMaxResults(100);
 
         $results = $qb->getQuery()->getResult();
