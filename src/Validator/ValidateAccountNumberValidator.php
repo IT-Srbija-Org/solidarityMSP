@@ -33,11 +33,18 @@ class ValidateAccountNumberValidator extends ConstraintValidator
 
     private function isValid(string $accountNumber): bool
     {
+        // Budget of the Republic of Serbia
         if (str_starts_with($accountNumber, '840')) {
             return false;
         }
 
+        // Eurobank Direktna
         if (str_starts_with($accountNumber, '150')) {
+            return false;
+        }
+
+        // MTS Bank
+        if (str_starts_with($accountNumber, '360')) {
             return false;
         }
 

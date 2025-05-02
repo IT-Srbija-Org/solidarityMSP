@@ -20,7 +20,6 @@ use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class PanelControllerTest extends WebTestCase
 {
@@ -93,11 +92,11 @@ class PanelControllerTest extends WebTestCase
         $this->assertStringContainsString('/delegat/odabir-perioda', $this->client->getResponse()->headers->get('Location'));
     }
 
-    public function testActiveDamagedEducatorsList(): void
+    public function testDamagedEducatorsList(): void
     {
         $this->loginAsDelegate();
 
-        $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
+        $period = $this->damagedEducatorPeriodRepository->findOneBy([]);
         $crawler = $this->client->request('GET', '/delegat/osteceni', ['period' => $period->getId()]);
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
@@ -105,55 +104,22 @@ class PanelControllerTest extends WebTestCase
         $this->assertSelectorTextContains('a.btn-primary', 'Dodaj');
     }
 
-    public function testInactiveDamagedEducatorsList(): void
+    public function testPeriodNewDamagedEducatorForm(): void
     {
         $this->loginAsDelegate();
 
-        $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => false]);
-        $crawler = $this->client->request('GET', '/delegat/osteceni', ['period' => $period->getId()]);
-
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertCount(1, $crawler->filter('table'));
-        $this->assertSelectorTextContains('a.btn-disabled', 'Dodaj');
-    }
-
-    public function testActivePeriodNewDamagedEducatorForm(): void
-    {
-        $this->loginAsDelegate();
-
-        $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
+        $period = $this->damagedEducatorPeriodRepository->findOneBy([]);
         $this->client->request('GET', '/delegat/prijavi-ostecenog', ['period' => $period->getId()]);
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorExists('form');
     }
 
-    public function testInactivePeriodNewDamagedEducatorForm(): void
-    {
-        $this->loginAsDelegate();
-
-        // Use PHPUnit expectException to handle the AccessDeniedHttpException
-        // This will catch the exception and treat it as a passing assertion
-        $this->client->catchExceptions(false);
-
-        try {
-            $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => false]);
-            $this->client->request('GET', '/delegat/prijavi-ostecenog', ['period' => $period->getId()]);
-            $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
-        } catch (AccessDeniedException $e) {
-            $this->assertTrue(true, 'Expected AccessDeniedException was thrown');
-        } catch (\Exception $e) {
-            $this->fail('Unexpected exception thrown: '.get_class($e).' - '.$e->getMessage());
-        } finally {
-            $this->client->catchExceptions(true);
-        }
-    }
-
     public function testNewDamagedEducatorForm(): void
     {
         $this->loginAsDelegate();
 
-        $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
+        $period = $this->damagedEducatorPeriodRepository->findOneBy([]);
         $user = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
         $userDelegateSchool = $this->userDelegateSchoolRepository->findOneBy(['user' => $user]);
 
@@ -178,7 +144,7 @@ class PanelControllerTest extends WebTestCase
     {
         $this->loginAsDelegate();
 
-        $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
+        $period = $this->damagedEducatorPeriodRepository->findOneBy([]);
         $user = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
         $userDelegateSchool = $this->userDelegateSchoolRepository->findOneBy(['user' => $user]);
         $damagedEducator = $this->damagedEducatorRepository->findOneBy(['school' => $userDelegateSchool->getSchool(), 'period' => $period]);
@@ -208,7 +174,7 @@ class PanelControllerTest extends WebTestCase
     {
         $this->loginAsDelegate();
 
-        $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
+        $period = $this->damagedEducatorPeriodRepository->findOneBy([]);
         $user = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
         $userDelegateSchool = $this->userDelegateSchoolRepository->findOneBy(['user' => $user]);
         $damagedEducator = $this->damagedEducatorRepository->findOneBy(['school' => $userDelegateSchool->getSchool(), 'period' => $period]);

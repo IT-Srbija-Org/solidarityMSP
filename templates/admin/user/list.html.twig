@@ -63,8 +63,8 @@
                             </a>
                         </td>
                         <td>{{ user.getRoles|roleTranslate }}</td>
-                        <td>
-                            {{ user.createdAt|date('d.m.Y.') }}
+                        <td class="whitespace-nowrap">
+                            {{ user.createdAt|date('H:i d.m.Y.') }}
                         </td>
                         <td class="whitespace-nowrap">
                             {% if user.lastVisit %}

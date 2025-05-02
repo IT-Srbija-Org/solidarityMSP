@@ -131,7 +131,7 @@
                         {% if existingDelegates %}
                             {% for item in existingDelegates %}
                                 <div>
-                                    <a target="_blank" href="{{ path('admin_user_edit', { 'id': item.user.id }) }}">
+                                    <a target="_blank" href="{{ path('admin_user_edit', { 'id': item.user.id }) }}" class="link link-primary link-hover">
                                         {{ item.user.fullName }}
                                     </a>
                                 </div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Transaction;
 
 use App\Entity\Transaction;
 use Doctrine\ORM\EntityManagerInterface;
@@ -9,12 +9,14 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\Store\FlockStore;
 
 #[AsCommand(
-    name: 'app:expired-transaction',
+    name: 'app:transaction:expired',
     description: 'Transaction automatically expired after 72 hours',
 )]
-class ExpiredTransactionCommand extends Command
+class ExpiredCommand extends Command
 {
     private int $lastId = 0;
 
@@ -25,6 +27,13 @@ class ExpiredTransactionCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $store = new FlockStore();
+        $factory = new LockFactory($store);
+        $lock = $factory->createLock($this->getName(), 0);
+        if (!$lock->acquire()) {
+            return Command::FAILURE;
+        }
+
         $io = new SymfonyStyle($input, $output);
         $io->section('Command started at '.date('Y-m-d H:i:s'));
 
@@ -32,17 +41,23 @@ class ExpiredTransactionCommand extends Command
         $comment = 'Instruckija za uplatu je automatski istekla jer je prošlo više od 72 sata.';
 
         while (true) {
-            $items = $this->getItems();
-            if (empty($items)) {
+            $transactions = $this->getTransactions();
+            if (empty($transactions)) {
                 break;
             }
 
-            foreach ($items as $item) {
-                $io->comment('Transaction ID: '.$item->getId());
+            foreach ($transactions as $transaction) {
+                $io->comment('Transaction ID: '.$transaction->getId());
+                $status = Transaction::STATUS_EXPIRED;
 
-                $item->setStatus(Transaction::STATUS_EXPIRED);
-                $item->setStatusComment($comment);
-                $this->entityManager->persist($item);
+                $user = $transaction->getUser();
+                if (!$user->getLastVisit() || $user->getLastVisit() < $transaction->getCreatedAt()) {
+                    $status = Transaction::STATUS_NOT_PAID;
+                }
+
+                $transaction->setStatus($status);
+                $transaction->setStatusComment($comment);
+                $this->entityManager->persist($transaction);
             }
 
             $this->entityManager->flush();
@@ -53,7 +68,7 @@ class ExpiredTransactionCommand extends Command
         return Command::SUCCESS;
     }
 
-    public function getItems(): array
+    public function getTransactions(): array
     {
         $qb = $this->entityManager->createQueryBuilder();
 

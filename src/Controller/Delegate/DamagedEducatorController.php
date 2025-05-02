@@ -95,7 +95,7 @@ class DamagedEducatorController extends AbstractController
     {
         $periodId = $request->query->getInt('period');
         $period = $damagedEducatorPeriodRepository->find($periodId);
-        if (empty($period) || !$period->isActive()) {
+        if (empty($period)) {
             throw $this->createAccessDeniedException();
         }
 
@@ -135,7 +135,7 @@ class DamagedEducatorController extends AbstractController
     {
         $periodId = $request->query->getInt('period');
         $period = $damagedEducatorPeriodRepository->find($periodId);
-        if (empty($period) || !$period->isActive()) {
+        if (empty($period)) {
             throw $this->createAccessDeniedException();
         }
 
@@ -333,9 +333,21 @@ class DamagedEducatorController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        $hasCancelledTransactions = (bool) $transactionRepository->count([
+            'damagedEducator' => $damagedEducator,
+            'status' => Transaction::STATUS_CANCELLED,
+        ]);
+
+        $hasExpiredTransactions = (bool) $transactionRepository->count([
+            'damagedEducator' => $damagedEducator,
+            'status' => Transaction::STATUS_EXPIRED,
+        ]);
+
         return $this->render('delegate/damagedEducator/transactions.html.twig', [
             'damagedEducator' => $damagedEducator,
             'transactions' => $transactionRepository->findBy(['damagedEducator' => $damagedEducator]),
+            'hasCancelledTransactions' => $hasCancelledTransactions,
+            'hasExpiredTransactions' => $hasExpiredTransactions,
         ]);
     }
 

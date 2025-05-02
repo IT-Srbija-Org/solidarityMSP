@@ -27,10 +27,10 @@ class InvoiceSlipService
             'purpose' => 'Transakcija po nalogu građana',
             'amount' => number_format($transaction->getAmount(), 2, ',', ''),
             'account' => $transaction->getAccountNumber(),
-            'reference' => '',
+            'reference' => $transaction->getReferenceCode(),
             'place' => '',
             'date' => $transaction->getCreatedAt() ? $transaction->getCreatedAt()->format('d.m.Y') : '',
-            'model' => '',
+            'model' => '00',
             'currency' => 'RSD',
             'payment_code' => '289',
         ];
@@ -65,7 +65,12 @@ class InvoiceSlipService
         $options->set('isRemoteEnabled', true);
         $options->set('defaultFont', 'Courier');
         $dompdf = new Dompdf($options);
+
+        // Convert to valid UTF-8
+        $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
+
         $dompdf->loadHtml($html);
+
         // Set paper size to match image pixel dimensions at 96 DPI (1pt = 1/72in)
         $pageWidthPt = $imgWidth * 72 / 96;
         $pageHeightPt = $imgHeight * 72 / 96;

@@ -91,6 +91,9 @@ class User implements UserInterface
     #[ORM\OneToOne(mappedBy: 'user')]
     private ?UserDelegateRequest $userDelegateRequest = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lastVisit = null;
+
     public function __construct()
     {
         $this->userDelegateSchools = new ArrayCollection();
@@ -304,5 +307,17 @@ class User implements UserInterface
     public function getUserDelegateRequest(): ?UserDelegateRequest
     {
         return $this->userDelegateRequest;
+    }
+
+    public function getLastVisit(): ?\DateTimeInterface
+    {
+        return $this->lastVisit;
+    }
+
+    public function setLastVisit(?\DateTimeInterface $lastVisit): static
+    {
+        $this->lastVisit = $lastVisit;
+
+        return $this;
     }
 }

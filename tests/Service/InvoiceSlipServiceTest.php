@@ -42,7 +42,7 @@ class InvoiceSlipServiceTest extends TestCase
             'reference' => '',
             'place' => '',
             'date' => '19.04.2024',
-            'model' => '',
+            'model' => '00',
             'currency' => 'RSD',
             'payment_code' => '289',
         ], $result);

@@ -10,10 +10,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
 
 #[AsCommand(
-    name: 'app:lint:all',
-    description: 'Runs all lint and static analysis commands',
+    name: 'app:tests',
+    description: 'Runs all tests and static analysis commands',
 )]
-class LintAllCommand extends Command
+class TestsCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

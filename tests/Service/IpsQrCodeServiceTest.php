@@ -27,11 +27,10 @@ class IpsQrCodeServiceTest extends TestCase
             'payeeName' => 'JEST Ltd., Test',
             'payeeCityName' => 'Beograd',
             'amount' => '1295,',
-            'payerName' => 'Test Payer',
             'paymentPurpose' => 'Test Purpose',
         ];
 
-        $expected = "K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test\n\rNOTPROVIDED\n\rBeograd|I:RSD1295,|P:Test Payer|S:Test Purpose";
+        $expected = "K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test\n\rNOTPROVIDED\n\rBeograd|I:RSD1295,|S:Test Purpose";
         $actual = $this->service->createIpsQrString($args);
 
         $this->assertSame($this->removeNewlines($expected), $this->removeNewlines($actual));
@@ -46,13 +45,12 @@ class IpsQrCodeServiceTest extends TestCase
             'bankAccountNumber' => '123456789012345611',
             'payeeName' => 'JEST Ltd., Test',
             'amount' => '1295,',
-            'payerName' => 'Test Payer',
             'payeeCityName' => 'Beograd',
             'paymentCode' => '123',
             'paymentPurpose' => 'Testing',
         ];
 
-        $expected = "K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test\n\rNOTPROVIDED\n\rBeograd|I:RSD1295,|P:Test Payer|SF:123|S:Testing";
+        $expected = "K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test\n\rNOTPROVIDED\n\rBeograd|I:RSD1295,|SF:123|S:Testing";
         $actual = $this->service->createIpsQrString($args);
 
         $this->assertSame($this->removeNewlines($expected), $this->removeNewlines($actual));
@@ -64,13 +62,12 @@ class IpsQrCodeServiceTest extends TestCase
             'bankAccountNumber' => '123456789012345611',
             'payeeName' => 'JEST Ltd., Test',
             'amount' => '1295,',
-            'payerName' => 'Test Payer',
             'payeeCityName' => 'Beograd',
             'paymentPurpose' => 'Test Purpose',
             'referenceCode' => '972012345',
         ];
 
-        $expected = "K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test\n\rNOTPROVIDED\n\rBeograd|I:RSD1295,|P:Test Payer|S:Test Purpose|RO:972012345";
+        $expected = "K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test\n\rNOTPROVIDED\n\rBeograd|I:RSD1295,|S:Test Purpose|RO:00972012345";
         $actual = $this->service->createIpsQrString($args);
 
         $this->assertSame($this->removeNewlines($expected), $this->removeNewlines($actual));

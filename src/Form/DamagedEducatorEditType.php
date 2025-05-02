@@ -58,6 +58,10 @@ class DamagedEducatorEditType extends AbstractType
             ])
             ->add('amount', IntegerType::class, [
                 'label' => 'Cifra',
+                'attr' => [
+                    'min' => 500,
+                    'max' => DamagedEducator::MONTHLY_LIMIT,
+                ],
             ])
             ->add('accountNumber', TextType::class, [
                 'label' => 'Broj računa',

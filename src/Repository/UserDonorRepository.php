@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Transaction;
 use App\Entity\User;
 use App\Entity\UserDonor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -108,5 +109,91 @@ class UserDonorRepository extends ServiceEntityRepository
             'current_page' => 1,
             'total_pages' => 1,
         ];
+    }
+
+    public function unsubscribe(UserDonor $userDonor): void
+    {
+        $transactions = $this->getEntityManager()->getRepository(Transaction::class)->findBy([
+            'user' => $userDonor->getUser(),
+            'status' => Transaction::STATUS_NEW,
+        ]);
+
+        foreach ($transactions as $transaction) {
+            $transaction->setStatus(Transaction::STATUS_CANCELLED);
+            $transaction->setStatusComment('Instruckija za uplatu je automatski otkazana pošto se donator odjavio sa liste donatora.');
+            $this->getEntityManager()->persist($transaction);
+        }
+
+        $this->getEntityManager()->remove($userDonor);
+        $this->getEntityManager()->flush();
+    }
+
+    public function getTotal(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return (int) $qb->select('COUNT(ud.id)')
+            ->from(UserDonor::class, 'ud')
+            ->innerJoin('ud.user', 'u')
+            ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getTotalMonthly(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return (int) $qb->select('COUNT(ud.id)')
+            ->from(UserDonor::class, 'ud')
+            ->innerJoin('ud.user', 'u')
+            ->andWhere('ud.isMonthly = 1')
+            ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getTotalNonMonthly(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return (int) $qb->select('COUNT(ud.id)')
+            ->from(UserDonor::class, 'ud')
+            ->innerJoin('ud.user', 'u')
+            ->andWhere('ud.isMonthly = 0')
+            ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function sumAmountMonthlyDonors(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return (int) $qb->select('SUM(ud.amount)')
+            ->from(UserDonor::class, 'ud')
+            ->innerJoin('ud.user', 'u')
+            ->andWhere('ud.isMonthly = 1')
+            ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function sumAmountNonMonthlyDonors(): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return (int) $qb->select('SUM(ud.amount)')
+            ->from(UserDonor::class, 'ud')
+            ->innerJoin('ud.user', 'u')
+            ->andWhere('ud.isMonthly = 0')
+            ->andWhere('u.isActive = 1')
+            ->andWhere('u.isEmailVerified = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

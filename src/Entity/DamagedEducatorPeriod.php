@@ -32,7 +32,7 @@ class DamagedEducatorPeriod
     private ?string $type = self::TYPE_FULL;
 
     #[ORM\Column]
-    private ?bool $active = true;
+    private ?bool $active = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;

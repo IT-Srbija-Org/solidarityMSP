@@ -22,7 +22,6 @@ security:
                 login_path: login
                 check_route: login_check
                 signature_properties: ['id']
-                max_uses: 1
 
             login_throttling:
                 max_attempts: 3

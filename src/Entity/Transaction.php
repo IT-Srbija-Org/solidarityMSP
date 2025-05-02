@@ -218,9 +218,9 @@ class Transaction
         return self::STATUS_WAITING_CONFIRMATION === $this->status;
     }
 
-    public function hideDetails(): bool
+    public function isMaskInformation(): bool
     {
-        if (in_array($this->getStatus(), [self::STATUS_CANCELLED, self::STATUS_EXPIRED])) {
+        if (in_array($this->getStatus(), [self::STATUS_CANCELLED, self::STATUS_EXPIRED, self::STATUS_NOT_PAID])) {
             return true;
         }
 
@@ -238,5 +238,10 @@ class Transaction
         }
 
         return false;
+    }
+
+    public function getReferenceCode(): string
+    {
+        return 'MS'.$this->getId();
     }
 }
