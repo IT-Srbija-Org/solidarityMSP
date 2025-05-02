@@ -15,6 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\Store\FlockStore;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
 #[AsCommand(
     name: 'app:transaction:notify-donors',
@@ -44,7 +45,7 @@ class NotifyDonorsCommand extends Command
         while (true) {
             $donors = $this->getDonors();
             if (empty($donors)) {
-                continue;
+                break;
             }
 
             foreach ($donors as $donor) {
@@ -82,6 +83,7 @@ class NotifyDonorsCommand extends Command
     {
         $message = (new TemplatedEmail())
             ->to($user->getEmail())
+            ->from(new Address('donatori@mrezasolidarnosti.org', 'Mreža Solidarnosti'))
             ->subject('Podsetnik: Instrukcije za uplatu donacije uskoro ističu')
             ->htmlTemplate('email/transaction-notify-donor.html.twig')
             ->context([
