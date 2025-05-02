@@ -76,8 +76,6 @@ class CreateTransactionsCommand extends Command
             }
 
             foreach ($userDonors as $userDonor) {
-                $this->sendEmail($userDonor);die; // tood
-
                 if (empty($this->damagedEducators)) {
                     $output->writeln('No damaged educators found');
                     break 2;
