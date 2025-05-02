@@ -1,0 +1,14 @@
+{% extends 'base_email.html.twig' %}
+
+{% block body %}
+    <p>Pozdrav,</p>
+
+    <div>Podsećamo Vas da instrukcije za uplatu donacije ističu uskoro!</div>
+
+    <div style="margin-top: 10px; margin-bottom: 10px;">
+        <div>Ukoliko već niste izvršili uplatu, molimo Vas da to učinit pošto će u suprotnom instrukcije za uplatu isteći sutra.</div>
+        <div>U slučaju da ste uplatu već realizovali, molimo Vas da potvrdite uplatu na stranici "<a href="https://mrezasolidarnosti.org{{ path('donor_transaction_list') }}">Instrukcije za uplatu</a>".</div>
+    </div>
+
+    <div>Hvala Vam na  željida podržite naš rad i doprinesete značajnoj promeni.</div>
+{% endblock %}
