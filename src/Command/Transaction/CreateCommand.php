@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Transaction;
 
 use App\Entity\DamagedEducator;
 use App\Entity\DamagedEducatorPeriod;
@@ -17,12 +17,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\Store\FlockStore;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
 #[AsCommand(
-    name: 'app:create-transactions',
+    name: 'app:transaction:create',
     description: 'Create transaction for donors',
 )]
-class CreateTransactionsCommand extends Command
+class CreateCommand extends Command
 {
     private int $minTransactionDonationAmount = 500;
     private $maxDonationAmount;
@@ -123,6 +124,7 @@ class CreateTransactionsCommand extends Command
     {
         $message = (new TemplatedEmail())
             ->to($userDonor->getUser()->getEmail())
+            ->from(new Address('donatori@mrezasolidarnosti.org', 'Mreža Solidarnosti'))
             ->subject('Stigle su vam nove instrukcije za uplatu')
             ->htmlTemplate('email/donor-new-transactions.html.twig')
             ->context([

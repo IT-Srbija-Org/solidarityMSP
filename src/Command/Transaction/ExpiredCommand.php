@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Transaction;
 
 use App\Entity\Transaction;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,10 +13,10 @@ use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\Store\FlockStore;
 
 #[AsCommand(
-    name: 'app:expired-transactions',
+    name: 'app:transaction:expired',
     description: 'Transaction automatically expired after 72 hours',
 )]
-class ExpiredTransactionsCommand extends Command
+class ExpiredCommand extends Command
 {
     private int $lastId = 0;
 

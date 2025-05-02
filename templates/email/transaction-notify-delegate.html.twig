@@ -1,0 +1,24 @@
+{% extends 'base_email.html.twig' %}
+
+{% block body %}
+    <p>Zdravo,</p>
+
+    <div>Šaljemo Vam spisak oštećenih prosvetnih radnika koji imaju instrukcije za uplatu koje čekaju vašu potvrdu.</div>
+    <div>Kod svakog oštećenog se nalazi link koji će vas preusmeriti na stranicu gde možete da potvrdite uplate.</div>
+
+    <ul>
+        {% for damagedEducator in damagedEducators %}
+            <li>
+                {{ damagedEducator.period|format_period }} - {{ damagedEducator.name }} {% if showSchool %}({{ damagedEducator.school.name }}) {% endif %}-
+
+                <a href="https://mrezasolidarnosti.org{{ path('delegate_damaged_educator_transactions', { 'id': damagedEducator.id }) }}">
+                    proveri
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div>
+        <i>Ovo sve možete da vidite i na stranici "<a href="https://mrezasolidarnosti.org{{ path('delegate_damaged_educator_choose_period') }}">Spisak oštećenih</a>".</i>
+    </div>
+{% endblock %}
