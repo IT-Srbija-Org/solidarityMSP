@@ -22,7 +22,6 @@ class IpsQrCodeService
             'payeeName',
             'payeeCityName',
             'amount',
-            'payerName',
             'paymentPurpose',
         ];
 
@@ -45,9 +44,6 @@ class IpsQrCodeService
             'I:RSD'.$data['amount'],
         ];
 
-        if (!empty($data['payerName'])) {
-            $segments[] = 'P:'.$data['payerName'];
-        }
         if (!empty($data['paymentCode'])) {
             $segments[] = 'SF:'.$data['paymentCode'];
         }

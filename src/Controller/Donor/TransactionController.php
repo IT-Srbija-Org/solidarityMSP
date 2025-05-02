@@ -103,7 +103,6 @@ class TransactionController extends AbstractController
             'payeeName' => $transaction->getDamagedEducator()->getName(),
             'payeeCityName' => $transaction->getDamagedEducator()->getCity()->getName(),
             'amount' => number_format($transaction->getAmount(), 2, ',', ''),
-            'payerName' => $user->getFullName(),
             'paymentCode' => '289',
             'paymentPurpose' => 'Transakcija po nalogu građana',
             'referenceCode' => $transaction->getReferenceCode(),
