@@ -13,49 +13,28 @@
         </header>
 
         {% block supportButton %}
-            <div class="text-center">
-                <a href="{{ path('donor_request_form') }}" class="btn btn-primary btn-xl transition duration-200 hover:scale-105">
-                    <span class="ti ti-heart text-2xl"></span>
-                    Postani donator
-                </a>
-            </div>
+            {% if not app.user or not app.user.userDonor %}
+                <div class="text-center">
+                    <a href="{{ path('donor_request_form') }}" class="btn btn-primary btn-xl transition duration-200 hover:scale-105">
+                        <span class="ti ti-heart text-2xl"></span>
+                        Postani donator
+                    </a>
+                </div>
+            {% endif %}
         {% endblock %}
-
-        <div class="flex flex-row justify-center mt-8 gap-4">
-            <a href="https://www.linkedin.com/company/it-srbija/" target="_blank" title="LinkedIn" class="flex items-center justify-center w-12 h-12 text-primary transition duration-200 hover:scale-110">
-                <i class="ti ti-brand-linkedin text-3xl"></i>
-            </a>
-
-            <a href="https://www.instagram.com/it.srbija" target="_blank" title="Instagram" class="flex items-center justify-center w-12 h-12 text-primary transition duration-200 hover:scale-110">
-                <i class="ti ti-brand-instagram text-3xl"></i>
-            </a>
-
-            <a href="https://www.facebook.com/share/1BXSBJy2cY/" target="_blank" title="Facebook" class="flex items-center justify-center w-12 h-12 text-primary transition duration-200 hover:scale-110">
-                <i class="ti ti-brand-facebook text-3xl"></i>
-            </a>
-
-            <a href="https://x.com/ITSrbijaOrg" target="_blank" title="X" class="flex items-center justify-center w-12 h-12 text-primary transition duration-200 hover:scale-110">
-                <i class="ti ti-brand-x text-3xl"></i>
-            </a>
-
-            <a href="https://tiktok.com/@it.srbija" target="_blank" title="TikTok" class="flex items-center justify-center w-12 h-12 text-primary transition duration-200 hover:scale-110">
-                <i class="ti ti-brand-tiktok text-3xl"></i>
-            </a>
-
-            <a href="https://github.com/IT-Srbija-Org" target="_blank" title="TikTok" class="flex items-center justify-center w-12 h-12 text-primary transition duration-200 hover:scale-110">
-                <i class="ti ti-brand-github text-3xl"></i>
-            </a>
-        </div>
 
         <div class="py-10 flex gap-4 flex-col md:flex-row">
             <section class="rounded-lg bg-base-100 p-6 shadow-sm w-full md:w-1/2">
-                <h3 class="text-lg mb-2 font-bold">Već ste se prijavili?</h3>
-                <p class="text-sm text-gray-500">U slučaju da ste već popunili obrazac i dobili email potvrde o registraciji kao donator, već ste na spisku, obrazac nije potrebno ponovo da popunite.</p>
+                <h3 class="text-lg mb-2 font-bold">Kako da donirate?</h3>
+                <p class="text-sm text-gray-500">
+                    Da biste donirali, potrebno je da se prijavite kao donator na <a href="{{ path('donor_request_form') }}" class="link link-primary link-hover">ovoj</a> stranici.
+                    Nakon prijave, u roku od nekoliko sati dobićete instrukcije za uplatu koje možete da vidite na <a href="{{ path('donor_transaction_list') }}" class="link link-primary link-hover">ovoj</a> stranici.
+                </p>
             </section>
 
             <section class="rounded-lg bg-base-100 p-6 shadow-sm w-full md:w-1/2">
                 <h3 class="text-lg mb-2 font-bold">Želite da promenite iznos?</h3>
-                <p class="text-sm text-gray-500">U slučaju da želite da promenite iznos donacije, potrebno je da se ulogujete i ponovo popunite obrazac sa novim iznosom.</p>
+                <p class="text-sm text-gray-500">U slučaju da želite da promenite iznos donacije, potrebno je da to uradite na <a href="{{ path('donor_request_form') }}" class="link link-primary link-hover">ovoj</a> stranici.</p>
             </section>
         </div>
 
@@ -164,9 +143,9 @@
 
                 <div class="text-gray-500">
                     <ul class="list-disc ml-6 mt-2">
-                        <li>Isplate će se realizovati u fazama</li>
-                        <li>Na osnovu broja donatora i iznosa koje su naveli u prijavi, formira se prvi kontingent povezivanja sa nastavnicima</li>
-                        <li>Nakon uspešne realizacije prve faze, otvaraju se prijave za novi krug donatora i nastavnika.</li>
+                        <li>Isplata se vrši odmah nakon prijave donatora</li>
+                        <li>Donatoru u roku od nekoliko sati stižu instrukcije za uplatu</li>
+                        <li>Donacija se uplaćuje direktno prosvetnim radnicima</li>
                     </ul>
                 </div>
             </section>
@@ -199,5 +178,31 @@
                 <p>Pridruži se i budi deo mreže solidarnosti. Registruj se putem ove forme i podrži one koji su na prvoj liniji borbe za bolje obrazovanje!</p>
             </div>
         </section>
+
+        <div class="flex flex-row justify-center mt-8 gap-4">
+            <a href="https://www.linkedin.com/company/it-srbija/" target="_blank" title="LinkedIn" class="flex items-center justify-center w-12 h-12 text-primary transition duration-200 hover:scale-110">
+                <i class="ti ti-brand-linkedin text-3xl"></i>
+            </a>
+
+            <a href="https://www.instagram.com/it.srbija" target="_blank" title="Instagram" class="flex items-center justify-center w-12 h-12 text-primary transition duration-200 hover:scale-110">
+                <i class="ti ti-brand-instagram text-3xl"></i>
+            </a>
+
+            <a href="https://www.facebook.com/share/1BXSBJy2cY/" target="_blank" title="Facebook" class="flex items-center justify-center w-12 h-12 text-primary transition duration-200 hover:scale-110">
+                <i class="ti ti-brand-facebook text-3xl"></i>
+            </a>
+
+            <a href="https://x.com/ITSrbijaOrg" target="_blank" title="X" class="flex items-center justify-center w-12 h-12 text-primary transition duration-200 hover:scale-110">
+                <i class="ti ti-brand-x text-3xl"></i>
+            </a>
+
+            <a href="https://tiktok.com/@it.srbija" target="_blank" title="TikTok" class="flex items-center justify-center w-12 h-12 text-primary transition duration-200 hover:scale-110">
+                <i class="ti ti-brand-tiktok text-3xl"></i>
+            </a>
+
+            <a href="https://github.com/IT-Srbija-Org" target="_blank" title="TikTok" class="flex items-center justify-center w-12 h-12 text-primary transition duration-200 hover:scale-110">
+                <i class="ti ti-brand-github text-3xl"></i>
+            </a>
+        </div>
     </div>
 {% endblock %}
