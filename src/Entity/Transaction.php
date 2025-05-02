@@ -242,6 +242,6 @@ class Transaction
 
     public function getReferenceCode(): string
     {
-        return 'MS' . $this->getId();
+        return 'MS'.$this->getId();
     }
 }
