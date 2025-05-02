@@ -23,8 +23,6 @@ use Symfony\Component\Mailer\MailerInterface;
 )]
 class NotifyDelegatesCommand extends Command
 {
-    private int $lastId = 0;
-
     public function __construct(private EntityManagerInterface $entityManager, private MailerInterface $mailer)
     {
         parent::__construct();
