@@ -39,7 +39,7 @@ class NotifyDonorsCommand extends Command
         }
 
         $io = new SymfonyStyle($input, $output);
-        $io->section('Command started at ' . date('Y-m-d H:i:s'));
+        $io->section('Command started at '.date('Y-m-d H:i:s'));
 
         $donors = $this->getDonors();
         foreach ($donors as $donor) {
@@ -47,11 +47,11 @@ class NotifyDonorsCommand extends Command
                 continue;
             }
 
-            $output->writeln('Send email to ' . $donor->getUser()->getEmail());
+            $output->writeln('Send email to '.$donor->getUser()->getEmail());
             $this->sendEmail($donor->getUser());
         }
 
-        $io->success('Command finished at ' . date('Y-m-d H:i:s'));
+        $io->success('Command finished at '.date('Y-m-d H:i:s'));
 
         return Command::SUCCESS;
     }
@@ -69,7 +69,7 @@ class NotifyDonorsCommand extends Command
             'status' => Transaction::STATUS_NEW,
         ]);
 
-        return (bool)$stmt->fetchOne();
+        return (bool) $stmt->fetchOne();
     }
 
     public function sendEmail(User $user): void
