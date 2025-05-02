@@ -14,7 +14,12 @@
         <table class="table rounded-xl border border-base-200">
             <thead class="bg-gray-100">
                 <tr>
-                    <th>ID</th>
+                    <th>
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_delegate_list', 'sort': 'id', 'title': 'ID' }
+                        ) }}
+                    </th>
                     <th>
                         {{ include(
                             'sort.html.twig',
@@ -26,8 +31,10 @@
                         Povezanih škola
                     </th>
                     <th>
-                        <span class="ti ti-calendar-event text-xl"></span>
-                        Registrovan
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_delegate_list', 'sort': 'createdAt', 'title': 'Registrovan', 'title_icon': 'ti-calendar-event' }
+                        ) }}
                     </th>
                     <th></th>
                 </tr>

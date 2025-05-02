@@ -32,7 +32,7 @@ class UserDonorRepository extends ServiceEntityRepository
 
     public function search(array $criteria, int $page = 1, int $limit = 50, string $sort = 'id', string $direction = 'DESC'): array
     {
-        $allowedSorts = ['id', 'fullName'];
+        $allowedSorts = ['id', 'fullName', 'isMonthly', 'amount', 'updatedAt'];
         $allowedDirections = ['ASC', 'DESC'];
 
         if (!in_array($sort, $allowedSorts, true)) {
@@ -40,7 +40,7 @@ class UserDonorRepository extends ServiceEntityRepository
         }
 
         if (!in_array(strtoupper($direction), $allowedDirections, true)) {
-            $direction = 'ASC';
+            $direction = 'DESC';
         }
 
         $qb = $this->createQueryBuilder('ud');
@@ -72,6 +72,11 @@ class UserDonorRepository extends ServiceEntityRepository
             case 'fullName':
                 $qb->addSelect('CONCAT(u.firstName, \' \', u.lastName) AS HIDDEN fullName')
                    ->orderBy('fullName', $direction);
+                break;
+            case 'isMonthly':
+            case 'amount':
+            case 'updatedAt':
+                $qb->orderBy('ud.'.$sort, $direction);
                 break;
             default:
                 $qb->orderBy('u.'.$sort, $direction);

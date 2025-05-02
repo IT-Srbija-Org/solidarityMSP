@@ -19,7 +19,7 @@ class SchoolRepository extends ServiceEntityRepository
 
     public function search(array $criteria, int $page = 1, int $limit = 50, string $sort = 'id', string $direction = 'ASC'): array
     {
-        $allowedSorts = ['id', 'name', 'cityName', 'typeName'];
+        $allowedSorts = ['id', 'name', 'cityName', 'typeName', 'createdAt'];
         $allowedDirections = ['ASC', 'DESC'];
 
         if (!in_array($sort, $allowedSorts, true)) {

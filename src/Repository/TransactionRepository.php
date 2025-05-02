@@ -17,8 +17,19 @@ class TransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Transaction::class);
     }
 
-    public function search(array $criteria, int $page = 1, int $limit = 50): array
+    public function search(array $criteria, int $page = 1, int $limit = 50, string $sort = 'id', string $direction = 'DESC'): array
     {
+        $allowedSorts = ['id', 'period', 'donor', 'damagedEducator', 'accountNumber', 'amount', 'createdAt', 'status'];
+        $allowedDirections = ['ASC', 'DESC'];
+
+        if (!in_array($sort, $allowedSorts, true)) {
+            $sort = 'id';
+        }
+
+        if (!in_array(strtoupper($direction), $allowedDirections, true)) {
+            $direction = 'DESC';
+        }
+
         $qb = $this->createQueryBuilder('t');
         $qb->leftJoin('t.damagedEducator', 'e')
             ->leftJoin('e.school', 's');
@@ -67,7 +78,24 @@ class TransactionRepository extends ServiceEntityRepository
         }
 
         // Set the sorting
-        $qb->orderBy('t.id', 'DESC');
+        switch ($sort) {
+            case 'period':
+                $qb->leftJoin('e.period', 'p');
+                $qb->addOrderBy('p.year', $direction)
+                   ->addOrderBy('p.month', $direction)
+                   ->addOrderBy('p.type', $direction);
+                break;
+            case 'donor':
+                $qb->leftJoin('t.user', 'ud');
+                $qb->addSelect('CONCAT(ud.firstName, \' \', ud.lastName) AS HIDDEN fullName')
+                   ->orderBy('fullName', $direction);
+                break;
+            case 'damagedEducator':
+                $qb->orderBy('e.name', $direction);
+                break;
+            default:
+                $qb->orderBy('t.'.$sort, $direction);
+        }
 
         // Apply pagination only if $limit is set and greater than 0
         if ($limit && $limit > 0) {

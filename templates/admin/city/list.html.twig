@@ -22,7 +22,10 @@
             <thead class="bg-gray-100">
                 <tr>
                     <th>
-                        ID
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_city_list', 'sort': 'id', 'title': 'ID' }
+                        ) }}
                     </th>
                     <th>
                         {{ include(
@@ -31,8 +34,10 @@
                         ) }}
                     </th>
                     <th>
-                        <span class="ti ti-calendar-event text-xl"></span>
-                        Kreiran
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_city_list', 'sort': 'createdAt', 'title': 'Kreiran', 'title_icon': 'ti-calendar-event' }
+                        ) }}
                     </th>
                     <th></th>
                 </tr>

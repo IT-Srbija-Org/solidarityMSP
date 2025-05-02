@@ -14,35 +14,59 @@
         <table class="table rounded-xl border border-base-200">
             <thead class="bg-gray-100">
                 <tr>
-                    <th>ID</th>
                     <th>
-                        <span class="ti ti-calendar-event text-xl"></span>
-                        Period
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_damaged_educator_list', 'sort': 'id', 'default_direction': 'desc', 'title': 'ID' }
+                        ) }}
                     </th>
                     <th>
-                        <span class="ti ti-user text-xl"></span>
-                        Ime
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_damaged_educator_list', 'sort': 'period', 'title': 'Period', 'title_icon': 'ti-calendar-event' }
+                        ) }}
                     </th>
                     <th>
-                        <span class="ti ti-building text-xl"></span>
-                        Škola
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_damaged_educator_list', 'sort': 'name', 'title': 'Ime', 'title_icon': 'ti-user' }
+                        ) }}
                     </th>
                     <th>
-                        <span class="ti ti-cash text-xl"></span>
-                        Cifra
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_damaged_educator_list', 'sort': 'school', 'title': 'Škola', 'title_icon': 'ti-building' }
+                        ) }}
                     </th>
                     <th>
-                        <span class="ti ti-credit-card text-xl"></span>
-                        Broj računa
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_damaged_educator_list', 'sort': 'amount', 'title': 'Cifra', 'title_icon': 'ti-cash' }
+                        ) }}
                     </th>
                     <th>
-                        <span class="ti ti-calendar-event text-xl"></span>
-                        Kreiran
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_damaged_educator_list', 'sort': 'accountNumber', 'title': 'Broj računa', 'title_icon': 'ti-credit-card' }
+                        ) }}
                     </th>
-                    <th>Status</th>
                     <th>
-                        <span class="ti ti-user-cog text-xl"></span>
-                        Delegat
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_damaged_educator_list', 'sort': 'updatedAt', 'title': 'Kreiran', 'title_icon': 'ti-calendar-event' }
+                        ) }}
+                    </th>
+                    <th>
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_damaged_educator_list', 'sort': 'status', 'title': 'Status' }
+                        ) }}
+                    </th>
+                    <th>
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_damaged_educator_list', 'sort': 'createdBy', 'title': 'Delegat', 'title_icon': 'ti-user-cog' }
+                        ) }}
                     </th>
                 </tr>
             </thead>

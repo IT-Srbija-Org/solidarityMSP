@@ -14,7 +14,12 @@
         <table class="table rounded-xl border border-base-200">
             <thead class="bg-gray-100">
                 <tr>
-                    <th>ID</th>
+                    <th>
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_donor_list', 'sort': 'id', 'default_direction': 'desc', 'title': 'ID' }
+                        ) }}
+                    </th>
                     <th>
                         {{ include(
                             'sort.html.twig',
@@ -22,16 +27,22 @@
                         ) }}
                     </th>
                     <th>
-                        <span class="ti ti-repeat text-xl"></span>
-                        Mesečna podrška
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_donor_list', 'sort': 'isMonthly', 'title': 'Mesečna podrška', 'title_icon': 'ti-repeat' }
+                        ) }}
                     </th>
                     <th>
-                        <span class="ti ti-cash text-xl"></span>
-                        Iznos
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_donor_list', 'sort': 'amount', 'title': 'Iznos', 'title_icon': 'ti-cash' }
+                        ) }}
                     </th>
                     <th>
-                        <span class="ti ti-calendar-event text-xl"></span>
-                        Datum
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_donor_list', 'sort': 'updatedAt', 'title': 'Datum', 'title_icon': 'ti-calendar-event' }
+                        ) }}
                     </th>
                     <th></th>
                 </tr>

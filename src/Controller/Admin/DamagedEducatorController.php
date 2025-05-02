@@ -24,9 +24,11 @@ final class DamagedEducatorController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+        $sort = $request->query->get('sort', 'id');
+        $direction = $request->query->get('direction', 'desc');
 
         return $this->render('admin/damagedEducator/list.html.twig', [
-            'damagedEducators' => $damagedEducatorRepository->search($criteria, $page),
+            'damagedEducators' => $damagedEducatorRepository->search($criteria, $page, 50, $sort, $direction),
             'form' => $form->createView(),
         ]);
     }

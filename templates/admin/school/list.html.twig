@@ -21,7 +21,12 @@
         <table class="table rounded-xl border border-base-200">
             <thead class="bg-gray-100">
                 <tr>
-                    <th>ID</th>
+                    <th>
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_school_list', 'sort': 'id', 'title': 'ID' }
+                        ) }}
+                    </th>
                     <th>
                         {{ include(
                             'sort.html.twig',
@@ -41,8 +46,10 @@
                         ) }}
                     </th>
                     <th>
-                        <span class="ti ti-calendar-event text-xl"></span>
-                        Kreirana
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_school_list', 'sort': 'createdAt', 'title': 'Kreirana', 'title_icon': 'ti-calendar-event' }
+                        ) }}
                     </th>
                     <th></th>
                 </tr>

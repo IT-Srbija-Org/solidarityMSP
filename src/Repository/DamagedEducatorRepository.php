@@ -32,8 +32,19 @@ class DamagedEducatorRepository extends ServiceEntityRepository
         ]);
     }
 
-    public function search(array $criteria, int $page = 1, int $limit = 50): array
+    public function search(array $criteria, int $page = 1, int $limit = 50, string $sort = 'id', string $direction = 'DESC'): array
     {
+        $allowedSorts = ['id', 'period', 'name', 'school', 'amount', 'accountNumber', 'updatedAt', 'status', 'createdBy'];
+        $allowedDirections = ['ASC', 'DESC'];
+
+        if (!in_array($sort, $allowedSorts, true)) {
+            $sort = 'id';
+        }
+
+        if (!in_array(strtoupper($direction), $allowedDirections, true)) {
+            $direction = 'DESC';
+        }
+
         $qb = $this->createQueryBuilder('e');
         $qb->leftJoin('e.school', 's');
 
@@ -85,7 +96,25 @@ class DamagedEducatorRepository extends ServiceEntityRepository
         }
 
         // Set the sorting
-        $qb->orderBy('e.id', 'DESC');
+        switch ($sort) {
+            case 'school':
+                $qb->addSelect('s.name AS HIDDEN schoolName')
+                   ->orderBy('schoolName', $direction);
+                break;
+            case 'period':
+                $qb->leftJoin('e.period', 'p');
+                $qb->addOrderBy('p.year', $direction)
+                   ->addOrderBy('p.month', $direction)
+                   ->addOrderBy('p.type', $direction);
+                break;
+            case 'createdBy':
+                $qb->leftJoin('e.createdBy', 'cb')
+                   ->addSelect('cb.firstName AS HIDDEN createdByName')
+                   ->orderBy('createdByName', $direction);
+                break;
+            default:
+                $qb->orderBy('e.'.$sort, $direction);
+        }
 
         // Apply pagination only if $limit is set and greater than 0
         if ($limit && $limit > 0) {

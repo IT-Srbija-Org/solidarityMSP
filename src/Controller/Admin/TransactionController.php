@@ -27,9 +27,11 @@ final class TransactionController extends AbstractController
         }
 
         $page = $request->query->getInt('page', 1);
+        $sort = $request->query->get('sort', 'id');
+        $direction = $request->query->get('direction', 'desc');
 
         return $this->render('admin/transaction/list.html.twig', [
-            'transactions' => $transactionRepository->search($criteria, $page),
+            'transactions' => $transactionRepository->search($criteria, $page, 50, $sort, $direction),
             'form' => $form->createView(),
         ]);
     }

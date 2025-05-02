@@ -14,32 +14,54 @@
         <table class="table rounded-xl border border-base-200">
             <thead class="bg-gray-100">
                 <tr>
-                    <th>ID</th>
                     <th>
-                        <span class="ti ti-calendar-event text-xl"></span>
-                        Period
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_transaction_list', 'sort': 'id', 'default_direction': 'desc', 'title': 'ID' }
+                        ) }}
                     </th>
                     <th>
-                        <span class="ti ti-user-heart text-xl"></span>
-                        Donator
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_transaction_list', 'sort': 'period', 'title': 'Period', 'title_icon': 'ti-calendar-event' }
+                        ) }}
                     </th>
                     <th>
-                        <span class="ti ti-school text-xl"></span>
-                        Oštećeni/a
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_transaction_list', 'sort': 'donor', 'title': 'Donator', 'title_icon': 'ti-user-heart' }
+                        ) }}
                     </th>
                     <th>
-                        <span class="ti ti-credit-card text-xl"></span>
-                        Broj računa
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_transaction_list', 'sort': 'damagedEducator', 'title': 'Oštećeni/a', 'title_icon': 'ti-school' }
+                        ) }}
                     </th>
                     <th>
-                        <span class="ti ti-cash text-xl"></span>
-                        Cifra
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_transaction_list', 'sort': 'accountNumber', 'title': 'Broj računa', 'title_icon': 'ti-credit-card' }
+                        ) }}
                     </th>
                     <th>
-                        <span class="ti ti-calendar-event text-xl"></span>
-                        Kreirano
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_transaction_list', 'sort': 'amount', 'title': 'Cifra', 'title_icon': 'ti-cash' }
+                        ) }}
                     </th>
-                    <th>Status</th>
+                    <th>
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_transaction_list', 'sort': 'createdAt', 'title': 'Kreirano', 'title_icon': 'ti-calendar-event' }
+                        ) }}
+                    </th>
+                    <th>
+                        {{ include(
+                            'sort.html.twig',
+                            { 'path': 'admin_transaction_list', 'sort': 'status', 'title': 'Status' }
+                        ) }}
+                    </th>
                     <th></th>
                 </tr>
             </thead>
