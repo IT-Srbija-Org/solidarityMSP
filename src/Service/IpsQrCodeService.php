@@ -51,7 +51,7 @@ class IpsQrCodeService
             $segments[] = 'S:'.$data['paymentPurpose'];
         }
         if (!empty($data['referenceCode'])) {
-            $segments[] = 'RO:'.$data['referenceCode'];
+            $segments[] = 'RO:00'.$data['referenceCode'];
         }
 
         return implode('|', $segments);

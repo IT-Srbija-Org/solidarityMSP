@@ -240,8 +240,8 @@ class Transaction
         return false;
     }
 
-    public function getReferenceCode(): int
+    public function getReferenceCode(): string
     {
-        return $this->getId();
+        return 'MS'.$this->getId();
     }
 }
