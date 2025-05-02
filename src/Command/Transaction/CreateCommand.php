@@ -82,6 +82,10 @@ class CreateCommand extends Command
                 }
 
                 $output->write('Process donor '.$userDonor->getUser()->getEmail().' at '.date('Y-m-d H:i:s'));
+                if ($userDonor->getAmount() >= 100000) {
+                    $output->writeln(' | amount is greater than 100000 - ignore (another command will process it)');
+                    continue;
+                }
 
                 $sumTransactions = $this->getSumTransactions($userDonor);
                 $donorRemainingAmount = $userDonor->getAmount() - $sumTransactions;
