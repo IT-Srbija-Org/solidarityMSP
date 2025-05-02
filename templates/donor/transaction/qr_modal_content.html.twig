@@ -1,8 +1,18 @@
-<div class="flex flex-col items-center justify-center py-4">
-    <img src="{{ qrDataUri }}" alt="NBS IPS QR kod" class="w-64 h-64" />
-    <div class="mt-4 text-center">
+<div class="flex flex-col items-center justify-center">
+    <div class="mb-4 text-center">
         <div class="font-bold">NBS IPS QR</div>
         <div class="text-xs text-gray-500">Skenirajte kod za plaćanje sa aplikacijom banke</div>
-        <div class="text-xs text-gray-500">Nakon uplate obavezno potvdite uplatu</div>
+    </div>
+
+    <img src="{{ qrDataUri }}" alt="NBS IPS QR kod" class="w-64 h-64" />
+
+    <div class="mt-4 text-center">
+        <div class="space-y-2">
+            <div class="text-xs text-gray-500 italic">Nakon plaćanja obavezno potvrdite uplatu</div>
+            <a href="{{ path('donor_transaction_confirm_payment', { 'id': transaction.id }) }}" class="btn btn-primary btn-sm">
+                <span class="ti ti-checkbox text-xl"></span>
+                Potvrdi uplatu
+            </a>
+        </div>
     </div>
 </div>
