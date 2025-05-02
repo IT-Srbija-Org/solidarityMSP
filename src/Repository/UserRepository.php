@@ -63,7 +63,7 @@ class UserRepository extends ServiceEntityRepository
         $this->mailer->send($message);
     }
 
-    public function search(array $criteria, int $page = 1, int $limit = 50, string $sort = 'id', string $direction = 'ASC'): array
+    public function search(array $criteria, int $page = 1, int $limit = 50, string $sort = 'id', string $direction = 'DESC'): array
     {
         $allowedSorts = ['id', 'fullName', 'role', 'createdAt', 'isActive'];
         $allowedDirections = ['ASC', 'DESC'];
@@ -73,7 +73,7 @@ class UserRepository extends ServiceEntityRepository
         }
 
         if (!in_array(strtoupper($direction), $allowedDirections, true)) {
-            $direction = 'ASC';
+            $direction = 'DESC';
         }
 
         $qb = $this->createQueryBuilder('u');
