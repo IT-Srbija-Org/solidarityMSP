@@ -75,6 +75,7 @@ class NotifyDelegatesCommand extends Command
                 continue;
             }
 
+            $output->writeln('Send email to '.$delegate->getEmail());
             $showSchool = !(1 == count($schools));
             $this->sendEmail($delegate, $showSchool, $items);
         }
