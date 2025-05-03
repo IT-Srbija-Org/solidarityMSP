@@ -249,7 +249,7 @@ class DamagedEducatorController extends AbstractController
     }
 
     #[Route('/osteceni/{id}/izmeni-podatke', name: 'edit')]
-    public function editDamagedEducator(Request $request, DamagedEducator $damagedEducator, DamagedEducatorRepository $damagedEducatorRepository): Response
+    public function editDamagedEducator(Request $request, DamagedEducator $damagedEducator, DamagedEducatorRepository $damagedEducatorRepository, TransactionRepository $transactionRepository): Response
     {
         if (!$damagedEducator->allowToEdit()) {
             throw $this->createAccessDeniedException();
@@ -282,18 +282,7 @@ class DamagedEducatorController extends AbstractController
 
             // If account number has changed, cancel all "NEW" transactions
             if ($currentAccountNumber != $damagedEducator->getAccountNumber()) {
-                $transactions = $this->entityManager->getRepository(Transaction::class)->findBy([
-                    'accountNumber' => $currentAccountNumber,
-                    'status' => Transaction::STATUS_NEW,
-                ]);
-
-                foreach ($transactions as $transaction) {
-                    $transaction->setStatus(Transaction::STATUS_CANCELLED);
-                    $transaction->setStatusComment('Instruckija za uplatu je automatski otkazana pošto se promenio broj računa.');
-                    $this->entityManager->persist($transaction);
-                }
-
-                $this->entityManager->flush();
+                $transactionRepository->cancelAllNewTransactions($damagedEducator, 'Instruckija za uplatu je automatski otkazana pošto se promenio broj računa.');
             }
 
             $this->addFlash('success', 'Uspešno ste izmenili podatke od oštećenog.');
@@ -341,19 +330,11 @@ class DamagedEducatorController extends AbstractController
             $data = $form->getData();
             $damagedEducator->setStatus(DamagedEducator::STATUS_DELETED);
             $damagedEducator->setStatusComment($data['comment']);
+            $this->entityManager->flush();
 
             // Cancel transactions
-            $transactions = $transactionRepository->findBy([
-                'damagedEducator' => $damagedEducator,
-                'status' => Transaction::STATUS_NEW,
-            ]);
+            $transactionRepository->cancelAllNewTransactions($damagedEducator, 'Instruckija za uplatu je otkazana pošto je oštećeni obrisan.');
 
-            foreach ($transactions as $transaction) {
-                $transaction->setStatus(Transaction::STATUS_CANCELLED);
-                $transaction->setStatusComment('Instruckija za uplatu je otkazana pošto je oštećeni obrisan.');
-            }
-
-            $this->entityManager->flush();
             $this->addFlash('success', 'Uspešno ste obrisali oštećenog.');
 
             return $this->redirectToRoute('delegate_damaged_educator_list', [

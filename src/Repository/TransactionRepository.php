@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\DamagedEducator;
 use App\Entity\DamagedEducatorPeriod;
 use App\Entity\School;
 use App\Entity\Transaction;
@@ -121,5 +122,20 @@ class TransactionRepository extends ServiceEntityRepository
         }
 
         return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function cancelAllNewTransactions(DamagedEducator $damagedEducator, string $comment): void
+    {
+        $transactions = $this->findBy([
+            'damagedEducator' => $damagedEducator,
+            'status' => Transaction::STATUS_NEW,
+        ]);
+
+        foreach ($transactions as $transaction) {
+            $transaction->setStatus(Transaction::STATUS_CANCELLED);
+            $transaction->setStatusComment($comment);
+        }
+
+        $this->getEntityManager()->flush();
     }
 }
