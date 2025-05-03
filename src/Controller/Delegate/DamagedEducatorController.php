@@ -87,7 +87,7 @@ class DamagedEducatorController extends AbstractController
         $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountConfirmedTransactions($period, null);
 
         $averageAmountPerDamagedEducator = 0;
-        if($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
+        if ($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
             $averageAmountPerDamagedEducator = floor($sumAmountConfirmedTransactions / $totalDamagedEducators);
         }
 
@@ -103,7 +103,7 @@ class DamagedEducatorController extends AbstractController
             $totalDamagedEducators = $damagedEducatorRepository->count(['period' => $period, 'school' => $school]);
 
             $averageAmountPerDamagedEducator = 0;
-            if($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
+            if ($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
                 $averageAmountPerDamagedEducator = floor($sumAmountConfirmedTransactions / $totalDamagedEducators);
             }
 
