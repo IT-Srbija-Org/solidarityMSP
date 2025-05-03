@@ -6,7 +6,6 @@ use App\Entity\Transaction;
 use App\Entity\User;
 use App\Form\Admin\UserEditType;
 use App\Form\Admin\UserSearchType;
-use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,9 +43,9 @@ final class UserController extends AbstractController
         $totalConfirmedTransactions = 0;
 
         foreach ($transactions as $transaction) {
-            if ($transaction->getStatus() == Transaction::STATUS_CONFIRMED) {
+            if (Transaction::STATUS_CONFIRMED == $transaction->getStatus()) {
                 $sumConfirmedTransactions += $transaction->getAmount();
-                $totalConfirmedTransactions++;
+                ++$totalConfirmedTransactions;
             }
         }
 
