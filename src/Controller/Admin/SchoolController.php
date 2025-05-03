@@ -39,7 +39,7 @@ final class SchoolController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'details')]
+    #[Route('/{id}', name: 'details', requirements: ['id' => '\d+'])]
     public function details(School $school, DamagedEducatorPeriodRepository $periodRepository, SchoolRepository $schoolRepository): Response
     {
         $periods = $periodRepository->findAll();
@@ -76,7 +76,7 @@ final class SchoolController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'edit')]
+    #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'])]
     public function edit(Request $request, School $school): Response
     {
         $form = $this->createForm(SchoolEditType::class, $school);
