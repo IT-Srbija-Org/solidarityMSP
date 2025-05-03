@@ -164,6 +164,7 @@ class CreateForLargeAmountCommand extends Command
             Transaction::STATUS_NEW,
             Transaction::STATUS_WAITING_CONFIRMATION,
             Transaction::STATUS_CONFIRMED,
+            Transaction::STATUS_EXPIRED,
         ];
 
         $stmt = $this->entityManager->getConnection()->executeQuery('

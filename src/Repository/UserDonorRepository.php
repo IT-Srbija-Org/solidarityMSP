@@ -51,6 +51,7 @@ class UserDonorRepository extends ServiceEntityRepository
                 Transaction::STATUS_NEW,
                 Transaction::STATUS_WAITING_CONFIRMATION,
                 Transaction::STATUS_CONFIRMED,
+                Transaction::STATUS_EXPIRED,
             ]);
 
         if ($userDonor->isMonthly()) {
@@ -67,6 +68,7 @@ class UserDonorRepository extends ServiceEntityRepository
             Transaction::STATUS_NEW,
             Transaction::STATUS_WAITING_CONFIRMATION,
             Transaction::STATUS_CONFIRMED,
+            Transaction::STATUS_EXPIRED,
         ];
 
         $stmt = $this->getEntityManager()->getConnection()->executeQuery('
