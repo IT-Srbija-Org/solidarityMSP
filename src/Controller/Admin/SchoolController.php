@@ -49,9 +49,6 @@ final class SchoolController extends AbstractController
             $statistics[] = $schoolRepository->getStatistics($period, $school);
         }
 
-        // delegates
-        // requests
-
         return $this->render('admin/school/details.html.twig', [
             'school' => $school,
             'statistics' => $statistics,

@@ -15,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SchoolRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private TransactionRepository $transactionRepository, private DamagedEducatorRepository $damagedEducatorRepository)
     {
         parent::__construct($registry, School::class);
     }
@@ -72,11 +72,8 @@ class SchoolRepository extends ServiceEntityRepository
 
     public function getStatistics(DamagedEducatorPeriod $period, School $school): array
     {
-        $transactionRepository = $this->getEntityManager()->getRepository(Transaction::class);
-        $damagedEducatorRepository = $this->getEntityManager()->getRepository(DamagedEducator::class);
-
-        $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountConfirmedTransactions($period, $school);
-        $totalDamagedEducators = $damagedEducatorRepository->count(['period' => $period, 'school' => $school]);
+        $sumAmountConfirmedTransactions = $this->transactionRepository->getSumAmountConfirmedTransactions($period, $school);
+        $totalDamagedEducators = $this->damagedEducatorRepository->count(['period' => $period, 'school' => $school]);
 
         $averageAmountPerDamagedEducator = 0;
         if ($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
@@ -86,8 +83,8 @@ class SchoolRepository extends ServiceEntityRepository
         return [
             'schoolEntity' => $school,
             'periodEntity' => $period,
-            'totalDamagedEducators' => $damagedEducatorRepository->count(['period' => $period, 'school' => $school]),
-            'sumAmount' => $damagedEducatorRepository->getSumAmount($period, $school),
+            'totalDamagedEducators' => $this->damagedEducatorRepository->count(['period' => $period, 'school' => $school]),
+            'sumAmount' => $this->damagedEducatorRepository->getSumAmount($period, $school),
             'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
             'averageAmountPerDamagedEducator' => $averageAmountPerDamagedEducator,
         ];
