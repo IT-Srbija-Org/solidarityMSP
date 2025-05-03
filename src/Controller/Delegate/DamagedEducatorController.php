@@ -134,7 +134,7 @@ class DamagedEducatorController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        if(!$period->allowToAdd()){
+        if (!$period->allowToAdd()) {
             throw $this->createAccessDeniedException();
         }
 
@@ -178,7 +178,7 @@ class DamagedEducatorController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        if(!$period->allowToAdd()){
+        if (!$period->allowToAdd()) {
             throw $this->createAccessDeniedException();
         }
 

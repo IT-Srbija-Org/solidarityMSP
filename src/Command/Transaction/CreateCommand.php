@@ -3,7 +3,6 @@
 namespace App\Command\Transaction;
 
 use App\Entity\DamagedEducator;
-use App\Entity\DamagedEducatorPeriod;
 use App\Entity\Transaction;
 use App\Entity\UserDonor;
 use App\Repository\UserDonorRepository;
