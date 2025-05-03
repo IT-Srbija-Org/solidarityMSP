@@ -80,6 +80,11 @@ class CreateCommand extends Command
                 }
 
                 $output->write('Process donor '.$userDonor->getUser()->getEmail().' at '.date('Y-m-d H:i:s'));
+                if ($this->userDonorRepository->hasNotPaidTransactionsInLastDays($userDonor, 10)) {
+                    $output->writeln(' | has not paid transactions in last 10 days');
+                    continue;
+                }
+
                 $sumTransactions = $this->userDonorRepository->getSumTransactions($userDonor);
                 $donorRemainingAmount = $userDonor->getAmount() - $sumTransactions;
                 if ($donorRemainingAmount < $this->minTransactionDonationAmount) {

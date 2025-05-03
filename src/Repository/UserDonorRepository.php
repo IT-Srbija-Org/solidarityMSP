@@ -22,6 +22,22 @@ class UserDonorRepository extends ServiceEntityRepository
         parent::__construct($registry, UserDonor::class);
     }
 
+    public function hasNotPaidTransactionsInLastDays(UserDonor $userDonor, int $days): bool
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $qb->select('COUNT(t.id)')
+            ->from(Transaction::class, 't')
+            ->where('t.user = :user')
+            ->andWhere('t.status = :status')
+            ->andWhere('t.createdAt > :dateLimit')
+            ->setParameter('user', $userDonor->getUser())
+            ->setParameter('status', Transaction::STATUS_NOT_PAID)
+            ->setParameter('dateLimit', new \DateTime('-'.$days.' days'));
+
+        return $qb->getQuery()->getSingleScalarResult() > 0;
+    }
+
     public function getSumTransactions(UserDonor $userDonor): int
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
