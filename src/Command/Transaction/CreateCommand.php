@@ -66,6 +66,9 @@ class CreateCommand extends Command
             return Command::FAILURE;
         }
 
+        // Get user donor repository
+        $userDonorRepository = $this->entityManager->getRepository(UserDonor::class);
+
         // Get damaged educators
         $this->damagedEducators = $this->getDamagedEducators();
 
@@ -82,12 +85,7 @@ class CreateCommand extends Command
                 }
 
                 $output->write('Process donor '.$userDonor->getUser()->getEmail().' at '.date('Y-m-d H:i:s'));
-                if ($userDonor->getAmount() >= 100000) {
-                    $output->writeln(' | amount is greater than 100000 - ignore (another command will process it)');
-                    continue;
-                }
-
-                $sumTransactions = $this->getSumTransactions($userDonor);
+                $sumTransactions = $userDonorRepository->getSumTransactions($userDonor);
                 $donorRemainingAmount = $userDonor->getAmount() - $sumTransactions;
                 if ($donorRemainingAmount < $this->minTransactionDonationAmount) {
                     $output->writeln(' | remaining amount is less than '.$this->minTransactionDonationAmount);
@@ -96,7 +94,7 @@ class CreateCommand extends Command
 
                 $totalTransactions = 0;
                 foreach ($this->damagedEducators as $damagedEducator) {
-                    $sumTransactionAmount = $this->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
+                    $sumTransactionAmount = $userDonorRepository->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
                     if ($sumTransactionAmount >= $this->maxYearDonationAmount) {
                         continue;
                     }
@@ -111,7 +109,7 @@ class CreateCommand extends Command
                 $output->writeln(' | Total transaction created: '.$totalTransactions);
 
                 if ($totalTransactions > 0) {
-                    $this->sendEmail($userDonor);
+                    $userDonorRepository->sendNewTransactionEmail($userDonor);
                 }
             }
 
@@ -121,23 +119,6 @@ class CreateCommand extends Command
         $io->success('Command finished at '.date('Y-m-d H:i:s'));
 
         return Command::SUCCESS;
-    }
-
-    public function sendEmail(UserDonor $userDonor): void
-    {
-        $message = (new TemplatedEmail())
-            ->to($userDonor->getUser()->getEmail())
-            ->from(new Address('donatori@mrezasolidarnosti.org', 'Mreža Solidarnosti'))
-            ->subject('Stigle su ti nove instrukcije za uplatu')
-            ->htmlTemplate('email/donor-new-transactions.html.twig')
-            ->context([
-                'user' => $userDonor->getUser(),
-            ]);
-
-        try {
-            $this->mailer->send($message);
-        } catch (\Exception $exception) {
-        }
     }
 
     public function createTransactions(UserDonor $userDonor, int &$donorRemainingAmount, int $damagedEducatorId): int
@@ -183,29 +164,6 @@ class CreateCommand extends Command
         $this->entityManager->flush();
 
         return $totalCreated;
-    }
-
-    public function sumTransactionsToEducator(UserDonor $userDonor, string $accountNumber): int
-    {
-        $transactionStatuses = [
-            Transaction::STATUS_NEW,
-            Transaction::STATUS_WAITING_CONFIRMATION,
-            Transaction::STATUS_CONFIRMED,
-        ];
-
-        $stmt = $this->entityManager->getConnection()->executeQuery('
-            SELECT SUM(t.amount)
-            FROM transaction AS t
-            WHERE t.user_id = :userId
-             AND t.account_number = :accountNumber
-             AND t.status IN ('.implode(',', $transactionStatuses).')
-             AND t.created_at > DATE(NOW() - INTERVAL 1 YEAR)
-            ', [
-            'userId' => $userDonor->getUser()->getId(),
-            'accountNumber' => $accountNumber,
-        ]);
-
-        return (int) $stmt->fetchOne();
     }
 
     public function getDamagedEducators(): array
@@ -257,29 +215,6 @@ class CreateCommand extends Command
         return $items;
     }
 
-    public function getSumTransactions(UserDonor $userDonor): int
-    {
-        $qb = $this->entityManager->createQueryBuilder();
-
-        $qb->select('SUM(t.amount)')
-            ->from(Transaction::class, 't')
-            ->where('t.user = :user')
-            ->andWhere('t.status IN (:statuses)')
-            ->setParameter('user', $userDonor->getUser())
-            ->setParameter('statuses', [
-                Transaction::STATUS_NEW,
-                Transaction::STATUS_WAITING_CONFIRMATION,
-                Transaction::STATUS_CONFIRMED,
-            ]);
-
-        if ($userDonor->isMonthly()) {
-            $qb->andWhere('t.createdAt > :dateLimit')
-                ->setParameter('dateLimit', new \DateTime('-30 days'));
-        }
-
-        return (int) $qb->getQuery()->getSingleScalarResult();
-    }
-
     public function getUserDonors(): array
     {
         $qb = $this->entityManager->createQueryBuilder();
@@ -289,6 +224,7 @@ class CreateCommand extends Command
             ->innerJoin('ud.user', 'u')
             ->andWhere('u.isActive = 1')
             ->andWhere('u.isEmailVerified = 1')
+            ->andWhere('ud.amount < 100000')
             ->andWhere('ud.id > :lastId')
             ->setParameter('lastId', $this->userDonorLastId)
             ->orderBy('ud.id', 'ASC')

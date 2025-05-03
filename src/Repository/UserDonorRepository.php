@@ -10,6 +10,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
 /**
  * @extends ServiceEntityRepository<UserDonor>
@@ -19,6 +20,69 @@ class UserDonorRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry, private MailerInterface $mailer)
     {
         parent::__construct($registry, UserDonor::class);
+    }
+
+    public function getSumTransactions(UserDonor $userDonor): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $qb->select('SUM(t.amount)')
+            ->from(Transaction::class, 't')
+            ->where('t.user = :user')
+            ->andWhere('t.status IN (:statuses)')
+            ->setParameter('user', $userDonor->getUser())
+            ->setParameter('statuses', [
+                Transaction::STATUS_NEW,
+                Transaction::STATUS_WAITING_CONFIRMATION,
+                Transaction::STATUS_CONFIRMED,
+            ]);
+
+        if ($userDonor->isMonthly()) {
+            $qb->andWhere('t.createdAt > :dateLimit')
+                ->setParameter('dateLimit', new \DateTime('-30 days'));
+        }
+
+        return (int)$qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function sumTransactionsToEducator(UserDonor $userDonor, string $accountNumber): int
+    {
+        $transactionStatuses = [
+            Transaction::STATUS_NEW,
+            Transaction::STATUS_WAITING_CONFIRMATION,
+            Transaction::STATUS_CONFIRMED,
+        ];
+
+        $stmt = $this->getEntityManager()->getConnection()->executeQuery('
+            SELECT SUM(t.amount)
+            FROM transaction AS t
+            WHERE t.user_id = :userId
+             AND t.account_number = :accountNumber
+             AND t.status IN (' . implode(',', $transactionStatuses) . ')
+             AND t.created_at > DATE(NOW() - INTERVAL 1 YEAR)
+            ', [
+            'userId' => $userDonor->getUser()->getId(),
+            'accountNumber' => $accountNumber,
+        ]);
+
+        return (int)$stmt->fetchOne();
+    }
+
+    public function sendNewTransactionEmail(UserDonor $userDonor): void
+    {
+        $message = (new TemplatedEmail())
+            ->to($userDonor->getUser()->getEmail())
+            ->from(new Address('donatori@mrezasolidarnosti.org', 'Mreža Solidarnosti'))
+            ->subject('Stigle su ti nove instrukcije za uplatu')
+            ->htmlTemplate('email/donor-new-transactions.html.twig')
+            ->context([
+                'user' => $userDonor->getUser(),
+            ]);
+
+        try {
+            $this->mailer->send($message);
+        } catch (\Exception $exception) {
+        }
     }
 
     public function sendSuccessEmail(User $user): void
