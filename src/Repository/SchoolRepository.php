@@ -2,10 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\DamagedEducator;
 use App\Entity\DamagedEducatorPeriod;
 use App\Entity\School;
-use App\Entity\Transaction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
