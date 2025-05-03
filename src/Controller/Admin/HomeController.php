@@ -26,7 +26,7 @@ final class HomeController extends AbstractController
         $sumAmountMonthlyDonors = $userDonorRepository->sumAmountMonthlyDonors();
         $sumAmountNonMonthlyDonors = $userDonorRepository->sumAmountNonMonthlyDonors();
         $totalDelegates = $userRepository->getTotalDelegates();
-        $totalActiveSchools = $userDelegateSchoolRepository->getTotalActiveSchools();
+        $totalActiveSchools = $userDelegateSchoolRepository->getTotalActiveSchools(null);
         $totalAdmins = $userRepository->getTotalAdmins();
 
         $period = $entityManager->getRepository(DamagedEducatorPeriod::class)->findAll();
