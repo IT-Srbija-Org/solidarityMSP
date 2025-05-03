@@ -272,11 +272,29 @@ class DamagedEducatorController extends AbstractController
             'entityManager' => $this->entityManager,
         ]);
 
+        $currentAccountNumber = $damagedEducator->getAccountNumber();
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $damagedEducator->setCreatedBy($this->getUser());
             $this->entityManager->persist($damagedEducator);
             $this->entityManager->flush();
+
+            // If account number has changed, cancel all "NEW" transactions
+            if($currentAccountNumber != $damagedEducator->getAccountNumber()) {
+                $transactions = $this->entityManager->getRepository(Transaction::class)->findBy([
+                    'accountNumber' => $currentAccountNumber,
+                    'status' => Transaction::STATUS_NEW
+                ]);
+
+                foreach($transactions as $transaction) {
+                    $transaction->setStatus(Transaction::STATUS_CANCELLED);
+                    $transaction->setStatusComment('Instruckija za uplatu je automatski otkazana pošto se promenio broj računa.');
+                    $this->entityManager->persist($transaction);
+                }
+
+                $this->entityManager->flush();
+            }
 
             $this->addFlash('success', 'Uspešno ste izmenili podatke od oštećenog.');
 
