@@ -5,6 +5,7 @@ namespace App\Command\Transaction;
 use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
 use App\Entity\UserDonor;
+use App\Repository\UserDonorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -28,7 +29,7 @@ class CreateCommand extends Command
     private int $userDonorLastId = 0;
     private array $damagedEducators = [];
 
-    public function __construct(private EntityManagerInterface $entityManager, private MailerInterface $mailer)
+    public function __construct(private EntityManagerInterface $entityManager, private UserDonorRepository $userDonorRepository)
     {
         parent::__construct();
     }
@@ -64,9 +65,6 @@ class CreateCommand extends Command
             return Command::FAILURE;
         }
 
-        // Get user donor repository
-        $userDonorRepository = $this->entityManager->getRepository(UserDonor::class);
-
         // Get damaged educators
         $this->damagedEducators = $this->getDamagedEducators();
 
@@ -83,7 +81,7 @@ class CreateCommand extends Command
                 }
 
                 $output->write('Process donor '.$userDonor->getUser()->getEmail().' at '.date('Y-m-d H:i:s'));
-                $sumTransactions = $userDonorRepository->getSumTransactions($userDonor);
+                $sumTransactions = $this->userDonorRepository->getSumTransactions($userDonor);
                 $donorRemainingAmount = $userDonor->getAmount() - $sumTransactions;
                 if ($donorRemainingAmount < $this->minTransactionDonationAmount) {
                     $output->writeln(' | remaining amount is less than '.$this->minTransactionDonationAmount);
@@ -92,7 +90,7 @@ class CreateCommand extends Command
 
                 $totalTransactions = 0;
                 foreach ($this->damagedEducators as $damagedEducator) {
-                    $sumTransactionAmount = $userDonorRepository->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
+                    $sumTransactionAmount = $this->userDonorRepository->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
                     if ($sumTransactionAmount >= $this->maxYearDonationAmount) {
                         continue;
                     }
@@ -107,7 +105,7 @@ class CreateCommand extends Command
                 $output->writeln(' | Total transaction created: '.$totalTransactions);
 
                 if ($totalTransactions > 0) {
-                    $userDonorRepository->sendNewTransactionEmail($userDonor);
+                    $this->userDonorRepository->sendNewTransactionEmail($userDonor);
                 }
             }
 
