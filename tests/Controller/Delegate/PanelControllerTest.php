@@ -96,7 +96,7 @@ class PanelControllerTest extends WebTestCase
     {
         $this->loginAsDelegate();
 
-        $period = $this->damagedEducatorPeriodRepository->findOneBy([]);
+        $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
         $crawler = $this->client->request('GET', '/delegat/osteceni', ['period' => $period->getId()]);
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
@@ -108,7 +108,7 @@ class PanelControllerTest extends WebTestCase
     {
         $this->loginAsDelegate();
 
-        $period = $this->damagedEducatorPeriodRepository->findOneBy([]);
+        $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
         $this->client->request('GET', '/delegat/prijavi-ostecenog', ['period' => $period->getId()]);
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
@@ -119,7 +119,7 @@ class PanelControllerTest extends WebTestCase
     {
         $this->loginAsDelegate();
 
-        $period = $this->damagedEducatorPeriodRepository->findOneBy([]);
+        $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
         $user = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
         $userDelegateSchool = $this->userDelegateSchoolRepository->findOneBy(['user' => $user]);
 
