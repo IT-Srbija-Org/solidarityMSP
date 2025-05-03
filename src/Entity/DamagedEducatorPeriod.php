@@ -46,6 +46,9 @@ class DamagedEducatorPeriod
     #[ORM\OneToMany(targetEntity: DamagedEducator::class, mappedBy: 'period')]
     private Collection $damagedEducators;
 
+    #[ORM\Column]
+    private ?bool $processing = false;
+
     public function __construct()
     {
         $this->damagedEducators = new ArrayCollection();
@@ -145,5 +148,22 @@ class DamagedEducatorPeriod
     public function getDamagedEducators(): Collection
     {
         return $this->damagedEducators;
+    }
+
+    public function allowToAdd(): bool
+    {
+        return $this->isActive();
+    }
+
+    public function isProcessing(): ?bool
+    {
+        return $this->processing;
+    }
+
+    public function setProcessing(bool $processing): static
+    {
+        $this->processing = $processing;
+
+        return $this;
     }
 }

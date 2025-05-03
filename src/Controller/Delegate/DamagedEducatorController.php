@@ -134,6 +134,10 @@ class DamagedEducatorController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        if(!$period->allowToAdd()){
+            throw $this->createAccessDeniedException();
+        }
+
         $damagedEducator = new DamagedEducator();
         $damagedEducator->setCreatedBy($this->getUser());
         $damagedEducator->setPeriod($period);
@@ -171,6 +175,10 @@ class DamagedEducatorController extends AbstractController
         $periodId = $request->query->getInt('period');
         $period = $damagedEducatorPeriodRepository->find($periodId);
         if (empty($period)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if(!$period->allowToAdd()){
             throw $this->createAccessDeniedException();
         }
 
