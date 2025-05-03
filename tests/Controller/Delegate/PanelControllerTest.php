@@ -100,7 +100,7 @@ class PanelControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/delegat/osteceni', ['period' => $period->getId()]);
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertCount(1, $crawler->filter('table'));
+        $this->assertCount(2, $crawler->filter('table'));
         $this->assertSelectorTextContains('a.btn-primary', 'Dodaj');
     }
 
