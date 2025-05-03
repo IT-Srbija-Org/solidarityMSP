@@ -88,7 +88,6 @@ class DamagedEducatorController extends AbstractController
 
         $statistics = [
             'totalDamagedEducators' => $totalDamagedEducators,
-            'totalActiveSchools' => $userDelegateSchoolRepository->getTotalActiveSchools(),
             'averageAmountPerDamagedEducator' => floor($sumAmountConfirmedTransactions / $totalDamagedEducators),
             'schools' => [],
         ];
