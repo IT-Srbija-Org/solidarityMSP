@@ -281,13 +281,13 @@ class DamagedEducatorController extends AbstractController
             $this->entityManager->flush();
 
             // If account number has changed, cancel all "NEW" transactions
-            if($currentAccountNumber != $damagedEducator->getAccountNumber()) {
+            if ($currentAccountNumber != $damagedEducator->getAccountNumber()) {
                 $transactions = $this->entityManager->getRepository(Transaction::class)->findBy([
                     'accountNumber' => $currentAccountNumber,
-                    'status' => Transaction::STATUS_NEW
+                    'status' => Transaction::STATUS_NEW,
                 ]);
 
-                foreach($transactions as $transaction) {
+                foreach ($transactions as $transaction) {
                     $transaction->setStatus(Transaction::STATUS_CANCELLED);
                     $transaction->setStatusComment('Instruckija za uplatu je automatski otkazana pošto se promenio broj računa.');
                     $this->entityManager->persist($transaction);
