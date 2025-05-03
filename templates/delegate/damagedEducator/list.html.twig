@@ -7,6 +7,60 @@
     <div class="card card-lg bg-base-100 shadow m-4 mt-0">
         <div class="card-body">
             <h2 class="card-title mb-4">
+                <span class="ti ti-device-desktop-analytics text-3xl"></span>
+                Statistika za {{ period|format_period }}
+            </h2>
+
+            <div>
+                <div>Ukupno prijavljeno oštećenih: {{ statistics.totalDamagedEducators|number_format }} iz {{ statistics.totalActiveSchools|number_format }} škola</div>
+                <div>Prosečno primljeno para po oštećenom (potvrđeno): {{ statistics.averageAmountPerDamagedEducator|number_format }} RSD</div>
+            </div>
+
+            <div class="overflow-x-auto mt-6">
+                <table class="table rounded-xl border border-base-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th>
+                                <span class="ti ti-building text-xl"></span>
+                                Ime škole
+                            </th>
+                            <th>
+                                <span class="ti ti-user text-xl"></span>
+                                Ukupno prijavljenih oštećenih
+                            </th>
+                            <th>
+                                <span class="ti ti-cash text-xl"></span>
+                                Unešena cifra
+                            </th>
+                            <th>
+                                <span class="ti ti-cash text-xl"></span>
+                                Potvrđeno
+                            </th>
+                            <th>
+                                <span class="ti ti-cash text-xl"></span>
+                                Prosečno primljeno para po oštećenom
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for school in statistics.schools %}
+                        <tr class="hover:bg-gray-100">
+                            <td>{{ school.entity.name }}</td>
+                            <td>{{ school.totalDamagedEducators }}</td>
+                            <td>{{ school.sumAmount|number_format }}</td>
+                            <td>{{ school.sumAmountConfirmedTransactions|number_format }}</td>
+                            <td>{{ school.averageAmountPerDamagedEducator|number_format }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-lg bg-base-100 shadow m-4 mt-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
                 <span class="ti ti-school text-3xl"></span>
                 Oštećeni za {{ period|format_period }}
             </h2>

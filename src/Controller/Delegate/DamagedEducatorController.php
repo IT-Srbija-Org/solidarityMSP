@@ -14,6 +14,7 @@ use App\Form\TransactionChangeStatusType;
 use App\Repository\DamagedEducatorPeriodRepository;
 use App\Repository\DamagedEducatorRepository;
 use App\Repository\TransactionRepository;
+use App\Repository\UserDelegateSchoolRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,7 +47,7 @@ class DamagedEducatorController extends AbstractController
     }
 
     #[Route('/osteceni', name: 'list')]
-    public function list(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, DamagedEducatorRepository $damagedEducatorRepository): Response
+    public function list(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, DamagedEducatorRepository $damagedEducatorRepository, TransactionRepository $transactionRepository, UserDelegateSchoolRepository $userDelegateSchoolRepository): Response
     {
         $periodId = $request->query->getInt('period');
         $period = $damagedEducatorPeriodRepository->find($periodId);
@@ -72,7 +73,7 @@ class DamagedEducatorController extends AbstractController
         $showImport = false;
 
         foreach ($user->getUserDelegateSchools() as $delegateSchool) {
-            $criteria['schools'][] = $delegateSchool->getSchool()->getId();
+            $criteria['schools'][] = $delegateSchool->getSchool();
 
             if ($delegateSchool->getSchool()->showImport()) {
                 $showImport = true;
@@ -82,7 +83,30 @@ class DamagedEducatorController extends AbstractController
         $criteria['period'] = $period;
         $page = $request->query->getInt('page', 1);
 
+        $totalDamagedEducators = $damagedEducatorRepository->count(['period' => $period]);
+        $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountConfirmedTransactions($period, null);
+
+        $statistics = [
+            'totalDamagedEducators' => $totalDamagedEducators,
+            'totalActiveSchools' => $userDelegateSchoolRepository->getTotalActiveSchools(),
+            'averageAmountPerDamagedEducator' => floor($sumAmountConfirmedTransactions / $totalDamagedEducators),
+            'schools' => [],
+        ];
+
+        foreach ($criteria['schools'] as $school) {
+            $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountConfirmedTransactions($period, $school);
+
+            $statistics['schools'][] = [
+                'entity' => $school,
+                'totalDamagedEducators' => $damagedEducatorRepository->count(['period' => $period, 'school' => $school]),
+                'sumAmount' => $damagedEducatorRepository->getSumAmount($period, $school),
+                'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
+                'averageAmountPerDamagedEducator' => floor($sumAmountConfirmedTransactions / $damagedEducatorRepository->count(['period' => $period, 'school' => $school])),
+            ];
+        }
+
         return $this->render('delegate/damagedEducator/list.html.twig', [
+            'statistics' => $statistics,
             'damagedEducators' => $damagedEducatorRepository->search($criteria, $page),
             'showImport' => $showImport,
             'period' => $period,

@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\DamagedEducator;
+use App\Entity\DamagedEducatorPeriod;
+use App\Entity\School;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -113,5 +115,20 @@ class DamagedEducatorRepository extends ServiceEntityRepository
             'current_page' => 1,
             'total_pages' => 1,
         ];
+    }
+
+    public function getSumAmount(DamagedEducatorPeriod $period, ?School $school): int
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb = $qb->select('SUM(e.amount)')
+            ->andWhere('e.period = :period')
+            ->setParameter('period', $period);
+
+        if ($school) {
+            $qb->andWhere('e.school = :school')
+                ->setParameter('school', $school);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 }

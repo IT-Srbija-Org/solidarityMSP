@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\DamagedEducator;
 use App\Entity\DamagedEducatorPeriod;
 use App\Entity\Transaction;
+use App\Repository\TransactionRepository;
 use App\Repository\UserDelegateSchoolRepository;
 use App\Repository\UserDonorRepository;
 use App\Repository\UserRepository;
@@ -17,7 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class HomeController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function index(EntityManagerInterface $entityManager, UserDonorRepository $userDonorRepository, UserRepository $userRepository, UserDelegateSchoolRepository $userDelegateSchoolRepository): Response
+    public function index(EntityManagerInterface $entityManager, UserDonorRepository $userDonorRepository, UserRepository $userRepository, UserDelegateSchoolRepository $userDelegateSchoolRepository, TransactionRepository $transactionRepository): Response
     {
         $totalDonors = $userDonorRepository->getTotal();
         $totalMonthlyDonors = $userDonorRepository->getTotalMonthly();
@@ -41,17 +42,6 @@ final class HomeController extends AbstractController
                 ->getSingleScalarResult();
 
             $qb = $entityManager->createQueryBuilder();
-            $sumAmountConfirmedTransactions = $qb->select('SUM(t.amount)')
-                ->from(Transaction::class, 't')
-                ->innerJoin('t.damagedEducator', 'de')
-                ->andWhere('de.period = :period')
-                ->setParameter('period', $pData)
-                ->andWhere('t.status = :status')
-                ->setParameter('status', Transaction::STATUS_CONFIRMED)
-                ->getQuery()
-                ->getSingleScalarResult();
-
-            $qb = $entityManager->createQueryBuilder();
             $sumAmountWaitingConfirmationTransactions = $qb->select('SUM(t.amount)')
                 ->from(Transaction::class, 't')
                 ->innerJoin('t.damagedEducator', 'de')
@@ -66,7 +56,7 @@ final class HomeController extends AbstractController
                 'entity' => $pData,
                 'totalDamagedEducators' => $entityManager->getRepository(DamagedEducator::class)->count(['period' => $pData]),
                 'sumAmountDamagedEducators' => $sumAmountDamagedEducators,
-                'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
+                'sumAmountConfirmedTransactions' => $transactionRepository->getSumAmountConfirmedTransactions($pData, null),
                 'sumAmountWaitingConfirmationTransactions' => $sumAmountWaitingConfirmationTransactions,
             ];
         }

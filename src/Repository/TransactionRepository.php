@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\DamagedEducatorPeriod;
+use App\Entity\School;
 use App\Entity\Transaction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -100,5 +102,24 @@ class TransactionRepository extends ServiceEntityRepository
             'current_page' => 1,
             'total_pages' => 1,
         ];
+    }
+
+    public function getSumAmountConfirmedTransactions(DamagedEducatorPeriod $period, ?School $school): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb = $qb->select('SUM(t.amount)')
+            ->from(Transaction::class, 't')
+            ->innerJoin('t.damagedEducator', 'de')
+            ->andWhere('de.period = :period')
+            ->setParameter('period', $period)
+            ->andWhere('t.status = :status')
+            ->setParameter('status', Transaction::STATUS_CONFIRMED);
+
+        if ($school) {
+            $qb->andWhere('de.school = :school')
+                ->setParameter('school', $school);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 }
