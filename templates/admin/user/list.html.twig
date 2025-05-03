@@ -42,7 +42,7 @@
                         <td>{{ user.id }}</td>
                         <td>
                             <div>{{ user.fullName }}</div>
-                            <a href="{{ path('admin_user_edit', { 'id': user.id }) }}" class="link link-primary link-hover">
+                            <a href="{{ path('admin_user_details', { 'id': user.id }) }}" class="link link-primary link-hover">
                                 {{ user.email }}
                             </a>
                         </td>
@@ -79,6 +79,9 @@
                             <div class="flex gap-2 justify-end">
                                 <a href="{{ path('admin_user_edit', { 'id': user.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Izmeni">
                                     <span class="ti ti-edit text-xl"></span>
+                                </a>
+                                <a href="{{ path('admin_user_details', { 'id': user.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Detalji">
+                                    <span class="ti ti-info-circle text-xl"></span>
                                 </a>
                             </div>
                         </td>

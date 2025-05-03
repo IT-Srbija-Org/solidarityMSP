@@ -50,7 +50,7 @@
                     <td>{{ transaction.damagedEducator.period|format_period(1) }}</td>
                     <td>
                         <div>{{ transaction.user.fullName }}</div>
-                        <a href="{{ path('admin_user_edit', { 'id': transaction.user.id }) }}" class="link link-primary link-hover">
+                        <a href="{{ path('admin_user_details', { 'id': transaction.user.id }) }}" class="link link-primary link-hover">
                             {{ transaction.user.email }}
                         </a>
                     </td>

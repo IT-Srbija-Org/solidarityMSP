@@ -2,9 +2,11 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Transaction;
 use App\Entity\User;
 use App\Form\Admin\UserEditType;
 use App\Form\Admin\UserSearchType;
+use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,6 +33,28 @@ final class UserController extends AbstractController
         return $this->render('admin/user/list.html.twig', [
             'users' => $userRepository->search($criteria, $page),
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/{id}', name: 'details', requirements: ['id' => '\d+'])]
+    public function details(User $user): Response
+    {
+        $transactions = $user->getTransactions();
+        $sumConfirmedTransactions = 0;
+        $totalConfirmedTransactions = 0;
+
+        foreach ($transactions as $transaction) {
+            if ($transaction->getStatus() == Transaction::STATUS_CONFIRMED) {
+                $sumConfirmedTransactions += $transaction->getAmount();
+                $totalConfirmedTransactions++;
+            }
+        }
+
+        return $this->render('admin/user/details.html.twig', [
+            'user' => $user,
+            'totalTransactions' => count($transactions),
+            'totalConfirmedTransactions' => $totalConfirmedTransactions,
+            'sumConfirmedTransactions' => $sumConfirmedTransactions,
         ]);
     }
 

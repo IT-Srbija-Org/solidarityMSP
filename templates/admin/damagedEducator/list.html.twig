@@ -70,7 +70,7 @@
                     <td>
                         {% if damagedEducator.createdBy %}
                             <div>{{ damagedEducator.createdBy.fullName }}</div>
-                            <a href="{{ path('admin_user_edit', { 'id': damagedEducator.createdBy.id }) }}" class="link link-primary link-hover">
+                            <a href="{{ path('admin_user_details', { 'id': damagedEducator.createdBy.id }) }}" class="link link-primary link-hover">
                                 {{ damagedEducator.createdBy.email }}
                             </a>
                         {% else %}

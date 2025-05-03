@@ -65,7 +65,7 @@
                             Email
                         </div>
                         <div>
-                            <a href="{{ path('admin_user_edit', { 'id': userDelegateRequest.user.id }) }}" class="link link-primary link-hover">
+                            <a href="{{ path('admin_user_details', { 'id': userDelegateRequest.user.id }) }}" class="link link-primary link-hover">
                                 {{ userDelegateRequest.user.email }}
                             </a>
                         </div>
@@ -131,7 +131,7 @@
                         {% if existingDelegates %}
                             {% for item in existingDelegates %}
                                 <div>
-                                    <a target="_blank" href="{{ path('admin_user_edit', { 'id': item.user.id }) }}" class="link link-primary link-hover">
+                                    <a target="_blank" href="{{ path('admin_user_details', { 'id': item.user.id }) }}" class="link link-primary link-hover">
                                         {{ item.user.fullName }}
                                     </a>
                                 </div>

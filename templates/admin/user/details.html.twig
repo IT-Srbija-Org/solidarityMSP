@@ -1,0 +1,174 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block content %}
+    <div class="text-2xl">
+        <span class="ti ti-user text-2xl"></span>
+        Profil
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="card stripes border border-base-300 w-full">
+        <div class="card-body">
+            <div class="card-title">
+                <span class="ti ti-user text-2xl"></span>
+                Informacije
+            </div>
+
+            <div>
+                <div>Ime: {{ user.fullName }}</div>
+                <div>Email: {{ user.email }}</div>
+                <div>Privilegija: {{ user.roles|roleTranslate }}</div>
+                <div>Registrovan: {{ user.createdAt|date('H:i d.m.Y') }}</div>
+                <div>
+                    Poslednji put vidjen:
+                    {% if user.lastVisit %}
+                        {{ user.lastVisit|date('H:i d.m.Y') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </div>
+                <div>
+                    Aktivan:
+                    {% if user.isActive %}
+                        <span class="ti ti-circle-check-filled text-xl text-success relative top-0.5"></span>
+                        Da
+                    {% else %}
+                        <span class="ti ti-circle-x-filled text-xl text-error relative top-0.5"></span>
+                        Ne
+                    {% endif %}
+                </div>
+                <div>
+                    Potvrđen email:
+                    {% if user.isEmailVerified %}
+                        <span class="ti ti-circle-check-filled text-xl text-success relative top-0.5"></span>
+                        Da
+                    {% else %}
+                        <span class="ti ti-circle-x-filled text-xl text-error relative top-0.5"></span>
+                        Ne
+                    {% endif %}
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <a href="{{ path('admin_log_list', { 'email': user.email }) }}" class="link link-primary no-underline">
+                        <span class="ti ti-archive text-xl relative top-0.5"></span>
+                        Lista svih izmena
+                    </a>
+                </div>
+            </div>
+
+            <div class="card-actions justify-end">
+                <a href="{{ path('admin_user_edit', { 'id': user.id }) }}" class="btn btn-primary">
+                    <span class="ti ti-edit text-xl"></span>
+                    Izmeni
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if user.userDonor %}
+        <div class="card stripes border border-base-300 w-full">
+            <div class="card-body">
+                <div class="card-title">
+                    <span class="ti ti-user-heart text-2xl"></span>
+                    Donator
+                </div>
+
+                <div>
+                    <div>
+                        Mesečna podrška:
+                        {% if user.userDonor.isMonthly %}
+                            <span class="ti ti-circle-check-filled text-xl text-success relative top-0.5"></span>
+                            Da
+                        {% else %}
+                            <span class="ti ti-circle-x-filled text-xl text-error relative top-0.5"></span>
+                            Ne
+                        {% endif %}
+                    </div>
+                    <div>Iznos : {{ user.userDonor.amount|number_format }}</div>
+                    <div>Datum registracije: {{ user.userDonor.createdAt|date('H:i d.m.Y') }}</div>
+                    <div>Datum poslednje izmene: {{ user.userDonor.updatedAt|date('H:i d.m.Y') }}</div>
+                </div>
+
+                <div>
+                    <div>Ukupno instrukcija za uplatu: {{ totalTransactions }}</div>
+                    <div>Ukupno potvrđenih uplata: {{ totalConfirmedTransactions }} ({{ sumConfirmedTransactions|number_format }} RSD)</div>
+                </div>
+
+                <div>
+                    <div>
+                        <a href="{{ path('admin_transaction_list', { 'donor': user.email }) }}" class="link link-primary no-underline">
+                            <span class="ti ti-credit-card-pay text-xl relative top-0.5"></span>
+                            Lista svih transakcija
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-actions justify-end">
+                    <a href="{{ path('admin_donor_delete', { 'id': user.userDonor.id }) }}" class="btn btn-error">
+                        <span class="ti ti-trash text-xl"></span>
+                        Obriši
+                    </a>
+
+                    <a href="{{ path('admin_donor_edit', { 'id': user.userDonor.id }) }}" class="btn btn-primary">
+                        <span class="ti ti-edit text-xl"></span>
+                        Izmeni
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if 'ROLE_DELEGATE' in user.roles %}
+        <div class="card stripes border border-base-300 w-full">
+            <div class="card-body">
+                <div class="card-title">
+                    <span class="ti ti-user-cog text-2xl"></span>
+                    Delegat
+                </div>
+
+                <div>
+                    <div>Ukupno povezanih škola: <span class="font-bold">{{ user.userDelegateSchools|length }}</span></div>
+
+                    <div class="overflow-x-auto mt-4">
+                        <div class="justify-end card-actions mb-2">
+                            <a href="{{ path('admin_delegate_connect_school', { 'id': user.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Poveži">
+                                <span class="ti ti-link-plus text-xl"></span> Izmeni
+                            </a>
+                        </div>
+
+                        <table class="table w-full bg-base-100 rounded-xl border border-base-200">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th>
+                                        <span class="ti ti-building text-xl"></span>
+                                        Naziv škole
+                                    </th>
+                                    <th>
+                                        <span class="ti ti-building-community text-xl"></span>
+                                        Grad
+                                    </th>
+                                    <th>
+                                        <span class="ti ti-building-cog text-xl"></span>
+                                        Tip škole
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for userDelegateSchool in user.userDelegateSchools %}
+                                <tr class="hover:bg-gray-100">
+                                    <td>{{ userDelegateSchool.school.name }}</td>
+                                    <td>{{ userDelegateSchool.school.city.name }}</td>
+                                    <td>{{ userDelegateSchool.school.type.name }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
