@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\School;
 use App\Form\Admin\SchoolEditType;
 use App\Form\Admin\SchoolSearchType;
+use App\Repository\DamagedEducatorPeriodRepository;
 use App\Repository\SchoolRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,6 +36,25 @@ final class SchoolController extends AbstractController
         return $this->render('admin/school/list.html.twig', [
             'schools' => $schoolRepository->search($criteria, $page),
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/{id}', name: 'details')]
+    public function details(School $school, DamagedEducatorPeriodRepository $periodRepository, SchoolRepository $schoolRepository): Response
+    {
+        $periods = $periodRepository->findAll();
+        $statistics = [];
+
+        foreach ($periods as $period) {
+            $statistics[] = $schoolRepository->getStatistics($period, $school);
+        }
+
+        // delegates
+        // requests
+
+        return $this->render('admin/school/details.html.twig', [
+            'school' => $school,
+            'statistics' => $statistics,
         ]);
     }
 

@@ -51,7 +51,11 @@
                 <tbody>
                 {% for userDelegateSchool in user.userDelegateSchools %}
                     <tr class="hover:bg-gray-100">
-                        <td>{{ userDelegateSchool.school.name }}</td>
+                        <td>
+                            <a href="{{ path('admin_school_details', { 'id': userDelegateSchool.id }) }}" class="link link-primary link-hover">
+                                {{ userDelegateSchool.school.name }}
+                            </a>
+                        </td>
                         <td>{{ userDelegateSchool.school.city.name }}</td>
                         <td>{{ userDelegateSchool.school.type.name }}</td>
                         <td>

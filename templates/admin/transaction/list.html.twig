@@ -57,7 +57,11 @@
                     <td>
                         <div>{{ transaction.damagedEducator.name }}</div>
                         <div class="text-gray-500">
-                            {{ transaction.damagedEducator.school.name }} ({{ transaction.damagedEducator.school.city.name }})
+                            <a href="{{ path('admin_school_details', { 'id': transaction.damagedEducator.school.id }) }}" class="link link-primary link-hover">
+                                {{ transaction.damagedEducator.school.name }}
+                            </a>
+
+                            ({{ transaction.damagedEducator.school.city.name }})
                         </div>
                     </td>
                     <td class="whitespace-nowrap">{{ transaction.accountNumber|account_number_format }}</td>

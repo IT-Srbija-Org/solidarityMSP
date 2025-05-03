@@ -43,13 +43,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for school in statistics.schools %}
+                    {% for data in statistics.schools %}
                         <tr class="hover:bg-gray-100">
-                            <td>{{ school.entity.name }}</td>
-                            <td>{{ school.totalDamagedEducators }}</td>
-                            <td>{{ school.sumAmount|number_format }}</td>
-                            <td>{{ school.sumAmountConfirmedTransactions|number_format }}</td>
-                            <td>{{ school.averageAmountPerDamagedEducator|number_format }}</td>
+                            <td>{{ data.schoolEntity.name }}</td>
+                            <td>{{ data.totalDamagedEducators }}</td>
+                            <td>{{ data.sumAmount|number_format }}</td>
+                            <td>{{ data.sumAmountConfirmedTransactions|number_format }}</td>
+                            <td>{{ data.averageAmountPerDamagedEducator|number_format }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

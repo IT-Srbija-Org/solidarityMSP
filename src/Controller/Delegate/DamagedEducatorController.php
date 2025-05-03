@@ -13,6 +13,7 @@ use App\Form\DamagedEducatorSearchType;
 use App\Form\TransactionChangeStatusType;
 use App\Repository\DamagedEducatorPeriodRepository;
 use App\Repository\DamagedEducatorRepository;
+use App\Repository\SchoolRepository;
 use App\Repository\TransactionRepository;
 use App\Repository\UserDelegateSchoolRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -47,7 +48,7 @@ class DamagedEducatorController extends AbstractController
     }
 
     #[Route('/osteceni', name: 'list')]
-    public function list(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, DamagedEducatorRepository $damagedEducatorRepository, TransactionRepository $transactionRepository, UserDelegateSchoolRepository $userDelegateSchoolRepository): Response
+    public function list(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, DamagedEducatorRepository $damagedEducatorRepository, TransactionRepository $transactionRepository, UserDelegateSchoolRepository $userDelegateSchoolRepository, SchoolRepository $schoolRepository): Response
     {
         $periodId = $request->query->getInt('period');
         $period = $damagedEducatorPeriodRepository->find($periodId);
@@ -99,21 +100,7 @@ class DamagedEducatorController extends AbstractController
         ];
 
         foreach ($criteria['schools'] as $school) {
-            $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountConfirmedTransactions($period, $school);
-            $totalDamagedEducators = $damagedEducatorRepository->count(['period' => $period, 'school' => $school]);
-
-            $averageAmountPerDamagedEducator = 0;
-            if ($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
-                $averageAmountPerDamagedEducator = floor($sumAmountConfirmedTransactions / $totalDamagedEducators);
-            }
-
-            $statistics['schools'][] = [
-                'entity' => $school,
-                'totalDamagedEducators' => $damagedEducatorRepository->count(['period' => $period, 'school' => $school]),
-                'sumAmount' => $damagedEducatorRepository->getSumAmount($period, $school),
-                'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
-                'averageAmountPerDamagedEducator' => $averageAmountPerDamagedEducator,
-            ];
+            $statistics['schools'][] = $schoolRepository->getStatistics($period, $school);
         }
 
         return $this->render('delegate/damagedEducator/list.html.twig', [

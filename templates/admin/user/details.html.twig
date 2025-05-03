@@ -3,7 +3,7 @@
 {% block content %}
     <div class="text-2xl">
         <span class="ti ti-user text-2xl"></span>
-        Profil
+        Informacije o korisniku
     </div>
 
     <div class="divider"></div>
@@ -12,7 +12,7 @@
         <div class="card-body">
             <div class="card-title">
                 <span class="ti ti-user text-2xl"></span>
-                Informacije
+                Osnovne informacije
             </div>
 
             <div>
@@ -159,7 +159,11 @@
                             <tbody>
                             {% for userDelegateSchool in user.userDelegateSchools %}
                                 <tr class="hover:bg-gray-100">
-                                    <td>{{ userDelegateSchool.school.name }}</td>
+                                    <td>
+                                        <a href="{{ path('admin_school_details', { 'id': userDelegateSchool.school.id }) }}" class="link link-primary link-hover">
+                                            {{ userDelegateSchool.school.name }}
+                                        </a>
+                                    </td>
                                     <td>{{ userDelegateSchool.school.city.name }}</td>
                                     <td>{{ userDelegateSchool.school.type.name }}</td>
                                 </tr>

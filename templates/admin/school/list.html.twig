@@ -42,7 +42,11 @@
             {% for school in schools.items %}
                 <tr class="hover:bg-gray-100">
                     <td>{{ school.id }}</td>
-                    <td>{{ school.name }}</td>
+                    <td>
+                        <a href="{{ path('admin_school_details', { 'id': school.id }) }}" class="link link-primary link-hover">
+                            {{ school.name }}
+                        </a>
+                    </td>
                     <td>{{ school.city.name }}</td>
                     <td>{{ school.type.name }}</td>
                     <td>{{ school.createdAt|date('d.m.Y.') }}</td>
@@ -50,6 +54,10 @@
                         <div class="flex gap-2 justify-end">
                             <a href="{{ path('admin_school_edit', { 'id': school.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Izmeni">
                                 <span class="ti ti-edit text-xl"></span>
+                            </a>
+
+                            <a href="{{ path('admin_school_details', { 'id': school.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Detalji">
+                                <span class="ti ti-info-circle text-xl"></span>
                             </a>
                         </div>
                     </td>

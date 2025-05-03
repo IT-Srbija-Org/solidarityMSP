@@ -1,0 +1,137 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block content %}
+    <div class="text-2xl">
+        <span class="ti ti-school text-2xl"></span>
+        Informacije o školi
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="card stripes border border-base-300 w-full">
+        <div class="card-body">
+            <div class="card-title">
+                <span class="ti ti-school text-2xl"></span>
+                Osnovne informacije
+            </div>
+
+            <div>
+                <div>Naziv: {{ school.name }}</div>
+                <div>Tip: {{ school.type.name }}</div>
+                <div>Grad: {{ school.city.name }}</div>
+            </div>
+
+            <div class="card-actions justify-end">
+                <a href="{{ path('admin_school_edit', { 'id': school.id }) }}" class="btn btn-primary">
+                    <span class="ti ti-edit text-xl"></span>
+                    Izmeni
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card stripes border border-base-300 w-full">
+        <div class="card-body">
+            <div class="card-title">
+                <span class="ti ti-user-cog text-2xl"></span>
+                Delegati
+            </div>
+
+            <div>
+                {% if school.userDelegateSchools is not empty %}
+                    <div class="overflow-x-auto mt-4">
+                        <table class="table w-full bg-base-100 rounded-xl border border-base-200">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th>
+                                        <span class="ti ti-user text-xl"></span>
+                                        Ime
+                                    </th>
+                                    <th>
+                                        <span class="ti ti-email text-xl"></span>
+                                        Email
+                                    </th>
+                                    <th>
+                                        <span class="ti ti-calendar-event text-xl"></span>
+                                        Registrovan
+                                    </th>
+                                    <th>Aktivan?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for userDelegateSchool in school.userDelegateSchools %}
+                                <tr class="hover:bg-gray-100">
+                                    <td>{{ userDelegateSchool.user.fullName }}</td>
+                                    <td>
+                                        <a href="{{ path('admin_user_details', { 'id': userDelegateSchool.user.id }) }}" class="link link-primary link-hover">
+                                            {{ userDelegateSchool.user.email }}
+                                        </a>
+                                    </td>
+                                    <td>{{ userDelegateSchool.user.createdAt|date('H:i d.m.Y.') }}</td>
+                                    <td>
+                                        {% if userDelegateSchool.user.isActive %}
+                                            <div class="status status-success mb-1"></div>
+                                            Da
+                                        {% else %}
+                                            <div class="status status-error mb-1"></div>
+                                            Ne
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-gray-500">Škola nema delegata</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card stripes border border-base-300 w-full">
+        <div class="card-body">
+            <div class="card-title">
+                <span class="ti ti-device-desktop-analytics text-3xl"></span>
+                Statistika
+            </div>
+
+            <div class="overflow-x-auto mt-6">
+                <table class="table w-full bg-base-100 rounded-xl border border-base-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th>Period</th>
+                            <th>
+                                <span class="ti ti-user text-xl"></span>
+                                Ukupno prijavljenih oštećenih
+                            </th>
+                            <th>
+                                <span class="ti ti-cash text-xl"></span>
+                                Unešena cifra
+                            </th>
+                            <th>
+                                <span class="ti ti-cash text-xl"></span>
+                                Potvrđeno
+                            </th>
+                            <th>
+                                <span class="ti ti-cash text-xl"></span>
+                                Prosečno primljeno para po oštećenom (potvrđeno)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for data in statistics %}
+                        <tr class="hover:bg-gray-100">
+                            <td>{{ data.periodEntity|format_period }}</td>
+                            <td>{{ data.totalDamagedEducators }}</td>
+                            <td>{{ data.sumAmount|number_format }}</td>
+                            <td>{{ data.sumAmountConfirmedTransactions|number_format }}</td>
+                            <td>{{ data.averageAmountPerDamagedEducator|number_format }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
