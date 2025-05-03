@@ -86,22 +86,33 @@ class DamagedEducatorController extends AbstractController
         $totalDamagedEducators = $damagedEducatorRepository->count(['period' => $period]);
         $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountConfirmedTransactions($period, null);
 
+        $averageAmountPerDamagedEducator = 0;
+        if($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
+            $averageAmountPerDamagedEducator = floor($sumAmountConfirmedTransactions / $totalDamagedEducators);
+        }
+
         $statistics = [
             'totalDamagedEducators' => $totalDamagedEducators,
             'totalActiveSchools' => $userDelegateSchoolRepository->getTotalActiveSchools($period),
-            'averageAmountPerDamagedEducator' => floor($sumAmountConfirmedTransactions / $totalDamagedEducators),
+            'averageAmountPerDamagedEducator' => $averageAmountPerDamagedEducator,
             'schools' => [],
         ];
 
         foreach ($criteria['schools'] as $school) {
             $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountConfirmedTransactions($period, $school);
+            $totalDamagedEducators = $damagedEducatorRepository->count(['period' => $period, 'school' => $school]);
+
+            $averageAmountPerDamagedEducator = 0;
+            if($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
+                $averageAmountPerDamagedEducator = floor($sumAmountConfirmedTransactions / $totalDamagedEducators);
+            }
 
             $statistics['schools'][] = [
                 'entity' => $school,
                 'totalDamagedEducators' => $damagedEducatorRepository->count(['period' => $period, 'school' => $school]),
                 'sumAmount' => $damagedEducatorRepository->getSumAmount($period, $school),
                 'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
-                'averageAmountPerDamagedEducator' => floor($sumAmountConfirmedTransactions / $damagedEducatorRepository->count(['period' => $period, 'school' => $school])),
+                'averageAmountPerDamagedEducator' => $averageAmountPerDamagedEducator,
             ];
         }
 
