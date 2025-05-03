@@ -42,7 +42,7 @@ class UserDonorRepository extends ServiceEntityRepository
                 ->setParameter('dateLimit', new \DateTime('-30 days'));
         }
 
-        return (int)$qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     public function sumTransactionsToEducator(UserDonor $userDonor, string $accountNumber): int
@@ -58,14 +58,14 @@ class UserDonorRepository extends ServiceEntityRepository
             FROM transaction AS t
             WHERE t.user_id = :userId
              AND t.account_number = :accountNumber
-             AND t.status IN (' . implode(',', $transactionStatuses) . ')
+             AND t.status IN ('.implode(',', $transactionStatuses).')
              AND t.created_at > DATE(NOW() - INTERVAL 1 YEAR)
             ', [
             'userId' => $userDonor->getUser()->getId(),
             'accountNumber' => $accountNumber,
         ]);
 
-        return (int)$stmt->fetchOne();
+        return (int) $stmt->fetchOne();
     }
 
     public function sendNewTransactionEmail(UserDonor $userDonor): void

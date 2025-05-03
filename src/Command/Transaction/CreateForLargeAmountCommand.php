@@ -34,7 +34,7 @@ class CreateForLargeAmountCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $io->section('Command started at ' . date('Y-m-d H:i:s'));
+        $io->section('Command started at '.date('Y-m-d H:i:s'));
 
         $store = new FlockStore();
         $factory = new LockFactory($store);
@@ -56,13 +56,13 @@ class CreateForLargeAmountCommand extends Command
         }
 
         foreach ($userDonors as $userDonor) {
-            $output->write('Process donor ' . $userDonor->getUser()->getEmail() . ' at ' . date('Y-m-d H:i:s'));
-            $output->write(' | Amount: ' . $userDonor->getAmount());
+            $output->write('Process donor '.$userDonor->getUser()->getEmail().' at '.date('Y-m-d H:i:s'));
+            $output->write(' | Amount: '.$userDonor->getAmount());
 
             $sumTransactions = $userDonorRepository->getSumTransactions($userDonor);
             $donorRemainingAmount = $userDonor->getAmount() - $sumTransactions;
             if ($donorRemainingAmount < $this->minTransactionDonationAmount) {
-                $output->writeln(' | remaining amount is less than ' . $this->minTransactionDonationAmount);
+                $output->writeln(' | remaining amount is less than '.$this->minTransactionDonationAmount);
                 continue;
             }
 
@@ -84,14 +84,14 @@ class CreateForLargeAmountCommand extends Command
                 }
             }
 
-            $output->writeln(' | Total transaction created: ' . $totalTransactions);
+            $output->writeln(' | Total transaction created: '.$totalTransactions);
 
             if ($totalTransactions > 0) {
                 $userDonorRepository->sendNewTransactionEmail($userDonor);
             }
         }
 
-        $io->success('Command finished at ' . date('Y-m-d H:i:s'));
+        $io->success('Command finished at '.date('Y-m-d H:i:s'));
 
         return Command::SUCCESS;
     }
@@ -100,16 +100,19 @@ class CreateForLargeAmountCommand extends Command
     {
         if ($userDonor->getAmount() <= 120000) {
             $this->maxTransactionDonationAmount = 25000;
+
             return;
         }
 
         if ($userDonor->getAmount() <= 200000) {
             $this->maxTransactionDonationAmount = 35000;
+
             return;
         }
 
         if ($userDonor->getAmount() <= 300000) {
             $this->maxTransactionDonationAmount = 45000;
+
             return;
         }
 
@@ -123,6 +126,7 @@ class CreateForLargeAmountCommand extends Command
         if ($amount < $this->minTransactionDonationAmount) {
             // All transaction created for this educator
             unset($this->damagedEducators[$damagedEducatorId]);
+
             return 0;
         }
 
@@ -165,7 +169,7 @@ class CreateForLargeAmountCommand extends Command
               (SELECT SUM(amount)
                FROM transaction
                WHERE damaged_educator_id = de.id
-                AND status IN (' . implode(',', $transactionStatuses) . ')),
+                AND status IN ('.implode(',', $transactionStatuses).')),
               0) AS transactionSum
             FROM damaged_educator AS de
              INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id
