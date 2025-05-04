@@ -237,6 +237,11 @@ class DamagedEducator
         return self::STATUS_DELETED !== $this->status;
     }
 
+    public function allowToUnDelete(): bool
+    {
+        return self::STATUS_DELETED === $this->status;
+    }
+
     public function getCity(): ?City
     {
         return $this->city;

@@ -28,7 +28,17 @@
                         <span class="ti ti-info-circle text-2xl"></span>
 
                         <span>
-                            <span class="font-bold">Neke od vaših instrukcija za uplatu su otkazane.</span> Do otkazivanja dolazi kada sistem automatski poništio instrukciju. Nemojte da britene, ovo je normalna korekcija koja se može desiti. Biće vam prosleđena nova instrukcija za uplatu uskoro.
+                            <span class="font-bold block">Neke od vaših instrukcija za uplatu su otkazane?</span> Do otkazivanja dolazi kada sistem automatski poništio instrukciju. Nemojte da britene, ovo je normalna korekcija koja se može desiti. Biće vam prosleđena nova instrukcija za uplatu uskoro.
+                        </span>
+                    </div>
+                {% endif %}
+
+                {% if hasNotPaidTransactions %}
+                    <div class="alert alert-info alert-soft">
+                        <span class="ti ti-info-circle text-2xl"></span>
+
+                        <span>
+                            <span class="font-bold block">Neke od vaših instrukcija za uplatu su u statusu "Uplata nije primljena"?</span> Ukoliko je ovo greška, molimo Vas da nam pošaljete dokaz o uplati na email adresu: <a href="mailto:donatori@mrezasolidarnosti.org" target="_blank" class="link link-primary link-hover">donatori@mrezasolidarnosti.org</a>
                         </span>
                     </div>
                 {% endif %}
@@ -38,7 +48,7 @@
                         <span class="ti ti-info-circle text-2xl"></span>
 
                         <span>
-                            <span class="font-bold">Neke od vaših instrukcija za uplatu su istekle.</span> Do isteka instrukcija za uplatu dolazi kada prođe više od 72 sata bez potvrde donatora da je uplata izvršena. Ukoliko ste ipak izvršili uplatu bez da ste je potvrdili, nema razloga za brigu, administrator će proveriti sve instrukcije i ukoliko je plaćena status će joj biti promenjen.
+                            <span class="font-bold block">Neke od vaših instrukcija za uplatu su istekle?</span> Do isteka instrukcija za uplatu dolazi kada prođe više od 72 sata bez potvrde donatora da je uplata izvršena. Ukoliko ste ipak izvršili uplatu bez da ste je potvrdili, nema razloga za brigu, administrator će proveriti sve instrukcije i ukoliko je plaćena status će joj biti promenjen.
                         </span>
                     </div>
                 {% endif %}

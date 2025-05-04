@@ -2,7 +2,11 @@
 
 namespace App\Form\Admin;
 
+use App\Entity\City;
+use App\Entity\School;
+use App\Entity\SchoolType;
 use App\Entity\UserDelegateRequest;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -33,33 +37,40 @@ class UserDelegateRequestEditType extends AbstractType
                 'required' => false,
                 'label' => 'Broj telefona',
             ])
-            ->add('schoolType', TextType::class, [
-                'data' => $options['data']->getSchoolType()?->getName(),
+            ->add('schoolType', EntityType::class, [
+                'class' => SchoolType::class,
+                'placeholder' => '',
                 'label' => 'Tip obrazovne ustanove',
-                'disabled' => true,
-                'mapped' => false,
+                'choice_value' => 'id',
+                'choice_label' => 'name',
+                'attr' => [
+                    'class' => 'select select-md select-bordered rounded-md w-full md:max-w-xl',
+                ],
             ])
-            ->add('city', TextType::class, [
-                'data' => $options['data']->getCity()?->getName(),
+            ->add('city', EntityType::class, [
+                'class' => City::class,
+                'placeholder' => '',
                 'label' => 'Mesto škole',
-                'disabled' => true,
-                'mapped' => false,
+                'choice_value' => 'id',
+                'choice_label' => 'name',
+                'attr' => [
+                    'class' => 'select select-md select-bordered rounded-md w-full md:max-w-xl',
+                ],
             ])
-            ->add('school', TextType::class, [
-                'data' => $options['data']->getSchool()?->getName(),
+            ->add('school', EntityType::class, [
+                'class' => School::class,
+                'placeholder' => '',
                 'label' => 'Škola',
-                'disabled' => true,
-                'mapped' => false,
+                'choice_value' => 'id',
+                'choice_label' => 'name',
             ])
             ->add('totalEducators', IntegerType::class, [
                 'required' => false,
                 'label' => 'Ukupan broj zaposlenih u školi',
-                'disabled' => true,
             ])
             ->add('totalBlockedEducators', IntegerType::class, [
                 'required' => false,
                 'label' => 'Ukupno u obustavi',
-                'disabled' => true,
             ])
             ->add('comment', TextareaType::class, [
                 'required' => false,

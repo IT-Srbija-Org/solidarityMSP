@@ -124,11 +124,11 @@ class TransactionRepository extends ServiceEntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function cancelAllNewTransactions(DamagedEducator $damagedEducator, string $comment): void
+    public function cancelAllTransactions(DamagedEducator $damagedEducator, string $comment, array $statuses): void
     {
         $transactions = $this->findBy([
             'damagedEducator' => $damagedEducator,
-            'status' => Transaction::STATUS_NEW,
+            'status' => $statuses,
         ]);
 
         foreach ($transactions as $transaction) {

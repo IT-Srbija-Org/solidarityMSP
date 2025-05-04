@@ -275,9 +275,14 @@ class DamagedEducatorController extends AbstractController
             $this->entityManager->persist($damagedEducator);
             $this->entityManager->flush();
 
-            // If account number has changed, cancel all "NEW" transactions
+            // If account number has changed, cancel all transactions
             if ($currentAccountNumber != $damagedEducator->getAccountNumber()) {
-                $transactionRepository->cancelAllNewTransactions($damagedEducator, 'Instruckija za uplatu je automatski otkazana pošto se promenio broj računa.');
+                $statuses = [
+                    Transaction::STATUS_NEW,
+                    Transaction::STATUS_WAITING_CONFIRMATION,
+                ];
+
+                $transactionRepository->cancelAllTransactions($damagedEducator, 'Instruckija za uplatu je automatski otkazana pošto se promenio broj računa.', $statuses);
             }
 
             $this->addFlash('success', 'Uspešno ste izmenili podatke od oštećenog.');
@@ -328,7 +333,7 @@ class DamagedEducatorController extends AbstractController
             $this->entityManager->flush();
 
             // Cancel transactions
-            $transactionRepository->cancelAllNewTransactions($damagedEducator, 'Instruckija za uplatu je otkazana pošto je oštećeni obrisan.');
+            $transactionRepository->cancelAllTransactions($damagedEducator, 'Instruckija za uplatu je otkazana pošto je oštećeni obrisan.', [Transaction::STATUS_NEW]);
 
             $this->addFlash('success', 'Uspešno ste obrisali oštećenog.');
 
@@ -340,6 +345,36 @@ class DamagedEducatorController extends AbstractController
         return $this->render('delegate/damagedEducator/delete.html.twig', [
             'form' => $form->createView(),
             'damagedEducator' => $damagedEducator,
+        ]);
+    }
+
+    #[Route('/osteceni/{id}/vracanje-obrisanog', name: 'undelete')]
+    public function undeleteDamagedEducator(DamagedEducator $damagedEducator): Response
+    {
+        if (!$damagedEducator->allowToUnDelete()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $allowedSchools = [];
+        foreach ($user->getUserDelegateSchools() as $delegateSchool) {
+            $allowedSchools[] = $delegateSchool->getSchool()->getId();
+        }
+
+        if (!in_array($damagedEducator->getSchool()->getId(), $allowedSchools)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $damagedEducator->setStatus(DamagedEducator::STATUS_NEW);
+        $damagedEducator->setStatusComment(null);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', 'Uspešno ste vratili obrisanog oštećenog.');
+
+        return $this->redirectToRoute('delegate_damaged_educator_list', [
+            'period' => $damagedEducator->getPeriod()->getId(),
         ]);
     }
 

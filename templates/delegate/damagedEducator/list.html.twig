@@ -70,6 +70,17 @@
             {% form_theme form with ['form.html.twig', 'form_inline.html.twig'] %}
             {{ form(form) }}
 
+            {% if not period.active %}
+                <div class="alert alert-info alert-soft mt-6">
+                    <span class="ti ti-info-circle text-2xl"></span>
+
+                    <span>
+                        <span class="block">Izabrani period je zatvoren za dodavanje novih oštećenih jer je prošak rok za dodavanje.</span>
+                        <span>U slučaju da je došlo do greške, kontaktirajte nas na email adresi: <a href="mailto:delegati@mrezasolidarnosti.org" target="_blank" class="link link-primary link-hover">delegati@mrezasolidarnosti.org</a></span>
+                    </span>
+                </div>
+            {% endif %}
+
             <div class="overflow-x-auto mt-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="text-gray-500">
@@ -151,9 +162,17 @@
                                         <a href="{{ path('delegate_damaged_educator_transactions', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToViewTransactions %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Spisak IZU">
                                             <span class="ti ti-credit-card text-xl"></span>
                                         </a>
-                                        <a href="{{ path('delegate_damaged_educator_delete', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToDelete %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Brisanje">
-                                            <span class="ti ti-trash text-xl"></span>
-                                        </a>
+
+                                        {% if damagedEducator.isStatusDeleted %}
+                                            <a href="{{ path('delegate_damaged_educator_undelete', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToUnDelete %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Vraćanje obrisanog">
+                                                <span class="ti ti-trash-off text-xl"></span>
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ path('delegate_damaged_educator_delete', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToDelete %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Brisanje">
+                                                <span class="ti ti-trash text-xl"></span>
+                                            </a>
+                                        {% endif %}
+
                                         <a href="{{ path('delegate_damaged_educator_edit', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToEdit %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Izmeni">
                                             <span class="ti ti-edit text-xl"></span>
                                         </a>
