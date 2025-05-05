@@ -92,13 +92,13 @@
 
                     <div class="flex gap-2 ml-auto">
                         {% if showImport %}
-                            <a href="{{ path('delegate_damaged_educator_import', { 'period': period.id }) }}" class="btn {% if period.allowToAdd %}btn-primary{% else %}btn-disabled{% endif %}">
+                            <a href="{{ path('delegate_damaged_educator_import', { 'period': period.id }) }}" class="btn {% if period|period_allow_to_add(app.user) %}btn-primary{% else %}btn-disabled{% endif %}">
                                 <span class="ti ti-file-type-xls text-xl"></span>
                                 Dodaj Excel
                             </a>
                         {% endif %}
 
-                        <a href="{{ path('delegate_damaged_educator_new', { 'period': period.id }) }}" class="btn {% if period.allowToAdd %}btn-primary{% else %}btn-disabled{% endif %} info-step7">
+                        <a href="{{ path('delegate_damaged_educator_new', { 'period': period.id }) }}" class="btn {% if period|period_allow_to_add(app.user) %}btn-primary{% else %}btn-disabled{% endif %} info-step7">
                             <span class="ti ti-plus text-xl"></span>
                             Dodaj
                         </a>
