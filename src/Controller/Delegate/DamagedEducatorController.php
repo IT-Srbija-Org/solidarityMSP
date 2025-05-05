@@ -42,8 +42,25 @@ class DamagedEducatorController extends AbstractController
             'id' => 'DESC',
         ]);
 
+        $isUniversity = false;
+        foreach ($this->getUser()->getUserDelegateSchools() as $delegateSchool) {
+            if ($delegateSchool->getSchool()->isUniversity()) {
+                $isUniversity = true;
+                break;
+            }
+        }
+
+        if (!$isUniversity) {
+            foreach ($items as $key => $item) {
+                if (3 == $item->getMonth() && 2025 == $item->getYear()) {
+                    unset($items[$key]);
+                }
+            }
+        }
+
         return $this->render('delegate/damagedEducator/choose_period.html.twig', [
             'items' => $items,
+            'isUniversity' => $isUniversity,
         ]);
     }
 
@@ -71,13 +88,13 @@ class DamagedEducatorController extends AbstractController
         $user = $this->getUser();
 
         $criteria['schools'] = [];
-        $showImport = false;
+        $isUniversity = false;
 
         foreach ($user->getUserDelegateSchools() as $delegateSchool) {
             $criteria['schools'][] = $delegateSchool->getSchool();
 
-            if ($delegateSchool->getSchool()->showImport()) {
-                $showImport = true;
+            if ($delegateSchool->getSchool()->isUniversity()) {
+                $isUniversity = true;
             }
         }
 
@@ -106,7 +123,7 @@ class DamagedEducatorController extends AbstractController
         return $this->render('delegate/damagedEducator/list.html.twig', [
             'statistics' => $statistics,
             'damagedEducators' => $damagedEducatorRepository->search($criteria, $page),
-            'showImport' => $showImport,
+            'isUniversity' => $isUniversity,
             'period' => $period,
             'form' => $form->createView(),
         ]);

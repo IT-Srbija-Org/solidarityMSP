@@ -91,7 +91,7 @@
                     </div>
 
                     <div class="flex gap-2 ml-auto">
-                        {% if showImport %}
+                        {% if isUniversity %}
                             <a href="{{ path('delegate_damaged_educator_import', { 'period': period.id }) }}" class="btn {% if period|period_allow_to_add(app.user) %}btn-primary{% else %}btn-disabled{% endif %}">
                                 <span class="ti ti-file-type-xls text-xl"></span>
                                 Dodaj Excel
@@ -204,7 +204,7 @@
             { element: '.info-step3', popover: { title: 'Statistika za škole', description: 'Statistika za izabrani period za škole za koje ste Vi delegat.' } },
             { element: '.info-step4', popover: { title: 'Spisak oštećenih', description: 'Ovde se nalazi spisak oštećenih za izabrani period za škole za koje ste Vi delegat.' } },
             { element: '.info-step5', popover: { title: 'Pretraga oštećenih', description: 'Ovde možete da pretražujete oštećene za izabrani period i za škole za koje ste Vi delegat.' } },
-            { element: '.info-step6', popover: { title: 'Period moze biti zatvoren za dodavanje', description: 'Period može biti zatvoren za dodavanje novih oštećenih jer je prošak rok za dodavanje.' } },
+            { element: '.info-step6', popover: { title: 'Period moze biti zatvoren za dodavanje', description: 'Period može biti zatvoren za dodavanje novih oštećenih ako je prošak rok za dodavanje.' } },
             { element: '.info-step7', popover: { title: 'Dodavanje novih oštećenih', description: 'Ovde možete da dodate nove oštećene za izabrani period, ako period nije zatvoren.' } },
             { element: '.info-step8', popover: { title: 'Spisak oštećenih', description: 'Možete da vidite spisak svih oštećenih koji su unešeni za škole za koje ste Vi delegat.' } },
             { element: '.info-step9', popover: { title: 'Status oštećenog', description: 'Status oštećenog, ako je obrisan pisaće ovde i za njega se više neće praviti instrukcije za uplatu ka donatorima.' } },
