@@ -42,8 +42,11 @@ class DamagedEducatorController extends AbstractController
             'id' => 'DESC',
         ]);
 
+        /** @var User $user */
+        $user = $this->getUser();
         $isUniversity = false;
-        foreach ($this->getUser()->getUserDelegateSchools() as $delegateSchool) {
+
+        foreach ($user->getUserDelegateSchools() as $delegateSchool) {
             if ($delegateSchool->getSchool()->isUniversity()) {
                 $isUniversity = true;
                 break;
