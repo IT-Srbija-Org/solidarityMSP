@@ -4,13 +4,14 @@ namespace App\Twig;
 
 use App\Entity\DamagedEducatorPeriod;
 use App\Entity\User;
+use App\Repository\DamagedEducatorPeriodRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 class PeriodAllowToAddExtension extends AbstractExtension
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository)
     {
     }
 
@@ -23,6 +24,6 @@ class PeriodAllowToAddExtension extends AbstractExtension
 
     public function allowToAdd(DamagedEducatorPeriod $period, User $user): bool
     {
-        return $this->entityManager->getRepository(DamagedEducatorPeriod::class)->allowToAdd($user, $period);
+        return $this->damagedEducatorPeriodRepository->getRepository(DamagedEducatorPeriod::class)->allowToAdd($user, $period);
     }
 }
