@@ -5,7 +5,6 @@ namespace App\Twig;
 use App\Entity\DamagedEducatorPeriod;
 use App\Entity\User;
 use App\Repository\DamagedEducatorPeriodRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
