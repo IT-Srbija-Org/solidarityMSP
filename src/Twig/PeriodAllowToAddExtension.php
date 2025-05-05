@@ -24,6 +24,6 @@ class PeriodAllowToAddExtension extends AbstractExtension
 
     public function allowToAdd(DamagedEducatorPeriod $period, User $user): bool
     {
-        return $this->damagedEducatorPeriodRepository->getRepository(DamagedEducatorPeriod::class)->allowToAdd($user, $period);
+        return $this->damagedEducatorPeriodRepository->allowToAdd($user, $period);
     }
 }
