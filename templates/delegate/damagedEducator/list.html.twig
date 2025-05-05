@@ -134,10 +134,6 @@
                                     Kreiran
                                 </th>
                                 <th class="info-step9">Status</th>
-                                <th>
-                                    <span class="ti ti-user-cog text-xl"></span>
-                                    Delegat
-                                </th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -152,13 +148,6 @@
                                 <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
                                 <td class="whitespace-nowrap">
                                     {{ damagedEducator.status|damaged_educator_status|raw }}
-                                </td>
-                                <td>
-                                    {% if damagedEducator.createdBy %}
-                                        {{ damagedEducator.createdBy.fullName }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
                                 </td>
                                 <td>
                                     <div class="flex gap-2 justify-end">

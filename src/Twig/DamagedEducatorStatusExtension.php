@@ -26,7 +26,7 @@ class DamagedEducatorStatusExtension extends AbstractExtension
         $statusName = $this->translator->trans($allStatus[$status]) ?? '-';
 
         return match ($status) {
-            DamagedEducator::STATUS_NEW => '-',
+            DamagedEducator::STATUS_NEW => '<span class="text-gray-500">'.$statusName.'</span>',
             DamagedEducator::STATUS_DELETED => '<span class="ti ti-circle-x text-xl text-error relative top-0.5"></span> <span class="text-gray-500">'.$statusName.'</span>',
         };
     }
