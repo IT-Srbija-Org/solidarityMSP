@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="card card-lg bg-base-100 shadow m-4 mt-10">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-help-circle text-3xl"></span>
+                Šta znače statusi kod instrukcija za uplatu?
+            </h2>
+
+            <div class="space-y-4">
+                <div>{{ 1|transaction_status|raw }} - Kada je instrukcija za uplatu napravljena i čeka se uplata od strane donatora.</div>
+                <div>{{ 2|transaction_status|raw }} - Donator je označio da je uplata izvršena i sada se čeka potvrda od strane delegata.</div>
+                <div>{{ 6|transaction_status|raw }} - Prošlo je 72 sata od kreiranja instrukcije i instrukcija za uplatu je automatski prebačena u ovaj status, pošto donator, iako je bio aktivan na sajtu, nije potvrdio da je uplata izvršena. Instrukcija može isteći samo ako je bila u statusu "{{ 1|transaction_status|raw }}".</div>
+                <div>{{ 4|transaction_status|raw }} - Sistem je automatski otkazao instrukciju zbog greške (npr. pogrešan broj računa, oštećeni je odustao od pomoći i slično) ili je delegat obrisao oštećenog korisnika, pa su sve njegove instrukcije otkazane.</div>
+                <div>{{ 5|transaction_status|raw }} - Delegat je ručno označio da uplata nije primljena ili je sistem automatski detektovao da uplata nije izvršena jer donator nije pristupio sajtu od trenutka kreiranja instrukcije.</div>
+                <div>{{ 3|transaction_status|raw }} - Delegat je potvrdio da je uplata uspešno izvršena.</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

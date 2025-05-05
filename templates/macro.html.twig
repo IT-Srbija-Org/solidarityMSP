@@ -9,6 +9,14 @@
     </div>
 {% endmacro %}
 
+{% macro tutorial() %}
+    <div class="m-4 -mb-8 mt-10 text-end">
+        <button class="btn btn-warning js-info-button">
+            <span class="ti ti-help-circle text-xl"></span> Uputstvo za korišćenje
+        </button>
+    </div>
+{% endmacro %}
+
 {% macro pagination(routeName, totalPages, currentPage) %}
     {% if totalPages > 1 %}
         <div class="join flex justify-center my-5">

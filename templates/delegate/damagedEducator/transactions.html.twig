@@ -2,11 +2,12 @@
 
 {% block body %}
     {% import "macro.html.twig" as macro %}
+    {{ macro.tutorial() }}
     {{ macro.back('delegate_damaged_educator_list', { 'period': damagedEducator.period.id }) }}
 
     <div class="card card-lg bg-base-100 shadow m-4 mt-0">
         <div class="card-body">
-            <h2 class="card-title mb-4">
+            <h2 class="card-title mb-4 info-step1">
                 <span class="ti ti-credit-card text-3xl"></span>
                 Spisak svih instrukcija za uplatu oštećenom za period {{ damagedEducator.period|format_period }}
             </h2>
@@ -45,26 +46,26 @@
 
             <div class="overflow-x-auto">
                 <div class="flex justify-between items-center mb-4">
-                    <div class="text-gray-500">
+                    <div class="text-gray-500 info-step2">
                         Ukupno rezultata: <span class="font-bold">{{ transactions|length }}</span>
                     </div>
                 </div>
 
                 {% if transactions|length > 0 %}
                     <table class="table rounded-xl border border-base-200">
-                        <thead class="bg-gray-100">
+                        <thead class="bg-gray-100 info-step3">
                             <tr>
-                                <th>Poziv na broj</th>
-                                <th>
+                                <th class="info-step4">Poziv na broj</th>
+                                <th class="info-step5">
                                     <span class="ti ti-credit-card text-xl"></span>
                                     Broj računa
                                 </th>
-                                <th>
+                                <th class="info-step6">
                                     <span class="ti ti-cash text-xl"></span>
                                     Cifra
                                 </th>
-                                <th>Status</th>
-                                <th>
+                                <th class="info-step7">Status</th>
+                                <th class="info-step8">
                                     <span class="ti ti-calendar-event text-xl"></span>
                                     Napravljeno
                                 </th>
@@ -90,7 +91,7 @@
                                 <td>{{ transaction.createdAt|date('H:i d.m.Y.') }}</td>
                                 <td>
                                     <div class="flex gap-2 justify-end">
-                                        <a href="{{ path('delegate_damaged_educator_transaction_change_status', { 'id': transaction.id }) }}" class="btn {% if transaction.allowToChangeStatus %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Promeni status">
+                                        <a href="{{ path('delegate_damaged_educator_transaction_change_status', { 'id': transaction.id }) }}" class="btn {% if transaction.allowToChangeStatus %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip info-step9" data-tip="Promeni status">
                                             <span class="ti ti-edit text-xl"></span> Promeni status
                                         </a>
                                     </div>
@@ -103,4 +104,22 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        loadDriver([
+            { element: '.info-step1', popover: { title: 'Spisak svih instrukcija', description: 'Na stranici možete videti spisak svih instrukcija za uplatu za izabranog oštećenog u ovom periodu. Pored liste, možete videti i detaljne informacije o svakoj instrukciji za uplatu koja je generisana za tog oštećenog.' } },
+            { element: '.info-step2', popover: { title: 'Broj instrukcija', description: 'Ukupan broj instrukcija koje su generisane za oštećenog u ovom periodu.' } },
+            { element: '.info-step3', popover: { title: 'Tabela svih instrukcija', description: 'Tabela svih instrukcija koje su generisane za oštećenog u ovom periodu.' } },
+            { element: '.info-step4', popover: { title: 'Poziv na broj', description: 'Jedinstveni poziv na broj koji identifikuje konkretnu instrukciju za uplatu.' } },
+            { element: '.info-step5', popover: { title: 'Broj računa', description: 'Broj bankovnog računa na koji donator treba da izvrši uplatu.' } },
+            { element: '.info-step6', popover: { title: 'Iznos uplate', description: 'Ukupan novčani iznos koji donator treba da uplati za ovu instrukciju.' } },
+            { element: '.info-step7', popover: { title: 'Status', description: 'Status označava trenutno stanje instrukcije za uplatu. Pošto postoji više različitih statusa i razloga za njih, molimo vas da posetite <a href="{{ path("static_transaction_status") }}" target="_blank" class="link link-primary link-hover">ovu stranicu</a> radi boljeg razumevanja.' } },
+            { element: '.info-step8', popover: { title: 'Datum kreiranja', description: 'Ovo je datum kada je instrukcija za uplatu kreirana i poslata donatoru.' } },
+            { element: '.info-step9', popover: { title: 'Promena statusa', description: 'Opcija promene statusa je jedan od bitnijih delova sistem, ono što je najbitnije jeste da shvatite svaki status i kako dolazi od određenog statusa. Promenu statusa je moguće vršiti samo u određenim slučajevima opisanim na <a href="{{ path('static_transaction_status') }}" target="_blank" class="link link-primary link-hover">ovoj</a> stranici.' } },
+        ]);
+    </script>
 {% endblock %}

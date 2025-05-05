@@ -33,7 +33,9 @@
                     <td>{{ log.id }}</td>
                     <td>
                         {% if log.changedByUser %}
-                            {{ log.changedByUser.email }}
+                            <a href="{{ path('admin_user_details') }}" class="link link-primary link-hover">
+                                {{ log.changedByUser.email }}
+                            </a>
                         {% else %}
                             -
                         {% endif %}

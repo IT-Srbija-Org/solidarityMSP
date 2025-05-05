@@ -2,21 +2,22 @@
 
 {% block body %}
     {% import "macro.html.twig" as macro %}
+    {{ macro.tutorial() }}
     {{ macro.back('delegate_damaged_educator_choose_period') }}
 
     <div class="card card-lg bg-base-100 shadow m-4 mt-0">
         <div class="card-body">
-            <h2 class="card-title mb-4">
+            <h2 class="card-title mb-4 info-step1">
                 <span class="ti ti-device-desktop-analytics text-3xl"></span>
                 Statistika za {{ period|format_period }}
             </h2>
 
-            <div>
+            <div class="info-step2">
                 <div>Ukupno prijavljeno oštećenih: {{ statistics.totalDamagedEducators|number_format }} iz {{ statistics.totalActiveSchools|number_format }} škola</div>
                 <div>Prosečno primljeno para po oštećenom (potvrđeno): {{ statistics.averageAmountPerDamagedEducator|number_format }} RSD</div>
             </div>
 
-            <div class="overflow-x-auto mt-6">
+            <div class="overflow-x-auto mt-6 info-step3">
                 <table class="table rounded-xl border border-base-200">
                     <thead class="bg-gray-100">
                         <tr>
@@ -60,18 +61,20 @@
 
     <div class="card card-lg bg-base-100 shadow m-4 mt-0">
         <div class="card-body">
-            <h2 class="card-title mb-4">
+            <h2 class="card-title mb-4 info-step4">
                 <span class="ti ti-school text-3xl"></span>
                 Oštećeni za {{ period|format_period }}
             </h2>
 
             {{ include('flashes.html.twig') }}
 
-            {% form_theme form with ['form.html.twig', 'form_inline.html.twig'] %}
-            {{ form(form) }}
+            <div class="info-step5">
+                {% form_theme form with ['form.html.twig', 'form_inline.html.twig'] %}
+                {{ form(form) }}
+            </div>
 
             {% if not period.active %}
-                <div class="alert alert-info alert-soft mt-6">
+                <div class="alert alert-info alert-soft mt-6 info-step6">
                     <span class="ti ti-info-circle text-2xl"></span>
 
                     <span>
@@ -95,7 +98,7 @@
                             </a>
                         {% endif %}
 
-                        <a href="{{ path('delegate_damaged_educator_new', { 'period': period.id }) }}" class="btn {% if period.allowToAdd %}btn-primary{% else %}btn-disabled{% endif %}">
+                        <a href="{{ path('delegate_damaged_educator_new', { 'period': period.id }) }}" class="btn {% if period.allowToAdd %}btn-primary{% else %}btn-disabled{% endif %} info-step7">
                             <span class="ti ti-plus text-xl"></span>
                             Dodaj
                         </a>
@@ -104,7 +107,7 @@
 
                 {% if damagedEducators.total > 0 %}
                     <table class="table rounded-xl border border-base-200">
-                        <thead class="bg-gray-100">
+                        <thead class="bg-gray-100 info-step8">
                             <tr>
                                 <th>
                                     <span class="ti ti-user text-xl"></span>
@@ -130,7 +133,7 @@
                                     <span class="ti ti-calendar-event text-xl"></span>
                                     Kreiran
                                 </th>
-                                <th>Status</th>
+                                <th class="info-step9">Status</th>
                                 <th>
                                     <span class="ti ti-user-cog text-xl"></span>
                                     Delegat
@@ -159,7 +162,7 @@
                                 </td>
                                 <td>
                                     <div class="flex gap-2 justify-end">
-                                        <a href="{{ path('delegate_damaged_educator_transactions', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToViewTransactions %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Spisak IZU">
+                                        <a href="{{ path('delegate_damaged_educator_transactions', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToViewTransactions %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip info-step10" data-tip="Spisak IZU">
                                             <span class="ti ti-credit-card text-xl"></span>
                                         </a>
 
@@ -168,12 +171,12 @@
                                                 <span class="ti ti-trash-off text-xl"></span>
                                             </a>
                                         {% else %}
-                                            <a href="{{ path('delegate_damaged_educator_delete', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToDelete %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Brisanje">
+                                            <a href="{{ path('delegate_damaged_educator_delete', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToDelete %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex tooltip info-step11" data-tip="Brisanje">
                                                 <span class="ti ti-trash text-xl"></span>
                                             </a>
                                         {% endif %}
 
-                                        <a href="{{ path('delegate_damaged_educator_edit', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToEdit %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Izmeni">
+                                        <a href="{{ path('delegate_damaged_educator_edit', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToEdit %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip info-step12" data-tip="Izmeni">
                                             <span class="ti ti-edit text-xl"></span>
                                         </a>
                                     </div>
@@ -189,4 +192,25 @@
 
     {% import "macro.html.twig" as macro %}
     {{ macro.pagination('delegate_damaged_educator_list', damagedEducators.total_pages, damagedEducators.current_page) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        loadDriver([
+            { element: '.info-step1', popover: { title: 'Statistika', description: 'Ovaj deo pokazuje statistiku za izabrani period za sve škole unutar mreže kao i detaljnu statistiku za škole za koje ste Vi delegat.' } },
+            { element: '.info-step2', popover: { title: 'Statistika unutar mreže', description: 'Statistika za izabrani period za sve škole unutar mreže.' } },
+            { element: '.info-step3', popover: { title: 'Statistika za škole', description: 'Statistika za izabrani period za škole za koje ste Vi delegat.' } },
+            { element: '.info-step4', popover: { title: 'Spisak oštećenih', description: 'Ovde se nalazi spisak oštećenih za izabrani period za škole za koje ste Vi delegat.' } },
+            { element: '.info-step5', popover: { title: 'Pretraga oštećenih', description: 'Ovde možete da pretražujete oštećene za izabrani period i za škole za koje ste Vi delegat.' } },
+            { element: '.info-step6', popover: { title: 'Period moze biti zatvoren za dodavanje', description: 'Period može biti zatvoren za dodavanje novih oštećenih jer je prošak rok za dodavanje.' } },
+            { element: '.info-step7', popover: { title: 'Dodavanje novih oštećenih', description: 'Ovde možete da dodate nove oštećene za izabrani period, ako period nije zatvoren.' } },
+            { element: '.info-step8', popover: { title: 'Spisak oštećenih', description: 'Možete da vidite spisak svih oštećenih koji su unešeni za škole za koje ste Vi delegat.' } },
+            { element: '.info-step9', popover: { title: 'Status oštećenog', description: 'Status oštećenog, ako je obrisan pisaće ovde i za njega se više neće praviti instrukcije za uplatu ka donatorima.' } },
+            { element: '.info-step10', popover: { title: 'Spisak instrukcija za uplatu', description: 'Na stranici možete da vidite spisak svih instrukcija za uplatu (ako postoje) za oštećenog koje su prosleđene ka donatorima.' } },
+            { element: '.info-step11', popover: { title: 'Brisanje oštećenog', description: 'Na stranici postoji opcija za brisanje oštećenog kao i opcija da se oštećeni vrati iz obrisanih.' } },
+            { element: '.info-step12', popover: { title: 'Izmena podataka za oštećenog', description: 'Na stranici postoji opcija za izmenu podataka za oštećenog.' } },
+        ]);
+    </script>
 {% endblock %}

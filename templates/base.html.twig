@@ -42,6 +42,9 @@
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.2"></script>
         <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
 
+        <script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.css"/>
+
         {% if UMAMI_TRACKING_ID is not empty %}
             <script defer src="https://stats.uikraft.com/script.js" data-website-id="{{ UMAMI_TRACKING_ID }}"></script>
         {% endif %}
@@ -91,6 +94,10 @@
 
         <script src="{{ asset('javascript/jquery.min.js') }}"></script>
         <script src="{{ asset('javascript/general.js') }}"></script>
+        <script>
+            loadDriverInfo();
+        </script>
+
         {% block javascripts %}{% endblock %}
     </body>
 </html>
