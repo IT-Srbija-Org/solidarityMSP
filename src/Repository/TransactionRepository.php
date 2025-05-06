@@ -113,7 +113,7 @@ class TransactionRepository extends ServiceEntityRepository
             ->innerJoin('t.damagedEducator', 'de')
             ->andWhere('de.period = :period')
             ->setParameter('period', $period)
-            ->andWhere('t.status = :statuses')
+            ->andWhere('t.status IN (:statuses)')
             ->setParameter('statuses', $statuses);
 
         if ($school) {
