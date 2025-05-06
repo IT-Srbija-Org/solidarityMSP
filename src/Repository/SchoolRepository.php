@@ -71,9 +71,9 @@ class SchoolRepository extends ServiceEntityRepository
 
     public function getStatistics(DamagedEducatorPeriod $period, School $school): array
     {
-        $sumAmountNewTransactions = $this->transactionRepository->getSumAmountTransactions($period, $school, Transaction::STATUS_NEW);
-        $sumAmountWaitingConfirmationTransactions = $this->transactionRepository->getSumAmountTransactions($period, $school, Transaction::STATUS_WAITING_CONFIRMATION);
-        $sumAmountConfirmedTransactions = $this->transactionRepository->getSumAmountTransactions($period, $school, Transaction::STATUS_CONFIRMED);
+        $sumAmountNewTransactions = $this->transactionRepository->getSumAmountTransactions($period, $school, [Transaction::STATUS_NEW]);
+        $sumAmountWaitingConfirmationTransactions = $this->transactionRepository->getSumAmountTransactions($period, $school, [Transaction::STATUS_WAITING_CONFIRMATION, Transaction::STATUS_EXPIRED]);
+        $sumAmountConfirmedTransactions = $this->transactionRepository->getSumAmountTransactions($period, $school, [Transaction::STATUS_CONFIRMED]);
         $totalDamagedEducators = $this->damagedEducatorRepository->count(['period' => $period, 'school' => $school]);
 
         $averageAmountPerDamagedEducator = 0;

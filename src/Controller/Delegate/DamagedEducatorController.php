@@ -105,7 +105,7 @@ class DamagedEducatorController extends AbstractController
         $page = $request->query->getInt('page', 1);
 
         $totalDamagedEducators = $damagedEducatorRepository->count(['period' => $period]);
-        $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountTransactions($period, null, Transaction::STATUS_CONFIRMED);
+        $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountTransactions($period, null, [Transaction::STATUS_CONFIRMED]);
 
         $averageAmountPerDamagedEducator = 0;
         if ($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {

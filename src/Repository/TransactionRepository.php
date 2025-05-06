@@ -105,7 +105,7 @@ class TransactionRepository extends ServiceEntityRepository
         ];
     }
 
-    public function getSumAmountTransactions(DamagedEducatorPeriod $period, ?School $school, int $status): int
+    public function getSumAmountTransactions(DamagedEducatorPeriod $period, ?School $school, array $statuses): int
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb = $qb->select('SUM(t.amount)')
@@ -113,8 +113,8 @@ class TransactionRepository extends ServiceEntityRepository
             ->innerJoin('t.damagedEducator', 'de')
             ->andWhere('de.period = :period')
             ->setParameter('period', $period)
-            ->andWhere('t.status = :status')
-            ->setParameter('status', $status);
+            ->andWhere('t.status = :statuses')
+            ->setParameter('statuses', $statuses);
 
         if ($school) {
             $qb->andWhere('de.school = :school')
