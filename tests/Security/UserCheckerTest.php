@@ -46,7 +46,7 @@ class UserCheckerTest extends TestCase
         $user->setIsEmailVerified(false);
 
         $this->expectException(CustomUserMessageAccountStatusException::class);
-        $this->expectExceptionMessage('Email adresa nije verifikovana.');
+        $this->expectExceptionMessage('Email adresa nije potvrđena.');
 
         $this->userChecker->checkPreAuth($user);
     }

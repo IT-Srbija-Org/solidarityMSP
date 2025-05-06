@@ -79,7 +79,7 @@ class RegistrationControllerTest extends WebTestCase
         $this->client->followRedirect();
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('.alert.alert-success', 'Vaš nalog je već verifikovan.');
+        $this->assertSelectorTextContains('.alert.alert-success', 'Vaš nalog je već potvrđen. Možete se prijaviti.');
     }
 
     public function testResendVerificationTooFrequently(): void

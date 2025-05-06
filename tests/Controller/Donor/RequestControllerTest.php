@@ -97,7 +97,7 @@ class RequestControllerTest extends WebTestCase
         // Check are register verification email sent
         $this->assertEmailCount(1);
         $mailerMessage = $this->getMailerMessage();
-        $this->assertEmailSubjectContains($mailerMessage, 'Link za verifikaciju email adrese');
+        $this->assertEmailSubjectContains($mailerMessage, 'Link za potvrdu email adrese');
 
         // Check redirect
         $this->client->followRedirect();
