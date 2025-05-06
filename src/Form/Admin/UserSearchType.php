@@ -43,7 +43,7 @@ class UserSearchType extends AbstractType
             ])
             ->add('isEmailVerified', ChoiceType::class, [
                 'required' => false,
-                'label' => 'Verifikovan email',
+                'label' => 'Potvđen email',
                 'choices' => [
                     'Da' => true,
                     'Ne' => false,

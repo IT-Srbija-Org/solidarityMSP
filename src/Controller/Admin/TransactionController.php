@@ -41,6 +41,7 @@ final class TransactionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $transaction->setStatusComment(null);
             $entityManager->persist($transaction);
             $entityManager->flush();
 

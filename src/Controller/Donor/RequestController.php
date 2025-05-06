@@ -103,7 +103,8 @@ class RequestController extends AbstractController
         $userDonor = $user->getUserDonor();
 
         if ($userDonor) {
-            $userDonorRepository->unsubscribe($userDonor);
+            $this->entityManager->remove($userDonor);
+            $this->entityManager->flush();
         }
 
         $this->addFlash('success', 'Uspešno ste se odjavili sa liste donora');

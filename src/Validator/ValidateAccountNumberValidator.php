@@ -25,34 +25,28 @@ class ValidateAccountNumberValidator extends ConstraintValidator
             return;
         }
 
-        if (!$this->isValid($value)) {
-            $this->context->buildViolation($constraint->message)
-                ->addViolation();
-        }
-    }
-
-    private function isValid(string $accountNumber): bool
-    {
         // Budget of the Republic of Serbia
-        if (str_starts_with($accountNumber, '840')) {
-            return false;
+        if (str_starts_with($value, '840')) {
+            $this->context->buildViolation('Broj računa pripada budzetu Republike Srbije.')
+                ->addViolation();
         }
 
         // Eurobank Direktna
-        if (str_starts_with($accountNumber, '150')) {
-            return false;
+        if (str_starts_with($value, '150')) {
+            $this->context->buildViolation('Broj računa pripada banci "Eurobank Direktna" koja više ne postoji.')
+                ->addViolation();
         }
 
         // MTS Bank
-        if (str_starts_with($accountNumber, '360')) {
-            return false;
+        if (str_starts_with($value, '360')) {
+            $this->context->buildViolation('Broj računa pripada banci "MTS Bank" koja više ne postoji.')
+                ->addViolation();
         }
 
-        if (!$this->validateAccountNumber($accountNumber)) {
-            return false;
+        if (!$this->validateAccountNumber($value)) {
+            $this->context->buildViolation($constraint->message)
+                ->addViolation();
         }
-
-        return true;
     }
 
     private function validateAccountNumber(string $accountNumber): bool

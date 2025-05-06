@@ -139,17 +139,6 @@ class Transaction
         return $this;
     }
 
-    #[ORM\PrePersist]
-    #[ORM\PreUpdate]
-    public function cleanStatusComment(): static
-    {
-        if (self::STATUS_CANCELLED != $this->getStatus()) {
-            $this->setStatusComment(null);
-        }
-
-        return $this;
-    }
-
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;

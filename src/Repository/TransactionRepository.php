@@ -105,7 +105,7 @@ class TransactionRepository extends ServiceEntityRepository
         ];
     }
 
-    public function getSumAmountConfirmedTransactions(DamagedEducatorPeriod $period, ?School $school): int
+    public function getSumAmountTransactions(DamagedEducatorPeriod $period, ?School $school, int $status): int
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb = $qb->select('SUM(t.amount)')
@@ -114,7 +114,7 @@ class TransactionRepository extends ServiceEntityRepository
             ->andWhere('de.period = :period')
             ->setParameter('period', $period)
             ->andWhere('t.status = :status')
-            ->setParameter('status', Transaction::STATUS_CONFIRMED);
+            ->setParameter('status', $status);
 
         if ($school) {
             $qb->andWhere('de.school = :school')
@@ -124,7 +124,7 @@ class TransactionRepository extends ServiceEntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function cancelAllTransactions(DamagedEducator $damagedEducator, string $comment, array $statuses): void
+    public function cancelAllTransactions(DamagedEducator $damagedEducator, string $comment, array $statuses, bool $checkDonorLastVisit): void
     {
         $transactions = $this->findBy([
             'damagedEducator' => $damagedEducator,
@@ -132,6 +132,13 @@ class TransactionRepository extends ServiceEntityRepository
         ]);
 
         foreach ($transactions as $transaction) {
+            if ($checkDonorLastVisit) {
+                $user = $transaction->getUser();
+                if ($user->getLastVisit() && $user->getLastVisit() > $transaction->getCreatedAt()) {
+                    continue;
+                }
+            }
+
             $transaction->setStatus(Transaction::STATUS_CANCELLED);
             $transaction->setStatusComment($comment);
         }

@@ -28,6 +28,7 @@ class FormatPeriodExtension extends AbstractExtension
             $type = match ($period->getType()) {
                 DamagedEducatorPeriod::TYPE_FIRST_HALF => ' (1/2)',
                 DamagedEducatorPeriod::TYPE_SECOND_HALF => ' (2/2)',
+                DamagedEducatorPeriod::TYPE_FULL => ' (full)',
                 default => '',
             };
         } else {
@@ -36,6 +37,7 @@ class FormatPeriodExtension extends AbstractExtension
             $type = match ($period->getType()) {
                 DamagedEducatorPeriod::TYPE_FIRST_HALF => ' (Prva polovina)',
                 DamagedEducatorPeriod::TYPE_SECOND_HALF => ' (Druga polovina)',
+                DamagedEducatorPeriod::TYPE_FULL => ' (Ceo mesec)',
                 default => '',
             };
         }

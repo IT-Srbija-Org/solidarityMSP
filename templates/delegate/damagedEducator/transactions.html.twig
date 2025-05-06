@@ -24,27 +24,7 @@
 
             {{ include('flashes.html.twig') }}
 
-            {% if hasCancelledTransactions %}
-                <div class="alert alert-info alert-soft">
-                    <span class="ti ti-info-circle text-2xl"></span>
-
-                    <span>
-                        <span class="font-bold">Neke od instrukcija za uplatu su otkazane.</span> Do otkazivanja dolazi kada sistem automatski poništio instrukcijum, ovo je normalna korekcija koja se može desiti. Donatorima će biti poslata nova instrukcija za uplatu uskoro.
-                    </span>
-                </div>
-            {% endif %}
-
-            {% if hasExpiredTransactions %}
-                <div class="alert alert-info alert-soft">
-                    <span class="ti ti-info-circle text-2xl"></span>
-
-                    <span>
-                        <span class="font-bold">Neke od instrukcija za uplatu su istekle.</span> Do isteka instrukcija za uplatu dolazi kada prođe više od 72 sata bez potvrde donatora da je uplata izvršena. Svakako, ove instrukcije se trebaju proveriti pošto se može desiti da donator samo nije potvrdio uplatu, ali ju je izvršio.
-                    </span>
-                </div>
-            {% endif %}
-
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto mt-2">
                 <div class="flex justify-between items-center mb-4">
                     <div class="text-gray-500 info-step2">
                         Ukupno rezultata: <span class="font-bold">{{ transactions|length }}</span>
@@ -64,7 +44,9 @@
                                     <span class="ti ti-cash text-xl"></span>
                                     Cifra
                                 </th>
-                                <th class="info-step7">Status</th>
+                                <th class="info-step7">
+                                    <a href="{{ path('static_transaction_status') }}" class="link link-primary link-hover">Status</a>
+                                </th>
                                 <th class="info-step8">
                                     <span class="ti ti-calendar-event text-xl"></span>
                                     Napravljeno

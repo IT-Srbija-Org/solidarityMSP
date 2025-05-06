@@ -27,7 +27,7 @@
                             </th>
                             <th>
                                 <span class="ti ti-user text-xl"></span>
-                                Ukupno prijavljenih oštećenih
+                                Ukupno prijavljenih<br>oštećenih
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
@@ -39,7 +39,7 @@
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
-                                Prosečno primljeno para po oštećenom (potvrđeno)
+                                Prosečno primljeno para<br>po oštećenom (potvrđeno)
                             </th>
                         </tr>
                     </thead>
@@ -68,13 +68,23 @@
 
             {{ include('flashes.html.twig') }}
 
-            <div class="info-step5">
+            <div class="info-step5 mb-6">
                 {% form_theme form with ['form.html.twig', 'form_inline.html.twig'] %}
                 {{ form(form) }}
             </div>
 
+            <div class="alert alert-info alert-soft  info-step6">
+                <span class="ti ti-info-circle text-2xl"></span>
+
+                {% if period.processing %}
+                    <div>Za izabrani period aktivno se kreiraju instrukcije za uplatu za sve oštećene sa ove liste.</div>
+                {% else %}
+                    <div>Za izabrani period se trenutno ne prave nove instrukcije za uplatu.</div>
+                {% endif %}
+            </div>
+
             {% if not period.active %}
-                <div class="alert alert-info alert-soft mt-6 info-step6">
+                <div class="alert alert-info alert-soft info-step6">
                     <span class="ti ti-info-circle text-2xl"></span>
 
                     <span>
@@ -133,7 +143,9 @@
                                     <span class="ti ti-calendar-event text-xl"></span>
                                     Kreiran
                                 </th>
-                                <th class="info-step9">Status</th>
+                                <th class="info-step9">
+                                    <a href="{{ path('static_damaged_educator_status') }}" class="link link-primary link-hover">Status</a>
+                                </th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -196,7 +208,7 @@
             { element: '.info-step6', popover: { title: 'Period moze biti zatvoren za dodavanje', description: 'Period može biti zatvoren za dodavanje novih oštećenih ako je prošak rok za dodavanje.' } },
             { element: '.info-step7', popover: { title: 'Dodavanje novih oštećenih', description: 'Ovde možete da dodate nove oštećene za izabrani period, ako period nije zatvoren.' } },
             { element: '.info-step8', popover: { title: 'Spisak oštećenih', description: 'Možete da vidite spisak svih oštećenih koji su unešeni za škole za koje ste Vi delegat.' } },
-            { element: '.info-step9', popover: { title: 'Status oštećenog', description: 'Status oštećenog, može biti "Aktivan" i "Obrisan", ako je "Obrisan" znači da se za oštećenog neće praviti instrukcije za uplatu i neće se slati donatorima.' } },
+            { element: '.info-step9', popover: { title: 'Status oštećenog', description: 'Status označava trenutno stanje oštećenog prosvetnog radnika. Pošto postoji više različitih statusa, molimo vas da posetite <a href="{{ path("static_damaged_educator_status") }}" target="_blank" class="link link-primary link-hover">ovu stranicu</a> radi boljeg razumevanja.' } },
             { element: '.info-step10', popover: { title: 'Spisak instrukcija za uplatu', description: 'Na stranici možete da vidite spisak svih instrukcija za uplatu (ako postoje) za oštećenog koje su prosleđene ka donatorima.' } },
             { element: '.info-step11', popover: { title: 'Brisanje oštećenog', description: 'Na stranici postoji opcija za brisanje oštećenog kao i opcija da se oštećeni vrati iz obrisanih.' } },
             { element: '.info-step12', popover: { title: 'Izmena podataka za oštećenog', description: 'Na stranici postoji opcija za izmenu podataka za oštećenog.' } },

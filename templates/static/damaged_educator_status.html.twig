@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="card card-lg bg-base-100 shadow m-4 mt-10">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-help-circle text-3xl"></span>
+                Šta znače statusi kod oštećenih prosvetnih radnika?
+            </h2>
+
+            <div class="space-y-4">
+                <div>{{ 1|damaged_educator_status|raw }} - Kada je oštećeni prosvetni radnik unešen.</div>
+                <div>{{ 2|damaged_educator_status|raw }} - Kada je oštećeni prosvetni radnik obrisan zbog nekog razloga (pogrešne informacije, oštećeni se predomislio i slično). Uglavnom pored ovog statusa stoji i komentar koji objašnjava zašto je oštećeni obrisan. Za njega se neće kreirati nove instrukcije za uplatu ka donatorima.</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

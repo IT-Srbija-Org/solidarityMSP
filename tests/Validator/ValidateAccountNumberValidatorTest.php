@@ -53,7 +53,6 @@ class ValidateAccountNumberValidatorTest extends TestCase
 
         $this->context->expects($this->once())
             ->method('buildViolation')
-            ->with($constraint->message)
             ->willReturn($this->violationBuilder);
 
         $this->validator->validate($accountNumber, $constraint);

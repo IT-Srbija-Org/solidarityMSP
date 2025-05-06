@@ -16,9 +16,11 @@ class UserEditType extends AbstractType
     {
         $builder
             ->add('firstName', TextType::class, [
+                'required' => false,
                 'label' => 'Ime',
             ])
             ->add('lastName', TextType::class, [
+                'required' => false,
                 'label' => 'Prezime',
             ])
             ->add('email', null, [
@@ -47,7 +49,7 @@ class UserEditType extends AbstractType
                 ],
             ])
             ->add('isEmailVerified', ChoiceType::class, [
-                'label' => 'Verifikovan',
+                'label' => 'Potvđen email',
                 'choices' => [
                     'Da' => true,
                     'Ne' => false,

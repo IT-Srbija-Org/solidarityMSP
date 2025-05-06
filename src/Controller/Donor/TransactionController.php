@@ -141,6 +141,7 @@ class TransactionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $transaction->setStatus(Transaction::STATUS_WAITING_CONFIRMATION);
+            $transaction->setStatusComment(null);
             $entityManager->persist($transaction);
             $entityManager->flush();
 
@@ -177,6 +178,7 @@ class TransactionController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $transaction->setStatus(Transaction::STATUS_NEW);
+            $transaction->setStatusComment(null);
             $this->entityManager->persist($transaction);
             $this->entityManager->flush();
 

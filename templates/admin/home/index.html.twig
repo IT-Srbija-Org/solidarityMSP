@@ -58,11 +58,15 @@
                     </th>
                     <th>
                         <span class="ti ti-cash text-xl"></span>
-                        Čeka potvrdu od prosvetnog radnika
+                        Čeka potvrdu od<br>prosvetnog radnika
                     </th>
                     <th>
                         <span class="ti ti-cash text-xl"></span>
                         Potvrđeno
+                    </th>
+                    <th>
+                        <span class="ti ti-cash text-xl"></span>
+                        Prosečno primljeno para<br>po oštećenom (potvrđeno)
                     </th>
                 </tr>
             </thead>
@@ -74,6 +78,7 @@
                     <td>{{ period.sumAmountDamagedEducators|number_format }}</td>
                     <td>{{ period.sumAmountWaitingConfirmationTransactions|number_format }}</td>
                     <td>{{ period.sumAmountConfirmedTransactions|number_format }}</td>
+                    <td>{{ period.averageAmountPerDamagedEducator|number_format }}</td>
                 </tr>
             {% endfor %}
             </tbody>

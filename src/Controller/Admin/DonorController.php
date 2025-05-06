@@ -16,6 +16,10 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/donor', name: 'admin_donor_')]
 final class DonorController extends AbstractController
 {
+    public function __construct(private readonly EntityManagerInterface $entityManager)
+    {
+    }
+
     #[Route('/list', name: 'list')]
     public function list(Request $request, UserDonorRepository $userDonorRepository): Response
     {
@@ -68,7 +72,8 @@ final class DonorController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $userDonorRepository->unsubscribe($userDonor);
+            $this->entityManager->remove($userDonor);
+            $this->entityManager->flush();
 
             $this->addFlash('success', 'Uspešno ste obrišali donatora');
 

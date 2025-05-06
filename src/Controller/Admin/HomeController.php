@@ -41,23 +41,22 @@ final class HomeController extends AbstractController
                 ->getQuery()
                 ->getSingleScalarResult();
 
-            $qb = $entityManager->createQueryBuilder();
-            $sumAmountWaitingConfirmationTransactions = $qb->select('SUM(t.amount)')
-                ->from(Transaction::class, 't')
-                ->innerJoin('t.damagedEducator', 'de')
-                ->andWhere('de.period = :period')
-                ->setParameter('period', $pData)
-                ->andWhere('t.status = :status')
-                ->setParameter('status', Transaction::STATUS_WAITING_CONFIRMATION)
-                ->getQuery()
-                ->getSingleScalarResult();
+            $sumAmountWaitingConfirmationTransactions = $transactionRepository->getSumAmountTransactions($pData, null, Transaction::STATUS_WAITING_CONFIRMATION);
+            $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountTransactions($pData, null, Transaction::STATUS_CONFIRMED);
+            $totalDamagedEducators = $entityManager->getRepository(DamagedEducator::class)->count(['period' => $pData]);
+            $averageAmountPerDamagedEducator = 0;
+
+            if ($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
+                $averageAmountPerDamagedEducator = floor($sumAmountConfirmedTransactions / $totalDamagedEducators);
+            }
 
             $periodItems[] = [
                 'entity' => $pData,
-                'totalDamagedEducators' => $entityManager->getRepository(DamagedEducator::class)->count(['period' => $pData]),
+                'totalDamagedEducators' => $totalDamagedEducators,
                 'sumAmountDamagedEducators' => $sumAmountDamagedEducators,
-                'sumAmountConfirmedTransactions' => $transactionRepository->getSumAmountConfirmedTransactions($pData, null),
                 'sumAmountWaitingConfirmationTransactions' => $sumAmountWaitingConfirmationTransactions,
+                'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
+                'averageAmountPerDamagedEducator' => $averageAmountPerDamagedEducator,
             ];
         }
 

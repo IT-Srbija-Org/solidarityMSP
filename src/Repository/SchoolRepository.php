@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\DamagedEducatorPeriod;
 use App\Entity\School;
+use App\Entity\Transaction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -70,7 +71,8 @@ class SchoolRepository extends ServiceEntityRepository
 
     public function getStatistics(DamagedEducatorPeriod $period, School $school): array
     {
-        $sumAmountConfirmedTransactions = $this->transactionRepository->getSumAmountConfirmedTransactions($period, $school);
+        $sumAmountWaitingConfirmationTransactions = $this->transactionRepository->getSumAmountTransactions($period, $school, Transaction::STATUS_WAITING_CONFIRMATION);
+        $sumAmountConfirmedTransactions = $this->transactionRepository->getSumAmountTransactions($period, $school, Transaction::STATUS_CONFIRMED);
         $totalDamagedEducators = $this->damagedEducatorRepository->count(['period' => $period, 'school' => $school]);
 
         $averageAmountPerDamagedEducator = 0;
@@ -83,6 +85,7 @@ class SchoolRepository extends ServiceEntityRepository
             'periodEntity' => $period,
             'totalDamagedEducators' => $this->damagedEducatorRepository->count(['period' => $period, 'school' => $school]),
             'sumAmount' => $this->damagedEducatorRepository->getSumAmount($period, $school),
+            'sumAmountWaitingConfirmationTransactions' => $sumAmountWaitingConfirmationTransactions,
             'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
             'averageAmountPerDamagedEducator' => $averageAmountPerDamagedEducator,
         ];

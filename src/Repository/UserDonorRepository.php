@@ -17,7 +17,7 @@ use Symfony\Component\Mime\Address;
  */
 class UserDonorRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, private MailerInterface $mailer)
+    public function __construct(ManagerRegistry $registry, private MailerInterface $mailer, private TransactionRepository $transactionRepository)
     {
         parent::__construct($registry, UserDonor::class);
     }
@@ -172,17 +172,6 @@ class UserDonorRepository extends ServiceEntityRepository
 
     public function unsubscribe(UserDonor $userDonor): void
     {
-        $transactions = $this->getEntityManager()->getRepository(Transaction::class)->findBy([
-            'user' => $userDonor->getUser(),
-            'status' => Transaction::STATUS_NEW,
-        ]);
-
-        foreach ($transactions as $transaction) {
-            $transaction->setStatus(Transaction::STATUS_CANCELLED);
-            $transaction->setStatusComment('Instruckija za uplatu je automatski otkazana pošto se donator odjavio sa liste donatora.');
-            $this->getEntityManager()->persist($transaction);
-        }
-
         $this->getEntityManager()->remove($userDonor);
         $this->getEntityManager()->flush();
     }

@@ -103,7 +103,7 @@
                             <th>Period</th>
                             <th>
                                 <span class="ti ti-user text-xl"></span>
-                                Ukupno prijavljenih oštećenih
+                                Ukupno prijavljenih<br>oštećenih
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
@@ -111,11 +111,15 @@
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
+                                Čeka potvrdu od<br>prosvetnog radnika
+                            </th>
+                            <th>
+                                <span class="ti ti-cash text-xl"></span>
                                 Potvrđeno
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
-                                Prosečno primljeno para po oštećenom (potvrđeno)
+                                Prosečno primljeno para<br>po oštećenom (potvrđeno)
                             </th>
                         </tr>
                     </thead>
@@ -125,6 +129,7 @@
                             <td>{{ data.periodEntity|format_period }}</td>
                             <td>{{ data.totalDamagedEducators }}</td>
                             <td>{{ data.sumAmount|number_format }}</td>
+                            <td>{{ data.sumAmountWaitingConfirmationTransactions|number_format }}</td>
                             <td>{{ data.sumAmountConfirmedTransactions|number_format }}</td>
                             <td>{{ data.averageAmountPerDamagedEducator|number_format }}</td>
                         </tr>

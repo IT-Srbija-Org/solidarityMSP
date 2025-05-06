@@ -105,7 +105,7 @@ class DamagedEducatorController extends AbstractController
         $page = $request->query->getInt('page', 1);
 
         $totalDamagedEducators = $damagedEducatorRepository->count(['period' => $period]);
-        $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountConfirmedTransactions($period, null);
+        $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountTransactions($period, null, Transaction::STATUS_CONFIRMED);
 
         $averageAmountPerDamagedEducator = 0;
         if ($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
@@ -211,6 +211,10 @@ class DamagedEducatorController extends AbstractController
             for ($row = 2; $row <= $totalRows; ++$row) {
                 $rowData = $worksheet->rangeToArray('A'.$row.':'.$worksheet->getHighestColumn().$row, null, true, false)[0];
 
+                if (empty($rowData[0])) {
+                    continue;
+                }
+
                 $damagedEducator = new DamagedEducator();
                 $damagedEducator->setName($rowData[0] ?? '');
                 $damagedEducator->setAccountNumber($rowData[2] ?? '');
@@ -302,7 +306,7 @@ class DamagedEducatorController extends AbstractController
                     Transaction::STATUS_WAITING_CONFIRMATION,
                 ];
 
-                $transactionRepository->cancelAllTransactions($damagedEducator, 'Instruckija za uplatu je automatski otkazana pošto se promenio broj računa.', $statuses);
+                $transactionRepository->cancelAllTransactions($damagedEducator, 'Instruckija za uplatu je automatski otkazana pošto se promenio broj računa.', $statuses, false);
             }
 
             $this->addFlash('success', 'Uspešno ste izmenili podatke od oštećenog.');
@@ -353,7 +357,7 @@ class DamagedEducatorController extends AbstractController
             $this->entityManager->flush();
 
             // Cancel transactions
-            $transactionRepository->cancelAllTransactions($damagedEducator, 'Instruckija za uplatu je otkazana pošto je oštećeni obrisan.', [Transaction::STATUS_NEW]);
+            $transactionRepository->cancelAllTransactions($damagedEducator, 'Instruckija za uplatu je otkazana pošto je oštećeni obrisan.', [Transaction::STATUS_NEW], true);
 
             $this->addFlash('success', 'Uspešno ste obrisali oštećenog.');
 
@@ -417,21 +421,9 @@ class DamagedEducatorController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $hasCancelledTransactions = (bool) $transactionRepository->count([
-            'damagedEducator' => $damagedEducator,
-            'status' => Transaction::STATUS_CANCELLED,
-        ]);
-
-        $hasExpiredTransactions = (bool) $transactionRepository->count([
-            'damagedEducator' => $damagedEducator,
-            'status' => Transaction::STATUS_EXPIRED,
-        ]);
-
         return $this->render('delegate/damagedEducator/transactions.html.twig', [
             'damagedEducator' => $damagedEducator,
             'transactions' => $transactionRepository->findBy(['damagedEducator' => $damagedEducator]),
-            'hasCancelledTransactions' => $hasCancelledTransactions,
-            'hasExpiredTransactions' => $hasExpiredTransactions,
         ]);
     }
 
@@ -459,6 +451,7 @@ class DamagedEducatorController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $transaction->setStatusComment(null);
             $this->entityManager->persist($transaction);
             $this->entityManager->flush();
 
