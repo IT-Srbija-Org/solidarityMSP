@@ -115,6 +115,7 @@ class DamagedEducatorController extends AbstractController
         $statistics = [
             'totalDamagedEducators' => $totalDamagedEducators,
             'totalActiveSchools' => $userDelegateSchoolRepository->getTotalActiveSchools($period),
+            'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
             'averageAmountPerDamagedEducator' => $averageAmountPerDamagedEducator,
             'schools' => [],
         ];
@@ -306,7 +307,7 @@ class DamagedEducatorController extends AbstractController
                     Transaction::STATUS_WAITING_CONFIRMATION,
                 ];
 
-                $transactionRepository->cancelAllTransactions($damagedEducator, 'Instruckija za uplatu je automatski otkazana pošto se promenio broj računa.', $statuses, false);
+                $transactionRepository->cancelAllTransactions($damagedEducator, 'Instrukcija za uplatu je automatski otkazana pošto se promenio broj računa.', $statuses, false);
             }
 
             $this->addFlash('success', 'Uspešno ste izmenili podatke od oštećenog.');
@@ -357,7 +358,7 @@ class DamagedEducatorController extends AbstractController
             $this->entityManager->flush();
 
             // Cancel transactions
-            $transactionRepository->cancelAllTransactions($damagedEducator, 'Instruckija za uplatu je otkazana pošto je oštećeni obrisan.', [Transaction::STATUS_NEW], true);
+            $transactionRepository->cancelAllTransactions($damagedEducator, 'Instrukcija za uplatu je otkazana pošto je oštećeni obrisan.', [Transaction::STATUS_NEW], true);
 
             $this->addFlash('success', 'Uspešno ste obrisali oštećenog.');
 

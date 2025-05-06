@@ -14,7 +14,16 @@
 
             <div class="info-step2">
                 <div>Ukupno prijavljeno oštećenih: {{ statistics.totalDamagedEducators|number_format }} iz {{ statistics.totalActiveSchools|number_format }} škola</div>
-                <div>Prosečno primljeno para po oštećenom (potvrđeno): {{ statistics.averageAmountPerDamagedEducator|number_format }} RSD</div>
+                <div>Ukupan potvrđeni iznos: {{ statistics.sumAmountConfirmedTransactions|number_format }} RSD</div>
+                <div>
+                    Prosečan isplaćen iznos po oštećenom:
+
+                    {% if statistics.averageAmountPerDamagedEducator < 10000 %}
+                        manje od 10.000 RSD
+                    {% else %}
+                        {{ statistics.averageAmountPerDamagedEducator|number_format }} RSD
+                    {% endif %}
+                </div>
             </div>
 
             <div class="overflow-x-auto mt-6 info-step3">
@@ -27,19 +36,27 @@
                             </th>
                             <th>
                                 <span class="ti ti-user text-xl"></span>
-                                Ukupno prijavljenih<br>oštećenih
+                                Ukupno oštećenih
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
-                                Unešena cifra
+                                Prijavljen iznos
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
-                                Potvrđeno
+                                Iznos za koji<br>se čeka uplata
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
-                                Prosečno primljeno para<br>po oštećenom (potvrđeno)
+                                Iznos za koji se čeka<br>potvrda prosvetnog radnika
+                            </th>
+                            <th>
+                                <span class="ti ti-cash text-xl"></span>
+                                Potvrđeni iznos
+                            </th>
+                            <th>
+                                <span class="ti ti-cash text-xl"></span>
+                                Prosečan isplaćen<br>iznos po oštećenom
                             </th>
                         </tr>
                     </thead>
@@ -49,8 +66,16 @@
                             <td>{{ data.schoolEntity.name }}</td>
                             <td>{{ data.totalDamagedEducators }}</td>
                             <td>{{ data.sumAmount|number_format }}</td>
+                            <td>{{ data.sumAmountNewTransactions|number_format }}</td>
+                            <td>{{ data.sumAmountWaitingConfirmationTransactions|number_format }}</td>
                             <td>{{ data.sumAmountConfirmedTransactions|number_format }}</td>
-                            <td>{{ data.averageAmountPerDamagedEducator|number_format }}</td>
+                            <td>
+                                {% if data.averageAmountPerDamagedEducator < 10000 %}
+                                    manje od 10.000
+                                {% else %}
+                                    {{ data.averageAmountPerDamagedEducator|number_format }}
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -133,7 +158,7 @@
                                 </th>
                                 <th>
                                     <span class="ti ti-cash text-xl"></span>
-                                    Cifra
+                                    Iznos
                                 </th>
                                 <th>
                                     <span class="ti ti-credit-card text-xl"></span>
@@ -158,8 +183,15 @@
                                 <td>{{ damagedEducator.amount|number_format }}</td>
                                 <td class="whitespace-nowrap">{{ damagedEducator.accountNumber|account_number_format }}</td>
                                 <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
-                                <td class="whitespace-nowrap">
-                                    {{ damagedEducator.status|damaged_educator_status|raw }}
+                                <td>
+                                    <div class="whitespace-nowrap">{{ damagedEducator.status|damaged_educator_status|raw }}</div>
+                                    <div class="text-gray-500 max-w-[200px]">
+                                        {% if damagedEducator.statusComment %}
+                                            {{ damagedEducator.statusComment }}
+                                        {% else %}
+
+                                        {% endif %}
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="flex gap-2 justify-end">

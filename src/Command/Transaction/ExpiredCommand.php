@@ -38,7 +38,7 @@ class ExpiredCommand extends Command
         $io->section('Command started at '.date('Y-m-d H:i:s'));
 
         // Cancelled comment
-        $comment = 'Instruckija za uplatu je automatski prebačena u ovaj status pošto je prošlo više od 72 sata.';
+        $comment = 'Instrukcija za uplatu je automatski prebačena u ovaj status pošto je prošlo više od 72 sata.';
 
         while (true) {
             $transactions = $this->getTransactions();
@@ -53,7 +53,7 @@ class ExpiredCommand extends Command
                 $user = $transaction->getUser();
                 if (!$user->getLastVisit() || $user->getLastVisit() < $transaction->getCreatedAt()) {
                     $status = Transaction::STATUS_NOT_PAID;
-                    $comment = 'Instruckija za uplatu je automatski prebačena u ovaj status pošto donator nije pristupio sajtu od trenutka kreiranja instrukcije.';
+                    $comment = 'Instrukcija za uplatu je automatski prebačena u ovaj status pošto donator nije pristupio sajtu od trenutka kreiranja instrukcije.';
                 }
 
                 $transaction->setStatus($status);

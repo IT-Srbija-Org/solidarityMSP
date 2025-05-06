@@ -16,6 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\Store\FlockStore;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
 #[AsCommand(
     name: 'app:transaction:notify-delegates',
@@ -87,6 +88,7 @@ class NotifyDelegatesCommand extends Command
     {
         $message = (new TemplatedEmail())
             ->to($user->getEmail())
+            ->from(new Address('delegati@mrezasolidarnosti.org', 'Mreža Solidarnosti'))
             ->subject('Postoje instrukcije za uplatu koje treba potvrditi')
             ->htmlTemplate('email/transaction-notify-delegate.html.twig')
             ->context([

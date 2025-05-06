@@ -37,7 +37,7 @@ class RegistrationController extends AbstractController
         }
 
         if ($user->isEmailVerified()) {
-            $this->addFlash('success', 'Vaš nalog je već verifikovan. Možete se prijaviti.');
+            $this->addFlash('success', 'Vaš nalog je već potvrđen. Možete se prijaviti.');
 
             return $this->redirectToRoute('login');
         }
@@ -53,7 +53,7 @@ class RegistrationController extends AbstractController
                 $this->addFlash(
                     'error',
                     sprintf(
-                        'Molimo sačekajte još %d minuta pre nego što ponovo pošaljete verifikacioni email.',
+                        'Molimo sačekajte još %d minuta pre nego što ponovo pošaljete link za potvrdu email adrese.',
                         ceil(5 - $minutesSinceLastResend)
                     )
                 );
@@ -65,7 +65,7 @@ class RegistrationController extends AbstractController
         $userRepository->sendVerificationLink($user, null);
         $session->set($lastResendKey, $now->getTimestamp());
 
-        $this->addFlash('success', 'Verifikacioni email je ponovo poslat na vašu adresu. Molimo proverite vaš inbox.');
+        $this->addFlash('success', 'Link za potvrdu email je ponovo poslat na vašu adresu. Molimo proverite vaš inbox.');
 
         return $this->redirectToRoute('login');
     }

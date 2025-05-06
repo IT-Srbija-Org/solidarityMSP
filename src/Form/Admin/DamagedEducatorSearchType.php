@@ -21,9 +21,6 @@ class DamagedEducatorSearchType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $status = DamagedEducator::STATUS;
-        unset($status[DamagedEducator::STATUS_NEW]);
-
         $builder
             ->setMethod('GET')
             ->add('period', EntityType::class, [
@@ -57,7 +54,7 @@ class DamagedEducatorSearchType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Status',
-                'choices' => array_flip($status),
+                'choices' => array_flip(DamagedEducator::STATUS),
             ])
             ->add('city', EntityType::class, [
                 'required' => false,

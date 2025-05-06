@@ -103,32 +103,37 @@
                             <th>Period</th>
                             <th>
                                 <span class="ti ti-user text-xl"></span>
-                                Ukupno prijavljenih<br>oštećenih
+                                Ukupno oštećenih
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
-                                Unešena cifra
+                                Prijavljen iznos
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
-                                Čeka potvrdu od<br>prosvetnog radnika
+                                Iznos za koji<br>se čeka uplata
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
-                                Potvrđeno
+                                Iznos za koji se čeka<br>potvrda prosvetnog radnika
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
-                                Prosečno primljeno para<br>po oštećenom (potvrđeno)
+                                Potvrđeni iznos
+                            </th>
+                            <th>
+                                <span class="ti ti-cash text-xl"></span>
+                                Prosečan isplaćen<br>iznos po oštećenom
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for data in statistics %}
                         <tr class="hover:bg-gray-100">
-                            <td>{{ data.periodEntity|format_period }}</td>
+                            <td class="whitespace-nowrap">{{ data.periodEntity|format_period }}</td>
                             <td>{{ data.totalDamagedEducators }}</td>
                             <td>{{ data.sumAmount|number_format }}</td>
+                            <td>{{ data.sumAmountNewTransactions|number_format }}</td>
                             <td>{{ data.sumAmountWaitingConfirmationTransactions|number_format }}</td>
                             <td>{{ data.sumAmountConfirmedTransactions|number_format }}</td>
                             <td>{{ data.averageAmountPerDamagedEducator|number_format }}</td>

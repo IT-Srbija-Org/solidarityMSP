@@ -20,7 +20,7 @@ class UserChecker implements UserCheckerInterface
         }
 
         if (!$user->isEmailVerified()) {
-            throw new CustomUserMessageAccountStatusException('Email adresa nije verifikovana.');
+            throw new CustomUserMessageAccountStatusException('Email adresa nije potvrđena.');
         }
     }
 

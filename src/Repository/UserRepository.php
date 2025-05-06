@@ -44,7 +44,7 @@ class UserRepository extends ServiceEntityRepository
         $this->emailVerifier->sendEmailConfirmation('verify_email', $user, $action,
             (new TemplatedEmail())
                 ->to($user->getEmail())
-                ->subject('Link za verifikaciju email adrese')
+                ->subject('Link za potvrdu email adrese')
                 ->htmlTemplate('registration/confirmation_email.html.twig')
         );
     }

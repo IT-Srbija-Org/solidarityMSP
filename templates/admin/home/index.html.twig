@@ -19,12 +19,12 @@
 
         <div>
             <span class="ti ti-cash text-xl relative top-0.5"></span>
-            Ukupno prijavljeno para (od mesečnih donatora): <span class="font-bold">{{ sumAmountMonthlyDonors|number_format }}</span>
+            Ukupno prijavljeni iznos (od mesečnih donatora): <span class="font-bold">{{ sumAmountMonthlyDonors|number_format }}</span>
         </div>
 
         <div>
             <span class="ti ti-cash text-xl relative top-0.5"></span>
-            Ukupno prijavljeno para (od ne-mesečnih donatora): <span class="font-bold">{{ sumAmountNonMonthlyDonors|number_format }}</span>
+            Ukupno prijavljeni iznos (od ne-mesečnih donatora): <span class="font-bold">{{ sumAmountNonMonthlyDonors|number_format }}</span>
         </div>
 
         <div>
@@ -50,32 +50,37 @@
                     <th>Period</th>
                     <th>
                         <span class="ti ti-school text-xl"></span>
-                        Oštećenih
+                        Ukupno oštećenih
                     </th>
                     <th>
                         <span class="ti ti-cash text-xl"></span>
-                        Potrebno para
+                        Prijavljen iznos
                     </th>
                     <th>
                         <span class="ti ti-cash text-xl"></span>
-                        Čeka potvrdu od<br>prosvetnog radnika
+                        Iznos za koji<br>se čeka uplata
                     </th>
                     <th>
                         <span class="ti ti-cash text-xl"></span>
-                        Potvrđeno
+                        Iznos za koji se čeka<br>potvrda prosvetnog radnika
                     </th>
                     <th>
                         <span class="ti ti-cash text-xl"></span>
-                        Prosečno primljeno para<br>po oštećenom (potvrđeno)
+                        Potvrđeni iznos
+                    </th>
+                    <th>
+                        <span class="ti ti-cash text-xl"></span>
+                        Prosečan isplaćen<br>iznos po oštećenom
                     </th>
                 </tr>
             </thead>
             <tbody>
             {% for period in periodItems %}
                 <tr class="hover:bg-gray-100">
-                    <td>{{ period.entity|format_period }}</td>
+                    <td class="whitespace-nowrap">{{ period.entity|format_period }}</td>
                     <td>{{ period.totalDamagedEducators|number_format }}</td>
                     <td>{{ period.sumAmountDamagedEducators|number_format }}</td>
+                    <td>{{ period.sumAmountNewTransactions|number_format }}</td>
                     <td>{{ period.sumAmountWaitingConfirmationTransactions|number_format }}</td>
                     <td>{{ period.sumAmountConfirmedTransactions|number_format }}</td>
                     <td>{{ period.averageAmountPerDamagedEducator|number_format }}</td>
