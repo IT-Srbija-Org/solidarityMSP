@@ -145,4 +145,20 @@ class TransactionRepository extends ServiceEntityRepository
 
         $this->getEntityManager()->flush();
     }
+
+    public function getSumAmountForAccountNumber(int $period, string $accountNumber, array $statuses): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb = $qb->select('SUM(t.amount)')
+            ->from(Transaction::class, 't')
+            ->innerJoin('t.damagedEducator', 'de')
+            ->andWhere('de.period = :period')
+            ->setParameter('period', $period)
+            ->andWhere('t.accountNumber = :accountNumber')
+            ->setParameter('accountNumber', $accountNumber)
+            ->andWhere('t.status IN (:statuses)')
+            ->setParameter('statuses', $statuses);
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
 }
