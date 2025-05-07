@@ -37,9 +37,6 @@ class ExpiredCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->section('Command started at '.date('Y-m-d H:i:s'));
 
-        // Cancelled comment
-        $comment = 'Instrukcija za uplatu je automatski prebačena u ovaj status pošto je prošlo više od 72 sata.';
-
         while (true) {
             $transactions = $this->getTransactions();
             if (empty($transactions)) {
@@ -48,7 +45,9 @@ class ExpiredCommand extends Command
 
             foreach ($transactions as $transaction) {
                 $io->comment('Transaction ID: '.$transaction->getId());
+
                 $status = Transaction::STATUS_EXPIRED;
+                $comment = 'Instrukcija za uplatu je automatski prebačena u ovaj status pošto je prošlo više od 72 sata.';
 
                 $user = $transaction->getUser();
                 if (!$user->getLastVisit() || $user->getLastVisit() < $transaction->getCreatedAt()) {
