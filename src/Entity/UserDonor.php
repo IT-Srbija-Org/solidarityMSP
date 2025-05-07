@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserDonorRepository::class)]
+#[ORM\Index(name: 'idx_amount', columns: ['amount'])]
 #[ORM\HasLifecycleCallbacks]
 class UserDonor
 {

@@ -25,7 +25,7 @@ Pre pokretanja projekta, potrebno je da na vašem računaru bude instaliran [Doc
 Kompletna instalacija i inicijalna konfiguracija se vrši automatski pokretanjem sledeće komande:
 
 ```bash
-bash ./configureProject.sh
+bash ./install.sh
 ```
 
 Projekat će biti inicijalno podignut sa svim test podacima na adresi [localhost:1000](http://localhost:1000). 

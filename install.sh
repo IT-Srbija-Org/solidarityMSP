@@ -1,20 +1,13 @@
 #!/bin/bash
 
-# Check if "docker compose" or "docker-compose" is available
+# Check if "docker compose" is available
 if docker compose &> /dev/null
 then
-    # Use "docker compose"
     docker compose down;
     docker compose build;
     docker compose up -d;
-elif command -v docker-compose &> /dev/null
-then
-    # Use "docker-compose"
-    docker-compose down;
-    docker-compose build;
-    docker-compose up -d;
 else
-    echo "Error: Neither docker compose nor docker-compose command found"
+    echo "Error: docker compose command not found"
     exit 1
 fi
 

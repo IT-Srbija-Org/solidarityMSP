@@ -98,7 +98,7 @@
                 {{ form(form) }}
             </div>
 
-            <div class="alert alert-info alert-soft  info-step6">
+            <div class="alert alert-info alert-soft">
                 <span class="ti ti-info-circle text-2xl"></span>
 
                 {% if period.processing %}
@@ -169,7 +169,11 @@
                                     Kreiran
                                 </th>
                                 <th class="info-step9">
-                                    <a href="{{ path('static_damaged_educator_status') }}" class="link link-primary link-hover">Status</a>
+                                    Status
+
+                                    <a href="{{ path('static_damaged_educator_status') }}" class="link link-primary no-underline">
+                                        <span class="ti ti-info-circle text-xl"></span>
+                                    </a>
                                 </th>
                                 <th></th>
                             </tr>
@@ -185,7 +189,7 @@
                                 <td>{{ damagedEducator.updatedAt|date('d.m.Y.') }}</td>
                                 <td>
                                     <div class="whitespace-nowrap">{{ damagedEducator.status|damaged_educator_status|raw }}</div>
-                                    <div class="text-gray-500 max-w-[200px]">
+                                    <div class="text-gray-500 min-w-[200px] break-words whitespace-normal">
                                         {% if damagedEducator.statusComment %}
                                             {{ damagedEducator.statusComment }}
                                         {% else %}

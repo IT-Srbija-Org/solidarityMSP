@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ORM\Table(name: '`transaction`')]
-#[ORM\Index(name: 'idx_status', columns: ['status', 'created_at', 'id'])]
+#[ORM\Index(name: 'idx_status', columns: ['status', 'created_at'])]
+#[ORM\Index(name: 'idx_account_number', columns: ['account_number', 'status'])]
 #[ORM\Index(name: 'idx_damaged_educator', columns: ['damaged_educator_id', 'status'])]
 #[ORM\Index(name: 'idx_remaining_amount', columns: ['user_id', 'status', 'created_at'])]
 #[ORM\Index(name: 'idx_user_total_amount', columns: ['user_id', 'account_number', 'status', 'created_at'])]

@@ -168,20 +168,21 @@ class CreateForLargeAmountCommand extends Command
         ];
 
         $stmt = $this->entityManager->getConnection()->executeQuery('
-            SELECT de.id, de.period_id, de.account_number, de.amount,
-             COALESCE(
-              (SELECT SUM(amount)
-               FROM transaction
-               WHERE damaged_educator_id = de.id
-                AND status IN ('.implode(',', $transactionStatuses).')),
+            SELECT de.period_id, de.account_number, SUM(de.amount) AS amount,
+            COALESCE(
+              (SELECT SUM(t2.amount)
+               FROM transaction AS t2
+               INNER JOIN damaged_educator AS de2 ON de2.id = t2.damaged_educator_id
+                AND de2.period_id = de.period_id
+               WHERE t2.account_number = de.account_number
+                AND t2.status IN ('.implode(',', $transactionStatuses).')),
               0) AS transactionSum
             FROM damaged_educator AS de
              INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id
-            WHERE dep.active = 0
              AND dep.processing = 1
-             AND de.status = :status
-            HAVING transactionSum < de.amount
-            ORDER BY de.id ASC
+            WHERE de.status = :status
+            GROUP BY de.period_id, de.account_number, de.amount
+            HAVING transactionSum < amount
             ', [
             'status' => DamagedEducator::STATUS_NEW,
         ]);
@@ -198,7 +199,7 @@ class CreateForLargeAmountCommand extends Command
             }
 
             unset($item['transactionSum']);
-            $items[$item['id']] = $item;
+            $items[] = $item;
         }
 
         // Sort by remaining amount

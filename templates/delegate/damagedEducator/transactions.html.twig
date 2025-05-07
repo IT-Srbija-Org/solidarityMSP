@@ -45,7 +45,11 @@
                                     Iznos
                                 </th>
                                 <th class="info-step7">
-                                    <a href="{{ path('static_transaction_status') }}" class="link link-primary link-hover">Status</a>
+                                    Status
+
+                                    <a href="{{ path('static_transaction_status') }}" class="link link-primary no-underline">
+                                        <span class="ti ti-info-circle text-xl"></span>
+                                    </a>
                                 </th>
                                 <th class="info-step8">
                                     <span class="ti ti-calendar-event text-xl"></span>
@@ -62,7 +66,7 @@
                                 <td>{{ transaction.amount|number_format }}</td>
                                 <td>
                                     <div class="whitespace-nowrap">{{ transaction.status|transaction_status|raw }}</div>
-                                    <div class="text-gray-500 max-w-[200px]">
+                                    <div class="text-gray-500 min-w-[200px] break-words whitespace-normal">
                                         {% if transaction.statusComment %}
                                             {{ transaction.statusComment }}
                                         {% else %}

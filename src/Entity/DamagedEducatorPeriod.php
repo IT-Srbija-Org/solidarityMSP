@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DamagedEducatorPeriodRepository::class)]
 #[ORM\Index(name: 'idx_search', columns: ['month', 'year', 'type'])]
+#[ORM\Index(name: 'idx_processing', columns: ['processing'])]
 #[ORM\HasLifecycleCallbacks]
 class DamagedEducatorPeriod
 {
