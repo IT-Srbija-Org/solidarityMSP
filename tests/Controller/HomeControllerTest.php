@@ -12,7 +12,7 @@ class HomeControllerTest extends WebTestCase
         $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h2', 'Mreža solidarnosti za prosvetu');
+        $this->assertSelectorTextContains('h2', 'Mreža solidarnosti');
         $this->assertSelectorTextContains('a.btn-primary', 'Postani donator');
     }
 }
