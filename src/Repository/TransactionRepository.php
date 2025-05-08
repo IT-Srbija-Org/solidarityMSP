@@ -202,7 +202,7 @@ class TransactionRepository extends ServiceEntityRepository
 
             $qb = $this->createQueryBuilder('t');
             $qb = $qb->select('COUNT(DISTINCT t.user)')
-                ->andWhere('e.status = :status')
+                ->andWhere('t.status = :status')
                 ->setParameter('status', Transaction::STATUS_CONFIRMED);
 
             return (int) $qb->getQuery()->getSingleScalarResult();
