@@ -104,7 +104,7 @@ class DamagedEducatorController extends AbstractController
         $criteria['period'] = $period;
         $page = $request->query->getInt('page', 1);
 
-        $totalDamagedEducators = $damagedEducatorRepository->getTotalsByPeriod($period);
+        $totalDamagedEducators = $damagedEducatorRepository->getTotalsByPeriod($period, null);
         $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountTransactions($period, null, [Transaction::STATUS_CONFIRMED]);
 
         $averageAmountPerDamagedEducator = 0;
