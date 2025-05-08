@@ -157,4 +157,24 @@ class DamagedEducatorRepository extends ServiceEntityRepository
             return (int) $qb->getQuery()->getSingleScalarResult();
         }, $useCache ? 1.0 : INF);
     }
+
+    public function getTotalsByPeriod(DamagedEducatorPeriod $period, ?School $school): int
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb = $qb->select('COUNT(DISTINCT e.accountNumber)')
+            ->andWhere('e.period = :period')
+            ->setParameter('period', $period);
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function getTotalsSchoolByPeriod(DamagedEducatorPeriod $period): int
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb = $qb->select('COUNT(DISTINCT e.school)')
+            ->andWhere('e.period = :period')
+            ->setParameter('period', $period);
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
 }

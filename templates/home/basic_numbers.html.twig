@@ -1,0 +1,47 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Ukupno umreženo</h2>
+            <p class="text-4xl md:text-5xl font-bold text-primary">
+                {{ transactionSumConfirmedAmount|number_format(0, ',', '.') }} RSD
+            </p>
+
+            <progress class="progress progress-primary w-full mt-2" value="{{ transactionSumConfirmedAmount }}" max="{{ damagedEducatorSumAmount }}"></progress>
+            <p class="text-sm text-gray-500 mt-1">
+                Potrebno: {{ damagedEducatorSumAmount|number_format(0, ',', '.') }} RSD
+            </p>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Prosečan isplaćen iznos po nastavniku</h2>
+            <p class="text-4xl md:text-5xl font-bold text-primary">
+                {{ avgConfirmedAmountPerEducator|number_format(0, ',', '.') }} RSD
+            </p>
+
+            <progress class="progress progress-primary w-full mt-2" value="{{ avgConfirmedAmountPerEducator }}" max="{{ avgInputAmountPerEducator }}"></progress>
+            <p class="text-sm text-gray-500 mt-1">
+                Prosečno uskraćen deo zarade: {{ avgInputAmountPerEducator|number_format(0, ',', '.') }} RSD
+            </p>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Ukupno aktivnih donatora</h2>
+            <p class="text-4xl md:text-5xl font-bold text-primary">
+                {{ totalActiveDonors|number_format(0, ',', '.') }}
+            </p>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Ukupan broj prijavljenih nastavnika</h2>
+            <p class="text-4xl md:text-5xl font-bold text-primary">
+                {{ totalDamagedEducators|number_format(0, ',', '.') }}
+            </p>
+        </div>
+    </div>
+</div>

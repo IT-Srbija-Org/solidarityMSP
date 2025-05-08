@@ -74,7 +74,7 @@ class SchoolRepository extends ServiceEntityRepository
         $sumAmountNewTransactions = $this->transactionRepository->getSumAmountTransactions($period, $school, [Transaction::STATUS_NEW]);
         $sumAmountWaitingConfirmationTransactions = $this->transactionRepository->getSumAmountTransactions($period, $school, [Transaction::STATUS_WAITING_CONFIRMATION, Transaction::STATUS_EXPIRED]);
         $sumAmountConfirmedTransactions = $this->transactionRepository->getSumAmountTransactions($period, $school, [Transaction::STATUS_CONFIRMED]);
-        $totalDamagedEducators = $this->damagedEducatorRepository->count(['period' => $period, 'school' => $school]);
+        $totalDamagedEducators = $this->damagedEducatorRepository->getTotalsByPeriod($period, $school);
 
         $averageAmountPerDamagedEducator = 0;
         if ($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
@@ -84,7 +84,7 @@ class SchoolRepository extends ServiceEntityRepository
         return [
             'schoolEntity' => $school,
             'periodEntity' => $period,
-            'totalDamagedEducators' => $this->damagedEducatorRepository->count(['period' => $period, 'school' => $school]),
+            'totalDamagedEducators' => $totalDamagedEducators,
             'sumAmount' => $this->damagedEducatorRepository->getSumAmountByPeriod($period, $school),
             'sumAmountNewTransactions' => $sumAmountNewTransactions,
             'sumAmountWaitingConfirmationTransactions' => $sumAmountWaitingConfirmationTransactions,

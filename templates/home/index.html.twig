@@ -1,16 +1,18 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container mx-auto px-4 max-w-3xl pt-10 pt-30">
-        <header class="text-center mb-10">
+    <div class="container mx-auto px-4 max-w-5xl pt-10 pt-20">
+        <header class="text-center mb-20">
             <h2 class="text-4xl font-bold">
-                Mreža solidarnosti za prosvetu
+                Mreža solidarnosti - IT SRBIJA
             </h2>
 
             <p class="mt-6 text-gray-500">
-                Privremena direktna finansijska podrška prosvetnim radnicima koji se bore za bolje uslove rada i pravedniji sistem, suočeni sa pritiscima, oduzimanjem plata i represijom.
+                Mreža solidarnosti spaja one koji žele da pomognu sa onima kojima je pomoć potrebna. Zalažemo se za pravednije društvo, jače obrazovanje i dostojanstven život – kroz poverenje, solidarnost i zajedničko delovanje.
             </p>
         </header>
+
+        {{ render(controller('App\\Controller\\HomeController::basicNumbers')) }}
 
         {% block supportButton %}
             {% if not app.user or not app.user.userDonor %}

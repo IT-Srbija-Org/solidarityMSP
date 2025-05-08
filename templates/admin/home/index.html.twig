@@ -6,6 +6,10 @@
             <span class="ti ti-user-heart text-xl relative top-0.5"></span>
             Ukupno donatora: <span class="font-bold">{{ totalDonors|number_format }}</span>
         </div>
+        <div>
+            <span class="ti ti-user-heart text-xl relative top-0.5"></span>
+            Ukupno aktivnih donatora: <span class="font-bold">{{ totalActiveDonors|number_format }}</span>
+        </div>
 
         <div>
             <span class="ti ti-user-heart text-xl relative top-0.5"></span>
@@ -30,11 +34,6 @@
         <div>
             <span class="ti ti-user-cog text-xl relative top-0.5"></span>
             Ukupno delegata: <span class="font-bold">{{ totalDelegate|number_format }}</span>
-        </div>
-
-        <div>
-            <span class="ti ti-building text-xl relative top-0.5"></span>
-            Ukupno škola (koje imaju delegata): <span class="font-bold">{{ totalActiveSchools|number_format }}</span>
         </div>
 
         <div>

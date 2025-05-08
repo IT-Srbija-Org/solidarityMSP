@@ -104,7 +104,7 @@ class DamagedEducatorController extends AbstractController
         $criteria['period'] = $period;
         $page = $request->query->getInt('page', 1);
 
-        $totalDamagedEducators = $damagedEducatorRepository->count(['period' => $period]);
+        $totalDamagedEducators = $damagedEducatorRepository->getTotalsByPeriod($period);
         $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountTransactions($period, null, [Transaction::STATUS_CONFIRMED]);
 
         $averageAmountPerDamagedEducator = 0;
@@ -114,7 +114,7 @@ class DamagedEducatorController extends AbstractController
 
         $statistics = [
             'totalDamagedEducators' => $totalDamagedEducators,
-            'totalActiveSchools' => $userDelegateSchoolRepository->getTotalActiveSchools($period),
+            'totalActiveSchools' => $damagedEducatorRepository->getTotalsSchoolByPeriod($period),
             'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
             'averageAmountPerDamagedEducator' => $averageAmountPerDamagedEducator,
             'schools' => [],
@@ -142,7 +142,7 @@ class DamagedEducatorController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        if (!$damagedEducatorPeriodRepository->allowToAdd($this->getUser(), $period)) {
+        if (!$period->allowToAdd()) {
             throw $this->createAccessDeniedException();
         }
 
