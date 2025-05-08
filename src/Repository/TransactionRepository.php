@@ -200,8 +200,8 @@ class TransactionRepository extends ServiceEntityRepository
         return $this->cache->get('transaction-getTotalActiveDonors', function (ItemInterface $item) {
             $item->expiresAfter(86400);
 
-            $qb = $this->createQueryBuilder('e');
-            $qb = $qb->select('COUNT(DISTINCT e.user)')
+            $qb = $this->createQueryBuilder('t');
+            $qb = $qb->select('COUNT(DISTINCT t.user)')
                 ->andWhere('e.status = :status')
                 ->setParameter('status', Transaction::STATUS_CONFIRMED);
 
