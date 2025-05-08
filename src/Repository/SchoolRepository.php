@@ -85,7 +85,7 @@ class SchoolRepository extends ServiceEntityRepository
             'schoolEntity' => $school,
             'periodEntity' => $period,
             'totalDamagedEducators' => $this->damagedEducatorRepository->count(['period' => $period, 'school' => $school]),
-            'sumAmount' => $this->damagedEducatorRepository->getSumAmount($period, $school),
+            'sumAmount' => $this->damagedEducatorRepository->getSumAmountByPeriod($period, $school),
             'sumAmountNewTransactions' => $sumAmountNewTransactions,
             'sumAmountWaitingConfirmationTransactions' => $sumAmountWaitingConfirmationTransactions,
             'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,

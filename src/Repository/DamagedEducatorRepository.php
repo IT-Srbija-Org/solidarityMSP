@@ -9,13 +9,15 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * @extends ServiceEntityRepository<DamagedEducator>
  */
 class DamagedEducatorRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private CacheInterface $cache)
     {
         parent::__construct($registry, DamagedEducator::class);
     }
@@ -117,7 +119,7 @@ class DamagedEducatorRepository extends ServiceEntityRepository
         ];
     }
 
-    public function getSumAmount(DamagedEducatorPeriod $period, ?School $school): int
+    public function getSumAmountByPeriod(DamagedEducatorPeriod $period, ?School $school): int
     {
         $qb = $this->createQueryBuilder('e');
         $qb = $qb->select('SUM(e.amount)')
@@ -130,5 +132,29 @@ class DamagedEducatorRepository extends ServiceEntityRepository
         }
 
         return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function getSumAmount(bool $useCache): int
+    {
+        return $this->cache->get('damaged-educator-getSumAmount', function (ItemInterface $item) {
+            $item->expiresAfter(86400);
+
+            $qb = $this->createQueryBuilder('e');
+            $qb = $qb->select('SUM(e.amount)');
+
+            return (int) $qb->getQuery()->getSingleScalarResult();
+        }, $useCache ? 1.0 : INF);
+    }
+
+    public function getTotals(bool $useCache): int
+    {
+        return $this->cache->get('damaged-educator-getTotals', function (ItemInterface $item) {
+            $item->expiresAfter(86400);
+
+            $qb = $this->createQueryBuilder('e');
+            $qb = $qb->select('COUNT(DISTINCT e.accountNumber)');
+
+            return (int) $qb->getQuery()->getSingleScalarResult();
+        }, $useCache ? 1.0 : INF);
     }
 }

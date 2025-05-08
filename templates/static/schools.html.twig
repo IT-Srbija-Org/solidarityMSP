@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mx-auto px-4 py-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="card bg-base-100 shadow">
+                <div class="card-body">
+                    <h2 class="card-title">Ukupno umreženo</h2>
+                    <p class="text-4xl md:text-5xl font-bold text-primary">
+                        {{ transactionSumConfirmedAmount|number_format(0, ',', '.') }} RSD
+                    </p>
+
+                    <progress class="progress progress-primary w-full mt-2" value="{{ transactionSumConfirmedAmount }}" max="{{ damagedEducatorSumAmount }}"></progress>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Potrebno: {{ damagedEducatorSumAmount|number_format(0, ',', '.') }} RSD
+                    </p>
+                </div>
+            </div>
+
+            <div class="card bg-base-100 shadow">
+                <div class="card-body">
+                    <h2 class="card-title">Prosečan isplaćen iznos po nastavniku</h2>
+                    <p class="text-4xl md:text-5xl font-bold text-primary">
+                        {{ avgConfirmedAmountPerEducator|number_format(0, ',', '.') }} RSD
+                    </p>
+
+                    <progress class="progress progress-primary w-full mt-2" value="{{ (transactionSumConfirmedAmount / totalDamagedEducators) }}" max="{{ avgInputAmountPerEducator }}"></progress>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Prosečno uskraćen deo zarade: {{ avgInputAmountPerEducator|number_format(0, ',', '.') }} RSD
+                    </p>
+                </div>
+            </div>
+
+            <div class="card bg-base-100 shadow">
+                <div class="card-body">
+                    <h2 class="card-title">Ukupno aktivnih donatora</h2>
+                    <p class="text-4xl md:text-5xl font-bold text-primary">
+                        {{ totalActiveDonors|number_format(0, ',', '.') }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card bg-base-100 shadow">
+                <div class="card-body">
+                    <h2 class="card-title">Ukupan broj prijavljenih nastavnika</h2>
+                    <p class="text-4xl md:text-5xl font-bold text-primary">
+                        {{ totalDamagedEducators|number_format(0, ',', '.') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow mt-4">
+            <div class="card-body">
+                <div class="overflow-x-auto">
+                    <table class="table rounded-xl border border-base-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th>
+                                    <span class="ti ti-building-community text-xl"></span>
+                                    Mesto
+                                </th>
+                                <th>
+                                    <span class="ti ti-school text-xl"></span>
+                                    Škola
+                                </th>
+                                <th>
+                                    <span class="ti ti-cash text-xl"></span>
+                                    Ukupno isplaćeno
+                                </th>
+                                <th>
+                                    <span class="ti ti-cash text-xl"></span>
+                                    Prosečan isplaćen iznos<br>po nastavniku
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for school in schools %}
+                            <tr class="hover:bg-gray-100">
+                                <td>{{ school.cityName }}</td>
+                                <td>{{ school.name }}</td>
+                                <td>{{ school.totalConfirmedAmount|number_format(0, ',', '.') }} RSD</td>
+                                <td>
+                                    {{ (school.totalConfirmedAmount / school.totalDamagedEducators)|number_format(0, ',', '.') }} RSD
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

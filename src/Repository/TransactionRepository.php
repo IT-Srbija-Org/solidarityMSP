@@ -9,13 +9,15 @@ use App\Entity\Transaction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * @extends ServiceEntityRepository<Transaction>
  */
 class TransactionRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private CacheInterface $cache)
     {
         parent::__construct($registry, Transaction::class);
     }
@@ -107,9 +109,8 @@ class TransactionRepository extends ServiceEntityRepository
 
     public function getSumAmountTransactions(DamagedEducatorPeriod $period, ?School $school, array $statuses): int
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb = $this->createQueryBuilder('t');
         $qb = $qb->select('SUM(t.amount)')
-            ->from(Transaction::class, 't')
             ->innerJoin('t.damagedEducator', 'de')
             ->andWhere('de.period = :period')
             ->setParameter('period', $period)
@@ -148,9 +149,8 @@ class TransactionRepository extends ServiceEntityRepository
 
     public function getSumAmountForAccountNumber(int $period, string $accountNumber, array $statuses): int
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb = $this->createQueryBuilder('t');
         $qb = $qb->select('SUM(t.amount)')
-            ->from(Transaction::class, 't')
             ->innerJoin('t.damagedEducator', 'de')
             ->andWhere('de.period = :period')
             ->setParameter('period', $period)
@@ -160,5 +160,52 @@ class TransactionRepository extends ServiceEntityRepository
             ->setParameter('statuses', $statuses);
 
         return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function getSumConfirmedAmount(bool $useCache): int
+    {
+        return $this->cache->get('transaction-getSumConfirmedAmount', function (ItemInterface $item) {
+            $item->expiresAfter(86400);
+
+            $qb = $this->createQueryBuilder('t');
+            $qb = $qb->select('SUM(t.amount)')
+                ->andWhere('t.status = :status')
+                ->setParameter('status', Transaction::STATUS_CONFIRMED);
+
+            return (int) $qb->getQuery()->getSingleScalarResult();
+        }, $useCache ? 1.0 : INF);
+    }
+
+    public function getSchoolWithConfirmedTransactions(bool $useCache): array
+    {
+        return $this->cache->get('transaction-getSchoolWithConfirmedTransactions', function (ItemInterface $item) {
+            $item->expiresAfter(86400);
+
+            $qb = $this->createQueryBuilder('t');
+            $qb = $qb->select('s.name, c.name AS cityName, SUM(t.amount) AS totalConfirmedAmount, COUNT(DISTINCT t.accountNumber) AS totalDamagedEducators')
+                ->innerJoin('t.damagedEducator', 'de')
+                ->innerJoin('de.school', 's')
+                ->innerJoin('s.city', 'c')
+                ->andWhere('t.status = :status')
+                ->setParameter('status', Transaction::STATUS_CONFIRMED)
+                ->groupBy('s.id')
+                ->orderBy('c.name', 'ASC');
+
+            return $qb->getQuery()->getResult();
+        }, $useCache ? 1.0 : INF);
+    }
+
+    public function getTotalActiveDonors(bool $useCache): int
+    {
+        return $this->cache->get('transaction-getTotalActiveDonors', function (ItemInterface $item) {
+            $item->expiresAfter(86400);
+
+            $qb = $this->createQueryBuilder('e');
+            $qb = $qb->select('COUNT(DISTINCT e.user)')
+                ->andWhere('e.status = :status')
+                ->setParameter('status', Transaction::STATUS_CONFIRMED);
+
+            return (int) $qb->getQuery()->getSingleScalarResult();
+        }, $useCache ? 1.0 : INF);
     }
 }
