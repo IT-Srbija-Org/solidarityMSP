@@ -32,6 +32,10 @@
                         Tip škole
                     </th>
                     <th>
+                        <span class="ti ti-building-cog text-xl"></span>
+                        Delegat
+                    </th>
+                    <th>
                         <span class="ti ti-calendar-event text-xl"></span>
                         Kreirana
                     </th>
@@ -49,6 +53,14 @@
                     </td>
                     <td>{{ school.city.name }}</td>
                     <td>{{ school.type.name }}</td>
+                    <td>
+                        {% for delegate in school.userDelegateSchools %}
+                            {% if delegate.user %}
+                                <p>{{ delegate.user.email }}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+
                     <td>{{ school.createdAt|date('d.m.Y.') }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">

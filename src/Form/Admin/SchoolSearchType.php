@@ -41,7 +41,7 @@ class SchoolSearchType extends AbstractType
             ])
             ->add('hasNoAssignedDelegate', CheckboxType::class, [
                 'required' => false,
-                'label' => 'Nema zaduzen delegat',
+                'label' => 'Skola nema zaduzenog delegata',
             ])
             ->add('submit', SubmitType::class, [
                 'label' => '<i class="ti ti-search text-2xl"></i> Pretraži',
