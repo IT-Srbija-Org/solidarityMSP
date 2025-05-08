@@ -21,7 +21,7 @@ use Symfony\Component\Lock\Store\FlockStore;
 )]
 class LogNumbersCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager, private UserDonorRepository $userDonorRepository, private UserRepository $userRepository, private UserDelegateSchoolRepository $userDelegateSchoolRepository)
+    public function __construct(private EntityManagerInterface $entityManager, private UserDonorRepository $userDonorRepository, private UserRepository $userRepository)
     {
         parent::__construct();
     }
