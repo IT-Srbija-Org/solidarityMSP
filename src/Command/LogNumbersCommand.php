@@ -3,7 +3,6 @@
 namespace App\Command;
 
 use App\Entity\LogNumber;
-use App\Repository\UserDelegateSchoolRepository;
 use App\Repository\UserDonorRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
