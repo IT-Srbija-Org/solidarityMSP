@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\DamagedEducatorPeriod;
 use App\Entity\UserDelegateSchool;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;

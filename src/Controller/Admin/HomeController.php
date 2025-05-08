@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\DamagedEducator;
 use App\Entity\DamagedEducatorPeriod;
 use App\Entity\Transaction;
 use App\Repository\DamagedEducatorRepository;
