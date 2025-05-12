@@ -3,6 +3,12 @@
 {% block title %}Admin panel | Mreža solidarnosti{% endblock %}
 {% block navbar %}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link href="{{ asset('stylesheet/select2.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
 {% block body %}
     {% block adminNavbar %}
         <div class="navbar bg-base-100 shadow mb-2">
@@ -116,4 +122,14 @@
             </ul>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('javascript/select2.min.js') }}"></script>
+
+    <script>
+        loadSelect2();
+    </script>
+
 {% endblock %}

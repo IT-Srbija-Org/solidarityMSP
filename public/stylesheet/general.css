@@ -15,3 +15,99 @@ table thead span.ti {
     position: relative;
     top: 2px;
 }
+
+/* Responsive table for donor transaction list */
+@media (max-width: 768px) {
+    .responsive-table thead {
+        display: none;
+    }
+    .overflow-x-auto,
+    .responsive-table {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+    .responsive-table {
+        border: none !important;
+        border-radius: 0 !important;
+    }
+    .responsive-table,
+    .responsive-table tbody,
+    .responsive-table tr,
+    .responsive-table td {
+        display: block;
+        width: 100%;
+    }
+    .responsive-table tr {
+        margin-bottom: 0.75rem;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        padding: 0.5rem 0.5rem 0.5rem 0;
+    }
+    .responsive-table td {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        padding-left: 0.75rem;
+        min-height: 2.5rem;
+        border: none;
+        border-bottom: 1px solid #f3f4f6;
+        text-align: left;
+        background: none;
+        box-shadow: none;
+    }
+    .responsive-table td:last-child {
+        border-bottom: none;
+    }
+    .responsive-table td::before {
+        content: attr(data-label);
+        position: static;
+        display: inline-block;
+        min-width: 6em;
+        font-weight: 600;
+        color: #6b7280;
+        white-space: normal;
+        padding-right: 0.2rem;
+        text-align: left;
+        flex-shrink: 0;
+    }
+    .responsive-table td[data-label=""]::before {
+        display: none;
+    }
+    .responsive-table td[data-label=""] {
+        justify-content: center;
+        align-items: stretch;
+    }
+
+    /* Stack action buttons vertically in transaction list on mobile */
+    .responsive-table td > .flex {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+        width: 100%;
+    }
+}
+
+.select2-container.select2-container--default .select2-selection--single {
+    height: 40px;
+    border: 1px solid #d1d1d4;
+}
+
+.select2-container.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+}
+
+.select2-container.select2-container--default .select2-selection--single .select2-selection__rendered {
+    font-size: 14px;
+    line-height: 38px;
+}
+
+.select2-container.select2-container--default .select2-results__option {
+    min-height: 2rem;
+}
+
+.select2-container.select2-container--default .select2-results__option {
+    min-height: 2rem;
+}

@@ -5,8 +5,9 @@ namespace App\Command\Transaction;
 use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
 use App\Entity\UserDonor;
-use App\Repository\TransactionRepository;
+use App\Repository\DamagedEducatorRepository;
 use App\Repository\UserDonorRepository;
+use App\Service\HelperService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -29,7 +30,7 @@ class CreateCommand extends Command
     private int $userDonorLastId = 0;
     private array $damagedEducators = [];
 
-    public function __construct(private EntityManagerInterface $entityManager, private UserDonorRepository $userDonorRepository, private TransactionRepository $transactionRepository)
+    public function __construct(private EntityManagerInterface $entityManager, private HelperService $helperService, private UserDonorRepository $userDonorRepository, private DamagedEducatorRepository $damagedEducatorRepository)
     {
         parent::__construct();
     }
@@ -52,6 +53,12 @@ class CreateCommand extends Command
             return Command::FAILURE;
         }
 
+        if ($this->helperService->isHoliday()) {
+            $io->success('Today is holiday and we will not create and send transactions');
+
+            return Command::SUCCESS;
+        }
+
         $this->maxDonationAmount = (int) $input->getArgument('maxDonationAmount');
         if ($this->maxDonationAmount < $this->minTransactionDonationAmount) {
             $io->error('Maximum donation amount must be greater than '.$this->minTransactionDonationAmount);
@@ -66,7 +73,7 @@ class CreateCommand extends Command
         }
 
         // Get damaged educators
-        $this->damagedEducators = $this->getDamagedEducators();
+        $this->damagedEducators = $this->damagedEducatorRepository->getOnlyByRemainingAmount($this->maxDonationAmount, $this->minTransactionDonationAmount);
 
         while (true) {
             $userDonors = $this->getUserDonors();
@@ -165,48 +172,6 @@ class CreateCommand extends Command
         $this->entityManager->flush();
 
         return $totalCreated;
-    }
-
-    public function getDamagedEducators(): array
-    {
-        $transactionStatuses = [
-            Transaction::STATUS_NEW,
-            Transaction::STATUS_WAITING_CONFIRMATION,
-            Transaction::STATUS_CONFIRMED,
-            Transaction::STATUS_EXPIRED,
-        ];
-
-        $stmt = $this->entityManager->getConnection()->executeQuery('
-            SELECT de.id, de.period_id, de.account_number, de.amount
-            FROM damaged_educator AS de
-             INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id
-             AND dep.processing = 1
-            WHERE de.status = :status
-            ', [
-            'status' => DamagedEducator::STATUS_NEW,
-        ]);
-
-        $items = [];
-        foreach ($stmt->fetchAllAssociative() as $item) {
-            if ($item['amount'] > $this->maxDonationAmount) {
-                $item['amount'] = $this->maxDonationAmount;
-            }
-
-            $transactionSum = $this->transactionRepository->getSumAmountForAccountNumber($item['period_id'], $item['account_number'], $transactionStatuses);
-            $item['remainingAmount'] = $item['amount'] - $transactionSum;
-            if ($item['remainingAmount'] < $this->minTransactionDonationAmount) {
-                continue;
-            }
-
-            $items[$item['id']] = $item;
-        }
-
-        // Sort by remaining amount
-        uasort($items, function ($a, $b) {
-            return $b['remainingAmount'] <=> $a['remainingAmount'];
-        });
-
-        return $items;
     }
 
     public function getUserDonors(): array

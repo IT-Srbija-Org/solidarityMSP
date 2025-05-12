@@ -58,7 +58,7 @@
                         Ukupno rezultata: <span class="font-bold">{{ transactions.total }}</span>
                     </div>
 
-                    <table class="table rounded-xl border border-base-200">
+                    <table class="table rounded-xl border border-base-200 responsive-table">
                         <thead class="bg-gray-100">
                             <tr>
                                 <th>
@@ -95,49 +95,50 @@
                         <tbody>
                         {% for transaction in transactions.items %}
                             <tr class="hover:bg-gray-100">
-                                <td>
+                                <td data-label="Oštećeni/a">
                                     {% if transaction.isMaskInformation %}
                                         <span class="text-gray-500 tracking-widest">{{ transaction.damagedEducator.name|mask }}</span>
                                     {% else %}
                                         {{ transaction.damagedEducator.name }}
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td data-label="Grad">
                                     {% if transaction.isMaskInformation %}
                                         <div class="text-gray-500 tracking-widest">{{ transaction.damagedEducator.city.name|mask }}</div>
                                     {% else %}
                                         <div>{{ transaction.damagedEducator.city.name }}</div>
                                     {% endif %}
                                 </td>
-                                <td class="whitespace-nowrap">
+                                <td class="whitespace-nowrap" data-label="Broj računa">
                                     {% if transaction.isMaskInformation %}
                                         <span class="text-gray-500 tracking-widest">{{ transaction.accountNumber|mask }}</span>
                                     {% else %}
                                         {{ transaction.accountNumber|account_number_format }}
                                     {% endif %}
                                 </td>
-                                <td>{{ transaction.amount|number_format }}</td>
-                                <td>{{ transaction.referenceCode }}</td>
-                                <td>{{ transaction.createdAt|date('d.m.Y.') }}</td>
-                                <td class="min-w-[180px] break-words whitespace-normal">
+                                <td data-label="Iznos">{{ transaction.amount|number_format }}</td>
+                                <td data-label="Poziv na broj">{{ transaction.referenceCode }}</td>
+                                <td data-label="Kreirano">{{ transaction.createdAt|date('d.m.Y.') }}</td>
+                                <td class="min-w-[180px] break-words whitespace-normal" data-label="Status">
                                     {{ transaction.status|transaction_status|raw }}
                                 </td>
-                                <td class="whitespace-nowrap">
-                                    <div class="flex gap-2 justify-end">
-                                        <a href="#" class="btn {% if transaction.allowShowQR %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="NBS QR" onclick="openQrModal('{{ transaction.id }}'); return false;">
+                                <td class="whitespace-nowrap" data-label="">
+                                    <div class="flex flex-col gap-4 md:flex-row md:gap-2 justify-end">
+                                        <a href="#" class="btn {% if transaction.allowShowQR %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex w-full md:w-auto tooltip" data-tip="NBS QR" onclick="openQrModal('{{ transaction.id }}'); return false;">
                                             <span class="ti ti-qrcode text-xl"></span> NBS QR
                                         </a>
 
-                                        <a href="{{ path('donor_transaction_print', { 'id': transaction.id }) }}" target="_blank" class="btn {% if transaction.allowShowPrint %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Oštampaj">
+                                        <a href="{{ path('donor_transaction_print', { 'id': transaction.id }) }}" target="_blank" class="btn {% if transaction.allowShowPrint %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex w-full md:w-auto tooltip" data-tip="Odštampaj">
                                             <span class="ti ti-printer text-xl"></span>
+                                            <span class="inline md:hidden">Odštampaj</span>
                                         </a>
 
                                         {% if transaction.isStatusWaitingConfirmation %}
-                                            <a href="{{ path('donor_transaction_delete_payment_confirmation', { 'id': transaction.id }) }}" class="btn {% if transaction.allowDeletePaymentConfirmation %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex">
+                                            <a href="{{ path('donor_transaction_delete_payment_confirmation', { 'id': transaction.id }) }}" class="btn {% if transaction.allowDeletePaymentConfirmation %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex w-full md:w-auto">
                                                 <span class="ti ti-square-x text-xl"></span> Obriši potvrdu
                                             </a>
                                         {% else %}
-                                            <a href="{{ path('donor_transaction_confirm_payment', { 'id': transaction.id }) }}" class="btn {% if transaction.allowConfirmPayment %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex">
+                                            <a href="{{ path('donor_transaction_confirm_payment', { 'id': transaction.id }) }}" class="btn {% if transaction.allowConfirmPayment %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex w-full md:w-auto">
                                                 <span class="ti ti-checkbox text-xl"></span> Potvrdi uplatu
                                             </a>
                                         {% endif %}
