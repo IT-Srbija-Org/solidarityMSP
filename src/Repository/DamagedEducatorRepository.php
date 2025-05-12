@@ -188,7 +188,7 @@ class DamagedEducatorRepository extends ServiceEntityRepository
             Transaction::STATUS_EXPIRED,
         ];
 
-        $stmt = $this->entityManager->getConnection()->executeQuery('
+        $stmt = $this->getEntityManager()->getConnection()->executeQuery('
             SELECT de.id, de.period_id, de.account_number, de.amount
             FROM damaged_educator AS de
              INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id
