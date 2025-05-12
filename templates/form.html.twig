@@ -47,7 +47,7 @@
         {% set required = false %}
     {%- endif -%}
 
-    <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %} class="select select-md select-bordered rounded-md w-full md:max-w-xs">
+    <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %} class="select select-md select-bordered rounded-md w-full md:max-w-xs js-select2">
         {%- if placeholder is not none -%}
             <option value=""{% if placeholder_attr|default({}) %}{% with { attr: placeholder_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? (translation_domain is same as(false) ? placeholder : placeholder|trans({}, translation_domain)) }}</option>
         {%- endif -%}

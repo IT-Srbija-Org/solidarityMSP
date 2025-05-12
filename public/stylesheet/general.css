@@ -89,3 +89,25 @@ table thead span.ti {
         width: 100%;
     }
 }
+
+.select2-container.select2-container--default .select2-selection--single {
+    height: 40px;
+    border: 1px solid #d1d1d4;
+}
+
+.select2-container.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+}
+
+.select2-container.select2-container--default .select2-selection--single .select2-selection__rendered {
+    font-size: 14px;
+    line-height: 38px;
+}
+
+.select2-container.select2-container--default .select2-results__option {
+    min-height: 2rem;
+}
+
+.select2-container.select2-container--default .select2-results__option {
+    min-height: 2rem;
+}

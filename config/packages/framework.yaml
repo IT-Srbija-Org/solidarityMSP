@@ -8,7 +8,7 @@ framework:
     trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto']
 
     assets:
-        version: v7
+        version: v8
 
     # Explicitly configure php_errors.log to address deprecation
     php_errors:

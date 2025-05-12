@@ -52,3 +52,7 @@ function loadDriver(steps){
         driverObj.drive();
     });
 }
+
+function loadSelect2() {
+    $('.js-select2').select2();
+}
