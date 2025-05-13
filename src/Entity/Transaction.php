@@ -219,11 +219,18 @@ class Transaction
 
     public function allowToChangeStatus(): bool
     {
+        $days = $this->getUpdatedAt()->diff(new \DateTime())->days;
+        $hours = $this->getUpdatedAt()->diff(new \DateTime())->h;
+
+        if($this->getStatus() == self::STATUS_WAITING_CONFIRMATION && $days == 0 && $hours <= 6) {
+            return false;
+        }
+
         if (in_array($this->getStatus(), [self::STATUS_EXPIRED, self::STATUS_WAITING_CONFIRMATION])) {
             return true;
         }
 
-        if (in_array($this->getStatus(), [self::STATUS_CONFIRMED, self::STATUS_NOT_PAID]) && $this->getUpdatedAt()->diff(new \DateTime())->days < 7) {
+        if (in_array($this->getStatus(), [self::STATUS_CONFIRMED, self::STATUS_NOT_PAID]) && $days < 7) {
             return true;
         }
 
