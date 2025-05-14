@@ -38,6 +38,7 @@ class CreateForLargeAmountCommand extends Command
     protected function configure(): void
     {
         $this
+            ->addOption('schoolTypeId', null, InputOption::VALUE_REQUIRED, 'Process only from this school type')
             ->addOption('schoolId', null, InputOption::VALUE_REQUIRED, 'Process only from this school');
     }
 
@@ -46,9 +47,12 @@ class CreateForLargeAmountCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->section('Command started at '.date('Y-m-d H:i:s'));
 
+        $schoolTypeId = $input->getOption('schoolTypeId');
+        $schoolId = $input->getOption('schoolId');
+
         $store = new FlockStore();
         $factory = new LockFactory($store);
-        $lock = $factory->createLock($this->getName(), 0);
+        $lock = $factory->createLock($this->getName().$schoolTypeId.$schoolId, 0);
         if (!$lock->acquire()) {
             return Command::FAILURE;
         }
@@ -59,11 +63,13 @@ class CreateForLargeAmountCommand extends Command
             return Command::SUCCESS;
         }
 
-        // SchoolID
-        $schoolId = $input->getOption('schoolId');
+        $parameters = [
+            'schoolTypeId' => $schoolTypeId,
+            'schoolId' => $schoolId,
+        ];
 
         // Get damaged educators
-        $this->damagedEducators = $this->damagedEducatorRepository->getOnlyByRemainingAmount($this->maxDonationAmount, $this->minTransactionDonationAmount, $schoolId);
+        $this->damagedEducators = $this->damagedEducatorRepository->getOnlyByRemainingAmount($this->maxDonationAmount, $this->minTransactionDonationAmount, $parameters);
 
         // Get donors
         $userDonors = $this->getUserDonors();

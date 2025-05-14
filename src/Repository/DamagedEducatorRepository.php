@@ -184,7 +184,7 @@ class DamagedEducatorRepository extends ServiceEntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function getOnlyByRemainingAmount(int $maxDonationAmount, int $minTransactionDonationAmount, ?int $schoolId): array
+    public function getOnlyByRemainingAmount(int $maxDonationAmount, int $minTransactionDonationAmount, array $parameters): array
     {
         $transactionStatuses = [
             Transaction::STATUS_NEW,
@@ -193,24 +193,30 @@ class DamagedEducatorRepository extends ServiceEntityRepository
             Transaction::STATUS_EXPIRED,
         ];
 
-        $stringQuery = '';
-        $stringQuery .= 'WHERE de.status = :status';
+        $queryString = '';
+        $queryString .= 'WHERE de.status = :status';
 
-        $parameters = [];
-        $parameters['status'] = DamagedEducator::STATUS_NEW;
+        $queryParameters = [];
+        $queryParameters['status'] = DamagedEducator::STATUS_NEW;
 
-        if ($schoolId) {
-            $stringQuery .= ' AND de.school_id = :schoolId';
-            $parameters['schoolId'] = $schoolId;
+        if (!empty($parameters['schoolTypeId'])) {
+            $queryString .= ' AND st.id = :schoolTypeId';
+            $queryParameters['schoolTypeId'] = $parameters['schoolTypeId'];
+        }
+
+        if (!empty($parameters['schoolId'])) {
+            $queryString .= ' AND de.school_id = :schoolId';
+            $queryParameters['schoolId'] = $parameters['schoolId'];
         }
 
         $stmt = $this->getEntityManager()->getConnection()->executeQuery('
-            SELECT de.id, de.period_id, de.account_number, de.amount, de.school_id
+            SELECT de.id, de.period_id, de.account_number, de.amount
             FROM damaged_educator AS de
-             INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id
-             AND dep.processing = 1
-             '.$stringQuery.'
-            ', $parameters);
+             INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id AND dep.processing = 1
+             INNER JOIN school AS s ON s.id = de.school_id
+             INNER JOIN school_type AS st ON st.id = s.type_id
+             '.$queryString.'
+            ', $queryParameters);
 
         $items = [];
         foreach ($stmt->fetchAllAssociative() as $item) {
