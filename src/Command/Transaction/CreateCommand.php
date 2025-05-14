@@ -13,6 +13,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Lock\LockFactory;
@@ -38,7 +39,8 @@ class CreateCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('maxDonationAmount', InputArgument::REQUIRED, 'Maximum amount that the donor will send to the damaged educator');
+            ->addArgument('maxDonationAmount', InputArgument::REQUIRED, 'Maximum amount that the donor will send to the damaged educator')
+            ->addOption('schoolId', null, InputOption::VALUE_REQUIRED, 'Process only from this school');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -72,8 +74,11 @@ class CreateCommand extends Command
             return Command::FAILURE;
         }
 
+        // SchoolID
+        $schoolId = $input->getOption('schoolId');
+
         // Get damaged educators
-        $this->damagedEducators = $this->damagedEducatorRepository->getOnlyByRemainingAmount($this->maxDonationAmount, $this->minTransactionDonationAmount);
+        $this->damagedEducators = $this->damagedEducatorRepository->getOnlyByRemainingAmount($this->maxDonationAmount, $this->minTransactionDonationAmount, $schoolId);
 
         while (true) {
             $userDonors = $this->getUserDonors();

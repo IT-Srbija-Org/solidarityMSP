@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Lock\LockFactory;
@@ -34,6 +35,12 @@ class CreateForLargeAmountCommand extends Command
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this
+            ->addOption('schoolId', null, InputOption::VALUE_REQUIRED, 'Process only from this school');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -52,8 +59,11 @@ class CreateForLargeAmountCommand extends Command
             return Command::SUCCESS;
         }
 
+        // SchoolID
+        $schoolId = $input->getOption('schoolId');
+
         // Get damaged educators
-        $this->damagedEducators = $this->damagedEducatorRepository->getOnlyByRemainingAmount($this->maxDonationAmount, $this->minTransactionDonationAmount);
+        $this->damagedEducators = $this->damagedEducatorRepository->getOnlyByRemainingAmount($this->maxDonationAmount, $this->minTransactionDonationAmount, $schoolId);
 
         // Get donors
         $userDonors = $this->getUserDonors();

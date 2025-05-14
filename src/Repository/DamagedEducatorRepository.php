@@ -161,10 +161,15 @@ class DamagedEducatorRepository extends ServiceEntityRepository
 
     public function getTotalsByPeriod(DamagedEducatorPeriod $period, ?School $school): int
     {
-        $qb = $this->createQueryBuilder('e');
-        $qb = $qb->select('COUNT(DISTINCT e.accountNumber)')
-            ->andWhere('e.period = :period')
+        $qb = $this->createQueryBuilder('de');
+        $qb = $qb->select('COUNT(DISTINCT de.accountNumber)')
+            ->andWhere('de.period = :period')
             ->setParameter('period', $period);
+
+        if ($school) {
+            $qb->andWhere('de.school = :school')
+                ->setParameter('school', $school);
+        }
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -179,7 +184,7 @@ class DamagedEducatorRepository extends ServiceEntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function getOnlyByRemainingAmount(int $maxDonationAmount, int $minTransactionDonationAmount): array
+    public function getOnlyByRemainingAmount(int $maxDonationAmount, int $minTransactionDonationAmount, ?int $schoolId): array
     {
         $transactionStatuses = [
             Transaction::STATUS_NEW,
@@ -188,15 +193,24 @@ class DamagedEducatorRepository extends ServiceEntityRepository
             Transaction::STATUS_EXPIRED,
         ];
 
+        $stringQuery = '';
+        $stringQuery .= 'WHERE de.status = :status';
+
+        $parameters = [];
+        $parameters['status'] = DamagedEducator::STATUS_NEW;
+
+        if ($schoolId) {
+            $stringQuery .= ' AND de.school_id = :schoolId';
+            $parameters['schoolId'] = $schoolId;
+        }
+
         $stmt = $this->getEntityManager()->getConnection()->executeQuery('
-            SELECT de.id, de.period_id, de.account_number, de.amount
+            SELECT de.id, de.period_id, de.account_number, de.amount, de.school_id
             FROM damaged_educator AS de
              INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id
              AND dep.processing = 1
-            WHERE de.status = :status
-            ', [
-            'status' => DamagedEducator::STATUS_NEW,
-        ]);
+             '.$stringQuery.'
+            ', $parameters);
 
         $items = [];
         foreach ($stmt->fetchAllAssociative() as $item) {
