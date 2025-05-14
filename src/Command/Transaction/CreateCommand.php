@@ -40,6 +40,7 @@ class CreateCommand extends Command
     {
         $this
             ->addArgument('maxDonationAmount', InputArgument::REQUIRED, 'Maximum amount that the donor will send to the damaged educator')
+            ->addOption('schoolTypeId', null, InputOption::VALUE_REQUIRED, 'Process only from this school type')
             ->addOption('schoolId', null, InputOption::VALUE_REQUIRED, 'Process only from this school');
     }
 
@@ -48,9 +49,12 @@ class CreateCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->section('Command started at '.date('Y-m-d H:i:s'));
 
+        $schoolTypeId = $input->getOption('schoolTypeId');
+        $schoolId = $input->getOption('schoolId');
+
         $store = new FlockStore();
         $factory = new LockFactory($store);
-        $lock = $factory->createLock($this->getName(), 0);
+        $lock = $factory->createLock($this->getName().$schoolTypeId.$schoolId, 0);
         if (!$lock->acquire()) {
             return Command::FAILURE;
         }
@@ -74,11 +78,13 @@ class CreateCommand extends Command
             return Command::FAILURE;
         }
 
-        // SchoolID
-        $schoolId = $input->getOption('schoolId');
+        $parameters = [
+            'schoolTypeId' => $schoolTypeId,
+            'schoolId' => $schoolId,
+        ];
 
         // Get damaged educators
-        $this->damagedEducators = $this->damagedEducatorRepository->getOnlyByRemainingAmount($this->maxDonationAmount, $this->minTransactionDonationAmount, $schoolId);
+        $this->damagedEducators = $this->damagedEducatorRepository->getOnlyByRemainingAmount($this->maxDonationAmount, $this->minTransactionDonationAmount, $parameters);
 
         while (true) {
             $userDonors = $this->getUserDonors();
