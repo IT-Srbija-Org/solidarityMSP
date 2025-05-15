@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% import "macro.html.twig" as macro %}
+    {{ macro.tutorial() }}
+    {{ macro.back('delegate_damaged_educator_list', { 'period': period.id }) }}
+
+    <div class="card card-lg bg-base-100 shadow m-4 mt-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4 info-step1">
+                <span class="ti ti-credit-card-pay text-3xl"></span>
+                Spisak svih instrukcija za proveru za {{ period|format_period }}
+            </h2>
+
+            {{ include('flashes.html.twig') }}
+
+            {% if transactions|length > 0 %}
+                <div class="overflow-x-auto mt-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="text-gray-500">
+                            Ukupno rezultata: <span class="font-bold">{{ transactions|length }}</span>
+                        </div>
+                    </div>
+
+                    <table class="table rounded-xl border border-base-200">
+                        <thead class="bg-gray-100 info-step8">
+                            <tr>
+                                <th>
+                                    <span class="ti ti-user text-xl"></span>
+                                    Ime
+                                </th>
+                                <th>
+                                    <span class="ti ti-credit-card text-xl"></span>
+                                    Broj računa
+                                </th>
+                                <th>
+                                    <span class="ti ti-cash text-xl"></span>
+                                    Iznos
+                                </th>
+                                <th>Poziv na broj</th>
+                                <th>
+                                    Status
+
+                                    <a href="{{ path('static_transaction_status') }}" class="link link-primary no-underline">
+                                        <span class="ti ti-info-circle text-xl"></span>
+                                    </a>
+                                </th>
+                                <th>
+                                    <span class="ti ti-calendar-event text-xl"></span>
+                                    Napravljena
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for transaction in transactions %}
+                            <tr class="hover:bg-gray-100">
+                                <td>
+                                    <a href="{{ path('delegate_damaged_educator_edit', { 'id': transaction.damagedEducator.id }) }}" class="link link-hover link-primary">
+                                        {{ transaction.damagedEducator.name }}
+                                    </a>
+                                </td>
+                                <td class="whitespace-nowrap">{{ transaction.accountNumber|account_number_format }}</td>
+                                <td>{{ transaction.amount|number_format }}</td>
+                                <td>{{ transaction.referenceCode }}</td>
+                                <td>
+                                    <div class="whitespace-nowrap">{{ transaction.status|transaction_status|raw }}</div>
+                                    <div class="text-gray-500 min-w-[200px] break-words whitespace-normal">
+                                        {% if transaction.statusComment %}
+                                            {{ transaction.statusComment }}
+                                        {% else %}
+
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>{{ transaction.updatedAt|date('H:i d.m.Y.') }}</td>
+
+                                <td>
+                                    <div class="flex gap-2 justify-end info-step2">
+                                        <select class="js-status select select-md select-bordered rounded-md w-full md:max-w-xs" data-id="{{ transaction.id }}">
+                                            <option></option>
+                                            <option value="3">{{ 3|transaction_status|raw }}</option>
+                                            <option value="5">{{ 5|transaction_status|raw }}</option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="6"></td>
+                            <td>
+                                <a href="#" class="btn btn-primary whitespace-nowrap js-saveAll info-step3">
+                                    <span class="ti ti-check text-xl"></span>
+                                    Sačuvaj sve promene
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div>
+                    Trenutno ne postoji ni jedna instrukcija za uplatu koja čeka vašu proveru.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $(function(){
+            $('.js-saveAll').on('click', function (e) {
+                e.preventDefault();
+
+                var data = [];
+                $('.js-status').each(function () {
+                    const id = $(this).data('id');
+                    const value = $('option:selected', this).val();
+                    if(!value) return;
+
+                    data.push({
+                        id: id,
+                        value: value
+                    });
+                })
+
+                if(!data.length) return;
+
+                $.ajax({
+                    url: '{{ path('delegate_damaged_educator_pending_transactions_save') }}',
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function () {
+                        alert('Došlo je do greške prilikom čuvanja podataka.');
+                    }
+                })
+            });
+
+            loadDriver([
+                { element: '.info-step1', popover: { title: 'Spisak svih instrukcija za proveru', description: 'Ovaj deo pokazuje spisak svih instrukcija za proveru za izabrani period. Verovatno postoje još instrukcija, ali one ne čekaju donatora ili su već rešene. Na stranici možete da nađete samo instrukcije koje čekaju vašu akciju.' } },
+                { element: '.info-step2', popover: { title: 'Promena statusa', description: 'Na stranici za svaku instrukciju postoji opcija za promenu statusa.' } },
+                { element: '.info-step3', popover: { title: 'Sačuvaj sve izmene', description: 'Instrukcije se sačuvavaju tek kada pritisnete na ovo dugme, svaka instrukcija koja bude imala prazan status neće biti promenjena.' } },
+            ]);
+        });
+    </script>
+{% endblock %}

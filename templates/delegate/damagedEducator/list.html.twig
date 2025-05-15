@@ -126,6 +126,11 @@
                     </div>
 
                     <div class="flex gap-2 ml-auto">
+                        <a href="{{ path('delegate_damaged_educator_pending_transactions', { 'period': period.id }) }}" class="btn btn-primary info-step71">
+                            <span class="ti ti-credit-card-pay text-xl"></span>
+                            Spisak svih instrukcija za proveru
+                        </a>
+
                         {% if isUniversity %}
                             <a href="{{ path('delegate_damaged_educator_import', { 'period': period.id }) }}" class="btn {% if period.allowToAdd %}btn-primary{% else %}btn-disabled{% endif %}">
                                 <span class="ti ti-file-type-xls text-xl"></span>
@@ -133,7 +138,7 @@
                             </a>
                         {% endif %}
 
-                        <a href="{{ path('delegate_damaged_educator_new', { 'period': period.id }) }}" class="btn {% if period.allowToAdd %}btn-primary{% else %}btn-disabled{% endif %} info-step7">
+                        <a href="{{ path('delegate_damaged_educator_new', { 'period': period.id }) }}" class="btn {% if period.allowToAdd %}btn-primary{% else %}btn-disabled{% endif %} info-step72">
                             <span class="ti ti-plus text-xl"></span>
                             Dodaj
                         </a>
@@ -242,7 +247,8 @@
             { element: '.info-step4', popover: { title: 'Spisak oštećenih', description: 'Ovde se nalazi spisak oštećenih za izabrani period za škole za koje ste Vi delegat.' } },
             { element: '.info-step5', popover: { title: 'Pretraga oštećenih', description: 'Ovde možete da pretražujete oštećene za izabrani period i za škole za koje ste Vi delegat.' } },
             { element: '.info-step6', popover: { title: 'Period moze biti zatvoren za dodavanje', description: 'Period može biti zatvoren za dodavanje novih oštećenih ako je prošak rok za dodavanje.' } },
-            { element: '.info-step7', popover: { title: 'Dodavanje novih oštećenih', description: 'Ovde možete da dodate nove oštećene za izabrani period, ako period nije zatvoren.' } },
+            { element: '.info-step71', popover: { title: 'Spisak svih instrukcija za proveru', description: 'Ovde možete da vidite spisak svih instrukcija od svih oštećenih koje čekaju vašu proveru.' } },
+            { element: '.info-step72', popover: { title: 'Dodavanje novih oštećenih', description: 'Ovde možete da dodate nove oštećene za izabrani period, ako period nije zatvoren.' } },
             { element: '.info-step8', popover: { title: 'Spisak oštećenih', description: 'Možete da vidite spisak svih oštećenih koji su unešeni za škole za koje ste Vi delegat.' } },
             { element: '.info-step9', popover: { title: 'Status oštećenog', description: 'Status označava trenutno stanje oštećenog nastavnika. Pošto postoji više različitih statusa, molimo vas da posetite <a href="{{ path("static_damaged_educator_status") }}" target="_blank" class="link link-primary link-hover">ovu stranicu</a> radi boljeg razumevanja.' } },
             { element: '.info-step10', popover: { title: 'Spisak instrukcija za uplatu', description: 'Na stranici možete da vidite spisak svih instrukcija za uplatu (ako postoje) za oštećenog koje su prosleđene ka donatorima.' } },

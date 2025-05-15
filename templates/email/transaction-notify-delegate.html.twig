@@ -3,22 +3,9 @@
 {% block body %}
     <p>Zdravo,</p>
 
-    <div>Šaljemo ti spisak oštećenih nastavnika koji imaju instrukcije za uplatu i čekaju tvoju potvrdu.</div>
-    <div>Kod svakog oštećenog se nalazi link koji će te preusmeriti na stranicu gde možeš da potvrdiš uplate.</div>
-
-    <ul>
-        {% for damagedEducator in damagedEducators %}
-            <li>
-                {{ damagedEducator.period|format_period }} - {{ damagedEducator.name }} {% if showSchool %}({{ damagedEducator.school.name }}) {% endif %}–
-
-                <a href="https://mrezasolidarnosti.org{{ path('delegate_damaged_educator_transactions', { 'id': damagedEducator.id }) }}">
-                    proveri
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
+    <div>Postoje instrukcije za uplatu koje čekaju Vašu proveru, molimo Vas da uđete na Vas profil i proverite instrukcije.</div>
 
     <div>
-        <i>Sve ovo možeš da vidiš i na stranici "<a href="https://mrezasolidarnosti.org{{ path('delegate_damaged_educator_choose_period') }}">Spisak oštećenih</a>".</i>
+        <i>Sve instrukcije možeš da vidiš na stranici "<a href="https://mrezasolidarnosti.org{{ path('delegate_damaged_educator_choose_period') }}">Spisak svih instrukcija za proveru</a>" koja se nalazi unutar svakog perioda.</i>
     </div>
 {% endblock %}

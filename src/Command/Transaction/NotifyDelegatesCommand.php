@@ -47,7 +47,7 @@ class NotifyDelegatesCommand extends Command
                 'user' => $delegate,
             ]);
 
-            $items = [];
+            $havePendingTransactions = false;
             foreach ($schools as $school) {
                 $damagedEducators = $this->entityManager->getRepository(DamagedEducator::class)->findBy([
                     'school' => $school->getSchool(),
@@ -62,21 +62,21 @@ class NotifyDelegatesCommand extends Command
                         ],
                     ]);
 
-                    if (empty($transactions)) {
-                        continue;
+                    foreach ($transactions as $transaction) {
+                        if ($transaction->allowToChangeStatus()) {
+                            $havePendingTransactions = true;
+                            break 3;
+                        }
                     }
-
-                    $items[] = $damagedEducator;
                 }
             }
 
-            if (empty($items)) {
+            if (empty($havePendingTransactions)) {
                 continue;
             }
 
             $output->writeln('Send email to '.$delegate->getEmail());
-            $showSchool = !(1 == count($schools));
-            $this->sendEmail($delegate, $showSchool, $items);
+            $this->sendEmail($delegate);
         }
 
         $io->success('Command finished at '.date('Y-m-d H:i:s'));
@@ -84,18 +84,13 @@ class NotifyDelegatesCommand extends Command
         return Command::SUCCESS;
     }
 
-    public function sendEmail(User $user, bool $showSchool, array $damagedEducators): void
+    public function sendEmail(User $user): void
     {
         $message = (new TemplatedEmail())
             ->to($user->getEmail())
             ->from(new Address('delegati@mrezasolidarnosti.org', 'Mreža Solidarnosti'))
             ->subject('Postoje instrukcije za uplatu koje treba potvrditi')
-            ->htmlTemplate('email/transaction-notify-delegate.html.twig')
-            ->context([
-                'user' => $user,
-                'showSchool' => $showSchool,
-                'damagedEducators' => $damagedEducators,
-            ]);
+            ->htmlTemplate('email/transaction-notify-delegate.html.twig');
 
         try {
             $this->mailer->send($message);
