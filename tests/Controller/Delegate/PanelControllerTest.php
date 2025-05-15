@@ -101,7 +101,7 @@ class PanelControllerTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertCount(2, $crawler->filter('table'));
-        $this->assertSelectorTextContains('a.btn-primary', 'Dodaj');
+        $this->assertAnySelectorTextContains('a.btn-primary', 'Dodaj');
     }
 
     public function testPeriodNewDamagedEducatorForm(): void
