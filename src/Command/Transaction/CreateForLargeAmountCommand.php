@@ -5,9 +5,7 @@ namespace App\Command\Transaction;
 use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
 use App\Entity\UserDonor;
-use App\Repository\DamagedEducatorRepository;
-use App\Repository\UserDonorRepository;
-use App\Service\HelperService;
+use App\Service\CreateTransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -30,7 +28,7 @@ class CreateForLargeAmountCommand extends Command
     private int $maxYearDonationAmount = 80000;
     private array $damagedEducators = [];
 
-    public function __construct(private EntityManagerInterface $entityManager, private HelperService $helperService, private UserDonorRepository $userDonorRepository, private DamagedEducatorRepository $damagedEducatorRepository)
+    public function __construct(private EntityManagerInterface $entityManager, private CreateTransactionService $createTransactionService)
     {
         parent::__construct();
     }
@@ -57,7 +55,7 @@ class CreateForLargeAmountCommand extends Command
             return Command::FAILURE;
         }
 
-        if ($this->helperService->isHoliday()) {
+        if ($this->createTransactionService->isHoliday()) {
             $io->success('Today is holiday and we will not create and send transactions');
 
             return Command::SUCCESS;
@@ -69,7 +67,7 @@ class CreateForLargeAmountCommand extends Command
         ];
 
         // Get damaged educators
-        $this->damagedEducators = $this->damagedEducatorRepository->getOnlyByRemainingAmount($this->maxDonationAmount, $this->minTransactionDonationAmount, $parameters);
+        $this->damagedEducators = $this->createTransactionService->getDamagedEducators($this->maxDonationAmount, $this->minTransactionDonationAmount, $parameters);
 
         // Get donors
         $userDonors = $this->getUserDonors();
@@ -81,12 +79,12 @@ class CreateForLargeAmountCommand extends Command
             $output->write('Process donor '.$userDonor->getUser()->getEmail().' at '.date('Y-m-d H:i:s'));
             $output->write(' | Amount: '.$userDonor->getAmount());
 
-            if ($this->userDonorRepository->hasNotPaidTransactionsInLastDays($userDonor, 10)) {
+            if ($this->createTransactionService->hasNotPaidTransactionsInLastDays($userDonor, 10)) {
                 $output->writeln(' | has "not paid" transactions in last 10 days');
                 continue;
             }
 
-            $sumTransactions = $this->userDonorRepository->getSumTransactions($userDonor);
+            $sumTransactions = $this->createTransactionService->getSumTransactions($userDonor);
             $donorRemainingAmount = $userDonor->getAmount() - $sumTransactions;
             if ($donorRemainingAmount < $this->minTransactionDonationAmount) {
                 $output->writeln(' | remaining amount is less than '.$this->minTransactionDonationAmount);
@@ -98,7 +96,7 @@ class CreateForLargeAmountCommand extends Command
 
             $totalTransactions = 0;
             foreach ($this->damagedEducators as $damagedEducator) {
-                $sumTransactionAmount = $this->userDonorRepository->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
+                $sumTransactionAmount = $this->createTransactionService->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
                 $sumTransactionAmount += $this->maxTransactionDonationAmount;
                 if ($sumTransactionAmount >= $this->maxYearDonationAmount) {
                     continue;
@@ -114,7 +112,7 @@ class CreateForLargeAmountCommand extends Command
             $output->writeln(' | Total transaction created: '.$totalTransactions);
 
             if ($totalTransactions > 0) {
-                $this->userDonorRepository->sendNewTransactionEmail($userDonor);
+                $this->createTransactionService->sendNewTransactionEmail($userDonor);
             }
         }
 

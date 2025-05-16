@@ -83,6 +83,14 @@ class TransactionSearchType extends AbstractType
                 'required' => false,
                 'label' => 'Broj računa',
             ])
+            ->add('isUserDonorConfirmed', ChoiceType::class, [
+                'required' => false,
+                'label' => 'Donator je potvrdio uplatu?',
+                'choices' => [
+                    'Da' => true,
+                    'Ne' => false,
+                ],
+            ])
             ->add('status', ChoiceType::class, [
                 'required' => false,
                 'choices' => array_flip(Transaction::STATUS),

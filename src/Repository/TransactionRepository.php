@@ -76,6 +76,11 @@ class TransactionRepository extends ServiceEntityRepository
                 ->setParameter('accountNumber', '%'.$criteria['accountNumber'].'%');
         }
 
+        if (isset($criteria['isUserDonorConfirmed'])) {
+            $qb->andWhere('t.userDonorConfirmed = :isUserDonorConfirmed')
+                ->setParameter('isUserDonorConfirmed', $criteria['isUserDonorConfirmed']);
+        }
+
         if (!empty($criteria['status'])) {
             $qb->andWhere('t.status = :status')
                 ->setParameter('status', $criteria['status']);

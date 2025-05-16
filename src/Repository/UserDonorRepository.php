@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Transaction;
 use App\Entity\User;
 use App\Entity\UserDonor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -10,7 +9,6 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
 
 /**
  * @extends ServiceEntityRepository<UserDonor>
@@ -20,87 +18,6 @@ class UserDonorRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry, private MailerInterface $mailer, private TransactionRepository $transactionRepository)
     {
         parent::__construct($registry, UserDonor::class);
-    }
-
-    public function hasNotPaidTransactionsInLastDays(UserDonor $userDonor, int $days): bool
-    {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-
-        $qb->select('COUNT(t.id)')
-            ->from(Transaction::class, 't')
-            ->where('t.user = :user')
-            ->andWhere('t.status = :status')
-            ->andWhere('t.createdAt > :dateLimit')
-            ->setParameter('user', $userDonor->getUser())
-            ->setParameter('status', Transaction::STATUS_NOT_PAID)
-            ->setParameter('dateLimit', new \DateTime('-'.$days.' days'));
-
-        return $qb->getQuery()->getSingleScalarResult() > 0;
-    }
-
-    public function getSumTransactions(UserDonor $userDonor): int
-    {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-
-        $qb->select('SUM(t.amount)')
-            ->from(Transaction::class, 't')
-            ->where('t.user = :user')
-            ->andWhere('t.status IN (:statuses)')
-            ->setParameter('user', $userDonor->getUser())
-            ->setParameter('statuses', [
-                Transaction::STATUS_NEW,
-                Transaction::STATUS_WAITING_CONFIRMATION,
-                Transaction::STATUS_CONFIRMED,
-                Transaction::STATUS_EXPIRED,
-            ]);
-
-        if ($userDonor->isMonthly()) {
-            $qb->andWhere('t.createdAt > :dateLimit')
-                ->setParameter('dateLimit', new \DateTime('-30 days'));
-        }
-
-        return (int) $qb->getQuery()->getSingleScalarResult();
-    }
-
-    public function sumTransactionsToEducator(UserDonor $userDonor, string $accountNumber): int
-    {
-        $transactionStatuses = [
-            Transaction::STATUS_NEW,
-            Transaction::STATUS_WAITING_CONFIRMATION,
-            Transaction::STATUS_CONFIRMED,
-            Transaction::STATUS_EXPIRED,
-        ];
-
-        $stmt = $this->getEntityManager()->getConnection()->executeQuery('
-            SELECT SUM(t.amount)
-            FROM transaction AS t
-            WHERE t.user_id = :userId
-             AND t.account_number = :accountNumber
-             AND t.status IN ('.implode(',', $transactionStatuses).')
-             AND t.created_at > DATE(NOW() - INTERVAL 1 YEAR)
-            ', [
-            'userId' => $userDonor->getUser()->getId(),
-            'accountNumber' => $accountNumber,
-        ]);
-
-        return (int) $stmt->fetchOne();
-    }
-
-    public function sendNewTransactionEmail(UserDonor $userDonor): void
-    {
-        $message = (new TemplatedEmail())
-            ->to($userDonor->getUser()->getEmail())
-            ->from(new Address('donatori@mrezasolidarnosti.org', 'Mreža Solidarnosti'))
-            ->subject('Stigle su ti nove instrukcije za uplatu')
-            ->htmlTemplate('email/donor-new-transactions.html.twig')
-            ->context([
-                'user' => $userDonor->getUser(),
-            ]);
-
-        try {
-            $this->mailer->send($message);
-        } catch (\Exception $exception) {
-        }
     }
 
     public function sendSuccessEmail(User $user): void

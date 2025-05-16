@@ -54,14 +54,17 @@ class Transaction
     #[ORM\Column]
     private ?int $status = self::STATUS_NEW;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $statusComment = null;
+
+    #[ORM\Column]
+    private ?bool $userDonorConfirmed = false;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $statusComment = null;
 
     public function getId(): ?int
     {
@@ -208,8 +211,17 @@ class Transaction
         return self::STATUS_WAITING_CONFIRMATION === $this->status;
     }
 
+    public function isStatusNotPaid(): bool
+    {
+        return self::STATUS_NOT_PAID === $this->status;
+    }
+
     public function isMaskInformation(): bool
     {
+        if (self::STATUS_NOT_PAID && $this->isUserDonorConfirmed()) {
+            return false;
+        }
+
         if (in_array($this->getStatus(), [self::STATUS_CANCELLED, self::STATUS_EXPIRED, self::STATUS_NOT_PAID])) {
             return true;
         }
@@ -240,5 +252,22 @@ class Transaction
     public function getReferenceCode(): string
     {
         return 'MS'.$this->getId();
+    }
+
+    public function isUserDonorConfirmed(): ?bool
+    {
+        return $this->userDonorConfirmed;
+    }
+
+    public function setUserDonorConfirmed(bool $userDonorConfirmed): static
+    {
+        $this->userDonorConfirmed = $userDonorConfirmed;
+
+        return $this;
+    }
+
+    public function getStatusConfirmed(): int
+    {
+        return self::STATUS_CONFIRMED;
     }
 }
