@@ -1,0 +1,31 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block content %}
+    <div class="text-xl">
+        <span class="ti ti-credit-card-pay text-2xl"></span>
+        Dodavanje transakcije
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="alert alert-info alert-soft">
+        <span class="ti ti-info-circle text-2xl"></span>
+        <span>Email neće biti poslat donatoru da je transakcija (instrukcija za uplatu) kreirana.</span>
+    </div>
+
+    <div class="alert alert-info alert-soft mb-4">
+        <span class="ti ti-info-circle text-2xl"></span>
+        <span>Na ovoj stranici se ne radi provera godišnjeg zakonskog limita između donatora i oštećenog kao ni koliko je donatoru preostalo za uplatu.</span>
+    </div>
+
+    {% form_theme form with ['form.html.twig'] %}
+    {{ form(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        bindDamagedEducator();
+    </script>
+{% endblock %}

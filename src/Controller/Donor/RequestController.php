@@ -46,6 +46,8 @@ class RequestController extends AbstractController
         }
 
         if (!$user && $form->isSubmitted() && $form->isValid()) {
+            $firstName = $form->get('firstName')->getData();
+            $lastName = $form->get('lastName')->getData();
             $email = $form->get('email')->getData();
 
             $user = $userRepository->findOneBy(['email' => $email]);
@@ -53,7 +55,7 @@ class RequestController extends AbstractController
                 $form->get('email')->addError(new FormError('Korisnik sa ovom email adresom vec postoji, molimo Vas da se ulogujete i da nastavite proces.'));
                 $userRepository->sendLoginLink($user);
             } else {
-                $user = $userRepository->createUser(null, null, $email);
+                $user = $userRepository->createUser($firstName, $lastName, $email);
                 $userRepository->sendVerificationLink($user, 'donor');
             }
         }
@@ -63,6 +65,11 @@ class RequestController extends AbstractController
 
             $userDonor->setUser($user);
             $this->entityManager->persist($userDonor);
+            $this->entityManager->flush();
+
+            $user->setFirstName($form->get('firstName')->getData());
+            $user->setLastName($form->get('lastName')->getData());
+            $this->entityManager->persist($user);
             $this->entityManager->flush();
 
             if ($isNew && $user->isEmailVerified()) {

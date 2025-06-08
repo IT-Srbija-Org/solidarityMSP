@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: LogEntityChangeRepository::class)]
 #[ORM\Index(name: 'idx_action', columns: ['action'])]
 #[ORM\Index(name: 'idx_user', columns: ['changed_by_user_id'])]
+#[ORM\Index(name: 'idx_entity', columns: ['entity_id', 'entity_name'])]
 #[ORM\HasLifecycleCallbacks]
 class LogEntityChange
 {
@@ -20,7 +21,7 @@ class LogEntityChange
     #[ORM\Column(length: 50)]
     private ?string $action = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(length: 100)]
     private ?string $entityName = null;
 
     #[ORM\Column(nullable: true)]

@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\DamagedEducator;
 use App\Entity\DamagedEducatorPeriod;
 use App\Entity\School;
-use App\Entity\Transaction;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -161,10 +160,15 @@ class DamagedEducatorRepository extends ServiceEntityRepository
 
     public function getTotalsByPeriod(DamagedEducatorPeriod $period, ?School $school): int
     {
-        $qb = $this->createQueryBuilder('e');
-        $qb = $qb->select('COUNT(DISTINCT e.accountNumber)')
-            ->andWhere('e.period = :period')
+        $qb = $this->createQueryBuilder('de');
+        $qb = $qb->select('COUNT(DISTINCT de.accountNumber)')
+            ->andWhere('de.period = :period')
             ->setParameter('period', $period);
+
+        if ($school) {
+            $qb->andWhere('de.school = :school')
+                ->setParameter('school', $school);
+        }
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -177,47 +181,5 @@ class DamagedEducatorRepository extends ServiceEntityRepository
             ->setParameter('period', $period);
 
         return (int) $qb->getQuery()->getSingleScalarResult();
-    }
-
-    public function getOnlyByRemainingAmount(int $maxDonationAmount, int $minTransactionDonationAmount): array
-    {
-        $transactionStatuses = [
-            Transaction::STATUS_NEW,
-            Transaction::STATUS_WAITING_CONFIRMATION,
-            Transaction::STATUS_CONFIRMED,
-            Transaction::STATUS_EXPIRED,
-        ];
-
-        $stmt = $this->getEntityManager()->getConnection()->executeQuery('
-            SELECT de.id, de.period_id, de.account_number, de.amount
-            FROM damaged_educator AS de
-             INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id
-             AND dep.processing = 1
-            WHERE de.status = :status
-            ', [
-            'status' => DamagedEducator::STATUS_NEW,
-        ]);
-
-        $items = [];
-        foreach ($stmt->fetchAllAssociative() as $item) {
-            if ($item['amount'] > $maxDonationAmount) {
-                $item['amount'] = $maxDonationAmount;
-            }
-
-            $transactionSum = $this->transactionRepository->getSumAmountForAccountNumber($item['period_id'], $item['account_number'], $transactionStatuses);
-            $item['remainingAmount'] = $item['amount'] - $transactionSum;
-            if ($item['remainingAmount'] < $minTransactionDonationAmount) {
-                continue;
-            }
-
-            $items[$item['id']] = $item;
-        }
-
-        // Sort by remaining amount
-        uasort($items, function ($a, $b) {
-            return $b['remainingAmount'] <=> $a['remainingAmount'];
-        });
-
-        return $items;
     }
 }

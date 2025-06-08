@@ -19,7 +19,33 @@
 
             <div>
                 {% form_theme form 'form.html.twig' %}
-                {{ form(form) }}
+                {{ form_start(form) }}
+                    <div class="space-y-4">
+                        {{ form_errors(form) }}
+
+                        <div>
+                            {{ form_label(form.firstName) }}
+                            {{ form_widget(form.firstName) }}
+                            {{ form_errors(form.firstName) }}
+                            <div class="text-gray-500 text-sm">Ovi podaci su nam potrebni zbog provere vaših uplata ka oštećenim nastavnicima.</div>
+                            <div class="text-gray-500 text-sm">Bitno je da ime i prezime budu od osobe koja je izvršila uplatu.</div>
+                        </div>
+
+                        <div>
+                            {{ form_label(form.lastName) }}
+                            {{ form_widget(form.lastName) }}
+                            {{ form_errors(form.lastName) }}
+                        </div>
+
+                        <div>
+                            {{ form_label(form.confirm) }}
+                            {{ form_widget(form.confirm) }}
+                            {{ form_errors(form.confirm) }}
+                        </div>
+
+                        {{ form_row(form.submit) }}
+                    </div>
+                {{ form_end(form) }}
             </div>
         </div>
     </div>

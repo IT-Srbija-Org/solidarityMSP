@@ -5,6 +5,12 @@ html, body, head {
     font-style: normal;
 }
 
+:root:has(input.theme-controller[value=corporate]:checked),[data-theme=corporate] {
+    --color-primary: #262185;
+    --color-warning: #FFD533;
+    --color-info: #262185;
+}
+
 .stripes {
     box-shadow: 0 0 0 1px var(--color-base-100) inset;
     background-image: repeating-linear-gradient(-45deg, var(--color-base-100), var(--color-base-100) 13px, var(--color-base-200) 13px, var(--color-base-200) 14px);
@@ -102,10 +108,6 @@ table thead span.ti {
 .select2-container.select2-container--default .select2-selection--single .select2-selection__rendered {
     font-size: 14px;
     line-height: 38px;
-}
-
-.select2-container.select2-container--default .select2-results__option {
-    min-height: 2rem;
 }
 
 .select2-container.select2-container--default .select2-results__option {

@@ -34,15 +34,7 @@ class TransactionSearchType extends AbstractType
                 'label' => 'Period',
                 'choice_value' => 'id',
                 'choice_label' => function (DamagedEducatorPeriod $damagedEducatorPeriod): string {
-                    $month = $damagedEducatorPeriod->getDate()->format('M');
-
-                    $type = match ($damagedEducatorPeriod->getType()) {
-                        DamagedEducatorPeriod::TYPE_FIRST_HALF => ' (1/2)',
-                        DamagedEducatorPeriod::TYPE_SECOND_HALF => ' (2/2)',
-                        default => '',
-                    };
-
-                    return $month.$type.', '.$damagedEducatorPeriod->getYear();
+                    return $damagedEducatorPeriod->getChoiceLabel();
                 },
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
                     return $er->createQueryBuilder('s')
@@ -82,6 +74,14 @@ class TransactionSearchType extends AbstractType
             ->add('accountNumber', TextType::class, [
                 'required' => false,
                 'label' => 'Broj računa',
+            ])
+            ->add('isUserDonorConfirmed', ChoiceType::class, [
+                'required' => false,
+                'label' => 'Donator je potvrdio uplatu?',
+                'choices' => [
+                    'Da' => true,
+                    'Ne' => false,
+                ],
             ])
             ->add('status', ChoiceType::class, [
                 'required' => false,

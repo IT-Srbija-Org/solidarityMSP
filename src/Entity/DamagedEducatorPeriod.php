@@ -167,4 +167,17 @@ class DamagedEducatorPeriod
 
         return $this;
     }
+
+    public function getChoiceLabel(): string
+    {
+        $month = $this->getDate()->format('M');
+
+        $type = match ($this->getType()) {
+            DamagedEducatorPeriod::TYPE_FIRST_HALF => ' (1/2)',
+            DamagedEducatorPeriod::TYPE_SECOND_HALF => ' (2/2)',
+            default => '',
+        };
+
+        return $month.$type.', '.$this->getYear();
+    }
 }

@@ -5,14 +5,14 @@ namespace App\Command\Transaction;
 use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
 use App\Entity\UserDonor;
-use App\Repository\DamagedEducatorRepository;
-use App\Repository\UserDonorRepository;
-use App\Service\HelperService;
+use App\Service\CreateTransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Lock\LockFactory;
@@ -30,7 +30,7 @@ class CreateCommand extends Command
     private int $userDonorLastId = 0;
     private array $damagedEducators = [];
 
-    public function __construct(private EntityManagerInterface $entityManager, private HelperService $helperService, private UserDonorRepository $userDonorRepository, private DamagedEducatorRepository $damagedEducatorRepository)
+    public function __construct(private EntityManagerInterface $entityManager, private CreateTransactionService $createTransactionService)
     {
         parent::__construct();
     }
@@ -38,7 +38,9 @@ class CreateCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('maxDonationAmount', InputArgument::REQUIRED, 'Maximum amount that the donor will send to the damaged educator');
+            ->addArgument('maxDonationAmount', InputArgument::REQUIRED, 'Maximum amount that the donor will send to the damaged educator')
+            ->addOption('schoolTypeId', null, InputOption::VALUE_REQUIRED, 'Process only from this school type')
+            ->addOption('schoolIds', null, InputOption::VALUE_REQUIRED, 'Process only from this schools');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -46,14 +48,17 @@ class CreateCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->section('Command started at '.date('Y-m-d H:i:s'));
 
+        $schoolTypeId = (int) $input->getOption('schoolTypeId');
+        $schoolIds = $input->getOption('schoolIds') ? explode(',', $input->getOption('schoolIds')) : [];
+
         $store = new FlockStore();
         $factory = new LockFactory($store);
-        $lock = $factory->createLock($this->getName(), 0);
+        $lock = $factory->createLock($this->getName().$schoolTypeId.implode(',', $schoolIds), 0);
         if (!$lock->acquire()) {
             return Command::FAILURE;
         }
 
-        if ($this->helperService->isHoliday()) {
+        if ($this->createTransactionService->isHoliday()) {
             $io->success('Today is holiday and we will not create and send transactions');
 
             return Command::SUCCESS;
@@ -72,8 +77,13 @@ class CreateCommand extends Command
             return Command::FAILURE;
         }
 
+        $parameters = [
+            'schoolTypeId' => $schoolTypeId,
+            'schoolIds' => $schoolIds,
+        ];
+
         // Get damaged educators
-        $this->damagedEducators = $this->damagedEducatorRepository->getOnlyByRemainingAmount($this->maxDonationAmount, $this->minTransactionDonationAmount);
+        $this->damagedEducators = $this->createTransactionService->getDamagedEducators($this->maxDonationAmount, $this->minTransactionDonationAmount, $parameters);
 
         while (true) {
             $userDonors = $this->getUserDonors();
@@ -88,12 +98,12 @@ class CreateCommand extends Command
                 }
 
                 $output->write('Process donor '.$userDonor->getUser()->getEmail().' at '.date('Y-m-d H:i:s'));
-                if ($this->userDonorRepository->hasNotPaidTransactionsInLastDays($userDonor, 10)) {
+                if ($this->createTransactionService->hasNotPaidTransactionsInLastDays($userDonor, 10)) {
                     $output->writeln(' | has not paid transactions in last 10 days');
                     continue;
                 }
 
-                $sumTransactions = $this->userDonorRepository->getSumTransactions($userDonor);
+                $sumTransactions = $this->createTransactionService->getSumTransactions($userDonor);
                 $donorRemainingAmount = $userDonor->getAmount() - $sumTransactions;
                 if ($donorRemainingAmount < $this->minTransactionDonationAmount) {
                     $output->writeln(' | remaining amount is less than '.$this->minTransactionDonationAmount);
@@ -102,7 +112,7 @@ class CreateCommand extends Command
 
                 $totalTransactions = 0;
                 foreach ($this->damagedEducators as $damagedEducator) {
-                    $sumTransactionAmount = $this->userDonorRepository->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
+                    $sumTransactionAmount = $this->createTransactionService->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
                     if ($sumTransactionAmount >= $this->maxYearDonationAmount) {
                         continue;
                     }
@@ -117,16 +127,28 @@ class CreateCommand extends Command
                 $output->writeln(' | Total transaction created: '.$totalTransactions);
 
                 if ($totalTransactions > 0) {
-                    $this->userDonorRepository->sendNewTransactionEmail($userDonor);
+                    $this->createTransactionService->sendNewTransactionEmail($userDonor);
                 }
             }
 
             $this->entityManager->clear();
         }
 
+        $this->processLargeDonors($schoolTypeId, $schoolIds, $output);
         $io->success('Command finished at '.date('Y-m-d H:i:s'));
 
         return Command::SUCCESS;
+    }
+
+    private function processLargeDonors(?int $schoolTypeId, array $schoolIds, OutputInterface $output): void
+    {
+        $commandName = 'app:transaction:create-for-large-amount';
+        $command = $this->getApplication()->find($commandName);
+
+        $command->run(new ArrayInput([
+            '--schoolTypeId' => $schoolTypeId,
+            '--schoolIds' => implode(',', $schoolIds),
+        ]), $output);
     }
 
     public function createTransactions(UserDonor $userDonor, int &$donorRemainingAmount, int $damagedEducatorId): int

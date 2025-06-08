@@ -19,6 +19,7 @@ use App\Repository\UserDelegateSchoolRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -29,7 +30,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/delegat', name: 'delegate_damaged_educator_')]
 class DamagedEducatorController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager, private DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, private DamagedEducatorRepository $damagedEducatorRepository, private TransactionRepository $transactionRepository)
     {
     }
 
@@ -448,6 +449,13 @@ class DamagedEducatorController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        $redirectPath = $request->query->get('redirectPath');
+        if (empty($redirectPath)) {
+            $redirectPath = $this->generateUrl('delegate_damaged_educator_transactions', [
+                'id' => $damagedEducator->getId(),
+            ]);
+        }
+
         $form = $this->createForm(TransactionChangeStatusType::class, $transaction);
         $form->handleRequest($request);
 
@@ -458,15 +466,92 @@ class DamagedEducatorController extends AbstractController
 
             $this->addFlash('success', 'Uspešno ste promenili status instrukcije za uplatu.');
 
-            return $this->redirectToRoute('delegate_damaged_educator_transactions', [
-                'id' => $damagedEducator->getId(),
-            ]);
+            return $this->redirect($redirectPath);
         }
 
         return $this->render('delegate/damagedEducator/transaction_change_status.html.twig', [
             'form' => $form,
             'transaction' => $transaction,
             'damagedEducator' => $damagedEducator,
+            'redirectPath' => $redirectPath,
+        ]);
+    }
+
+    #[Route('/instrukcije-za-proveru', name: 'pending_transactions')]
+    public function pendingTransactions(Request $request): Response
+    {
+        $periodId = $request->query->getInt('period');
+        $period = $this->damagedEducatorPeriodRepository->find($periodId);
+        if (empty($period)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $schools = [];
+        foreach ($user->getUserDelegateSchools() as $delegateSchool) {
+            $schools[] = $delegateSchool->getSchool()->getId();
+        }
+
+        $transactions = $this->transactionRepository->getPendingTransactions($period, $schools);
+
+        return $this->render('delegate/damagedEducator/pending_transactions.html.twig', [
+            'period' => $period,
+            'transactions' => $transactions,
+        ]);
+    }
+
+    #[Route('/sacuvaj-instrukcije-za-proveru', name: 'pending_transactions_save')]
+    public function pendingTransactionsSave(Request $request): JsonResponse
+    {
+        $items = json_decode($request->getContent(), true);
+        if (empty($items)) {
+            return $this->json([
+                'success' => false,
+            ]);
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $schools = [];
+        foreach ($user->getUserDelegateSchools() as $delegateSchool) {
+            $schools[] = $delegateSchool->getSchool()->getId();
+        }
+
+        foreach ($items as $item) {
+            if (empty($item['id']) || empty($item['value'])) {
+                continue;
+            }
+
+            $transaction = $this->transactionRepository->find($item['id']);
+            if (empty($transaction)) {
+                continue;
+            }
+
+            if (!$transaction->allowToChangeStatus()) {
+                continue;
+            }
+
+            if (!in_array($item['value'], [Transaction::STATUS_CONFIRMED, Transaction::STATUS_NOT_PAID])) {
+                continue;
+            }
+
+            if (!in_array($transaction->getDamagedEducator()->getSchool()->getId(), $schools)) {
+                continue;
+            }
+
+            $transaction->setStatus($item['value']);
+            $transaction->setStatusComment(null);
+            $this->entityManager->persist($transaction);
+        }
+
+        $this->entityManager->flush();
+        $this->addFlash('success', 'Uspešno ste sačuvali sve promene.');
+
+        return $this->json([
+            'success' => true,
         ]);
     }
 }

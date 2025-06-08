@@ -1,11 +1,11 @@
 function bindSchool() {
     $('#registration_delegate_city').on('change', function () {
-        var id = $(this).val();
+        const id = $(this).val();
 
         $.get('/schools', {'city-id': id}, function (data) {
-            var options = '<option value="" selected="selected">Izaberite školu</option>';
+            let options = '<option value="" selected="selected">Izaberite školu</option>';
 
-            for (var i = 0; i < data.length; i++) {
+            for (let i = 0; i < data.length; i++) {
                 options += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
             }
 
@@ -14,12 +14,33 @@ function bindSchool() {
     });
 }
 
+function bindDamagedEducator() {
+    $('#transaction_new_school, #transaction_new_period').on('change', function () {
+        const id = $('#transaction_new_school').val();
+        const periodId = $('#transaction_new_period').val();
+
+        if (!id || !periodId) {
+            return false;
+        }
+
+        $.get('/admin/damaged-educator/list-ajax', {'period-id': periodId, 'school-id': id}, function (data) {
+            let options = '<option value="" selected="selected">Izaberite oštećenog</option>';
+
+            for (let i = 0; i < data.length; i++) {
+                options += '<option value="' + data[i].id + '">' + data[i].name + ' (' + data[i].accountNumber + ')</option>';
+            }
+
+            $('#transaction_new_damagedEducator').html(options).attr('disabled', false);
+        });
+    });
+}
+
 function loadDriverInfo() {
-    if(!$('.js-info-button').is(':visible')){
+    if (!$('.js-info-button').is(':visible')) {
         return false;
     }
 
-    if(localStorage.getItem("info-button-already-shown")){
+    if (localStorage.getItem("info-button-already-shown")) {
         return false;
     }
 
@@ -37,7 +58,7 @@ function loadDriverInfo() {
     localStorage.setItem("info-button-already-shown", true);
 }
 
-function loadDriver(steps){
+function loadDriver(steps) {
     const driver = window.driver.js.driver;
     const driverObj = driver({
         showProgress: true,

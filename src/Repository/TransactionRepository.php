@@ -59,6 +59,11 @@ class TransactionRepository extends ServiceEntityRepository
                 ->setParameter('school', $criteria['school']);
         }
 
+        if (!empty($criteria['schools'])) {
+            $qb->andWhere('e.school IN (:schools)')
+                ->setParameter('schools', $criteria['schools']);
+        }
+
         if (!empty($criteria['city'])) {
             $qb->andWhere('s.city = :city')
                 ->setParameter('city', $criteria['city']);
@@ -69,6 +74,11 @@ class TransactionRepository extends ServiceEntityRepository
 
             $qb->andWhere('t.accountNumber LIKE :accountNumber')
                 ->setParameter('accountNumber', '%'.$criteria['accountNumber'].'%');
+        }
+
+        if (isset($criteria['isUserDonorConfirmed'])) {
+            $qb->andWhere('t.userDonorConfirmed = :isUserDonorConfirmed')
+                ->setParameter('isUserDonorConfirmed', $criteria['isUserDonorConfirmed']);
         }
 
         if (!empty($criteria['status'])) {
@@ -207,5 +217,31 @@ class TransactionRepository extends ServiceEntityRepository
 
             return (int) $qb->getQuery()->getSingleScalarResult();
         }, $useCache ? 1.0 : INF);
+    }
+
+    public function getPendingTransactions(DamagedEducatorPeriod $period, array $schools): array
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb = $qb->select('t')
+            ->innerJoin('t.damagedEducator', 'de')
+            ->andWhere('t.status IN (:status)')
+            ->setParameter('status', [
+                Transaction::STATUS_WAITING_CONFIRMATION,
+                Transaction::STATUS_EXPIRED,
+            ])
+            ->andWhere('de.period = :period')
+            ->setParameter('period', $period)
+            ->andWhere('de.school IN (:schools)')
+            ->setParameter('schools', $schools)
+            ->addOrderBy('de.id', 'ASC');
+
+        $transactions = $qb->getQuery()->getResult();
+        foreach ($transactions as $key => $transaction) {
+            if (!$transaction->allowToChangeStatus()) {
+                unset($transactions[$key]);
+            }
+        }
+
+        return $transactions;
     }
 }

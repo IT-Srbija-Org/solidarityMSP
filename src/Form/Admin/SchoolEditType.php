@@ -7,6 +7,7 @@ use App\Entity\School;
 use App\Entity\SchoolType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -33,6 +34,10 @@ class SchoolEditType extends AbstractType
                 'label' => 'Tip škole',
                 'choice_value' => 'id',
                 'choice_label' => 'name',
+            ])
+            ->add('processing', CheckboxType::class, [
+                'label' => 'Kreiranje instrukcija?',
+                'required' => false,
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Sačuvaj',

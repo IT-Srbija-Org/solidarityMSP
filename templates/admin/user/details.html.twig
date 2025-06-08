@@ -31,30 +31,35 @@
                 <div>
                     Aktivan:
                     {% if user.isActive %}
-                        <span class="ti ti-circle-check-filled text-xl text-success relative top-0.5"></span>
+                        <span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>
                         Da
                     {% else %}
-                        <span class="ti ti-circle-x-filled text-xl text-error relative top-0.5"></span>
+                        <span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>
                         Ne
                     {% endif %}
                 </div>
                 <div>
                     Potvrđen email:
                     {% if user.isEmailVerified %}
-                        <span class="ti ti-circle-check-filled text-xl text-success relative top-0.5"></span>
+                        <span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>
                         Da
                     {% else %}
-                        <span class="ti ti-circle-x-filled text-xl text-error relative top-0.5"></span>
+                        <span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>
                         Ne
                     {% endif %}
                 </div>
             </div>
 
             <div>
-                <div>
+                <div class="grid ">
                     <a href="{{ path('admin_log_list', { 'email': user.email }) }}" class="link link-primary no-underline">
                         <span class="ti ti-archive text-xl relative top-0.5"></span>
                         Lista svih izmena
+                    </a>
+
+                    <a href="{{ path('admin_transaction_list', { 'donor': user.email }) }}" class="link link-primary no-underline">
+                        <span class="ti ti-credit-card-pay text-xl relative top-0.5"></span>
+                        Lista svih transakcija
                     </a>
                 </div>
             </div>
@@ -80,10 +85,10 @@
                     <div>
                         Mesečna podrška:
                         {% if user.userDonor.isMonthly %}
-                            <span class="ti ti-circle-check-filled text-xl text-success relative top-0.5"></span>
+                            <span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>
                             Da
                         {% else %}
-                            <span class="ti ti-circle-x-filled text-xl text-error relative top-0.5"></span>
+                            <span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>
                             Ne
                         {% endif %}
                     </div>

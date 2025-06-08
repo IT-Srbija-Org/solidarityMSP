@@ -24,7 +24,7 @@
         {% for email in app.flashes('unverified_user') %}
             <div role="alert" class="alert alert-warning mb-2">
                 <span class="ti ti-exclamation-circle text-2xl"></span>
-                <span>Korisnik nije potvrdio email adresu. Molimo da se potvrdite email.</span>
+                <span>Korisnik nije potvrdio email adresu. Molimo potvrdite vašu email adresu.</span>
             </div>
             <div class="mb-2 text-center">
                 <a href="{{ path('resend_verification', {'email': email}) }}" class="btn btn-secondary gap-2">

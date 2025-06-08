@@ -34,7 +34,7 @@
 {% macro nav_links(additional_link_classes = '') %}
     {% if app.user and app.user.userDonor %}
         <li>
-            <a href="{{ path('donor_request_form') }}" class="text-lg lg:text-base text-red-400 hover:text-red-400 px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
+            <a href="{{ path('donor_request_form') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
                 <span class="ti ti-heart-filled text-xl"></span>
                 Profil
             </a>

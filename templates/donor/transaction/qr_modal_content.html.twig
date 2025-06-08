@@ -9,7 +9,7 @@
     <div class="mt-4 text-center">
         <div class="space-y-2">
             <div class="text-xs text-gray-500 italic">Nakon plaćanja obavezno potvrdite uplatu</div>
-            <a href="{{ path('donor_transaction_confirm_payment', { 'id': transaction.id }) }}" class="btn btn-primary btn-sm">
+            <a href="{{ path('donor_transaction_confirm_payment', { 'id': transaction.id }) }}" class="btn btn-primary btn-sm" data-umami-event="donor_transaction_confirm_payment_from_qr">
                 <span class="ti ti-checkbox text-xl"></span>
                 Potvrdi uplatu
             </a>

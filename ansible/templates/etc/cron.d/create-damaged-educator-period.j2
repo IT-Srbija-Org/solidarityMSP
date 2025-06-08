@@ -1,1 +1,0 @@
-0 1 23 * * www-data cd {{ app_root }} && php bin/console app:create-damaged-educator-period $(date -d "-1 month" +"%-m") $(date -d "-1 month" +"%Y") full --env={{ app_env }} --no-interaction 2>&1 | logger -t create-damaged-educator-period-cron

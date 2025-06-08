@@ -5,5 +5,5 @@
 0 2 * * * find /tmp/solidarity_* -maxdepth 0 -type f -mtime +30 -exec rm {} \;
 
 # MySQL Cloud Backup #1
-0 2 * * *  cp -f `ls -t /tmp/solidarity_* | head -1` /mnt/storj/mysql/solidarity_`date +\%d-\%m-\%Y`.sql.gz
-0 3 * * *  find /mnt/storj/solidarity_* -maxdepth 0 -type f -mtime +30 -exec rm {} \;
+0 2 * * *  cp -f `ls -t /tmp/solidarity_* | head -1` /mnt/storage2/solidarity_`date +\%d-\%m-\%Y`.sql.gz
+0 3 * * *  find /mnt/storage2/solidarity_* -maxdepth 0 -type f -mtime +30 -exec rm {} \;

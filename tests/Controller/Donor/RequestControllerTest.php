@@ -86,6 +86,8 @@ class RequestControllerTest extends WebTestCase
 
         // Subscribe
         $form = $crawler->filter('form[name="user_donor"]')->form([
+            'user_donor[firstName]' => 'Marko',
+            'user_donor[lastName]' => 'Markovic',
             'user_donor[email]' => $email,
             'user_donor[isMonthly]' => 1,
             'user_donor[amount]' => 10000,
@@ -106,6 +108,8 @@ class RequestControllerTest extends WebTestCase
 
         // Check are user registered
         $user = $this->getUser($email);
+        $this->assertEquals('Marko', $user->getFirstName());
+        $this->assertEquals('Markovic', $user->getLastName());
         $this->assertFalse($user->isEmailVerified());
 
         // Check are donor data saved

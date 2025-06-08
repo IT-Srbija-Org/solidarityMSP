@@ -19,6 +19,16 @@
                 <div>Naziv: {{ school.name }}</div>
                 <div>Tip: {{ school.type.name }}</div>
                 <div>Grad: {{ school.city.name }}</div>
+                <div>
+                    Instrukcije se kreiraju:
+                    {% if school.processing %}
+                        <span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>
+                        Da
+                    {% else %}
+                        <span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>
+                        Ne
+                    {% endif %}
+                </div>
             </div>
 
             <div class="card-actions justify-end">
@@ -70,10 +80,10 @@
                                     <td>{{ userDelegateSchool.user.createdAt|date('H:i d.m.Y.') }}</td>
                                     <td>
                                         {% if userDelegateSchool.user.isActive %}
-                                            <div class="status status-success mb-1"></div>
+                                            <span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>
                                             Da
                                         {% else %}
-                                            <div class="status status-error mb-1"></div>
+                                            <span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>
                                             Ne
                                         {% endif %}
                                     </td>
@@ -115,7 +125,7 @@
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>
-                                Iznos za koji se čeka<br>potvrda prosvetnog radnika
+                                Iznos za koji se čeka<br>potvrda nastavnika
                             </th>
                             <th>
                                 <span class="ti ti-cash text-xl"></span>

@@ -3,6 +3,7 @@
 namespace App\Command\Transaction;
 
 use App\Entity\Transaction;
+use App\Repository\LogCommandChangeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -20,7 +21,7 @@ class ExpiredCommand extends Command
 {
     private int $lastId = 0;
 
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager, private LogCommandChangeRepository $logCommandChangeRepository)
     {
         parent::__construct();
     }
@@ -48,16 +49,21 @@ class ExpiredCommand extends Command
 
                 $status = Transaction::STATUS_EXPIRED;
                 $comment = 'Instrukcija za uplatu je automatski prebačena u ovaj status pošto je prošlo više od 72 sata.';
+                $logComment = 'Instrukcija za uplatu je automatski prebačena u "STATUS_EXPIRED"';
 
                 $user = $transaction->getUser();
                 if (!$user->getLastVisit() || $user->getLastVisit() < $transaction->getCreatedAt()) {
                     $status = Transaction::STATUS_NOT_PAID;
                     $comment = 'Instrukcija za uplatu je automatski prebačena u ovaj status pošto donator nije pristupio sajtu od trenutka kreiranja instrukcije.';
+                    $logComment = 'Instrukcija za uplatu je automatski prebačena u "STATUS_NOT_PAID"';
                 }
 
                 $transaction->setStatus($status);
                 $transaction->setStatusComment($comment);
                 $this->entityManager->persist($transaction);
+
+                // Log change
+                $this->logCommandChangeRepository->save($this->getName(), Transaction::class, $transaction->getId(), $logComment);
             }
 
             $this->entityManager->flush();

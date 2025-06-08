@@ -62,7 +62,7 @@ final class DonorController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete')]
-    public function delete(Request $request, UserDonorRepository $userDonorRepository, UserDonor $userDonor): Response
+    public function delete(Request $request, UserDonor $userDonor): Response
     {
         $form = $this->createForm(ConfirmType::class, null, [
             'message' => 'Potvrđujem da želim da obrišem donatora',

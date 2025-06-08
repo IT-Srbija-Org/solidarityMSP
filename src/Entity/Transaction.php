@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_account_number', columns: ['account_number', 'status'])]
 #[ORM\Index(name: 'idx_damaged_educator', columns: ['damaged_educator_id', 'status'])]
 #[ORM\Index(name: 'idx_remaining_amount', columns: ['user_id', 'status', 'created_at'])]
+#[ORM\Index(name: 'idx_not_paid', columns: ['user_id', 'status', 'user_donor_confirmed'])]
 #[ORM\Index(name: 'idx_user_total_amount', columns: ['user_id', 'account_number', 'status', 'created_at'])]
 #[ORM\HasLifecycleCallbacks]
 class Transaction
@@ -22,6 +23,7 @@ class Transaction
     public const STATUS_CANCELLED = 4;
     public const STATUS_NOT_PAID = 5;
     public const STATUS_EXPIRED = 6;
+    public const STATUS_PAID = 7;
 
     public const STATUS = [
         self::STATUS_NEW => 'TransactionWaitingPayment',
@@ -30,6 +32,7 @@ class Transaction
         self::STATUS_NOT_PAID => 'TransactionNotPaid',
         self::STATUS_CONFIRMED => 'TransactionConfirmed',
         self::STATUS_CANCELLED => 'TransactionCancelled',
+        self::STATUS_PAID => 'TransactionPaid',
     ];
 
     #[ORM\Id]
@@ -54,14 +57,23 @@ class Transaction
     #[ORM\Column]
     private ?int $status = self::STATUS_NEW;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $statusComment = null;
+
+    #[ORM\Column]
+    private ?bool $userDonorConfirmed = false;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $statusComment = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $userDonorFirstName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $userDonorLastName = null;
 
     public function getId(): ?int
     {
@@ -208,8 +220,17 @@ class Transaction
         return self::STATUS_WAITING_CONFIRMATION === $this->status;
     }
 
+    public function isStatusNotPaid(): bool
+    {
+        return self::STATUS_NOT_PAID === $this->status;
+    }
+
     public function isMaskInformation(): bool
     {
+        if (self::STATUS_NOT_PAID && $this->isUserDonorConfirmed()) {
+            return false;
+        }
+
         if (in_array($this->getStatus(), [self::STATUS_CANCELLED, self::STATUS_EXPIRED, self::STATUS_NOT_PAID])) {
             return true;
         }
@@ -219,11 +240,18 @@ class Transaction
 
     public function allowToChangeStatus(): bool
     {
+        $days = $this->getUpdatedAt()->diff(new \DateTime())->days;
+        $hours = $this->getUpdatedAt()->diff(new \DateTime())->h;
+
+        if (self::STATUS_WAITING_CONFIRMATION == $this->getStatus() && 0 == $days && $hours <= 6) {
+            return false;
+        }
+
         if (in_array($this->getStatus(), [self::STATUS_EXPIRED, self::STATUS_WAITING_CONFIRMATION])) {
             return true;
         }
 
-        if (in_array($this->getStatus(), [self::STATUS_CONFIRMED, self::STATUS_NOT_PAID]) && $this->getUpdatedAt()->diff(new \DateTime())->days < 7) {
+        if (in_array($this->getStatus(), [self::STATUS_CONFIRMED, self::STATUS_NOT_PAID]) && $days < 7) {
             return true;
         }
 
@@ -233,5 +261,55 @@ class Transaction
     public function getReferenceCode(): string
     {
         return 'MS'.$this->getId();
+    }
+
+    public function isUserDonorConfirmed(): ?bool
+    {
+        return $this->userDonorConfirmed;
+    }
+
+    public function setUserDonorConfirmed(bool $userDonorConfirmed): static
+    {
+        $this->userDonorConfirmed = $userDonorConfirmed;
+
+        return $this;
+    }
+
+    public function getStatusConfirmed(): int
+    {
+        return self::STATUS_CONFIRMED;
+    }
+
+    public function getUserDonorFirstName(): ?string
+    {
+        return $this->userDonorFirstName;
+    }
+
+    public function setUserDonorFirstName(?string $userDonorFirstName): static
+    {
+        $this->userDonorFirstName = $userDonorFirstName;
+
+        return $this;
+    }
+
+    public function getUserDonorLastName(): ?string
+    {
+        return $this->userDonorLastName;
+    }
+
+    public function setUserDonorLastName(?string $userDonorLastName): static
+    {
+        $this->userDonorLastName = $userDonorLastName;
+
+        return $this;
+    }
+
+    public function getUserDonorFullName(): string
+    {
+        if ($this->userDonorFirstName && $this->userDonorLastName) {
+            return $this->userDonorFirstName.' '.$this->userDonorLastName;
+        }
+
+        return '-';
     }
 }

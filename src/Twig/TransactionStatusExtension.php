@@ -16,11 +16,25 @@ class TransactionStatusExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('transaction_status', [$this, 'getStatus']),
+            new TwigFilter('transaction_status', [$this, 'get']),
         ];
     }
 
-    public function getStatus(int $status): string
+    public function get(Transaction|int $value, bool $isDonorView = false): string
+    {
+        if ($value instanceof Transaction) {
+            $status = $value->getStatus();
+            if ($isDonorView && $value->isStatusNotPaid() && $value->isUserDonorConfirmed()) {
+                $status = Transaction::STATUS_PAID;
+            }
+
+            return $this->getStatus($status);
+        }
+
+        return $this->getStatus($value);
+    }
+
+    private function getStatus(int $status): string
     {
         $allStatus = Transaction::STATUS;
         $statusName = $this->translator->trans($allStatus[$status]) ?? 'None';
@@ -32,6 +46,7 @@ class TransactionStatusExtension extends AbstractExtension
             Transaction::STATUS_CONFIRMED => '/icons/status-confirmed.svg',
             Transaction::STATUS_NOT_PAID => '/icons/status-not-paid.svg',
             Transaction::STATUS_CANCELLED => '/icons/status-cancelled.svg',
+            Transaction::STATUS_PAID => '/icons/status-confirmed.svg',
         };
 
         $icon = ' <img src="'.$iconPath.'" alt="'.$statusName.'" class="w-5 h-5 inline-block mr-1.5 relative -translate-y-0.5" />';

@@ -7,8 +7,15 @@
     {{ form(form) }}
 
     <div class="overflow-x-auto mt-6">
-        <div class="text-gray-500 mb-2">
-            Ukupno rezultata: <span class="font-bold">{{ transactions.total }}</span>
+        <div class="flex justify-between items-center mb-4">
+            <div class="text-gray-500">
+                Ukupno rezultata: <span class="font-bold">{{ transactions.total }}</span>
+            </div>
+
+            <a href="{{ path('admin_transaction_new') }}" class="btn btn-primary">
+                <span class="ti ti-plus text-xl"></span>
+                Dodaj
+            </a>
         </div>
 
         <table class="table rounded-xl border border-base-200">
@@ -22,6 +29,10 @@
                     <th>
                         <span class="ti ti-user-heart text-xl"></span>
                         Donator
+                    </th>
+                    <th>
+                        <span class="ti ti-user-heart text-xl"></span>
+                        Ime donatora
                     </th>
                     <th>
                         <span class="ti ti-school text-xl"></span>
@@ -39,6 +50,11 @@
                         <span class="ti ti-calendar-event text-xl"></span>
                         Kreirano
                     </th>
+                    <th>
+                        <span class="ti ti-calendar-event text-xl"></span>
+                        Poslednja izmena
+                    </th>
+                    <th>Donator je potvrdio uplatu?</th>
                     <th>
                         Status
 
@@ -60,6 +76,7 @@
                             {{ transaction.user.email }}
                         </a>
                     </td>
+                    <td>{{ transaction.userDonorFullName }}</td>
                     <td>
                         <div>{{ transaction.damagedEducator.name }}</div>
                         <div class="text-gray-500">
@@ -73,7 +90,17 @@
                     <td class="whitespace-nowrap">{{ transaction.accountNumber|account_number_format }}</td>
                     <td>{{ transaction.amount|number_format }}</td>
                     <td class="whitespace-nowrap">{{ transaction.createdAt|date('H:i d.m.Y.') }}</td>
-                    <td class="whitespace-nowrap">{{ transaction.status|transaction_status|raw }}</td>
+                    <td class="whitespace-nowrap">{{ transaction.updatedAt|date('H:i d.m.Y.') }}</td>
+                    <td>
+                        {% if transaction.isUserDonorConfirmed %}
+                            <span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>
+                            Da
+                        {% else %}
+                            <span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>
+                            Ne
+                        {% endif %}
+                    </td>
+                    <td class="whitespace-nowrap">{{ transaction|transaction_status|raw }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">
                             <a href="{{ path('admin_transaction_edit', { 'id': transaction.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Izmeni">

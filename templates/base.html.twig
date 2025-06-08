@@ -12,23 +12,24 @@
         <meta name="description" content="Mreža solidarnosti je inicijativa IT Srbije za direktnu finansijsku podršku nastavnicima i vannastavnom osoblju čija je plata umanjena zbog obustave rada. Pridruži se, doniraj i podrži one koji se bore za bolje obrazovanje!">
         <meta name="keywords" content="Mreža solidarnosti, IT Srbija, prosveta, donacije, podrška nastavnicima, solidarnost, pomoć nastavnicima, obustava rada, direktna podrška">
 
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
-        <link rel="icon" type="image/png" href="{{ asset('favicon.ico') }}">
+        <link rel="icon" type="image/png" href="{{ asset('favicon-96x96.png') }}" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
+        <meta name="apple-mobile-web-app-title" content="{{ block('title') }}" />
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
         <meta property="og:type" content="website">
         <meta property="og:url" content="https://mrezasolidarnosti.org/">
         <meta property="og:title" content="{{ block('title') }}">
         <meta property="og:description" content="Direktna podrška nastavnicima čija je plata umanjena zbog obustave rada. Uključi se, doniraj, podrži solidarnost u prosveti!">
-        <meta property="og:image" content="{{ absolute_url(asset('image/social.webp')) }}">
+        <meta property="og:image" content="{{ absolute_url(asset('image/social2.webp')) }}">
 
         <meta property="twitter:card" content="summary_large_image">
         <meta property="twitter:url" content="https://mrezasolidarnosti.org/">
         <meta property="twitter:title" content="{{ block('title') }}">
         <meta property="twitter:description" content="Direktna finansijska pomoć nastavnicima u obustavi rada. Pridruži se IT Srbiji u inicijativi solidarnosti!">
-        <meta property="twitter:image" content="{{ absolute_url(asset('image/social.webp')) }}">
+        <meta property="twitter:image" content="{{ absolute_url(asset('image/social2.webp')) }}">
 
         <link type="text/plain" rel="author" href="{{ asset('humans.txt') }}" />
         <link rel="canonical" href="{{ app.request.uri }}">
@@ -45,8 +46,8 @@
         <script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.css"/>
 
-        {% if UMAMI_TRACKING_ID is not empty %}
-            <script defer src="https://stats.uikraft.com/script.js" data-website-id="{{ UMAMI_TRACKING_ID }}"></script>
+        {% if UMAMI_TRACKING_SCRIPT is not empty and UMAMI_TRACKING_ID is not empty %}
+            <script defer src="{{ UMAMI_TRACKING_SCRIPT }}" data-website-id="{{ UMAMI_TRACKING_ID }}"></script>
         {% endif %}
 
         <link href="{{ asset('stylesheet/general.css') }}" rel="stylesheet" type="text/css" />
@@ -57,7 +58,7 @@
             <div class="navbar bg-base-100 shadow-sm px-10 py-5">
                 <div class="flex-1 align-middle">
                     <a href="{{ path('home') }}">
-                        <img src="{{ asset('image/logo.svg') }}" alt="Logo" class="w-12 h-12 rounded-lg bg-base-100">
+                        <img src="{{ asset('image/logo.svg') }}" alt="Logo" class="w-42 rounded-lg bg-base-100">
                     </a>
                 </div>
 
@@ -87,7 +88,7 @@
         {% block footer %}
             <div class="mt-10 pb-10">
                 <a href="https://itsrbija.org">
-                    <img src="{{ asset('image/logo.svg') }}" alt="IT Srbija logo" class="mx-auto w-12 h-12 rounded-lg bg-base-100">
+                    <img src="{{ asset('image/logo-itsrbija.svg') }}" alt="IT Srbija logo" class="mx-auto w-12 h-12 rounded-lg bg-base-100 transition duration-200 hover:scale-110">
                 </a>
             </div>
         {% endblock %}

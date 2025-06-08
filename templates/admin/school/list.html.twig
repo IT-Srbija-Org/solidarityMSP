@@ -31,14 +31,17 @@
                         <span class="ti ti-building-cog text-xl"></span>
                         Tip škole
                     </th>
-                    <th>
-                        <span class="ti ti-building-cog text-xl"></span>
-                        Delegat
+                    </th>
+                        Kreiranje instrukcija?
                     </th>
                     <th>
                         <span class="ti ti-calendar-event text-xl"></span>
                         Kreirana
                     </th>
+                    <th>
+                        <span class="ti ti-building-cog text-xl"></span>
+                        Delegat
+                    <th>
                     <th></th>
                 </tr>
             </thead>
@@ -54,13 +57,14 @@
                     <td>{{ school.city.name }}</td>
                     <td>{{ school.type.name }}</td>
                     <td>
-                        {% for delegate in school.userDelegateSchools %}
-                            {% if delegate.user %}
-                                <p>{{ delegate.user.email }}</p>
-                            {% endif %}
-                        {% endfor %}
+                        {% if school.processing %}
+                            <span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>
+                            Da
+                        {% else %}
+                            <span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>
+                            Ne
+                        {% endif %}
                     </td>
-
                     <td>{{ school.createdAt|date('d.m.Y.') }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">
@@ -72,6 +76,13 @@
                                 <span class="ti ti-info-circle text-xl"></span>
                             </a>
                         </div>
+                    </td>
+                    <td>
+                        {% for delegate in school.userDelegateSchools %}
+                            {% if delegate.user %}
+                                <p>{{ delegate.user.email }}</p>
+                            {% endif %}
+                        {% endfor %}
                     </td>
                 </tr>
             {% endfor %}

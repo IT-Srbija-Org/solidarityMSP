@@ -35,10 +35,14 @@
                     <table class="table rounded-xl border border-base-200">
                         <thead class="bg-gray-100 info-step3">
                             <tr>
-                                <th class="info-step4">Poziv na broj</th>
+                                <th class="info-step41">
+                                    <span class="ti ti-user-heart text-xl"></span>
+                                    Ime donatora
+                                </th>
+                                <th class="info-step42">Poziv na broj</th>
                                 <th class="info-step5">
                                     <span class="ti ti-credit-card text-xl"></span>
-                                    Broj računa
+                                    Broj računa oštećenog
                                 </th>
                                 <th class="info-step6">
                                     <span class="ti ti-cash text-xl"></span>
@@ -61,11 +65,12 @@
                         <tbody>
                         {% for transaction in transactions %}
                             <tr class="hover:bg-gray-100">
+                                <td>{{ transaction.userDonorFullName }}</td>
                                 <td>{{ transaction.referenceCode }}</td>
                                 <td class="whitespace-nowrap">{{ transaction.accountNumber|account_number_format }}</td>
                                 <td>{{ transaction.amount|number_format }}</td>
                                 <td>
-                                    <div class="whitespace-nowrap">{{ transaction.status|transaction_status|raw }}</div>
+                                    <div class="whitespace-nowrap">{{ transaction|transaction_status|raw }}</div>
                                     <div class="text-gray-500 min-w-[200px] break-words whitespace-normal">
                                         {% if transaction.statusComment %}
                                             {{ transaction.statusComment }}
@@ -77,7 +82,7 @@
                                 <td>{{ transaction.createdAt|date('H:i d.m.Y.') }}</td>
                                 <td>
                                     <div class="flex gap-2 justify-end">
-                                        <a href="{{ path('delegate_damaged_educator_transaction_change_status', { 'id': transaction.id }) }}" class="btn {% if transaction.allowToChangeStatus %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip info-step9" data-tip="Promeni status">
+                                        <a href="{{ path('delegate_damaged_educator_transaction_change_status', { 'id': transaction.id, 'redirectPath': app.request.requestUri }) }}" class="btn {% if transaction.allowToChangeStatus %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip info-step9" data-tip="Promeni status">
                                             <span class="ti ti-edit text-xl"></span> Promeni status
                                         </a>
                                     </div>
@@ -100,7 +105,8 @@
             { element: '.info-step1', popover: { title: 'Spisak svih instrukcija', description: 'Na stranici možete videti spisak svih instrukcija za uplatu za izabranog oštećenog u ovom periodu. Pored liste, možete videti i detaljne informacije o svakoj instrukciji za uplatu koja je generisana za tog oštećenog.' } },
             { element: '.info-step2', popover: { title: 'Broj instrukcija', description: 'Ukupan broj instrukcija koje su generisane za oštećenog u ovom periodu.' } },
             { element: '.info-step3', popover: { title: 'Tabela svih instrukcija', description: 'Tabela svih instrukcija koje su generisane za oštećenog u ovom periodu.' } },
-            { element: '.info-step4', popover: { title: 'Poziv na broj', description: 'Jedinstveni poziv na broj koji identifikuje konkretnu instrukciju za uplatu.' } },
+            { element: '.info-step41', popover: { title: 'Ime donatora', description: 'Donator je u obavezi da unese ime i prezime ako želi da potvrde uplate što će pomoći u lakšoj identifikaciji uplate.' } },
+            { element: '.info-step42', popover: { title: 'Poziv na broj', description: 'Jedinstveni poziv na broj koji identifikuje konkretnu instrukciju za uplatu.' } },
             { element: '.info-step5', popover: { title: 'Broj računa', description: 'Broj bankovnog računa na koji donator treba da izvrši uplatu.' } },
             { element: '.info-step6', popover: { title: 'Iznos uplate', description: 'Ukupan novčani iznos koji donator treba da uplati za ovu instrukciju.' } },
             { element: '.info-step7', popover: { title: 'Status', description: 'Status označava trenutno stanje instrukcije za uplatu. Pošto postoji više različitih statusa i razloga za njih, molimo vas da posetite <a href="{{ path("static_transaction_status") }}" target="_blank" class="link link-primary link-hover">ovu stranicu</a> radi boljeg razumevanja.' } },

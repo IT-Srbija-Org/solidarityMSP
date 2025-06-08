@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SchoolRepository::class)]
+#[ORM\Index(name: 'idx_school_processing', columns: ['processing'])]
 #[ORM\HasLifecycleCallbacks]
 class School
 {
@@ -32,6 +33,9 @@ class School
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?City $city = null;
+
+    #[ORM\Column]
+    private ?bool $processing = true;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
@@ -163,5 +167,17 @@ class School
         }
 
         return false;
+    }
+
+    public function isProcessing(): ?bool
+    {
+        return $this->processing;
+    }
+
+    public function setProcessing(bool $processing): static
+    {
+        $this->processing = $processing;
+
+        return $this;
     }
 }

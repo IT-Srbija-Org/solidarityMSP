@@ -2,6 +2,7 @@
 
 namespace App\EventListener;
 
+use App\Entity\LogCommandChange;
 use App\Entity\LogEntityChange;
 use App\Entity\LogLogin;
 use App\Entity\User;
@@ -82,6 +83,10 @@ class EntityChangeListener
             return;
         }
 
+        if ($entity instanceof LogCommandChange) {
+            return;
+        }
+
         if ($entity instanceof LogLogin) {
             return;
         }
@@ -99,7 +104,7 @@ class EntityChangeListener
         }
 
         unset($changeSet['lastVisit']);
-        if (empty($changeSet)) {
+        if (empty($changeSet) && self::ACTION_UPDATE === $action) {
             return;
         }
 

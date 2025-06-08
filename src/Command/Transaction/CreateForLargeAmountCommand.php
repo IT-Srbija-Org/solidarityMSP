@@ -5,15 +5,13 @@ namespace App\Command\Transaction;
 use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
 use App\Entity\UserDonor;
-use App\Repository\DamagedEducatorRepository;
-use App\Repository\UserDonorRepository;
-use App\Service\HelperService;
+use App\Service\CreateTransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\Store\FlockStore;
 
@@ -29,31 +27,41 @@ class CreateForLargeAmountCommand extends Command
     private int $maxYearDonationAmount = 80000;
     private array $damagedEducators = [];
 
-    public function __construct(private EntityManagerInterface $entityManager, private HelperService $helperService, private UserDonorRepository $userDonorRepository, private DamagedEducatorRepository $damagedEducatorRepository)
+    public function __construct(private EntityManagerInterface $entityManager, private CreateTransactionService $createTransactionService)
     {
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this
+            ->addOption('schoolTypeId', null, InputOption::VALUE_OPTIONAL, 'Process only from this school type')
+            ->addOption('schoolIds', null, InputOption::VALUE_OPTIONAL, 'Process only from this schools');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-        $io->section('Command started at '.date('Y-m-d H:i:s'));
+        $schoolTypeId = (int) $input->getOption('schoolTypeId');
+        $schoolIds = $input->getOption('schoolIds') ? explode(',', $input->getOption('schoolIds')) : [];
 
         $store = new FlockStore();
         $factory = new LockFactory($store);
-        $lock = $factory->createLock($this->getName(), 0);
+        $lock = $factory->createLock($this->getName().$schoolTypeId.implode(',', $schoolIds), 0);
         if (!$lock->acquire()) {
             return Command::FAILURE;
         }
 
-        if ($this->helperService->isHoliday()) {
-            $io->success('Today is holiday and we will not create and send transactions');
-
+        if ($this->createTransactionService->isHoliday()) {
             return Command::SUCCESS;
         }
 
+        $parameters = [
+            'schoolTypeId' => $schoolTypeId,
+            'schoolIds' => $schoolIds,
+        ];
+
         // Get damaged educators
-        $this->damagedEducators = $this->damagedEducatorRepository->getOnlyByRemainingAmount($this->maxDonationAmount, $this->minTransactionDonationAmount);
+        $this->damagedEducators = $this->createTransactionService->getDamagedEducators($this->maxDonationAmount, $this->minTransactionDonationAmount, $parameters);
 
         // Get donors
         $userDonors = $this->getUserDonors();
@@ -65,12 +73,12 @@ class CreateForLargeAmountCommand extends Command
             $output->write('Process donor '.$userDonor->getUser()->getEmail().' at '.date('Y-m-d H:i:s'));
             $output->write(' | Amount: '.$userDonor->getAmount());
 
-            if ($this->userDonorRepository->hasNotPaidTransactionsInLastDays($userDonor, 10)) {
+            if ($this->createTransactionService->hasNotPaidTransactionsInLastDays($userDonor, 10)) {
                 $output->writeln(' | has "not paid" transactions in last 10 days');
                 continue;
             }
 
-            $sumTransactions = $this->userDonorRepository->getSumTransactions($userDonor);
+            $sumTransactions = $this->createTransactionService->getSumTransactions($userDonor);
             $donorRemainingAmount = $userDonor->getAmount() - $sumTransactions;
             if ($donorRemainingAmount < $this->minTransactionDonationAmount) {
                 $output->writeln(' | remaining amount is less than '.$this->minTransactionDonationAmount);
@@ -82,7 +90,7 @@ class CreateForLargeAmountCommand extends Command
 
             $totalTransactions = 0;
             foreach ($this->damagedEducators as $damagedEducator) {
-                $sumTransactionAmount = $this->userDonorRepository->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
+                $sumTransactionAmount = $this->createTransactionService->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
                 $sumTransactionAmount += $this->maxTransactionDonationAmount;
                 if ($sumTransactionAmount >= $this->maxYearDonationAmount) {
                     continue;
@@ -98,11 +106,9 @@ class CreateForLargeAmountCommand extends Command
             $output->writeln(' | Total transaction created: '.$totalTransactions);
 
             if ($totalTransactions > 0) {
-                $this->userDonorRepository->sendNewTransactionEmail($userDonor);
+                $this->createTransactionService->sendNewTransactionEmail($userDonor);
             }
         }
-
-        $io->success('Command finished at '.date('Y-m-d H:i:s'));
 
         return Command::SUCCESS;
     }
