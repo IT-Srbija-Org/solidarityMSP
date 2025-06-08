@@ -31,7 +31,7 @@
                         <span class="ti ti-building-cog text-xl"></span>
                         Tip škole
                     </th>
-                    </th>
+                    <th>
                         Kreiranje instrukcija?
                     </th>
                     <th>
@@ -67,6 +67,13 @@
                     </td>
                     <td>{{ school.createdAt|date('d.m.Y.') }}</td>
                     <td>
+                        {% for delegate in school.userDelegateSchools %}
+                            {% if delegate.user %}
+                                <p>{{ delegate.user.email }}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
                         <div class="flex gap-2 justify-end">
                             <a href="{{ path('admin_school_edit', { 'id': school.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Izmeni">
                                 <span class="ti ti-edit text-xl"></span>
@@ -76,13 +83,6 @@
                                 <span class="ti ti-info-circle text-xl"></span>
                             </a>
                         </div>
-                    </td>
-                    <td>
-                        {% for delegate in school.userDelegateSchools %}
-                            {% if delegate.user %}
-                                <p>{{ delegate.user.email }}</p>
-                            {% endif %}
-                        {% endfor %}
                     </td>
                 </tr>
             {% endfor %}
