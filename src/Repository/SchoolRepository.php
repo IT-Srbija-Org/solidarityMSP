@@ -43,11 +43,11 @@ class SchoolRepository extends ServiceEntityRepository
                 ->leftJoin('c.userDelegateSchools', 'uds')
                 ->leftJoin('uds.user', 'u');
 
-                if ($criteria['hasAssignedDelegate']) {
-                    $qb->andWhere('u.id is not NULL');
-                } else {
-                    $qb->andWhere('u.id is NULL');
-                }
+            if ($criteria['hasAssignedDelegate']) {
+                $qb->andWhere('u.id is not NULL');
+            } else {
+                $qb->andWhere('u.id is NULL');
+            }
         }
 
         // Set the sorting
