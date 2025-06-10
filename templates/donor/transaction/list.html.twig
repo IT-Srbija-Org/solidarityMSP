@@ -127,15 +127,9 @@
                                             <span class="inline md:hidden">Odštampaj</span>
                                         </a>
 
-                                        {% if transaction.isStatusWaitingConfirmation %}
-                                            <a href="{{ path('donor_transaction_delete_payment_confirmation', { 'id': transaction.id }) }}" class="btn {% if transaction.allowDeletePaymentConfirmation %}btn-error{% else %}btn-disabled{% endif %} btn-sm flex w-full md:w-auto" data-umami-event="donor_transaction_delete_payment_confirmation">
-                                                <span class="ti ti-square-x text-xl"></span> Obriši potvrdu
-                                            </a>
-                                        {% else %}
-                                            <a href="{{ path('donor_transaction_confirm_payment', { 'id': transaction.id }) }}" class="btn {% if transaction.allowConfirmPayment %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex w-full md:w-auto" data-umami-event="donor_transaction_confirm_payment">
-                                                <span class="ti ti-checkbox text-xl"></span> Potvrdi uplatu
-                                            </a>
-                                        {% endif %}
+                                        <a href="{{ path('donor_transaction_confirm_payment', { 'id': transaction.id }) }}" class="btn {% if transaction.allowConfirmPayment %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex w-full md:w-auto" data-umami-event="donor_transaction_confirm_payment">
+                                            <span class="ti ti-checkbox text-xl"></span> Potvrdi uplatu
+                                        </a>
                                     </div>
                                 </td>
                             </tr>

@@ -188,15 +188,6 @@ class Transaction
         return false;
     }
 
-    public function allowDeletePaymentConfirmation(): bool
-    {
-        if (self::STATUS_WAITING_CONFIRMATION == $this->getStatus()) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function allowShowPrint(): bool
     {
         if (self::STATUS_NEW == $this->getStatus()) {
@@ -215,14 +206,9 @@ class Transaction
         return false;
     }
 
-    public function isStatusWaitingConfirmation(): bool
+    public function isStatusNew(): bool
     {
-        return self::STATUS_WAITING_CONFIRMATION === $this->status;
-    }
-
-    public function isStatusNotPaid(): bool
-    {
-        return self::STATUS_NOT_PAID === $this->status;
+        return self::STATUS_NEW === $this->status;
     }
 
     public function isStatusConfirmed(): bool

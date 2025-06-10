@@ -171,43 +171,4 @@ class TransactionController extends AbstractController
             'transaction' => $transaction,
         ]);
     }
-
-    #[Route('/obrisi-potvrdu-o-uplati/{id}', name: 'delete_payment_confirmation', requirements: ['id' => '\d+'])]
-    public function deletePaymentConfirmation(Request $request, Transaction $transaction): Response
-    {
-        /* @var User $user */
-        $user = $this->getUser();
-        if ($transaction->getUser() !== $user) {
-            throw $this->createAccessDeniedException();
-        }
-
-        if (!$transaction->allowDeletePaymentConfirmation()) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $form = $this->createForm(ConfirmType::class, null, [
-            'message' => 'Potvrđujem da želim da obrišem potvrdu o uplati',
-            'submit_message' => 'Potvrdi',
-            'submit_class' => 'btn btn-error',
-        ]);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $transaction->setStatus(Transaction::STATUS_NEW);
-            $transaction->setUserDonorConfirmed(false);
-            $transaction->setStatusComment(null);
-            $this->entityManager->persist($transaction);
-            $this->entityManager->flush();
-
-            $this->addFlash('success', 'Uspešno ste obrisali potvrdu o uplati.');
-
-            return $this->redirectToRoute('donor_transaction_list');
-        }
-
-        return $this->render('confirm_message.html.twig', [
-            'iconClass' => 'square-x',
-            'title' => 'Brisanje potvrde o uplati',
-            'form' => $form->createView(),
-        ]);
-    }
 }
