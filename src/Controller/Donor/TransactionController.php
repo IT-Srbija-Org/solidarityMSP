@@ -4,7 +4,6 @@ namespace App\Controller\Donor;
 
 use App\Entity\Transaction;
 use App\Entity\User;
-use App\Form\ConfirmType;
 use App\Form\ProfileTransactionConfirmPaymentType;
 use App\Repository\TransactionRepository;
 use App\Service\InvoiceSlipService;
