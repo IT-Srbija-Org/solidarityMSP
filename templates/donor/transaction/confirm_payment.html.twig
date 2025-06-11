@@ -13,10 +13,6 @@
 
             {{ include('flashes.html.twig') }}
 
-            <div class="mb-2 text-gray-500">
-                Na ovoj stranici možete potvrditi da ste izvršili uplatu. Nakon što potvrdite uplatu, administrator će dodatno proveriti podatke pre konačne evidencije uplate.
-            </div>
-
             <div>
                 {% form_theme form 'form.html.twig' %}
                 {{ form_start(form) }}
@@ -27,7 +23,7 @@
                             {{ form_label(form.firstName) }}
                             {{ form_widget(form.firstName) }}
                             {{ form_errors(form.firstName) }}
-                            <div class="text-gray-500 text-sm">Ovi podaci su nam potrebni zbog provere vaših uplata ka oštećenim nastavnicima.</div>
+                            <div class="text-gray-500 text-sm">Ovi podaci su nam potrebni zbog provere update ka oštećenim nastavnicima.</div>
                             <div class="text-gray-500 text-sm">Bitno je da ime i prezime budu od osobe koja je izvršila uplatu.</div>
                         </div>
 

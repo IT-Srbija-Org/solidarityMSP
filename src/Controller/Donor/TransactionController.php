@@ -160,7 +160,10 @@ class TransactionController extends AbstractController
                 $this->entityManager->flush();
             }
 
-            $this->addFlash('success', 'Uspešno ste potvrdili uplatu.');
+            $educatorName = $transaction->getDamagedEducator()->getName();
+            $educatorFirstName = explode(' ', $educatorName)[0];
+
+            $this->addFlash('success', 'Uspešno si potvrdio/la uplatu. '.$educatorFirstName.' ti se zahvaljuje na podršci ❤');
 
             return $this->redirectToRoute('donor_transaction_list');
         }

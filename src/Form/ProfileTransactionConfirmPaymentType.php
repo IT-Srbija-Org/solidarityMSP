@@ -16,16 +16,16 @@ class ProfileTransactionConfirmPaymentType extends AbstractType
         $builder
             ->add('firstName', TextType::class, [
                 'required' => true,
-                'label' => 'Vaše ime',
+                'label' => 'Tvoje ime',
                 'data' => $options['user'] ? $options['user']->getFirstName() : null,
             ])
             ->add('lastName', TextType::class, [
                 'required' => true,
-                'label' => 'Vaše prezime',
+                'label' => 'Tvoje prezime',
                 'data' => $options['user'] ? $options['user']->getLastName() : null,
             ])
             ->add('confirm', CheckboxType::class, [
-                'label' => 'Potvrđujem da sam izvršio uplatu',
+                'label' => 'Potvrđujem da sam izvršio/la uplatu',
                 'required' => true,
             ])
             ->add('submit', SubmitType::class, [
