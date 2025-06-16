@@ -16,10 +16,10 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 
 #[AsCommand(
-    name: 'app:thank-you-donors',
-    description: 'Send trank you email to donors who have paid transactions'
+    name: 'app:thank-you-all-donors',
+    description: 'Send trank you email to all donors who have paid transactions'
 )]
-class ThankYouDonorsCommand extends Command
+class ThankYouAllDonorsCommand extends Command
 {
     private int $lastId = 0;
 
@@ -62,8 +62,8 @@ class ThankYouDonorsCommand extends Command
         $message = (new TemplatedEmail())
             ->to($email)
             ->from(new Address('donatori@mrezasolidarnosti.org', 'Mreža Solidarnosti'))
-            ->subject('Hvala ti što veruješ u zajedničku borbu i zajedništvo')
-            ->htmlTemplate('email/thank-you-donor.html.twig');
+            ->subject('Zajedno menjamo stvari – hvala za donaciju')
+            ->htmlTemplate('email/thank-you-all-donor.html.twig');
 
         try {
             $this->mailer->send($message);
@@ -79,7 +79,6 @@ class ThankYouDonorsCommand extends Command
              INNER JOIN user AS u ON u.id = t.user_id
             WHERE t.user_id > :lastId
              AND t.status = :status
-             AND t.created_at > DATE(NOW() - INTERVAL 7 DAY)
             GROUP BY u.id
             ORDER BY u.id ASC
             ', [
