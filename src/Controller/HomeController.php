@@ -2,15 +2,14 @@
 
 namespace App\Controller;
 
-use App\Repository\DamagedEducatorRepository;
-use App\Repository\TransactionRepository;
+use App\Service\StatisticsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
-    public function __construct(private TransactionRepository $transactionRepository, private DamagedEducatorRepository $damagedEducatorRepository)
+    public function __construct(private StatisticsService $statisticsService)
     {
     }
 
@@ -20,30 +19,17 @@ class HomeController extends AbstractController
         return $this->render('home/index.html.twig');
     }
 
-    public function basicNumbers(): Response
+    public function generalNumbers(): Response
     {
-        $transactionSumConfirmedAmount = $this->transactionRepository->getSumConfirmedAmount(true);
-        $damagedEducatorSumAmount = $this->damagedEducatorRepository->getSumAmount(true);
-        $totalDamagedEducators = $this->damagedEducatorRepository->getTotals(true);
-        $totalActiveDonors = $this->transactionRepository->getTotalActiveDonors(true);
-
-        $avgConfirmedAmountPerEducator = 0;
-        if ($transactionSumConfirmedAmount > 0 && $totalDamagedEducators > 0) {
-            $avgConfirmedAmountPerEducator = $transactionSumConfirmedAmount / $totalDamagedEducators;
-        }
-
-        $avgInputAmountPerEducator = 0;
-        if ($damagedEducatorSumAmount > 0 && $totalDamagedEducators > 0) {
-            $avgInputAmountPerEducator = $damagedEducatorSumAmount / $totalDamagedEducators;
-        }
+        $generalNumbers = $this->statisticsService->getGeneralNumbers();
 
         return $this->render('home/basic_numbers.html.twig', [
-            'transactionSumConfirmedAmount' => $transactionSumConfirmedAmount,
-            'damagedEducatorSumAmount' => $damagedEducatorSumAmount,
-            'totalDamagedEducators' => $totalDamagedEducators,
-            'totalActiveDonors' => $totalActiveDonors,
-            'avgConfirmedAmountPerEducator' => $avgConfirmedAmountPerEducator,
-            'avgInputAmountPerEducator' => $avgInputAmountPerEducator,
+            'transactionSumConfirmedAmount' => $generalNumbers['transactionSumConfirmedAmount'],
+            'damagedEducatorSumAmount' => $generalNumbers['damagedEducatorSumAmount'],
+            'totalDamagedEducators' => $generalNumbers['totalDamagedEducators'],
+            'totalActiveDonors' => $generalNumbers['totalActiveDonors'],
+            'avgConfirmedAmountPerEducator' => $generalNumbers['avgConfirmedAmountPerEducator'],
+            'avgInputAmountPerEducator' => $generalNumbers['avgInputAmountPerEducator'],
         ]);
     }
 }

@@ -12,7 +12,7 @@
             </p>
         </header>
 
-        {{ render(controller('App\\Controller\\HomeController::basicNumbers')) }}
+        {{ render(controller('App\\Controller\\HomeController::generalNumbers')) }}
 
         {% block supportButton %}
             {% if not app.user or not app.user.userDonor %}
