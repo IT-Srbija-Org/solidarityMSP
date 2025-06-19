@@ -49,8 +49,8 @@ class TransactionStatusExtension extends AbstractExtension
             Transaction::STATUS_PAID => '/icons/status-confirmed.svg',
         };
 
-        $icon = ' <img src="' . $iconPath . '" alt="' . $statusName . '" class="w-5 h-5 inline-block mr-1.5 relative -translate-y-0.5" />';
+        $icon = ' <img src="'.$iconPath.'" alt="'.$statusName.'" class="w-5 h-5 inline-block mr-1.5 relative -translate-y-0.5" />';
 
-        return $icon . ' <span>' . $statusName . '</span>';
+        return $icon.' <span>'.$statusName.'</span>';
     }
 }
