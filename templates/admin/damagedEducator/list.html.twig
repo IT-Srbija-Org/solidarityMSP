@@ -50,6 +50,7 @@
                         <span class="ti ti-user-cog text-xl"></span>
                         Delegat
                     </th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -86,6 +87,23 @@
                         {% else %}
                             -
                         {% endif %}
+                    </td>
+                    <td>
+                        <div class="flex gap-2 justify-end">
+                            {% if damagedEducator.isStatusDeleted %}
+                                <a href="{{ path('admin_damaged_educator_undelete', { 'id': damagedEducator.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Vraćanje obrisanog">
+                                    <span class="ti ti-trash-off text-xl"></span>
+                                </a>
+                            {% else %}
+                                <a href="{{ path('admin_damaged_educator_delete', { 'id': damagedEducator.id }) }}" class="btn btn-error btn-sm flex tooltip" data-tip="Obriši">
+                                    <span class="ti ti-trash text-xl"></span>
+                                </a>
+                            {% endif %}
+
+                            <a href="{{ path('admin_damaged_educator_edit', { 'id': damagedEducator.id }) }}" class="btn {% if damagedEducator.allowToEdit %}btn-primary{% else %}btn-disabled{% endif %} btn-sm flex tooltip" data-tip="Izmeni">
+                                <span class="ti ti-edit text-xl"></span>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}
