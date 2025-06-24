@@ -39,3 +39,9 @@ TransactionPaid: Uplata izvršena
 
 DamagedEducatorNew: Aktivan
 DamagedEducatorDeleted: Obrisan
+
+UserDonorComesFromTV: Čuo/la sam na televiziji
+UserDonorComesFromSocial: Saznao/la preko društvenih mreža
+UserDonorComesFromFamily: Preko člana porodice/prijatelja
+UserDonorComesFromNews: Preko news portala / foruma / Reditta
+UserDonorComesFromSchool: Preko škole, fakulteta…

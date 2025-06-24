@@ -109,7 +109,15 @@
 
                         <div class="text-gray-500 text-sm">Čekiranjem ove opcije prihvatate mesečno izdvajanje dogovorenog iznosa (Kasnije se može promeniti).</div>
                     </div>
+                    {% if not (app.user and app.user.userDonor) %}
+                    <div>
+                        {{ form_label(form.comesFrom) }}
+                        {{ form_widget(form.comesFrom, { 'attr': { 'class': 'select select-md select-bordered rounded-md w-full' } }) }}
+                        {{ form_errors(form.comesFrom) }}
 
+                        <div class="text-gray-500 text-sm">Odaberite jednu od opcija.</div>
+                    </div>
+                    {% endif %}
                     <div>
                         {{ form_label(form.comment) }}
                         {{ form_widget(form.comment) }}

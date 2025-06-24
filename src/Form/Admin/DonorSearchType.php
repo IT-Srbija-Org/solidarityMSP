@@ -2,6 +2,7 @@
 
 namespace App\Form\Admin;
 
+use App\Entity\UserDonor;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -34,6 +35,13 @@ class DonorSearchType extends AbstractType
                     'Da' => true,
                     'Ne' => false,
                 ],
+            ])
+            ->add('comesFrom', ChoiceType::class, [
+                'required' => false,
+                'multiple' => false,
+                'placeholder' => '',
+                'choices' => array_flip(UserDonor::COMES_FROM),
+                'label' => 'Kako ste saznali za Mrežu solidarnosti?',
             ])
             ->add('submit', SubmitType::class, [
                 'label' => '<i class="ti ti-search text-2xl"></i> Pretraži',

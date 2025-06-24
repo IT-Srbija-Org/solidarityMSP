@@ -28,6 +28,10 @@
                         Iznos
                     </th>
                     <th>
+                        <span class="ti ti-how text-xl"></span>
+                        Kako ste saznali za Mrežu solidarnosti?
+                    </th>
+                    <th>
                         <span class="ti ti-calendar-event text-xl"></span>
                         Datum
                     </th>
@@ -54,6 +58,13 @@
                         {% endif %}
                     </td>
                     <td>{{ donor.amount|number_format }}</td>
+                    <td>
+                        {% if donor.comesFrom %}
+                            {{donor.comesFrom|user_donor_comes_from|raw}}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
                     <td class="whitespace-nowrap">{{ donor.updatedAt|date('H:i d.m.Y.') }}</td>
                     <td>
                         <div class="flex gap-2 justify-end">

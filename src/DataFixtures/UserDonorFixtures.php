@@ -24,6 +24,8 @@ class UserDonorFixtures extends Fixture implements FixtureGroupInterface
         null,
     ];
 
+    private array $howDidYouHear = [1, 2, 3, 4, 5, null];
+
     public function load(ObjectManager $manager): void
     {
         // Set fixed seed for deterministic results
@@ -54,6 +56,7 @@ class UserDonorFixtures extends Fixture implements FixtureGroupInterface
             // Generate amount between 500 and 100000, clustering around 5000
             $userDonor->setAmount(Amounts::generate(5000, null, 500, 100000));
             $userDonor->setComment($this->comments[array_rand($this->comments)]);
+            $userDonor->setComesFrom($this->howDidYouHear[array_rand($this->howDidYouHear)]);
 
             $manager->persist($userDonor);
         }

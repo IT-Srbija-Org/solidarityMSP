@@ -5,6 +5,7 @@ namespace App\Form\Admin;
 use App\Entity\UserDonor;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -38,6 +39,11 @@ class DonorEditType extends AbstractType
                     'placeholder' => '500',
                     'min' => 500,
                 ],
+            ])
+            ->add('comesFrom', ChoiceType::class, [
+                'required' => false,
+                'choices' => array_flip(UserDonor::COMES_FROM),
+                'label' => 'Kako ste saznali za Mrežu Solidarnosti?',
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Sačuvaj',

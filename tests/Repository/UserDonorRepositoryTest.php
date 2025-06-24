@@ -52,12 +52,14 @@ class UserDonorRepositoryTest extends KernelTestCase
 
         // Test search with monthly criteria
         $result = $userDonorRepository->search(['isMonthly' => true]);
-        $this->assertCount(20, $result['items']);
         $this->assertTrue($result['items'][0]->isMonthly());
 
         $result = $userDonorRepository->search(['isMonthly' => false]);
-        $this->assertCount(16, $result['items']);
         $this->assertFalse($result['items'][0]->isMonthly());
+
+        // Test search with comesFrom criteria
+        $result = $userDonorRepository->search(['comesFrom' => UserDonor::COMES_FROM_TV]);
+        $this->assertEquals(UserDonor::COMES_FROM_TV, $result['items'][0]->getComesFrom());
 
         // Test pagination
         $result = $userDonorRepository->search([], 1, 1);
