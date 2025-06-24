@@ -39,3 +39,7 @@ TransactionPaid: Uplata izvršena
 
 DamagedEducatorNew: Aktivan
 DamagedEducatorDeleted: Obrisan
+
+The link to verify your email has expired. Please request a new link.: Link za potvrdu vašeg email-a je istekao. Zatražite novi link.
+The link to verify your email is invalid. Please request a new link.: Link za potvrdu vašeg email-a nije validan. Zatražite novi link.
+The link to verify your email appears to be for a different account or email. Please request a new link.: Link za potvrdu vašeg email-a je za drugi nalog ili email. Zatražite novi link.
