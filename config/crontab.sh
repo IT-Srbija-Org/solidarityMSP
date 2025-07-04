@@ -6,7 +6,7 @@
 10 7 * * * php /var/www/solidaritySF/bin/console app:transaction:notify-donors >> /var/www/solidaritySF/var/log/crontab-transaction-notify-donors-`date +\%d-\%m-\%Y`.txt
 
 # Donors
-0 1 * * * php /var/www/solidaritySF/bin/console app:inactive-donors >> /var/www/solidaritySF/var/log/crontab-inactive-donors-`date +\%d-\%m-\%Y`.txt
+#0 1 * * * php /var/www/solidaritySF/bin/console app:inactive-donors >> /var/www/solidaritySF/var/log/crontab-inactive-donors-`date +\%d-\%m-\%Y`.txt
 0 8 * * 1 php /var/www/solidaritySF/bin/console app:thank-you-donors >> /var/www/solidaritySF/var/log/crontab-thank-you-donors-`date +\%d-\%m-\%Y`.txt
 
 # Cache
