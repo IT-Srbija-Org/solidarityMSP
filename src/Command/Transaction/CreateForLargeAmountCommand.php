@@ -90,7 +90,7 @@ class CreateForLargeAmountCommand extends Command
 
             $totalTransactions = 0;
             foreach ($this->damagedEducators as $damagedEducator) {
-                if ($userDonor->onlyUniversity() && !$this->createTransactionService->isUniversity($damagedEducator['school_type'])) {
+                if ($userDonor->onlyToUniversity() && !$this->createTransactionService->isUniversity($damagedEducator['school_type'])) {
                     continue;
                 }
 

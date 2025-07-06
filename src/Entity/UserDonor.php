@@ -27,7 +27,7 @@ class UserDonor
     private ?int $amount = null;
 
     #[ORM\Column]
-    private ?bool $onlyUniversity = false;
+    private ?bool $onlyToUniversity = false;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
@@ -118,14 +118,14 @@ class UserDonor
         return $this;
     }
 
-    public function onlyUniversity(): ?bool
+    public function onlyToUniversity(): ?bool
     {
-        return $this->onlyUniversity;
+        return $this->onlyToUniversity;
     }
 
-    public function setOnlyUniversity(bool $onlyUniversity): static
+    public function setOnlyToUniversity(bool $onlyToUniversity): static
     {
-        $this->onlyUniversity = $onlyUniversity;
+        $this->onlyToUniversity = $onlyToUniversity;
 
         return $this;
     }

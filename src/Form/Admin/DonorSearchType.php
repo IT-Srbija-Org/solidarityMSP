@@ -35,6 +35,14 @@ class DonorSearchType extends AbstractType
                     'Ne' => false,
                 ],
             ])
+            ->add('onlyToUniversity', ChoiceType::class, [
+                'required' => false,
+                'label' => 'Doniraju samo univerzitetima',
+                'choices' => [
+                    'Da' => true,
+                    'Ne' => false,
+                ],
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => '<i class="ti ti-search text-2xl"></i> Pretraži',
                 'label_html' => true,
