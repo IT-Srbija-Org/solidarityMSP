@@ -48,7 +48,7 @@ class UserDonorType extends AbstractType
                     'min' => 500,
                 ],
             ])
-            ->add('onlyUniversity', CheckboxType::class, [
+            ->add('onlyToUniversity', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Doniraj samo univerzitetima',
             ])
