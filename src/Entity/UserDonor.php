@@ -26,6 +26,9 @@ class UserDonor
     #[ORM\Column]
     private ?int $amount = null;
 
+    #[ORM\Column]
+    private ?bool $onlyUniversity = false;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
@@ -111,6 +114,18 @@ class UserDonor
     public function setUpdatedAt(): static
     {
         $this->updatedAt = new \DateTime();
+
+        return $this;
+    }
+
+    public function onlyUniversity(): ?bool
+    {
+        return $this->onlyUniversity;
+    }
+
+    public function setOnlyUniversity(bool $onlyUniversity): static
+    {
+        $this->onlyUniversity = $onlyUniversity;
 
         return $this;
     }

@@ -24,6 +24,10 @@
                         Mesečna podrška
                     </th>
                     <th>
+                        <span class="ti ti-building-cog text-xl"></span>
+                        Samo univerzitetskim<br>radnicima
+                    </th>
+                    <th>
                         <span class="ti ti-cash text-xl"></span>
                         Iznos
                     </th>
@@ -46,6 +50,15 @@
                     </td>
                     <td>
                         {% if donor.isMonthly %}
+                            <span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>
+                            Da
+                        {% else %}
+                            <span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>
+                            Ne
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if donor.onlyUniversity %}
                             <span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>
                             Da
                         {% else %}

@@ -45,7 +45,7 @@
                 <div>
                     <div class="font-bold">
                         <span class="ti ti-help text-xl"></span>
-                        Želite više informacija?
+                        Želiš više informacija?
                     </div>
 
                     <div>Pripremili smo dokument koji sadrži odgovore na sva ključna pitanja vezana za ovaj model podrške.</div>
@@ -55,10 +55,10 @@
                 <div>
                     <div class="font-bold">
                         <span class="ti ti-mail text-xl"></span>
-                        Imate pitanje?
+                        Imaš pitanje?
                     </div>
 
-                    <div>Kontaktirajte nas na adresi: <a href="mailto:donatori@mrezasolidarnosti.org" target="_blank" class="link link-primary link-hover">donatori@mrezasolidarnosti.org</a></div>
+                    <div>Kontaktiraj nas na adresi: <a href="mailto:donatori@mrezasolidarnosti.org" target="_blank" class="link link-primary link-hover">donatori@mrezasolidarnosti.org</a></div>
                 </div>
             </div>
 
@@ -75,7 +75,7 @@
                         {{ form_label(form.firstName) }}
                         {{ form_widget(form.firstName, { 'attr': { 'class': 'input input-md input-bordered rounded-md w-full' } }) }}
                         {{ form_errors(form.firstName) }}
-                        <span class="text-gray-500 text-sm">Ime i prezime su nam potrebni zbog provere vaših uplata ka oštećenim nastavnicima.</span>
+                        <span class="text-gray-500 text-sm">Ime i prezime su nam potrebni zbog provere tvojih uplata ka oštećenim nastavnicima.</span>
                     </div>
 
                     <div>
@@ -90,7 +90,7 @@
                         {{ form_errors(form.email) }}
 
                         {% if not app.user %}
-                            <span class="text-gray-500 text-sm">Biće Vam poslat email za potvrdu. Ako već imate nalog na sajtu možete se ulogovati <a href="{{ path('login') }}" class="link link-primary link-hover">ovde</a></span>
+                            <span class="text-gray-500 text-sm">Biće ti poslat email za potvrdu. Ako već imaš nalog na sajtu možeš se ulogovati <a href="{{ path('login') }}" class="link link-primary link-hover">ovde</a></span>
                         {% endif %}
                     </div>
 
@@ -107,8 +107,17 @@
                         {{ form_widget(form.isMonthly, { 'attr': { 'class': 'checkbox' } }) }}
                         {{ form_errors(form.isMonthly) }}
 
-                        <div class="text-gray-500 text-sm">Čekiranjem ove opcije prihvatate mesečno izdvajanje dogovorenog iznosa (Kasnije se može promeniti).</div>
+                        <div class="text-gray-500 text-sm -mt-2">Čekiranjem ove opcije prihvataš mesečno izdvajanje dogovorenog iznosa (Kasnije se može promeniti).</div>
                     </div>
+
+                    <div>
+                        {{ form_label(form.onlyUniversity) }}
+                        {{ form_widget(form.onlyUniversity, { 'attr': { 'class': 'checkbox' } }) }}
+                        {{ form_errors(form.onlyUniversity) }}
+
+                        <div class="text-gray-500 text-sm -mt-2">Čekiranjem ove opcije vaše donacije će biti usmerene isključivo ka univerzitetskim radnicima.</div>
+                    </div>
+
 
                     <div>
                         {{ form_label(form.comment) }}
@@ -124,7 +133,7 @@
 
             {% if app.user and app.user.userDonor %}
                 <div class="mt-8 text-gray-500 text-sm text-right">
-                    Ako želite da se odjavite sa liste donatora kliknite na sledeći link:
+                    Ako želiš da se odjavite sa liste donatora klikni na sledeći link:
                     <a href="{{ path('donor_request_unsubscribe', { '_token': csrf_token('unsubscribe') }) }}" onclick="confirm('Da li ste sigurni da želite da se odjavite sa liste donatora?');" class="link link-primary link-hover test-link1">odjava</a>
                 </div>
             {% endif %}

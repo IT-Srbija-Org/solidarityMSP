@@ -32,6 +32,10 @@ class DonorEditType extends AbstractType
                 'required' => false,
                 'label' => 'Mesečna podrška',
             ])
+            ->add('onlyUniversity', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Doniraj samo univerzitetskim radnicima',
+            ])
             ->add('amount', IntegerType::class, [
                 'label' => 'Iznos',
                 'attr' => [

@@ -112,6 +112,10 @@ class CreateCommand extends Command
 
                 $totalTransactions = 0;
                 foreach ($this->damagedEducators as $damagedEducator) {
+                    if ($userDonor->onlyUniversity() && !$this->createTransactionService->isUniversity($damagedEducator['school_type'])) {
+                        continue;
+                    }
+
                     $sumTransactionAmount = $this->createTransactionService->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
                     if ($sumTransactionAmount >= $this->maxYearDonationAmount) {
                         continue;

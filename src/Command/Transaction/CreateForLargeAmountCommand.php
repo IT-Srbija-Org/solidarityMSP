@@ -90,6 +90,10 @@ class CreateForLargeAmountCommand extends Command
 
             $totalTransactions = 0;
             foreach ($this->damagedEducators as $damagedEducator) {
+                if ($userDonor->onlyUniversity() && !$this->createTransactionService->isUniversity($damagedEducator['school_type'])) {
+                    continue;
+                }
+
                 $sumTransactionAmount = $this->createTransactionService->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
                 $sumTransactionAmount += $this->maxTransactionDonationAmount;
                 if ($sumTransactionAmount >= $this->maxYearDonationAmount) {

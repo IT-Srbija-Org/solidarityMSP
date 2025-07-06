@@ -49,7 +49,7 @@ class CreateTransactionService
         }
 
         $stmt = $this->entityManager->getConnection()->executeQuery('
-            SELECT de.id, de.period_id, de.account_number, de.amount, de.school_id
+            SELECT de.id, de.period_id, de.account_number, de.amount, de.school_id, st.name AS school_type
             FROM damaged_educator AS de
              INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id AND dep.processing = 1
              INNER JOIN school AS s ON s.id = de.school_id AND s.processing = 1
@@ -182,5 +182,14 @@ class CreateTransactionService
         ]);
 
         return (int) $stmt->fetchOne();
+    }
+
+    public function isUniversity(string $schoolType): bool
+    {
+        if (preg_match('/Univerzitet|Akademija/i', $schoolType)) {
+            return true;
+        }
+
+        return false;
     }
 }
