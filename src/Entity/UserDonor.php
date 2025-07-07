@@ -36,9 +36,6 @@ class UserDonor
     #[ORM\Column]
     private ?int $amount = null;
 
-    #[ORM\Column]
-    private ?bool $onlyToUniversity = false;
-
     #[ORM\Column(nullable: true)]
     private ?int $schoolType = null;
 
@@ -127,18 +124,6 @@ class UserDonor
     public function setUpdatedAt(): static
     {
         $this->updatedAt = new \DateTime();
-
-        return $this;
-    }
-
-    public function onlyToUniversity(): ?bool
-    {
-        return $this->onlyToUniversity;
-    }
-
-    public function setOnlyToUniversity(bool $onlyToUniversity): static
-    {
-        $this->onlyToUniversity = $onlyToUniversity;
 
         return $this;
     }
