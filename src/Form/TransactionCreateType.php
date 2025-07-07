@@ -23,7 +23,7 @@ class TransactionCreateType extends AbstractType
             ])
             ->add('submit', SubmitType::class, [
                 'disabled' => $options['haveWaitingTransactions'],
-                'label' => 'Doniraj',
+                'label' => 'Kreiraj',
             ]);
     }
 
