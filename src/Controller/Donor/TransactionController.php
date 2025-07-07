@@ -26,7 +26,7 @@ class TransactionController extends AbstractController
         private InvoiceSlipService $invoiceSlipService,
         private IpsQrCodeService $qrCodeService,
         private CreateTransactionService $createTransactionService,
-        private TransactionRepository $transactionRepository
+        private TransactionRepository $transactionRepository,
     ) {
     }
 
@@ -36,18 +36,18 @@ class TransactionController extends AbstractController
         $criteria = ['user' => $this->getUser()];
         $page = $request->query->getInt('page', 1);
 
-        $hasCancelledTransactions = (bool)$transactionRepository->count([
+        $hasCancelledTransactions = (bool) $transactionRepository->count([
             'user' => $this->getUser(),
             'status' => Transaction::STATUS_CANCELLED,
         ]);
 
-        $hasNotPaidTransactions = (bool)$transactionRepository->count([
+        $hasNotPaidTransactions = (bool) $transactionRepository->count([
             'user' => $this->getUser(),
             'status' => Transaction::STATUS_NOT_PAID,
             'userDonorConfirmed' => false,
         ]);
 
-        $hasExpiredTransactions = (bool)$transactionRepository->count([
+        $hasExpiredTransactions = (bool) $transactionRepository->count([
             'user' => $this->getUser(),
             'status' => Transaction::STATUS_EXPIRED,
         ]);
@@ -83,14 +83,14 @@ class TransactionController extends AbstractController
         // Generate PDF with Dompdf using the service
         $pdfContent = $this->invoiceSlipService->generatePdfFromHtml($html, $bgInfo['img_width'], $bgInfo['img_height']);
 
-        $filename = 'instrukcija_za_uplatu_' . $transaction->getId() . '.pdf';
+        $filename = 'instrukcija_za_uplatu_'.$transaction->getId().'.pdf';
 
         return new Response(
             $pdfContent,
             200,
             [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="' . $filename . '"',
+                'Content-Disposition' => 'inline; filename="'.$filename.'"',
             ]
         );
     }
@@ -167,7 +167,7 @@ class TransactionController extends AbstractController
             $educatorName = $transaction->getDamagedEducator()->getName();
             $educatorFirstName = explode(' ', $educatorName)[0];
 
-            $this->addFlash('success', 'Uspešno si potvrdio/la uplatu. ' . $educatorFirstName . ' ti se zahvaljuje na podršci ❤');
+            $this->addFlash('success', 'Uspešno si potvrdio/la uplatu. '.$educatorFirstName.' ti se zahvaljuje na podršci ❤');
 
             return $this->redirectToRoute('donor_transaction_list');
         }
@@ -200,6 +200,7 @@ class TransactionController extends AbstractController
             $this->createTransactionService->create($userDonor, $amount);
 
             $this->addFlash('success', 'Kreirane su ti instrukcije za uplatu, ostalo je samo da ih uplatiš i potvrdiš uplatu.');
+
             return $this->redirectToRoute('donor_transaction_list');
         }
 

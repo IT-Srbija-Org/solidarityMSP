@@ -78,6 +78,7 @@ class RequestController extends AbstractController
                 $userDonorRepository->sendSuccessEmail($user);
 
                 $this->addFlash('success', 'Kreirane su ti instrukcije za uplatu, ostalo je samo da ih uplatiš i potvrdiš uplatu.');
+
                 return $this->redirectToRoute('donor_transaction_list');
             }
 

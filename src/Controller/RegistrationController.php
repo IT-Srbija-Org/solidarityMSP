@@ -102,6 +102,7 @@ class RegistrationController extends AbstractController
                 $userDonorRepository->sendSuccessEmail($user);
 
                 $this->createTransactionService->create($user->getUserDonor(), $user->getUserDonor()->getAmount());
+
                 return $this->redirectToRoute('donor_request_success');
             }
 

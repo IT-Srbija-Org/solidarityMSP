@@ -49,7 +49,7 @@ class CreateTransactionService
              INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id AND dep.processing = 1
              INNER JOIN school AS s ON s.id = de.school_id AND s.processing = 1
              INNER JOIN school_type AS st ON st.id = s.type_id
-             ' . $queryString . '
+             '.$queryString.'
             ', $queryParameters);
 
         $items = [];
@@ -82,7 +82,7 @@ class CreateTransactionService
             ->andWhere('t.createdAt > :dateLimit')
             ->setParameter('user', $userDonor->getUser())
             ->setParameter('status', Transaction::STATUS_NOT_PAID)
-            ->setParameter('dateLimit', new \DateTime('-' . $days . ' days'));
+            ->setParameter('dateLimit', new \DateTime('-'.$days.' days'));
 
         return $qb->getQuery()->getSingleScalarResult() > 0;
     }
@@ -108,7 +108,7 @@ class CreateTransactionService
                 ->setParameter('dateLimit', new \DateTime('-30 days'));
         }
 
-        $sum = (int)$qb->getQuery()->getSingleScalarResult();
+        $sum = (int) $qb->getQuery()->getSingleScalarResult();
         $sumNotPaidButConfirmed = $this->getSumNotPaidButConfirmedTransactions($userDonor);
 
         return $sum + $sumNotPaidButConfirmed;
@@ -131,7 +131,7 @@ class CreateTransactionService
                 ->setParameter('dateLimit', new \DateTime('-30 days'));
         }
 
-        return (int)$qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     public function sendNewTransactionEmail(UserDonor $userDonor): void
@@ -165,14 +165,14 @@ class CreateTransactionService
             FROM transaction AS t
             WHERE t.user_id = :userId
              AND t.account_number = :accountNumber
-             AND t.status IN (' . implode(',', $transactionStatuses) . ')
+             AND t.status IN ('.implode(',', $transactionStatuses).')
              AND t.created_at > DATE(NOW() - INTERVAL 1 YEAR)
             ', [
             'userId' => $userDonor->getUser()->getId(),
             'accountNumber' => $accountNumber,
         ]);
 
-        return (int)$stmt->fetchOne();
+        return (int) $stmt->fetchOne();
     }
 
     public function wontToDonateToSchool(UserDonor $userDonor, string $schoolType): bool

@@ -29,7 +29,7 @@ class CreateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $io->section('Command started at ' . date('Y-m-d H:i:s'));
+        $io->section('Command started at '.date('Y-m-d H:i:s'));
 
         $store = new FlockStore();
         $factory = new LockFactory($store);
@@ -51,7 +51,7 @@ class CreateCommand extends Command
             }
 
             foreach ($userDonors as $userDonor) {
-                $output->write('Process donor ' . $userDonor->getUser()->getEmail() . ' at ' . date('Y-m-d H:i:s'));
+                $output->write('Process donor '.$userDonor->getUser()->getEmail().' at '.date('Y-m-d H:i:s'));
                 if ($this->createTransactionService->hasNotPaidTransactionsInLastDays($userDonor, 10)) {
                     $output->writeln(' | has "not paid" transactions in last 10 days');
                     continue;
@@ -61,7 +61,7 @@ class CreateCommand extends Command
                 $donorRemainingAmount = $userDonor->getAmount() - $sumTransactions;
 
                 $transactionCreated = $this->createTransactionService->create($userDonor, $donorRemainingAmount);
-                $output->writeln(' | Is transaction created: ' . ($transactionCreated ? 'Yes' : 'No'));
+                $output->writeln(' | Is transaction created: '.($transactionCreated ? 'Yes' : 'No'));
 
                 if ($transactionCreated) {
                     $this->createTransactionService->sendNewTransactionEmail($userDonor);
@@ -71,7 +71,7 @@ class CreateCommand extends Command
             $this->entityManager->clear();
         }
 
-        $io->success('Command finished at ' . date('Y-m-d H:i:s'));
+        $io->success('Command finished at '.date('Y-m-d H:i:s'));
 
         return Command::SUCCESS;
     }
