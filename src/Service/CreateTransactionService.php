@@ -5,15 +5,19 @@ namespace App\Service;
 use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
 use App\Entity\UserDonor;
+use App\Repository\DamagedEducatorRepository;
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 
 class CreateTransactionService
 {
-    public function __construct(private EntityManagerInterface $entityManager, private MailerInterface $mailer, private TransactionRepository $transactionRepository)
+    private $minTransactionDonationAmount = 500;
+
+    public function __construct(private EntityManagerInterface $entityManager, private MailerInterface $mailer, private TransactionRepository $transactionRepository, private ParameterBagInterface $params, private DamagedEducatorRepository $damagedEducatorRepository)
     {
     }
 
@@ -24,7 +28,7 @@ class CreateTransactionService
         return in_array(date('d.m'), $dates);
     }
 
-    public function getDamagedEducators(int $maxDonationAmount, int $minTransactionDonationAmount, array $parameters): array
+    public function getDamagedEducators(): array
     {
         $transactionStatuses = [
             Transaction::STATUS_NEW,
@@ -39,33 +43,20 @@ class CreateTransactionService
         $queryParameters = [];
         $queryParameters['status'] = DamagedEducator::STATUS_NEW;
 
-        if (!empty($parameters['schoolTypeId'])) {
-            $queryString .= ' AND st.id = :schoolTypeId';
-            $queryParameters['schoolTypeId'] = $parameters['schoolTypeId'];
-        }
-
-        if (!empty($parameters['schoolIds']) && is_array($parameters['schoolIds']) && count($parameters['schoolIds']) === count(array_filter($parameters['schoolIds'], 'is_numeric'))) {
-            $queryString .= ' AND de.school_id IN ('.implode(',', $parameters['schoolIds']).')';
-        }
-
         $stmt = $this->entityManager->getConnection()->executeQuery('
             SELECT de.id, de.period_id, de.account_number, de.amount, de.school_id, st.name AS school_type
             FROM damaged_educator AS de
              INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id AND dep.processing = 1
              INNER JOIN school AS s ON s.id = de.school_id AND s.processing = 1
              INNER JOIN school_type AS st ON st.id = s.type_id
-             '.$queryString.'
+             ' . $queryString . '
             ', $queryParameters);
 
         $items = [];
         foreach ($stmt->fetchAllAssociative() as $item) {
-            if ($item['amount'] > $maxDonationAmount) {
-                $item['amount'] = $maxDonationAmount;
-            }
-
             $transactionSum = $this->transactionRepository->getSumAmountForAccountNumber($item['period_id'], $item['account_number'], $transactionStatuses);
             $item['remainingAmount'] = $item['amount'] - $transactionSum;
-            if ($item['remainingAmount'] < $minTransactionDonationAmount) {
+            if ($item['remainingAmount'] < $this->minTransactionDonationAmount) {
                 continue;
             }
 
@@ -91,7 +82,7 @@ class CreateTransactionService
             ->andWhere('t.createdAt > :dateLimit')
             ->setParameter('user', $userDonor->getUser())
             ->setParameter('status', Transaction::STATUS_NOT_PAID)
-            ->setParameter('dateLimit', new \DateTime('-'.$days.' days'));
+            ->setParameter('dateLimit', new \DateTime('-' . $days . ' days'));
 
         return $qb->getQuery()->getSingleScalarResult() > 0;
     }
@@ -117,7 +108,7 @@ class CreateTransactionService
                 ->setParameter('dateLimit', new \DateTime('-30 days'));
         }
 
-        $sum = (int) $qb->getQuery()->getSingleScalarResult();
+        $sum = (int)$qb->getQuery()->getSingleScalarResult();
         $sumNotPaidButConfirmed = $this->getSumNotPaidButConfirmedTransactions($userDonor);
 
         return $sum + $sumNotPaidButConfirmed;
@@ -140,7 +131,7 @@ class CreateTransactionService
                 ->setParameter('dateLimit', new \DateTime('-30 days'));
         }
 
-        return (int) $qb->getQuery()->getSingleScalarResult();
+        return (int)$qb->getQuery()->getSingleScalarResult();
     }
 
     public function sendNewTransactionEmail(UserDonor $userDonor): void
@@ -174,14 +165,14 @@ class CreateTransactionService
             FROM transaction AS t
             WHERE t.user_id = :userId
              AND t.account_number = :accountNumber
-             AND t.status IN ('.implode(',', $transactionStatuses).')
+             AND t.status IN (' . implode(',', $transactionStatuses) . ')
              AND t.created_at > DATE(NOW() - INTERVAL 1 YEAR)
             ', [
             'userId' => $userDonor->getUser()->getId(),
             'accountNumber' => $accountNumber,
         ]);
 
-        return (int) $stmt->fetchOne();
+        return (int)$stmt->fetchOne();
     }
 
     public function wontToDonateToSchool(UserDonor $userDonor, string $schoolType): bool
@@ -205,5 +196,58 @@ class CreateTransactionService
         }
 
         return false;
+    }
+
+    public function create(UserDonor $userDonor, int $amount): bool
+    {
+        $minTransactionDonationAmount = $this->minTransactionDonationAmount;
+        if ($amount > 100000) {
+            $minTransactionDonationAmount = 10000;
+        }
+
+        $maxYearDonationAmount = 50000;
+        $damagedEducators = $this->getDamagedEducators();
+        $transactionCreated = false;
+
+        foreach ($damagedEducators as $damagedEducator) {
+            if ($amount < $minTransactionDonationAmount) {
+                break;
+            }
+
+            if (!$this->wontToDonateToSchool($userDonor, $damagedEducator['school_type'])) {
+                continue;
+            }
+
+            if ($damagedEducator['remainingAmount'] < $minTransactionDonationAmount) {
+                continue;
+            }
+
+            if ($damagedEducator['remainingAmount'] > $maxYearDonationAmount) {
+                $damagedEducator['remainingAmount'] = $maxYearDonationAmount;
+            }
+
+            $sumTransactionAmount = $this->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
+            $transactionAmount = $amount > $damagedEducator['remainingAmount'] ? $damagedEducator['remainingAmount'] : $amount;
+            if (($sumTransactionAmount + $transactionAmount) >= $maxYearDonationAmount) {
+                continue;
+            }
+
+            $transaction = new Transaction();
+            $transaction->setUser($userDonor->getUser());
+
+            $entity = $this->damagedEducatorRepository->find($damagedEducator['id']);
+            $transaction->setDamagedEducator($entity);
+            $transaction->setAccountNumber($damagedEducator['account_number']);
+
+            $transaction->setAmount($transactionAmount);
+            $amount -= $transaction->getAmount();
+
+            $this->entityManager->persist($transaction);
+            $this->entityManager->flush();
+
+            $transactionCreated = true;
+        }
+
+        return $transactionCreated;
     }
 }

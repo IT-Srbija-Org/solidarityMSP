@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="container mx-auto px-4 max-w-5xl pt-10 pt-20">
-        <header class="text-center mb-20">
+        <header class="text-center mb-10">
             <h2 class="text-4xl font-bold">
                 Mreža solidarnosti - IT SRBIJA
             </h2>
@@ -22,6 +22,13 @@
                         Postani donator
                     </a>
                 </div>
+            {% else %}
+                <div class="text-center">
+                    <a href="{{ path('donor_transaction_create') }}" class="btn btn-primary btn-xl transition duration-200 hover:scale-105">
+                        <span class="ti ti-heart text-2xl"></span>
+                        Doniraj
+                    </a>
+                </div>
             {% endif %}
         {% endblock %}
 
@@ -30,7 +37,7 @@
                 <h3 class="text-lg mb-2 font-bold">Kako da donirate?</h3>
                 <p class="text-sm text-gray-500">
                     Da biste donirali, potrebno je da se prijavite kao donator na <a href="{{ path('donor_request_form') }}" class="link link-primary link-hover">ovoj</a> stranici.
-                    Nakon prijave, u roku od nekoliko sati dobićete instrukcije za uplatu koje možete da vidite na <a href="{{ path('donor_transaction_list') }}" class="link link-primary link-hover">ovoj</a> stranici.
+                    Nakon prijave, biće Vam napravljene instrukcije za uplatu koje možete da vidite na <a href="{{ path('donor_transaction_list') }}" class="link link-primary link-hover">ovoj</a> stranici.
                 </p>
             </section>
 

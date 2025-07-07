@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="card card-lg bg-base-100 shadow m-4">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-heart-filled text-xl"></span>
+                Doniraj
+            </h2>
+
+            {% if haveWaitingTransactions %}
+                <div class="alert alert-info alert-soft mb-4">
+                    <span class="ti ti-info-circle text-2xl"></span>
+
+                    <span>
+                        <span class="font-bold block">Već imaš nepotvrđene instrukcije za uplatu</span> Nije moguće da doniraš dok ne potvrdiš prethodne instrukcije. Tek kada ih potvrdiš, bićeš u mogućnosti da kreiraš nove.
+                    </span>
+                </div>
+            {% endif %}
+
+            <div class="text-gray-500 mb-4">
+                Kada potvrdiš iznos koji želiš da doniras biće ti kreirane instrukcije za uplatu ka oštećenim nastavnicima.
+            </div>
+
+            {{ include('flashes.html.twig') }}
+
+            <div>
+                {% form_theme form 'form.html.twig' %}
+                {{ form(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

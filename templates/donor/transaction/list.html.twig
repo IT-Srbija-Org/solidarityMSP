@@ -54,9 +54,16 @@
                 {% endif %}
 
                 <div class="overflow-x-auto mt-4">
-                    <div class="text-gray-500 mb-2 total-results">
-                        Ukupno rezultata: <span class="font-bold">{{ transactions.total }}</span>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-gray-500 total-results">
+                            Ukupno rezultata: <span class="font-bold">{{ transactions.total }}</span>
+                        </div>
+
+                        <a href="{{ path('donor_transaction_create') }}" class="btn btn-primary ml-auto" data-umami-event="donor_click_donate">
+                            <span class="ti ti-heart-filled text-xl mr-1"></span> Doniraj
+                        </a>
                     </div>
+
 
                     <table class="table rounded-xl border border-base-200 responsive-table">
                         <thead class="bg-gray-100">

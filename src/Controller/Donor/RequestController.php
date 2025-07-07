@@ -7,6 +7,7 @@ use App\Form\UserDonorType;
 use App\Repository\UserDonorRepository;
 use App\Repository\UserRepository;
 use App\Service\CloudFlareTurnstileService;
+use App\Service\CreateTransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -18,7 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route(name: 'donor_request_')]
 class RequestController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager, private CreateTransactionService $createTransactionService)
     {
     }
 
@@ -73,7 +74,11 @@ class RequestController extends AbstractController
             $this->entityManager->flush();
 
             if ($isNew && $user->isEmailVerified()) {
+                $this->createTransactionService->create($userDonor, $userDonor->getAmount());
                 $userDonorRepository->sendSuccessEmail($user);
+
+                $this->addFlash('success', 'Kreirane su ti instrukcije za uplatu, ostalo je samo da ih uplatiš i potvrdiš uplatu.');
+                return $this->redirectToRoute('donor_transaction_list');
             }
 
             return $this->redirectToRoute('donor_request_success');
@@ -99,7 +104,7 @@ class RequestController extends AbstractController
 
     #[IsGranted('ROLE_USER')]
     #[Route('/odjava-donatora', name: 'unsubscribe')]
-    public function unsubscribe(Request $request, UserDonorRepository $userDonorRepository): Response
+    public function unsubscribe(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('unsubscribe', $request->query->get('_token'))) {
             throw $this->createAccessDeniedException();
