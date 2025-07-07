@@ -2,6 +2,7 @@
 
 namespace App\Form\Admin;
 
+use App\Entity\UserDonor;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -35,13 +36,10 @@ class DonorSearchType extends AbstractType
                     'Ne' => false,
                 ],
             ])
-            ->add('onlyToUniversity', ChoiceType::class, [
+            ->add('schoolType', ChoiceType::class, [
                 'required' => false,
-                'label' => 'Doniraju samo univerzitetima',
-                'choices' => [
-                    'Da' => true,
-                    'Ne' => false,
-                ],
+                'choices' => array_flip(UserDonor::SCHOOL_TYPES),
+                'label' => 'Kome želiš da doniraš?',
             ])
             ->add('submit', SubmitType::class, [
                 'label' => '<i class="ti ti-search text-2xl"></i> Pretraži',

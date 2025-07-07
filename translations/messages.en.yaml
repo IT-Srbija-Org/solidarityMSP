@@ -39,3 +39,7 @@ TransactionPaid: Uplata izvršena
 
 DamagedEducatorNew: Aktivan
 DamagedEducatorDeleted: Obrisan
+
+SchoolTypeAll: Svim nastavnicima
+SchoolTypeUniversity: Samo univerzitetskim nastavnicima
+SchoolTypeEducation: Samo prosvetnim nastavnicima

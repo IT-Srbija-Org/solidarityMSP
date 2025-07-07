@@ -11,6 +11,16 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class UserDonor
 {
+    public const SCHOOL_TYPE_ALL = 1;
+    public const SCHOOL_TYPE_UNIVERSITY = 2;
+    public const SCHOOL_TYPE_EDUCATION = 3;
+
+    public const SCHOOL_TYPES = [
+        self::SCHOOL_TYPE_ALL => 'SchoolTypeAll',
+        self::SCHOOL_TYPE_UNIVERSITY => 'SchoolTypeUniversity',
+        self::SCHOOL_TYPE_EDUCATION => 'SchoolTypeEducation',
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -28,6 +38,9 @@ class UserDonor
 
     #[ORM\Column]
     private ?bool $onlyToUniversity = false;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $schoolType = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
@@ -126,6 +139,23 @@ class UserDonor
     public function setOnlyToUniversity(bool $onlyToUniversity): static
     {
         $this->onlyToUniversity = $onlyToUniversity;
+
+        return $this;
+    }
+
+    public function getSchoolType(): ?int
+    {
+        return $this->schoolType;
+    }
+
+    public function getSchoolTypeName(): ?string
+    {
+        return self::SCHOOL_TYPES[$this->schoolType] ?? null;
+    }
+
+    public function setSchoolType(?int $schoolType): static
+    {
+        $this->schoolType = $schoolType;
 
         return $this;
     }

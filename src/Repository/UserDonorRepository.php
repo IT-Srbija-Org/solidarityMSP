@@ -41,9 +41,9 @@ class UserDonorRepository extends ServiceEntityRepository
                 ->setParameter('isMonthly', $criteria['isMonthly']);
         }
 
-        if (isset($criteria['onlyToUniversity'])) {
-            $qb->andWhere('ud.onlyToUniversity = :onlyToUniversity')
-                ->setParameter('onlyToUniversity', $criteria['onlyToUniversity']);
+        if (!empty($criteria['schoolType'])) {
+            $qb->andWhere('ud.schoolType = :schoolType')
+                ->setParameter('schoolType', $criteria['schoolType']);
         }
 
         if (!empty($criteria['firstName'])) {

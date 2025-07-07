@@ -103,21 +103,18 @@
                     </div>
 
                     <div>
+                        {{ form_label(form.schoolType) }}
+                        {{ form_widget(form.schoolType, { 'attr': { 'class': 'select select-md select-bordered rounded-md w-full' } }) }}
+                        {{ form_errors(form.schoolType) }}
+                    </div>
+
+                    <div>
                         {{ form_label(form.isMonthly) }}
                         {{ form_widget(form.isMonthly, { 'attr': { 'class': 'checkbox' } }) }}
                         {{ form_errors(form.isMonthly) }}
 
                         <div class="text-gray-500 text-sm -mt-2">Čekiranjem ove opcije prihvataš mesečno izdvajanje dogovorenog iznosa (Kasnije se može promeniti).</div>
                     </div>
-
-                    <div>
-                        {{ form_label(form.onlyToUniversity) }}
-                        {{ form_widget(form.onlyToUniversity, { 'attr': { 'class': 'checkbox' } }) }}
-                        {{ form_errors(form.onlyToUniversity) }}
-
-                        <div class="text-gray-500 text-sm -mt-2">Čekiranjem ove opcije vaše donacije će biti usmerene isključivo ka univerzitetskim radnicima.</div>
-                    </div>
-
 
                     <div>
                         {{ form_label(form.comment) }}

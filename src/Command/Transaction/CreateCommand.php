@@ -112,7 +112,7 @@ class CreateCommand extends Command
 
                 $totalTransactions = 0;
                 foreach ($this->damagedEducators as $damagedEducator) {
-                    if ($userDonor->onlyToUniversity() && !$this->createTransactionService->isUniversity($damagedEducator['school_type'])) {
+                    if (!$this->createTransactionService->wontToDonateToSchool($userDonor, $damagedEducator['school_type'])) {
                         continue;
                     }
 

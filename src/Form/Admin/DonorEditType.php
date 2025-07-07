@@ -5,6 +5,7 @@ namespace App\Form\Admin;
 use App\Entity\UserDonor;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -32,9 +33,10 @@ class DonorEditType extends AbstractType
                 'required' => false,
                 'label' => 'Mesečna podrška',
             ])
-            ->add('onlyToUniversity', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Doniraj samo univerzitetskim radnicima',
+            ->add('schoolType', ChoiceType::class, [
+                'choices' => array_flip(UserDonor::SCHOOL_TYPES),
+                'label' => 'Kome želiš da doniraš?',
+                'placeholder' => '',
             ])
             ->add('amount', IntegerType::class, [
                 'label' => 'Iznos',
