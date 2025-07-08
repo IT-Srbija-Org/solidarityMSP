@@ -8,15 +8,23 @@
         <div class="card-body">
             <h2 class="card-title mb-4">
                 <span class="ti ti-user-heart text-3xl"></span>
-                Uspešno ste se registrovali kao donator!
+                Uspešno si se registrovali kao donator!
             </h2>
 
             <div>
-                <div>Hvala vam što ste postali deo Mreže solidarnosti.</div>
-                <div>Vaša podrška znači mnogo svim našim nastavnicima. 💙</div>
+                <div>Hvala ti što si postao deo Mreže solidarnosti.</div>
+                <div>Tvoja podrška znači mnogo svim našim nastavnicima. 💙</div>
             </div>
 
-            <div class="mt-4">Vaša "Instrukcije za uplatu" možete da vidite na <a href="{{ path('donor_transaction_list') }}" class="link link-primary link-hover font-bold">ovoj</a> stranici.</div>
+            <div class="mt-4">
+                <div class="font-bold">Šta dalje?</div>
+                <div>Napravili smo ti instrukcije za uplatu koje možete da vidiš na <a href="{{ path('donor_transaction_list') }}" class="link link-primary link-hover font-bold">ovoj</a> stranici. Tamo ćeš naći sve informacije kome i koliko treba da doniraš.</div>
+
+                <a href="{{ path('donor_transaction_list') }}" class="btn btn-primary mt-2">
+                    <span class="ti ti-credit-card-pay text-xl"></span>
+                    Instrukcije za uplatu
+                </a>
+            </div>
         </div>
     </div>
 {% endblock %}
