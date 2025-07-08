@@ -205,6 +205,10 @@ class CreateTransactionService
             $minTransactionDonationAmount = 10000;
         }
 
+        if ($amount < $minTransactionDonationAmount) {
+            return false;
+        }
+
         $maxYearDonationAmount = 50000;
         $damagedEducators = $this->getDamagedEducators();
         $transactionCreated = false;
