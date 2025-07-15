@@ -53,44 +53,85 @@
         <link href="{{ asset('stylesheet/general.css') }}" rel="stylesheet" type="text/css" />
         {% block stylesheets %}{% endblock %}
     </head>
-    <body data-theme="corporate">
-        {% block navbar %}
-            <div class="navbar bg-base-100 shadow-sm px-10 py-5">
-                <div class="flex-1 align-middle">
-                    <a href="{{ path('home') }}">
-                        <img src="{{ asset('image/logo.svg') }}" alt="Logo" class="w-42 rounded-lg bg-base-100">
-                    </a>
-                </div>
+    <body data-theme="corporate" class="min-h-screen flex flex-col">
+        <div class="flex-grow">
+            {% block navbar %}
+                <div class="navbar bg-base-100 shadow-sm px-10 py-5">
+                    <div class="flex-1 align-middle">
+                        <a href="{{ path('home') }}">
+                            <img src="{{ asset('image/logo.svg') }}" alt="Logo" class="w-42 rounded-lg bg-base-100">
+                        </a>
+                    </div>
 
-                <!-- Regular menu items (visible on large screens) -->
-                <div class="navbar-center hidden lg:flex">
-                    <ul class="menu menu-horizontal px-1 gap-3 size-xl">
-                        {{ nav_links('link link-primary no-underline') }}
-                    </ul>
-                </div>
-
-                <!-- Burger menu for small screens -->
-                <div class="flex-none lg:hidden">
-                    <details class="dropdown dropdown-end">
-                        <summary class="btn btn-ghost btn-circle" aria-label="Open menu">
-                            <span class="ti ti-menu-2 text-xl"></span>
-                        </summary>
-                        <ul class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-72">
-                            {{ nav_links('link-primary') }}
+                    <!-- Regular menu items (visible on large screens) -->
+                    <div class="navbar-center hidden lg:flex">
+                        <ul class="menu menu-horizontal px-1 gap-3 size-xl">
+                            {{ nav_links('link link-primary no-underline') }}
                         </ul>
-                    </details>
-                </div>
-            </div>
-        {% endblock %}
+                    </div>
 
-        {% block body %}{% endblock %}
+                    <!-- Burger menu for small screens -->
+                    <div class="flex-none lg:hidden">
+                        <details class="dropdown dropdown-end">
+                            <summary class="btn btn-ghost btn-circle" aria-label="Open menu">
+                                <span class="ti ti-menu-2 text-xl"></span>
+                            </summary>
+                            <ul class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-72">
+                                {{ nav_links('link-primary') }}
+                            </ul>
+                        </details>
+                    </div>
+                </div>
+            {% endblock %}
+
+            {% block body %}{% endblock %}
+        </div>
 
         {% block footer %}
-            <div class="mt-10 pb-10">
-                <a href="https://itsrbija.org">
-                    <img src="{{ asset('image/logo-itsrbija.svg') }}" alt="IT Srbija logo" class="mx-auto w-12 h-12 rounded-lg bg-base-100 transition duration-200 hover:scale-110">
-                </a>
-            </div>
+            <footer class="footer sm:footer-horizontal bg-base-100 text-base-content p-10 mt-10">
+                <aside>
+                    <img src="{{ asset('image/logo.svg') }}" alt="Logo" class="w-42 rounded-lg">
+
+                    <p>
+                        Mreža solidarnosti
+                        <br />
+                        <a href="https://itsrbija.org" class="link link-hover link-primary">IT Srbija</a>
+                    </p>
+                </aside>
+                <nav>
+                    <h6 class="footer-title">Linkovi</h6>
+                    <a href="{{ path('static_contact') }}" class="link link-hover">Kontakt</a>
+                    <a href="{{ path('static_schools') }}" class="link link-hover">Umreženo po školama</a>
+                </nav>
+                <nav>
+                    <h6 class="footer-title">Socijalne mreže</h6>
+                    <div class="grid grid-cols-6 md:grid-cols-3 gap-4">
+                        <a href="https://www.linkedin.com/company/it-srbija/" target="_blank" title="LinkedIn" class="transition duration-200 hover:scale-110">
+                            <i class="ti ti-brand-linkedin text-3xl"></i>
+                        </a>
+
+                        <a href="https://www.instagram.com/it.srbija" target="_blank" title="Instagram" class="transition duration-200 hover:scale-110">
+                            <i class="ti ti-brand-instagram text-3xl"></i>
+                        </a>
+
+                        <a href="https://www.facebook.com/share/1BXSBJy2cY/" target="_blank" title="Facebook" class="transition duration-200 hover:scale-110">
+                            <i class="ti ti-brand-facebook text-3xl"></i>
+                        </a>
+
+                        <a href="https://x.com/ITSrbijaOrg" target="_blank" title="X" class="transition duration-200 hover:scale-110">
+                            <i class="ti ti-brand-x text-3xl"></i>
+                        </a>
+
+                        <a href="https://tiktok.com/@it.srbija" target="_blank" title="TikTok" class="transition duration-200 hover:scale-110">
+                            <i class="ti ti-brand-tiktok text-3xl"></i>
+                        </a>
+
+                        <a href="https://github.com/IT-Srbija-Org" target="_blank" title="TikTok" class="transition duration-200 hover:scale-110">
+                            <i class="ti ti-brand-github text-3xl"></i>
+                        </a>
+                    </div>
+                </nav>
+            </footer>
         {% endblock %}
 
         <script src="{{ asset('javascript/jquery.min.js') }}"></script>

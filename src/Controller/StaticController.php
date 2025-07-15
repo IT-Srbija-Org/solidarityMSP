@@ -14,6 +14,12 @@ class StaticController extends AbstractController
     {
     }
 
+    #[Route('/kontakt', name: 'contact')]
+    public function contact(): Response
+    {
+        return $this->render('static/contact.html.twig');
+    }
+
     #[Route('/statusi-kod-ostecenih-prosvetnih-radnika', name: 'damaged_educator_status')]
     public function damagedEducatorStatus(): Response
     {

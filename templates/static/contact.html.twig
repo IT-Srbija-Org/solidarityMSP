@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="card card-lg bg-base-100 shadow m-4 mt-10">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-mail text-3xl"></span>
+                Kontakt
+            </h2>
+
+            <div class="space-y-6">
+                <div>
+                    <div><span class="ti ti-heart text-xl relative top-0.5"></span> Za sva pitanja vezana za doniranje nam možeš pisati na:</div>
+                    <a href="mailto:donatori@mrezasolidarnosti.org" target="_blank" class="link link-primary link-hover">donatori@mrezasolidarnosti.org</a>
+                </div>
+
+                <div>
+                    <div><span class="ti ti-user-cog text-xl relative top-0.5"></span> Za sva pitanja vezana za delegate nam možeš pisati na:</div>
+                    <a href="mailto:delegati@mrezasolidarnosti.org" target="_blank" class="link link-primary link-hover">delegati@mrezasolidarnosti.org</a>
+                </div>
+
+                <div>
+                    <div><span class="ti ti-help text-xl relative top-0.5"></span> Za sva ostala pitanja nam možeš pisati na:</div>
+                    <a href="mailto:info@mrezasolidarnosti.org" target="_blank" class="link link-primary link-hover">info@mrezasolidarnosti.org</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
