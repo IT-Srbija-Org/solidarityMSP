@@ -92,7 +92,6 @@
                             Ne
                         {% endif %}
                     </div>
-                    <div>Donator želi da donira: {{ user.userDonor.schoolTypeName|trans }}</div>
                     <div>Iznos : {{ user.userDonor.amount|number_format }}</div>
                     <div>Datum registracije: {{ user.userDonor.createdAt|date('H:i d.m.Y') }}</div>
                     <div>Datum poslednje izmene: {{ user.userDonor.updatedAt|date('H:i d.m.Y') }}</div>
@@ -127,58 +126,16 @@
         </div>
     {% endif %}
 
-    {% if 'ROLE_DELEGATE' in user.roles %}
-        <div class="card stripes border border-base-300 w-full">
-            <div class="card-body">
-                <div class="card-title">
-                    <span class="ti ti-user-cog text-2xl"></span>
-                    Delegat
-                </div>
+{#    {% if 'ROLE_DELEGATE' in user.roles %}#}
+{#        <div class="card stripes border border-base-300 w-full">#}
+{#            <div class="card-body">#}
+{#                <div class="card-title">#}
+{#                    <span class="ti ti-user-cog text-2xl"></span>#}
+{#                    Delegat#}
+{#                </div>#}
 
-                <div>
-                    <div>Ukupno povezanih škola: <span class="font-bold">{{ user.userDelegateSchools|length }}</span></div>
-
-                    <div class="overflow-x-auto mt-4">
-                        <div class="justify-end card-actions mb-2">
-                            <a href="{{ path('admin_delegate_connect_school', { 'id': user.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Poveži">
-                                <span class="ti ti-link-plus text-xl"></span> Izmeni
-                            </a>
-                        </div>
-
-                        <table class="table w-full bg-base-100 rounded-xl border border-base-200">
-                            <thead class="bg-gray-100">
-                                <tr>
-                                    <th>
-                                        <span class="ti ti-building text-xl"></span>
-                                        Naziv škole
-                                    </th>
-                                    <th>
-                                        <span class="ti ti-building-community text-xl"></span>
-                                        Grad
-                                    </th>
-                                    <th>
-                                        <span class="ti ti-building-cog text-xl"></span>
-                                        Tip škole
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for userDelegateSchool in user.userDelegateSchools %}
-                                <tr class="hover:bg-gray-100">
-                                    <td>
-                                        <a href="{{ path('admin_school_details', { 'id': userDelegateSchool.school.id }) }}" class="link link-primary link-hover">
-                                            {{ userDelegateSchool.school.name }}
-                                        </a>
-                                    </td>
-                                    <td>{{ userDelegateSchool.school.city.name }}</td>
-                                    <td>{{ userDelegateSchool.school.type.name }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
+{#                #}
+{#            </div>#}
+{#        </div>#}
+{#    {% endif %}#}
 {% endblock %}

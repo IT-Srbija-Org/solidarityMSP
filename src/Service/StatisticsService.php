@@ -13,10 +13,10 @@ class StatisticsService
 
     public function getGeneralNumbers(): array
     {
-        $transactionSumConfirmedAmount = $this->transactionRepository->getSumConfirmedAmount(true);
-        $damagedEducatorSumAmount = $this->damagedEducatorRepository->getSumAmount(true);
-        $totalDamagedEducators = $this->damagedEducatorRepository->getTotals(true);
-        $totalActiveDonors = $this->transactionRepository->getTotalActiveDonors(true);
+        $transactionSumConfirmedAmount = $this->transactionRepository->getSumConfirmedAmount(false);
+        $damagedEducatorSumAmount = $this->damagedEducatorRepository->getSumAmount(false);
+        $totalDamagedEducators = $this->damagedEducatorRepository->getTotals(false);
+        $totalActiveDonors = $this->transactionRepository->getTotalActiveDonors(false);
 
         $avgConfirmedAmountPerEducator = 0;
         if ($transactionSumConfirmedAmount > 0 && $totalDamagedEducators > 0) {

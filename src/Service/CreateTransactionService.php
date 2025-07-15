@@ -44,17 +44,14 @@ class CreateTransactionService
         $queryParameters['status'] = DamagedEducator::STATUS_NEW;
 
         $stmt = $this->entityManager->getConnection()->executeQuery('
-            SELECT de.id, de.period_id, de.account_number, de.amount, de.school_id, st.name AS school_type
+            SELECT de.id, de.account_number, de.amount
             FROM damaged_educator AS de
-             INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id AND dep.processing = 1
-             INNER JOIN school AS s ON s.id = de.school_id AND s.processing = 1
-             INNER JOIN school_type AS st ON st.id = s.type_id
              '.$queryString.'
             ', $queryParameters);
 
         $items = [];
         foreach ($stmt->fetchAllAssociative() as $item) {
-            $transactionSum = $this->transactionRepository->getSumAmountForAccountNumber($item['period_id'], $item['account_number'], $transactionStatuses);
+            $transactionSum = $this->transactionRepository->getSumAmountForAccountNumber($item['account_number'], $transactionStatuses);
             $item['remainingAmount'] = $item['amount'] - $transactionSum;
             if ($item['remainingAmount'] < $this->minTransactionDonationAmount) {
                 continue;
@@ -175,29 +172,6 @@ class CreateTransactionService
         return (int) $stmt->fetchOne();
     }
 
-    public function wontToDonateToSchool(UserDonor $userDonor, string $schoolType): bool
-    {
-        $isUniversity = $this->isUniversity($schoolType);
-        if (UserDonor::SCHOOL_TYPE_UNIVERSITY == $userDonor->getSchoolType() && !$isUniversity) {
-            return false;
-        }
-
-        if (UserDonor::SCHOOL_TYPE_EDUCATION == $userDonor->getSchoolType() && $isUniversity) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private function isUniversity(string $schoolType): bool
-    {
-        if (preg_match('/Univerzitet|Akademija/i', $schoolType)) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function create(UserDonor $userDonor, int $amount): bool
     {
         $minTransactionDonationAmount = $this->minTransactionDonationAmount;
@@ -216,10 +190,6 @@ class CreateTransactionService
         foreach ($damagedEducators as $damagedEducator) {
             if ($amount < $minTransactionDonationAmount) {
                 break;
-            }
-
-            if (!$this->wontToDonateToSchool($userDonor, $damagedEducator['school_type'])) {
-                continue;
             }
 
             if ($damagedEducator['remainingAmount'] < $minTransactionDonationAmount) {

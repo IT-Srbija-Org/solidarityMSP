@@ -25,23 +25,6 @@ class DamagedEducatorSearchType extends AbstractType
                 'required' => false,
                 'label' => 'Ime',
             ])
-            ->add('period', HiddenType::class)
-            ->add('school', EntityType::class, [
-                'required' => false,
-                'class' => School::class,
-                'placeholder' => '',
-                'label' => 'Škola',
-                'query_builder' => function (EntityRepository $er) use ($options): QueryBuilder {
-                    return $er->createQueryBuilder('s')
-                        ->innerJoin('s.userDelegateSchools', 'uds')
-                        ->where('uds.user = :user')
-                        ->setParameter('user', $options['user']);
-                },
-                'choice_value' => 'id',
-                'choice_label' => function (School $school): string {
-                    return $school->getName().' ('.$school->getCity()->getName().')';
-                },
-            ])
             ->add('status', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Status',

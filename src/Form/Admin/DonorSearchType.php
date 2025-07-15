@@ -36,11 +36,6 @@ class DonorSearchType extends AbstractType
                     'Ne' => false,
                 ],
             ])
-            ->add('schoolType', ChoiceType::class, [
-                'required' => false,
-                'choices' => array_flip(UserDonor::SCHOOL_TYPES),
-                'label' => 'Kome želiš da doniraš?',
-            ])
             ->add('submit', SubmitType::class, [
                 'label' => '<i class="ti ti-search text-2xl"></i> Pretraži',
                 'label_html' => true,

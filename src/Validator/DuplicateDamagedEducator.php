@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute]
 class DuplicateDamagedEducator extends Constraint
 {
-    public string $message = 'Već postoji isti broj računa za drugog oštećenog za isti period i školu.';
+    public string $message = 'Već postoji prijavljen ovaj broj računa.';
 
     public function getTargets(): string
     {

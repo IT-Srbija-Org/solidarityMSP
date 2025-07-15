@@ -29,31 +29,25 @@ final class HomeController extends AbstractController
         $totalDelegates = $userRepository->getTotalDelegates();
         $totalAdmins = $userRepository->getTotalAdmins();
 
-        $period = $entityManager->getRepository(DamagedEducatorPeriod::class)->findAll();
         $periodItems = [];
 
-        foreach ($period as $pData) {
-            $sumAmountDamagedEducators = $damagedEducatorRepository->getSumAmountByPeriod($pData, null);
-            $sumAmountNewTransactions = $transactionRepository->getSumAmountTransactions($pData, null, [Transaction::STATUS_NEW]);
-            $sumAmountWaitingConfirmationTransactions = $transactionRepository->getSumAmountTransactions($pData, null, [Transaction::STATUS_WAITING_CONFIRMATION, Transaction::STATUS_EXPIRED]);
-            $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountTransactions($pData, null, [Transaction::STATUS_CONFIRMED]);
-            $totalDamagedEducators = $damagedEducatorRepository->getTotalsByPeriod($pData, null);
-            $averageAmountPerDamagedEducator = 0;
-
-            if ($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
-                $averageAmountPerDamagedEducator = floor($sumAmountConfirmedTransactions / $totalDamagedEducators);
-            }
-
-            $periodItems[] = [
-                'entity' => $pData,
-                'totalDamagedEducators' => $totalDamagedEducators,
-                'sumAmountDamagedEducators' => $sumAmountDamagedEducators,
-                'sumAmountNewTransactions' => $sumAmountNewTransactions,
-                'sumAmountWaitingConfirmationTransactions' => $sumAmountWaitingConfirmationTransactions,
-                'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
-                'averageAmountPerDamagedEducator' => $averageAmountPerDamagedEducator,
-            ];
+        $sumAmountDamagedEducators = $damagedEducatorRepository->getSumAmount(false);
+        $sumAmountNewTransactions = $transactionRepository->getSumAmountTransactions([Transaction::STATUS_NEW]);
+        $sumAmountWaitingConfirmationTransactions = $transactionRepository->getSumAmountTransactions([Transaction::STATUS_WAITING_CONFIRMATION, Transaction::STATUS_EXPIRED]);
+        $sumAmountConfirmedTransactions = $transactionRepository->getSumAmountTransactions([Transaction::STATUS_CONFIRMED]);
+        $totalDamagedEducators = $damagedEducatorRepository->getTotals(false);
+        $averageAmountPerDamagedEducator = 0;
+        if ($sumAmountConfirmedTransactions > 0 && $totalDamagedEducators > 0) {
+            $averageAmountPerDamagedEducator = floor($sumAmountConfirmedTransactions / $totalDamagedEducators);
         }
+        $periodItems[] = [
+            'totalDamagedEducators' => $totalDamagedEducators,
+            'sumAmountDamagedEducators' => $sumAmountDamagedEducators,
+            'sumAmountNewTransactions' => $sumAmountNewTransactions,
+            'sumAmountWaitingConfirmationTransactions' => $sumAmountWaitingConfirmationTransactions,
+            'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
+            'averageAmountPerDamagedEducator' => $averageAmountPerDamagedEducator,
+        ];
 
         return $this->render('admin/home/index.html.twig', [
             'totalDonors' => $totalDonors,

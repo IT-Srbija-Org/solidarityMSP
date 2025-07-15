@@ -33,11 +33,11 @@ class DonorEditType extends AbstractType
                 'required' => false,
                 'label' => 'Mesečna podrška',
             ])
-            ->add('schoolType', ChoiceType::class, [
-                'choices' => array_flip(UserDonor::SCHOOL_TYPES),
-                'label' => 'Kome želiš da doniraš?',
-                'placeholder' => '',
-            ])
+//            ->add('schoolType', ChoiceType::class, [
+//                'choices' => array_flip(UserDonor::SCHOOL_TYPES),
+//                'label' => 'Kome želiš da doniraš?',
+//                'placeholder' => '',
+//            ])
             ->add('amount', IntegerType::class, [
                 'label' => 'Iznos',
                 'attr' => [

@@ -15,11 +15,11 @@ class UserDonor
     public const SCHOOL_TYPE_UNIVERSITY = 2;
     public const SCHOOL_TYPE_EDUCATION = 3;
 
-    public const SCHOOL_TYPES = [
-        self::SCHOOL_TYPE_ALL => 'SchoolTypeAll',
-        self::SCHOOL_TYPE_UNIVERSITY => 'SchoolTypeUniversity',
-        self::SCHOOL_TYPE_EDUCATION => 'SchoolTypeEducation',
-    ];
+//    public const SCHOOL_TYPES = [
+//        self::SCHOOL_TYPE_ALL => 'SchoolTypeAll',
+//        self::SCHOOL_TYPE_UNIVERSITY => 'SchoolTypeUniversity',
+//        self::SCHOOL_TYPE_EDUCATION => 'SchoolTypeEducation',
+//    ];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -36,8 +36,8 @@ class UserDonor
     #[ORM\Column]
     private ?int $amount = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $schoolType = null;
+//    #[ORM\Column(nullable: true)]
+//    private ?int $schoolType = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;

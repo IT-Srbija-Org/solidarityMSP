@@ -18,8 +18,8 @@
             <div class="space-y-4">
                 {% if not (app.user and app.user.userDonor) %}
                     <div>
-                        <div>Priključi se – Pomozimo nastavnicima sada!</div>
-                        <div>Mere smanjenja plata su već stupile na snagu, što znači da moramo odmah reagovati.</div>
+                        <div>Priključi se – Pomozimo sada!</div>
+                        <div></div>
                     </div>
 
                     <div>
@@ -28,18 +28,18 @@
                             Hitno nam je potrebno više donatora!
                         </div>
 
-                        <div>Broj ugroženih nastavnika raste iz dana u dan, a vremena je sve manje.</div>
-                        <div>Prijavite se odmah i pomozite da zaštitimo što veći broj nastavnika putem direktne materijalne podrške.</div>
+                        <div>Broj ugroženih ljudi raste iz dana u dan, a vremena je sve manje.</div>
+                        <div>Prijavite se odmah i pomozite da zaštitimo što veći broj građana putem direktne materijalne podrške.</div>
                     </div>
 
-                    <div>
-                        <div class="font-bold">
-                            <span class="ti ti-world text-xl"></span>
-                            Želite da donirate iz inostranstva?
-                        </div>
+{#                    <div>#}
+{#                        <div class="font-bold">#}
+{#                            <span class="ti ti-world text-xl"></span>#}
+{#                            Želite da donirate iz inostranstva?#}
+{#                        </div>#}
 
-                        <div>Trenutno je preko naše platforme moguće donirati samo ako imate dinarski račun, ako želite da pomognete nastavnicima iz inostranstva to možete da uradite preko <a href="https://fondacijaalekkavcic.org/doniraj/" target="_blank" class="link link-primary link-hover">Fondacije Alek Kavčić</a>.</div>
-                    </div>
+{#                        <div>Trenutno je preko naše platforme moguće donirati samo ako imate dinarski račun, ako želite da pomognete nastavnicima iz inostranstva to možete da uradite preko <a href="https://fondacijaalekkavcic.org/doniraj/" target="_blank" class="link link-primary link-hover">Fondacije Alek Kavčić</a>.</div>#}
+{#                    </div>#}
                 {% endif %}
 
                 <div>
@@ -75,7 +75,7 @@
                         {{ form_label(form.firstName) }}
                         {{ form_widget(form.firstName, { 'attr': { 'class': 'input input-md input-bordered rounded-md w-full' } }) }}
                         {{ form_errors(form.firstName) }}
-                        <span class="text-gray-500 text-sm">Ime i prezime su nam potrebni zbog provere tvojih uplata ka oštećenim nastavnicima.</span>
+                        <span class="text-gray-500 text-sm">Ime i prezime su nam potrebni zbog provere tvojih uplata ka oštećenim građanima.</span>
                     </div>
 
                     <div>
@@ -100,12 +100,6 @@
                         {{ form_errors(form.amount) }}
 
                         <span class="text-gray-500 text-sm">Iznos sa kojim sam spreman/a da pomognem u dinarima (RSD).</span>
-                    </div>
-
-                    <div>
-                        {{ form_label(form.schoolType) }}
-                        {{ form_widget(form.schoolType, { 'attr': { 'class': 'select select-md select-bordered rounded-md w-full' } }) }}
-                        {{ form_errors(form.schoolType) }}
                     </div>
 
                     <div>

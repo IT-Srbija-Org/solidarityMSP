@@ -72,12 +72,6 @@ class User implements UserInterface
     private ?UserDonor $userDonor = null;
 
     /**
-     * @var Collection<int, UserDelegateSchool>
-     */
-    #[ORM\OneToMany(targetEntity: UserDelegateSchool::class, mappedBy: 'user')]
-    private Collection $userDelegateSchools;
-
-    /**
      * @var Collection<int, DamagedEducator>
      */
     #[ORM\OneToMany(targetEntity: DamagedEducator::class, mappedBy: 'createdBy')]
@@ -89,15 +83,11 @@ class User implements UserInterface
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'user')]
     private Collection $transactions;
 
-    #[ORM\OneToOne(mappedBy: 'user')]
-    private ?UserDelegateRequest $userDelegateRequest = null;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $lastVisit = null;
 
     public function __construct()
     {
-        $this->userDelegateSchools = new ArrayCollection();
         $this->damagedEducators = new ArrayCollection();
         $this->transactions = new ArrayCollection();
     }
@@ -282,14 +272,6 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection<int, UserDelegateSchool>
-     */
-    public function getUserDelegateSchools(): Collection
-    {
-        return $this->userDelegateSchools;
-    }
-
-    /**
      * @return Collection<int, DamagedEducator>
      */
     public function getDamagedEducators(): Collection
@@ -303,11 +285,6 @@ class User implements UserInterface
     public function getTransactions(): Collection
     {
         return $this->transactions;
-    }
-
-    public function getUserDelegateRequest(): ?UserDelegateRequest
-    {
-        return $this->userDelegateRequest;
     }
 
     public function getLastVisit(): ?\DateTimeInterface

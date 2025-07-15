@@ -49,11 +49,6 @@ class UserDonorType extends AbstractType
                     'min' => 500,
                 ],
             ])
-            ->add('schoolType', ChoiceType::class, [
-                'choices' => array_flip(UserDonor::SCHOOL_TYPES),
-                'label' => 'Kome želiš da doniraš?',
-                'placeholder' => '',
-            ])
             ->add('comment', TextareaType::class, [
                 'required' => false,
                 'label' => 'Komentar (opciono)',

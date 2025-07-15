@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\CityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -31,15 +29,8 @@ class City
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
 
-    /**
-     * @var Collection<int, UserDelegateRequest>
-     */
-    #[ORM\OneToMany(targetEntity: UserDelegateRequest::class, mappedBy: 'city')]
-    private Collection $userDelegateRequests;
-
     public function __construct()
     {
-        $this->userDelegateRequests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,13 +75,5 @@ class City
         $this->updatedAt = new \DateTime();
 
         return $this;
-    }
-
-    /**
-     * @return Collection<int, UserDelegateRequest>
-     */
-    public function getUserDelegateRequests(): Collection
-    {
-        return $this->userDelegateRequests;
     }
 }

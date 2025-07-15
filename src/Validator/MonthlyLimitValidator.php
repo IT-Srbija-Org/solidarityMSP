@@ -20,9 +20,6 @@ class MonthlyLimitValidator extends ConstraintValidator
         }
 
         $monthlyLimit = DamagedEducator::MONTHLY_LIMIT;
-        if ('full' != $damagedEducator->getPeriod()->getType()) {
-            $monthlyLimit = $monthlyLimit / 2;
-        }
 
         if ($damagedEducator->getAmount() <= $monthlyLimit) {
             return;

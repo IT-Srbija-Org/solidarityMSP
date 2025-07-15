@@ -26,36 +26,36 @@ class DamagedEducatorEditType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $schools = $options['entityManager']->getRepository(School::class)
-            ->createQueryBuilder('s')
-            ->innerJoin('s.userDelegateSchools', 'uds')
-            ->where('uds.user = :user')
-            ->setParameter('user', $options['user'])
-            ->getQuery()
-            ->getResult();
+//        $schools = $options['entityManager']->getRepository(School::class)
+//            ->createQueryBuilder('s')
+//            ->innerJoin('s.userDelegateSchools', 'uds')
+//            ->where('uds.user = :user')
+//            ->setParameter('user', $options['user'])
+//            ->getQuery()
+//            ->getResult();
 
-        $schoolChoices = [];
-        foreach ($schools as $school) {
-            $schoolChoices[$school->getName().' ('.$school->getCity()->getName().')'] = $school;
-        }
+//        $schoolChoices = [];
+//        foreach ($schools as $school) {
+//            $schoolChoices[$school->getName().' ('.$school->getCity()->getName().')'] = $school;
+//        }
 
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Ime',
             ])
-            ->add('school', ChoiceType::class, [
-                'placeholder' => 1 === count($schoolChoices) ? null : '',
-                'label' => 'Škola',
-                'choices' => $schoolChoices,
-                'choice_value' => 'id',
-            ])
-            ->add('city', EntityType::class, [
-                'class' => City::class,
-                'placeholder' => '',
-                'label' => 'Grad (Prebivalište oštećenog)',
-                'choice_value' => 'id',
-                'choice_label' => 'name',
-            ])
+//            ->add('school', ChoiceType::class, [
+//                'placeholder' => 1 === count($schoolChoices) ? null : '',
+//                'label' => 'Škola',
+//                'choices' => $schoolChoices,
+//                'choice_value' => 'id',
+//            ])
+//            ->add('city', EntityType::class, [
+//                'class' => City::class,
+//                'placeholder' => '',
+//                'label' => 'Grad (Prebivalište oštećenog)',
+//                'choice_value' => 'id',
+//                'choice_label' => 'name',
+//            ])
             ->add('amount', IntegerType::class, [
                 'label' => 'Cifra',
                 'attr' => [

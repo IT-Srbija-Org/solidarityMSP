@@ -16,23 +16,11 @@ class TransactionEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('period', TextType::class, [
-                'disabled' => true,
-                'mapped' => false,
-                'data' => $options['data']->getDamagedEducator()?->getPeriod()?->getChoiceLabel(),
-                'label' => 'Period',
-            ])
             ->add('user', TextType::class, [
                 'disabled' => true,
                 'mapped' => false,
                 'data' => $options['data']->getUser()?->getEmail(),
                 'label' => 'Email donatora',
-            ])
-            ->add('school', TextType::class, [
-                'disabled' => true,
-                'mapped' => false,
-                'data' => $options['data']->getDamagedEducator()?->getSchool()?->getName(),
-                'label' => 'Škola',
             ])
             ->add('damagedEducator', TextType::class, [
                 'disabled' => true,

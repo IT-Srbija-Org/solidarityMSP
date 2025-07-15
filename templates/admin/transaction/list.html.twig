@@ -23,10 +23,6 @@
                 <tr>
                     <th>ID</th>
                     <th>
-                        <span class="ti ti-calendar-event text-xl"></span>
-                        Period
-                    </th>
-                    <th>
                         <span class="ti ti-user-heart text-xl"></span>
                         Donator
                     </th>
@@ -69,7 +65,6 @@
             {% for transaction in transactions.items %}
                 <tr class="hover:bg-gray-100">
                     <td>{{ transaction.id }}</td>
-                    <td>{{ transaction.damagedEducator.period|format_period(1) }}</td>
                     <td>
                         <div>{{ transaction.user.fullName }}</div>
                         <a href="{{ path('admin_user_details', { 'id': transaction.user.id }) }}" class="link link-primary link-hover">
@@ -79,13 +74,6 @@
                     <td>{{ transaction.userDonorFullName }}</td>
                     <td>
                         <div>{{ transaction.damagedEducator.name }}</div>
-                        <div class="text-gray-500">
-                            <a href="{{ path('admin_school_details', { 'id': transaction.damagedEducator.school.id }) }}" class="link link-primary link-hover">
-                                {{ transaction.damagedEducator.school.name }}
-                            </a>
-
-                            ({{ transaction.damagedEducator.school.city.name }})
-                        </div>
                     </td>
                     <td class="whitespace-nowrap">{{ transaction.accountNumber|account_number_format }}</td>
                     <td>{{ transaction.amount|number_format }}</td>

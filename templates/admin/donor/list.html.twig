@@ -23,7 +23,6 @@
                         <span class="ti ti-repeat text-xl"></span>
                         Mesečna podrška
                     </th>
-                    <th>Želi da donira?</th>
                     <th>
                         <span class="ti ti-cash text-xl"></span>
                         Iznos
@@ -54,7 +53,6 @@
                             Ne
                         {% endif %}
                     </td>
-                    <td>{{ donor.schoolTypeName|trans }}</td>
                     <td>{{ donor.amount|number_format }}</td>
                     <td class="whitespace-nowrap">{{ donor.updatedAt|date('H:i d.m.Y.') }}</td>
                     <td>

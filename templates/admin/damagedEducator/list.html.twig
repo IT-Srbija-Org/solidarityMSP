@@ -16,16 +16,8 @@
                 <tr>
                     <th>ID</th>
                     <th>
-                        <span class="ti ti-calendar-event text-xl"></span>
-                        Period
-                    </th>
-                    <th>
                         <span class="ti ti-user text-xl"></span>
                         Ime
-                    </th>
-                    <th>
-                        <span class="ti ti-building text-xl"></span>
-                        Škola
                     </th>
                     <th>
                         <span class="ti ti-cash text-xl"></span>
@@ -57,16 +49,7 @@
             {% for damagedEducator in damagedEducators.items %}
                 <tr class="hover:bg-gray-100">
                     <td>{{ damagedEducator.id }}</td>
-                    <td>{{ damagedEducator.period|format_period(true) }}</td>
-                    <td>
-                        <div>{{ damagedEducator.name }}</div>
-                        <div class="text-gray-500">{{ damagedEducator.city.name }}</div>
-                    </td>
-                    <td>
-                        <a href="{{ path('admin_school_details', { 'id': damagedEducator.school.id }) }}" class="link link-primary link-hover">
-                            {{ damagedEducator.school.name }}
-                        </a>
-                    </td>
+                    <td>{{ damagedEducator.name }}</td>
                     <td>{{ damagedEducator.amount|number_format }}</td>
                     <td class="whitespace-nowrap">{{ damagedEducator.accountNumber|account_number_format }}</td>
                     <td class="whitespace-nowrap">{{ damagedEducator.createdAt|date('H:i d.m.Y.') }}</td>

@@ -46,7 +46,6 @@
         <table class="table rounded-xl border border-base-200">
             <thead class="bg-gray-100">
                 <tr>
-                    <th>Period</th>
                     <th>
                         <span class="ti ti-school text-xl"></span>
                         Ukupno oštećenih
@@ -61,7 +60,7 @@
                     </th>
                     <th>
                         <span class="ti ti-cash text-xl"></span>
-                        Iznos za koji se čeka<br>potvrdu nastavnika
+                        Iznos za koji se čeka<br>potvrda oštećenog građanina
                     </th>
                     <th>
                         <span class="ti ti-cash text-xl"></span>
@@ -76,7 +75,6 @@
             <tbody>
             {% for period in periodItems %}
                 <tr class="hover:bg-gray-100">
-                    <td class="whitespace-nowrap">{{ period.entity|format_period }}</td>
                     <td>{{ period.totalDamagedEducators|number_format }}</td>
                     <td>{{ period.sumAmountDamagedEducators|number_format }}</td>
                     <td>{{ period.sumAmountNewTransactions|number_format }}</td>

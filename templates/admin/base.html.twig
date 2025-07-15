@@ -66,12 +66,6 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ path('admin_user_delegate_request_list') }}" class="{% if app.request.get('_route') == 'admin_user_delegate_request_list' %}menu-active{% endif %}">
-                        <span class="ti ti-checklist text-2xl"></span>
-                        Zahtevi za delegata
-                    </a>
-                </li>
-                <li>
                     <a href="{{ path('admin_damaged_educator_list') }}" class="{% if app.request.get('_route') == 'admin_damaged_educator_list' %}menu-active{% endif %}">
                         <span class="ti ti-school text-2xl"></span>
                         Oštećeni
@@ -81,24 +75,6 @@
                     <a href="{{ path('admin_transaction_list') }}" class="{% if app.request.get('_route') == 'admin_transaction_list' %}menu-active{% endif %}">
                         <span class="ti ti-credit-card-pay text-2xl"></span>
                         Transakcije
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ path('admin_school_list') }}" class="{% if app.request.get('_route') == 'admin_school_list' %}menu-active{% endif %}">
-                        <span class="ti ti-building text-2xl"></span>
-                        Škole
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ path('admin_school_type_list') }}" class="{% if app.request.get('_route') == 'admin_school_type_list' %}menu-active{% endif %}">
-                        <span class="ti ti-building-cog text-2xl"></span>
-                        Tipovi škola
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ path('admin_city_list') }}" class="{% if app.request.get('_route') == 'admin_city_list' %}menu-active{% endif %}">
-                        <span class="ti ti-building-community text-2xl"></span>
-                        Gradovi
                     </a>
                 </li>
                 <li>

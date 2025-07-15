@@ -73,10 +73,6 @@
                                     Oštećeni/a
                                 </th>
                                 <th>
-                                    <span class="ti ti-building-community text-xl"></span>
-                                    Grad
-                                </th>
-                                <th>
                                     <span class="ti ti-credit-card text-xl"></span>
                                     Broj računa
                                 </th>
@@ -101,13 +97,6 @@
                                         <span class="text-gray-500 tracking-widest">{{ transaction.damagedEducator.name|mask }}</span>
                                     {% else %}
                                         {{ transaction.damagedEducator.name }}
-                                    {% endif %}
-                                </td>
-                                <td data-label="Grad" data-copyable>
-                                    {% if transaction.isMaskInformation %}
-                                        <div class="text-gray-500 tracking-widest">{{ transaction.damagedEducator.city.name|mask }}</div>
-                                    {% else %}
-                                        <div>{{ transaction.damagedEducator.city.name }}</div>
                                     {% endif %}
                                 </td>
                                 <td class="whitespace-nowrap" data-label="Broj računa" data-copyable>
