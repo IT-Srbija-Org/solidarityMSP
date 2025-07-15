@@ -90,13 +90,16 @@
         {% block footer %}
             <footer class="footer sm:footer-horizontal bg-base-100 text-base-content p-10 mt-10">
                 <aside>
-                    <img src="{{ asset('image/logo.svg') }}" alt="Logo" class="w-42 rounded-lg">
+                    <a href="{{ path('home') }}">
+                        <img src="{{ asset('image/logo.svg') }}" alt="Logo" class="w-42 rounded-lg">
+                    </a>
 
-                    <p>
-                        Mreža solidarnosti
-                        <br />
-                        <a href="https://itsrbija.org" class="link link-hover link-primary">IT Srbija</a>
-                    </p>
+                    <div>
+                        <p>Mreža solidarnosti</p>
+                        <p>
+                            <a href="https://itsrbija.org" target="_blank" class="link link-hover">IT Srbija</a>
+                        </p>
+                    </div>
                 </aside>
                 <nav>
                     <h6 class="footer-title">Linkovi</h6>
@@ -106,27 +109,27 @@
                 <nav>
                     <h6 class="footer-title">Socijalne mreže</h6>
                     <div class="grid grid-cols-6 md:grid-cols-3 gap-4">
-                        <a href="https://www.linkedin.com/company/it-srbija/" target="_blank" title="LinkedIn" class="transition duration-200 hover:scale-110">
+                        <a href="https://www.linkedin.com/company/it-srbija/" target="_blank" title="LinkedIn" class="text-gray-500 transition duration-200 hover:scale-110">
                             <i class="ti ti-brand-linkedin text-3xl"></i>
                         </a>
 
-                        <a href="https://www.instagram.com/it.srbija" target="_blank" title="Instagram" class="transition duration-200 hover:scale-110">
+                        <a href="https://www.instagram.com/it.srbija" target="_blank" title="Instagram" class="text-gray-500 transition duration-200 hover:scale-110">
                             <i class="ti ti-brand-instagram text-3xl"></i>
                         </a>
 
-                        <a href="https://www.facebook.com/share/1BXSBJy2cY/" target="_blank" title="Facebook" class="transition duration-200 hover:scale-110">
+                        <a href="https://www.facebook.com/share/1BXSBJy2cY/" target="_blank" title="Facebook" class="text-gray-500 transition duration-200 hover:scale-110">
                             <i class="ti ti-brand-facebook text-3xl"></i>
                         </a>
 
-                        <a href="https://x.com/ITSrbijaOrg" target="_blank" title="X" class="transition duration-200 hover:scale-110">
+                        <a href="https://x.com/ITSrbijaOrg" target="_blank" title="X" class="text-gray-500 transition duration-200 hover:scale-110">
                             <i class="ti ti-brand-x text-3xl"></i>
                         </a>
 
-                        <a href="https://tiktok.com/@it.srbija" target="_blank" title="TikTok" class="transition duration-200 hover:scale-110">
+                        <a href="https://tiktok.com/@it.srbija" target="_blank" title="TikTok" class="text-gray-500 transition duration-200 hover:scale-110">
                             <i class="ti ti-brand-tiktok text-3xl"></i>
                         </a>
 
-                        <a href="https://github.com/IT-Srbija-Org" target="_blank" title="TikTok" class="transition duration-200 hover:scale-110">
+                        <a href="https://github.com/IT-Srbija-Org" target="_blank" title="TikTok" class="text-gray-500 transition duration-200 hover:scale-110">
                             <i class="ti ti-brand-github text-3xl"></i>
                         </a>
                     </div>
