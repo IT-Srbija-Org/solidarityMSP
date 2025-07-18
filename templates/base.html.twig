@@ -66,14 +66,14 @@
                     <!-- Regular menu items (visible on large screens) -->
                     <div class="navbar-center hidden lg:flex">
                         <ul class="menu menu-horizontal px-1 gap-3 size-xl text-primary-content">
-                            {{ nav_links('link text-primary-content hover:text-accent no-underline') }}
+                            {{ nav_links('link text-primary-content hover:bg-white hover:text-primary transition-colors no-underline') }}
                         </ul>
                     </div>
 
                     <!-- Burger menu for small screens -->
                     <div class="flex-none lg:hidden">
                         <details class="dropdown dropdown-end">
-                            <summary class="btn btn-ghost btn-circle text-primary-content" aria-label="Open menu">
+                            <summary class="btn btn-ghost btn-circle text-primary-content hover:bg-white hover:text-primary transition-colors" aria-label="Open menu">
                                 <span class="ti ti-menu-2 text-xl"></span>
                             </summary>
                             <ul class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-72">
@@ -91,7 +91,7 @@
             <footer class="footer sm:footer-horizontal bg-base-100 text-base-content p-10 mt-10">
                 <aside>
                     <a href="{{ path('home') }}">
-                        <img src="{{ asset('image/logo-msp-white.svg') }}" alt="Logo" class="w-42 rounded-lg">
+                        <img src="{{ asset('image/logo.svg') }}" alt="Logo" class="w-42 rounded-lg">
                     </a>
 
                     <div>
