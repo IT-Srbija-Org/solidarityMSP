@@ -8,6 +8,7 @@ parameters:
     UMAMI_TRACKING_ID: '%env(UMAMI_TRACKING_ID)%'
     CLOUDFLARE_TURNSTILE_SITEKEY: '%env(CLOUDFLARE_TURNSTILE_SITEKEY)%'
     CLOUDFLARE_TURNSTILE_SECRET_KEY: '%env(CLOUDFLARE_TURNSTILE_SECRET_KEY)%'
+    WEBSITE_URL: '%env(WEBSITE_URL)%'
 
 services:
     # default configuration for services in *this* file
