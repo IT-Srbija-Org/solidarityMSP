@@ -11,7 +11,7 @@
 
 {% block body %}
     {% block adminNavbar %}
-        <div class="navbar bg-base-100 shadow mb-2">
+        <div class="navbar bg-base-100 shadow mb-2 bg-primary">
             <div class="navbar-start">
                 <span class="tooltip tooltip-bottom before:text-xs before:content-[attr(data-tip)]">
                     <label aria-label="Open menu" for="my-drawer" class="btn btn-square btn-ghost drawer-button lg:hidden ">
@@ -23,8 +23,10 @@
             </div>
 
             <div class="navbar-center text-lg font-bold">
-                Admin Panel
+                <img src="{{ asset('image/logo-msp-white.svg') }}" alt="Logo" class="w-42 rounded-lg px-4 py-2">
             </div>
+
+            <div class="navbar-end"></div>
         </div>
     {% endblock %}
 
@@ -40,7 +42,7 @@
 
         <div class="drawer-side">
             <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-            <ul class="menu min-h-screen w-50 gap-1 bg-base-100 rounded-r-lg ">
+            <ul class="menu min-h-screen w-50 gap-1 bg-base-100 rounded-r-lg">
                 <li class="mb-4">
                     <a href="{{ path('home') }}">
                         <span class="ti ti-chevrons-left text-2xl"></span>
@@ -123,6 +125,8 @@
         </div>
     </div>
 {% endblock %}
+
+{% block footer %}{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
