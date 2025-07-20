@@ -38,6 +38,18 @@ class SchoolRepository extends ServiceEntityRepository
                 ->setParameter('type', $criteria['type']);
         }
 
+        if (isset($criteria['hasAssignedDelegate'])) {
+            $qb
+                ->leftJoin('c.userDelegateSchools', 'uds')
+                ->leftJoin('uds.user', 'u');
+
+            if ($criteria['hasAssignedDelegate']) {
+                $qb->andWhere('u.id is not NULL');
+            } else {
+                $qb->andWhere('u.id is NULL');
+            }
+        }
+
         // Set the sorting
         $qb->orderBy('c.id', 'ASC');
 

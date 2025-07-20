@@ -38,6 +38,10 @@
                         <span class="ti ti-calendar-event text-xl"></span>
                         Kreirana
                     </th>
+                    <th>
+                        <span class="ti ti-building-cog text-xl"></span>
+                        Delegat
+                    <th>
                     <th></th>
                 </tr>
             </thead>
@@ -62,6 +66,13 @@
                         {% endif %}
                     </td>
                     <td>{{ school.createdAt|date('d.m.Y.') }}</td>
+                    <td>
+                        {% for delegate in school.userDelegateSchools %}
+                            {% if delegate.user %}
+                                <p>{{ delegate.user.email }}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td>
                         <div class="flex gap-2 justify-end">
                             <a href="{{ path('admin_school_edit', { 'id': school.id }) }}" class="btn btn-primary btn-sm flex tooltip" data-tip="Izmeni">

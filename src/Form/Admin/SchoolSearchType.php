@@ -6,6 +6,7 @@ use App\Entity\City;
 use App\Entity\SchoolType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -36,6 +37,14 @@ class SchoolSearchType extends AbstractType
                 'label' => 'Tip škole',
                 'choice_value' => 'id',
                 'choice_label' => 'name',
+            ])
+            ->add('hasAssignedDelegate', ChoiceType::class, [
+                'required' => false,
+                'label' => 'Filtriraj škole po statusu delegata',
+                'choices' => [
+                    'Škole sa zaduženim delegatom' => true,
+                    'Škole bez zaduženog delegata' => false,
+                ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => '<i class="ti ti-search text-2xl"></i> Pretraži',
