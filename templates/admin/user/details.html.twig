@@ -18,7 +18,15 @@
             <div>
                 <div>Ime: {{ user.fullName }}</div>
                 <div>Email: {{ user.email }}</div>
-                <div>Broj telefona: {{ user.userDelegateRequest.phone ? user.userDelegateRequest.phone|phone_format : '-' }}</div>
+                <div>
+                    Broj telefona:
+
+                    {% if user.userDelegateRequest and user.userDelegateRequest.phone %}
+                        {{ user.userDelegateRequest.phone|phone_format }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </div>
                 <div>Privilegija: {{ user.roles|roleTranslate }}</div>
                 <div>Registrovan: {{ user.createdAt|date('H:i d.m.Y') }}</div>
                 <div>

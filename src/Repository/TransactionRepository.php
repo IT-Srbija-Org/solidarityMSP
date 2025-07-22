@@ -172,6 +172,19 @@ class TransactionRepository extends ServiceEntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
+    public function getSumConfirmedAmountForActiveDamagedEducators(): int
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb = $qb->select('SUM(t.amount)')
+            ->innerJoin('t.damagedEducator', 'de')
+            ->andWhere('de.status = :status1')
+            ->setParameter('status1', DamagedEducator::STATUS_NEW)
+            ->andWhere('t.status = :status2')
+            ->setParameter('status2', Transaction::STATUS_CONFIRMED);
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
     public function getSumConfirmedAmount(bool $useCache): int
     {
         return $this->cache->get('transaction-getSumConfirmedAmount', function (ItemInterface $item) {

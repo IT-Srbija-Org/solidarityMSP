@@ -36,7 +36,7 @@ class CacheNumbersCommand extends Command
         }
 
         $this->transactionRepository->getSumConfirmedAmount(false);
-        $this->damagedEducatorRepository->getSumAmount(false);
+        $this->damagedEducatorRepository->getMissingSumAmount(false);
         $this->damagedEducatorRepository->getTotals(false);
         $this->transactionRepository->getTotalActiveDonors(false);
         $this->transactionRepository->getSchoolWithConfirmedTransactions(false);

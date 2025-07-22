@@ -8,7 +8,7 @@
 
             <progress class="progress progress-primary w-full mt-2" value="{{ transactionSumConfirmedAmount }}" max="{{ damagedEducatorSumAmount }}"></progress>
             <p class="text-sm text-gray-500 mt-1">
-                Potrebno: {{ damagedEducatorSumAmount|number_format(0, ',', '.') }} RSD
+                Potrebno još: {{ damagedEducatorMissingSumAmount|number_format(0, ',', '.') }} RSD
             </p>
         </div>
     </div>
@@ -18,11 +18,6 @@
             <h2 class="card-title">Prosečan isplaćen iznos po nastavniku</h2>
             <p class="text-4xl md:text-5xl font-bold text-primary">
                 {{ avgConfirmedAmountPerEducator|number_format(0, ',', '.') }} RSD
-            </p>
-
-            <progress class="progress progress-primary w-full mt-2" value="{{ avgConfirmedAmountPerEducator }}" max="{{ avgInputAmountPerEducator }}"></progress>
-            <p class="text-sm text-gray-500 mt-1">
-                Prosečno uskraćen deo zarade: {{ avgInputAmountPerEducator|number_format(0, ',', '.') }} RSD
             </p>
         </div>
     </div>

@@ -15,7 +15,7 @@ class ApiController extends AbstractController
     }
 
     #[Route('/v1/numbers')]
-    public function generalNumbers(): JsonResponse
+    public function v1Numbers(): JsonResponse
     {
         $generalNumbers = $this->statisticsService->getGeneralNumbers();
 
@@ -25,7 +25,22 @@ class ApiController extends AbstractController
             'totalEducators' => $generalNumbers['totalDamagedEducators'],
             'totalActiveDonors' => $generalNumbers['totalActiveDonors'],
             'avgConfirmedAmountPerEducator' => $generalNumbers['avgConfirmedAmountPerEducator'],
-            'avgRequiredAmountPerEducator' => $generalNumbers['avgInputAmountPerEducator'],
+            'avgRequiredAmountPerEducator' => 0,
+        ]);
+    }
+
+    #[Route('/v2/numbers')]
+    public function v2Numbers(): JsonResponse
+    {
+        $generalNumbers = $this->statisticsService->getGeneralNumbers();
+
+        return $this->json([
+            'transactionSumConfirmedAmount' => $generalNumbers['transactionSumConfirmedAmount'],
+            'damagedEducatorMissingSumAmount' => $generalNumbers['damagedEducatorMissingSumAmount'],
+            'damagedEducatorSumAmount' => $generalNumbers['damagedEducatorSumAmount'],
+            'totalDamagedEducators' => $generalNumbers['totalDamagedEducators'],
+            'totalActiveDonors' => $generalNumbers['totalActiveDonors'],
+            'avgConfirmedAmountPerEducator' => $generalNumbers['avgConfirmedAmountPerEducator'],
         ]);
     }
 }

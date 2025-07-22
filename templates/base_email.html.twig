@@ -4,18 +4,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
 
-    <title>Mreža solidarnosti - IT Srbija</title>
+    <title>Mreža solidarnosti za obrazovanje!</title>
 </head>
-<body style="padding: 20px; background: #FFFFFF;">
-    <img src="{{ WEBSITE_URL }}{{ asset('image/logo-email.jpg') }}" style="width: 200px;">
-
-    <div style="margin: 24px 0;">
-        {% block body %}{% endblock %}
+<body style="margin: 0; padding: 0;">
+    <div style="background: #2700EC; padding: 20px;">
+        <img src="{{ WEBSITE_URL }}{{ asset('image/logo-msp-email.jpg') }}" style="width: 200px;">
     </div>
 
-    <div>
-        <div>Zajedno sa nastavnicima.</div>
-        <div><b>Tvoja Mreža solidarnosti</b></div>
+    <div style="padding: 10px 20px 20px 20px; background: #FFFFFF;">
+        <div style="margin: 24px 0;">
+            {% block body %}{% endblock %}
+        </div>
+
+        <div>
+            <div>Zajedno sa nastavnicima.</div>
+            <div><b>Tvoja Mreža solidarnosti</b></div>
+        </div>
     </div>
 </body>
 </html>

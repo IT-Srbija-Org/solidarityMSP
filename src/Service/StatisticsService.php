@@ -14,7 +14,7 @@ class StatisticsService
     public function getGeneralNumbers(): array
     {
         $transactionSumConfirmedAmount = $this->transactionRepository->getSumConfirmedAmount(true);
-        $damagedEducatorSumAmount = $this->damagedEducatorRepository->getSumAmount(true);
+        $damagedEducatorMissingSumAmount = $this->damagedEducatorRepository->getMissingSumAmount(true);
         $totalDamagedEducators = $this->damagedEducatorRepository->getTotals(true);
         $totalActiveDonors = $this->transactionRepository->getTotalActiveDonors(true);
 
@@ -23,18 +23,13 @@ class StatisticsService
             $avgConfirmedAmountPerEducator = ceil($transactionSumConfirmedAmount / $totalDamagedEducators);
         }
 
-        $avgInputAmountPerEducator = 0;
-        if ($damagedEducatorSumAmount > 0 && $totalDamagedEducators > 0) {
-            $avgInputAmountPerEducator = ceil($damagedEducatorSumAmount / $totalDamagedEducators);
-        }
-
         return [
             'transactionSumConfirmedAmount' => $transactionSumConfirmedAmount,
-            'damagedEducatorSumAmount' => $damagedEducatorSumAmount,
+            'damagedEducatorMissingSumAmount' => $damagedEducatorMissingSumAmount,
+            'damagedEducatorSumAmount' => $transactionSumConfirmedAmount + $damagedEducatorMissingSumAmount,
             'totalDamagedEducators' => $totalDamagedEducators,
             'totalActiveDonors' => $totalActiveDonors,
             'avgConfirmedAmountPerEducator' => $avgConfirmedAmountPerEducator,
-            'avgInputAmountPerEducator' => $avgInputAmountPerEducator,
         ];
     }
 }

@@ -1,4 +1,4 @@
-# Mreža Solidarnosti
+# Mreža solidarnosti za obrazovanje
 
 Mreža solidarnosti je inicijativa [IT Srbija](https://itsrbija.org/) koja inicijalno ima za cilj direktnu finansijsku podršku zaposlenima u prosveti čija je plata umanjena ili ukinuta zbog obustave rada.
 Mreža solidarnosti je zamišljena da ima upotrebu za sve slične inicijative na teritoriji Republike Srbije u budućnosti.
@@ -50,6 +50,10 @@ Sva pitanja nam možete postaviti na zvanicnom [Discord](https://discord.gg/it-s
 Slobodno napravite novi [Issue](https://github.com/IT-Srbija-Org/solidaritySF/issues) sa 
 odgovarajućim naslovom i opisom. Ako ste već pronašli rešenje za problem, 
 **slobodno otvorite [pull request](https://github.com/IT-Srbija-Org/solidaritySF/pulls)**.
+
+## 🤖 Imamo li API?
+
+Da. API za ovaj projekt se nalazi na [ovoj](https://msp.mrezasolidarnosti.org/api/v2/numbers) adresi.
 
 ## ❤️ Hvala!
 

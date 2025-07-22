@@ -25,11 +25,11 @@ class HomeController extends AbstractController
 
         return $this->render('home/basic_numbers.html.twig', [
             'transactionSumConfirmedAmount' => $generalNumbers['transactionSumConfirmedAmount'],
+            'damagedEducatorMissingSumAmount' => $generalNumbers['damagedEducatorMissingSumAmount'],
             'damagedEducatorSumAmount' => $generalNumbers['damagedEducatorSumAmount'],
             'totalDamagedEducators' => $generalNumbers['totalDamagedEducators'],
             'totalActiveDonors' => $generalNumbers['totalActiveDonors'],
             'avgConfirmedAmountPerEducator' => $generalNumbers['avgConfirmedAmountPerEducator'],
-            'avgInputAmountPerEducator' => $generalNumbers['avgInputAmountPerEducator'],
         ]);
     }
 }
