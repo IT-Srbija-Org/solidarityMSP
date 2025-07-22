@@ -48,7 +48,7 @@ class DamagedEducatorRepository extends ServiceEntityRepository
 
         if (!empty($criteria['name'])) {
             $qb->andWhere('e.name LIKE :name')
-                ->setParameter('name', '%' . $criteria['name'] . '%');
+                ->setParameter('name', '%'.$criteria['name'].'%');
         }
 
         if (!empty($criteria['status'])) {
@@ -80,7 +80,7 @@ class DamagedEducatorRepository extends ServiceEntityRepository
             $criteria['accountNumber'] = str_replace('-', '', $criteria['accountNumber']);
 
             $qb->andWhere('e.accountNumber LIKE :accountNumber')
-                ->setParameter('accountNumber', '%' . $criteria['accountNumber'] . '%');
+                ->setParameter('accountNumber', '%'.$criteria['accountNumber'].'%');
         }
 
         if (!empty($criteria['createdBy'])) {
@@ -131,7 +131,7 @@ class DamagedEducatorRepository extends ServiceEntityRepository
                 ->setParameter('school', $school);
         }
 
-        return (int)$qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     public function getMissingSumAmount(bool $useCache): int
@@ -144,7 +144,7 @@ class DamagedEducatorRepository extends ServiceEntityRepository
                 ->andWhere('e.status = :status')
                 ->setParameter('status', DamagedEducator::STATUS_NEW);
 
-            $totalSumAmount = (int)$qb->getQuery()->getSingleScalarResult();
+            $totalSumAmount = (int) $qb->getQuery()->getSingleScalarResult();
             $totalDamagedEducatorConfirmedTransaction = $this->transactionRepository->getSumConfirmedAmountForActiveDamagedEducators();
 
             if ($totalSumAmount <= $totalDamagedEducatorConfirmedTransaction) {
@@ -163,7 +163,7 @@ class DamagedEducatorRepository extends ServiceEntityRepository
             $qb = $this->createQueryBuilder('e');
             $qb = $qb->select('COUNT(DISTINCT e.accountNumber)');
 
-            return (int)$qb->getQuery()->getSingleScalarResult();
+            return (int) $qb->getQuery()->getSingleScalarResult();
         }, $useCache ? 1.0 : INF);
     }
 
@@ -179,7 +179,7 @@ class DamagedEducatorRepository extends ServiceEntityRepository
                 ->setParameter('school', $school);
         }
 
-        return (int)$qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     public function getTotalsSchoolByPeriod(DamagedEducatorPeriod $period): int
@@ -189,6 +189,6 @@ class DamagedEducatorRepository extends ServiceEntityRepository
             ->andWhere('e.period = :period')
             ->setParameter('period', $period);
 
-        return (int)$qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 }
