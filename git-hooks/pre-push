@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "Running pre-push checks..."
-docker exec solidarity-php-container php bin/console app:tests
+docker exec solidarity-msp-php-container php bin/console app:tests
 
 # Store the exit code
 exit_code=$?
