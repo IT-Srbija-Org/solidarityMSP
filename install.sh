@@ -12,24 +12,24 @@ else
 fi
 
 # Set git safe.directory
-docker exec solidarity-php-container git config --global --add safe.directory /var/www/project
+docker exec solidarity-msp-php-container git config --global --add safe.directory /var/www/project
 
 # Install dependencies
-docker exec solidarity-php-container php composer.phar install;
+docker exec solidarity-msp-php-container php composer.phar install;
 
 # Create database
-docker exec solidarity-php-container php bin/console doctrine:database:create --if-not-exists;
+docker exec solidarity-msp-php-container php bin/console doctrine:database:create --if-not-exists;
 
 # Dump and create tables
-docker exec solidarity-php-container php bin/console doctrine:schema:drop --force;
-docker exec solidarity-php-container php bin/console doctrine:schema:update --force;
+docker exec solidarity-msp-php-container php bin/console doctrine:schema:drop --force;
+docker exec solidarity-msp-php-container php bin/console doctrine:schema:update --force;
 
 # Load fixtures
-docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=1 --no-interaction;
-docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=2 --append --no-interaction;
-docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=3 --append --no-interaction;
-docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=4 --append --no-interaction;
-docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=5 --append --no-interaction;
-docker exec solidarity-php-container php bin/console doctrine:fixtures:load --group=6 --append --no-interaction;
+docker exec solidarity-msp-php-container php bin/console doctrine:fixtures:load --group=1 --no-interaction;
+docker exec solidarity-msp-php-container php bin/console doctrine:fixtures:load --group=2 --append --no-interaction;
+docker exec solidarity-msp-php-container php bin/console doctrine:fixtures:load --group=3 --append --no-interaction;
+docker exec solidarity-msp-php-container php bin/console doctrine:fixtures:load --group=4 --append --no-interaction;
+docker exec solidarity-msp-php-container php bin/console doctrine:fixtures:load --group=5 --append --no-interaction;
+docker exec solidarity-msp-php-container php bin/console doctrine:fixtures:load --group=6 --append --no-interaction;
 
 echo "Done!"
