@@ -1,7 +1,7 @@
 Hvala svima koji su doprineli razvoju ovog projekta, bilo direktno ili indirektno.
 
 Posebnu zahvalnost upucujemo svim ljudima koji su ucestvovali u programiranju:
-https://github.com/IT-Srbija-Org/solidaritySF/graphs/contributors
+https://github.com/IT-Srbija-Org/solidarityMSP/graphs/contributors
 
 Iskreno se zahvaljujemo i svima koji nisu zvanicno navedeni na gore linku, ali su svojim idejama, podrskom i sugestijama pomogli da ovaj projekat realizuje.
 
