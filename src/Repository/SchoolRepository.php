@@ -38,6 +38,16 @@ class SchoolRepository extends ServiceEntityRepository
                 ->setParameter('type', $criteria['type']);
         }
 
+        if (isset($criteria['processing'])) {
+            $qb->andWhere('c.processing = :processing')
+                ->setParameter('processing', $criteria['processing']);
+        }
+
+        if (isset($criteria['havePayoutPriority'])) {
+            $qb->andWhere('c.havePayoutPriority = :havePayoutPriority')
+                ->setParameter('havePayoutPriority', $criteria['havePayoutPriority']);
+        }
+
         // Set the sorting
         $qb->orderBy('c.id', 'ASC');
 

@@ -61,6 +61,9 @@ class School
     #[ORM\OneToMany(targetEntity: UserDelegateRequest::class, mappedBy: 'school')]
     private Collection $userDelegateRequests;
 
+    #[ORM\Column]
+    private ?bool $havePayoutPriority = false;
+
     public function __construct()
     {
         $this->userDelegateSchools = new ArrayCollection();
@@ -177,6 +180,18 @@ class School
     public function setProcessing(bool $processing): static
     {
         $this->processing = $processing;
+
+        return $this;
+    }
+
+    public function isHavePayoutPriority(): ?bool
+    {
+        return $this->havePayoutPriority;
+    }
+
+    public function setHavePayoutPriority(bool $havePayoutPriority): static
+    {
+        $this->havePayoutPriority = $havePayoutPriority;
 
         return $this;
     }

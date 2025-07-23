@@ -29,6 +29,16 @@
                         Ne
                     {% endif %}
                 </div>
+                <div>
+                    Ima prioritet za kreiranje instrukcija:
+                    {% if school.havePayoutPriority %}
+                        <span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>
+                        Da
+                    {% else %}
+                        <span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>
+                        Ne
+                    {% endif %}
+                </div>
             </div>
 
             <div class="card-actions justify-end">

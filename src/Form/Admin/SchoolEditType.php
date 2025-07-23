@@ -39,6 +39,10 @@ class SchoolEditType extends AbstractType
                 'label' => 'Kreiranje instrukcija?',
                 'required' => false,
             ])
+            ->add('havePayoutPriority', CheckboxType::class, [
+                'label' => 'Ima prioritet za kreiranje instrukcija?',
+                'required' => false,
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Sačuvaj',
             ]);

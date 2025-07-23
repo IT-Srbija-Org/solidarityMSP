@@ -44,7 +44,8 @@ class CreateTransactionService
         $queryParameters['status'] = DamagedEducator::STATUS_NEW;
 
         $stmt = $this->entityManager->getConnection()->executeQuery('
-            SELECT de.id, de.period_id, de.account_number, de.amount, de.school_id, st.name AS school_type
+            SELECT de.id, de.period_id, de.account_number, de.amount, de.school_id,
+               st.name AS school_type, s.have_payout_priority
             FROM damaged_educator AS de
              INNER JOIN damaged_educator_period AS dep ON dep.id = de.period_id AND dep.processing = 1
              INNER JOIN school AS s ON s.id = de.school_id AND s.processing = 1
@@ -63,8 +64,12 @@ class CreateTransactionService
             $items[$item['id']] = $item;
         }
 
-        // Sort by remaining amount
+        // Sort by priority
         uasort($items, function ($a, $b) {
+            if ($a['have_payout_priority'] !== $b['have_payout_priority']) {
+                return $b['have_payout_priority'] <=> $a['have_payout_priority'];
+            }
+
             return $b['remainingAmount'] <=> $a['remainingAmount'];
         });
 
