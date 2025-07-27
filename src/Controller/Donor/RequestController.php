@@ -35,6 +35,11 @@ class RequestController extends AbstractController
     #[Route('/registracija-donatora', name: 'register')]
     public function register(Request $request): Response
     {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('donor_request_donate');
+        }
+
+        /** @var \App\Entity\User $user */
         $user = new User();
         $action = $request->query->get('action');
 
@@ -136,7 +141,7 @@ class RequestController extends AbstractController
     }
 
     #[IsGranted('ROLE_USER')]
-    #[Route('/odjava-donatora', name: 'unsubscribe')]
+    #[Route('/odjava-mesecnog-donatora', name: 'unsubscribe')]
     public function unsubscribe(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('unsubscribe', $request->query->get('_token'))) {
