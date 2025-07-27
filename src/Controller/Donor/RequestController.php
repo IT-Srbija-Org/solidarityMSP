@@ -39,7 +39,7 @@ class RequestController extends AbstractController
             return $this->redirectToRoute('donor_request_donate');
         }
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = new User();
         $action = $request->query->get('action');
 
@@ -58,6 +58,7 @@ class RequestController extends AbstractController
             $this->entityManager->flush();
 
             $this->userRepository->sendVerificationLink($user, $action);
+
             return $this->redirectToRoute('donor_request_success', [
                 'action' => $action,
             ]);
@@ -72,7 +73,7 @@ class RequestController extends AbstractController
     #[Route('/mesecna-donacija', name: 'subscription')]
     public function options(Request $request): Response
     {
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $routeName = $request->attributes->get('_route');
 
@@ -82,7 +83,7 @@ class RequestController extends AbstractController
             ]);
         }
 
-        if ($routeName == 'donor_request_onetime') {
+        if ('donor_request_onetime' == $routeName) {
             return $this->redirectToRoute('donor_transaction_create');
         }
 
@@ -129,11 +130,11 @@ class RequestController extends AbstractController
     public function messageSuccess(Request $request): Response
     {
         $action = $request->query->get('action');
-        if ($action == 'donor_request_register') {
+        if ('donor_request_register' == $action) {
             return $this->render('donor/request/success_need_verify.html.twig');
         }
 
-        if ($action == 'donor_request_subscription') {
+        if ('donor_request_subscription' == $action) {
             return $this->render('donor/request/success_subscription.html.twig');
         }
 
@@ -148,7 +149,7 @@ class RequestController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $userDonor = $user->getUserDonor();
 

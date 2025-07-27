@@ -43,7 +43,7 @@ class RegistrationController extends AbstractController
         }
 
         $session = $request->getSession();
-        $lastResendKey = 'last_verification_resend_' . $email;
+        $lastResendKey = 'last_verification_resend_'.$email;
         $lastResend = $session->get($lastResendKey);
         $now = new \DateTime();
 
@@ -99,6 +99,7 @@ class RegistrationController extends AbstractController
             $action = $request->get('action');
             if (in_array($action, ['donor_request_onetime', 'donor_request_subscription'])) {
                 $userDonorRepository->sendSuccessEmail($user);
+
                 return $this->redirectToRoute('donor_request_success', [
                     'action' => $action,
                 ]);
