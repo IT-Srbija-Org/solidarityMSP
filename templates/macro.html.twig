@@ -48,15 +48,6 @@
         </li>
     {% endif %}
 
-    {% if not (app.user and 'ROLE_DELEGATE' in app.user.getRoles) %}
-        <li>
-            <a href="{{ path('delegate_request_form') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
-                <span class="ti ti-user-cog text-xl"></span>
-                Postani delegat
-            </a>
-        </li>
-    {% endif %}
-
     {% if app.user %}
         {% if app.user.userDonor %}
             <li>
