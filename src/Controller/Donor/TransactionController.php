@@ -190,7 +190,6 @@ class TransactionController extends AbstractController
         ]);
 
         $form = $this->createForm(TransactionCreateType::class, null, [
-            'user' => $user,
             'haveWaitingTransactions' => $haveWaitingTransactions,
         ]);
 

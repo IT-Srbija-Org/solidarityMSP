@@ -54,7 +54,11 @@
                             </div>
 
                             <a href="{{ path('donor_request_subscription') }}" class="btn btn-primary btn-lg w-full">
-                                Izaberi
+                                {% if app.user and app.user.userDonor %}
+                                    Izmeni
+                                {% else %}
+                                    Izaberi
+                                {% endif %}
                             </a>
                         </div>
                     </div>

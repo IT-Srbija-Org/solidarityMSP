@@ -27,7 +27,6 @@ class TransactionCreateType extends AbstractType
                 'disabled' => $options['haveWaitingTransactions'],
                 'choices' => array_flip(UserDonor::SCHOOL_TYPES),
                 'label' => 'Kome želiš da doniraš?',
-                'data' => ($options['user'] && $options['user']->getUserDonor()) ? $options['user']->getUserDonor()->getSchoolType() : null,
                 'placeholder' => '',
             ])
             ->add('submit', SubmitType::class, [
@@ -39,7 +38,6 @@ class TransactionCreateType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'user' => null,
             'haveWaitingTransactions' => null,
         ]);
     }
