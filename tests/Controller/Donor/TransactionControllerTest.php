@@ -13,7 +13,6 @@ use App\DataFixtures\UserDelegateSchoolFixtures;
 use App\DataFixtures\UserDonorFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Repository\TransactionRepository;
-use App\Repository\UserRepository;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
