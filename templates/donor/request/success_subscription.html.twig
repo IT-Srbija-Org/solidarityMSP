@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% import "macro.html.twig" as macro %}
+    {{ macro.back('donor_request_donate') }}
+
+    <div class="card card-lg bg-base-100 shadow m-4 mt-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-user-heart text-3xl"></span>
+                Uspešno si se registrovo/la kao donator!
+            </h2>
+
+            <div>
+                <div>Hvala ti što si postao/la deo Mreže solidarnosti.</div>
+                <div>Tvoja podrška znači mnogo svim našim nastavnicima. 💙</div>
+            </div>
+
+            <div class="mt-4">
+                <div class="font-bold">Šta dalje?</div>
+                <div>Ostao ti je još jedan korak, treba da zavšiš proces i popuniš podatke za mesečno doniranje, posle toga će ti biti kreirane instrukcije za uplatu i moćićeš da doniraš.</div>
+
+                <a href="{{ path('donor_request_subscription') }}" class="btn btn-primary mt-2">
+                    <span class="ti ti-repeat text-xl"></span>
+                    Podešavanje mesečne donacije
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

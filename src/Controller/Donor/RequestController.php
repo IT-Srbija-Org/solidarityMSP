@@ -2,9 +2,12 @@
 
 namespace App\Controller\Donor;
 
+use App\Entity\Transaction;
+use App\Entity\User;
 use App\Entity\UserDonor;
-use App\Form\UserDonorType;
-use App\Repository\UserDonorRepository;
+use App\Form\UserDonorRegister;
+use App\Form\UserDonorSubscription;
+use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 use App\Service\CloudFlareTurnstileService;
 use App\Service\CreateTransactionService;
@@ -19,96 +22,117 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route(name: 'donor_request_')]
 class RequestController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $entityManager, private CreateTransactionService $createTransactionService)
+    public function __construct(private EntityManagerInterface $entityManager, private TransactionRepository $transactionRepository, private UserRepository $userRepository, private CreateTransactionService $createTransactionService, private CloudFlareTurnstileService $cloudFlareTurnstileService)
     {
     }
 
-    #[Route('/postani-donator', name: 'form')]
-    public function form(Request $request, UserRepository $userRepository, UserDonorRepository $userDonorRepository, CloudFlareTurnstileService $cloudFlareTurnstileService): Response
+    #[Route('/doniraj', name: 'donate')]
+    public function donate(): Response
     {
-        /** @var \App\Entity\User $user */
-        $user = $this->getUser();
+        return $this->render('donor/request/donate.html.twig');
+    }
 
-        $userDonor = new UserDonor();
-        if ($user && $user->getUserDonor()) {
-            $userDonor = $user->getUserDonor();
-        }
+    #[Route('/registracija-donatora', name: 'register')]
+    public function register(Request $request): Response
+    {
+        $user = new User();
+        $action = $request->query->get('action');
 
-        $form = $this->createForm(UserDonorType::class, $userDonor, [
-            'user' => $user,
-        ]);
-
+        $form = $this->createForm(UserDonorRegister::class, $user);
         $form->handleRequest($request);
-        if (!$user && $form->isSubmitted() && $form->isValid()) {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $captchaToken = $request->getPayload()->get('cf-turnstile-response');
-            if (!$cloudFlareTurnstileService->isValid($captchaToken)) {
+            if (!$this->cloudFlareTurnstileService->isValid($captchaToken)) {
                 $form->addError(new FormError('Captcha nije validna.'));
             }
         }
 
-        if (!$user && $form->isSubmitted() && $form->isValid()) {
-            $firstName = $form->get('firstName')->getData();
-            $lastName = $form->get('lastName')->getData();
-            $email = $form->get('email')->getData();
-
-            $user = $userRepository->findOneBy(['email' => $email]);
-            if ($user) {
-                $form->get('email')->addError(new FormError('Korisnik sa ovom email adresom vec postoji, molimo Vas da se ulogujete i da nastavite proces.'));
-                $userRepository->sendLoginLink($user);
-            } else {
-                $user = $userRepository->createUser($firstName, $lastName, $email);
-                $userRepository->sendVerificationLink($user, 'donor');
-            }
-        }
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $isNew = !$userDonor->getId();
-
-            $userDonor->setUser($user);
-            $this->entityManager->persist($userDonor);
-            $this->entityManager->flush();
-
-            $user->setFirstName($form->get('firstName')->getData());
-            $user->setLastName($form->get('lastName')->getData());
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            if (!$isNew) {
-                $this->addFlash('success', 'Uspešno si izmenio/la podatke.');
+            $this->userRepository->sendVerificationLink($user, $action);
+            return $this->redirectToRoute('donor_request_success', [
+                'action' => $action,
+            ]);
+        }
 
-                return $this->render('donor/request/form.html.twig', [
-                    'form' => $form->createView(),
+        return $this->render('donor/request/register.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/jednokratna-donacija', name: 'onetime')]
+    #[Route('/mesecna-donacija', name: 'subscription')]
+    public function options(Request $request): Response
+    {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        $routeName = $request->attributes->get('_route');
+
+        if (!$user) {
+            return $this->redirectToRoute('donor_request_register', [
+                'action' => $routeName,
+            ]);
+        }
+
+        if ($routeName == 'donor_request_onetime') {
+            return $this->redirectToRoute('donor_transaction_create');
+        }
+
+        $userDonor = new UserDonor();
+        $isNew = true;
+
+        if ($user->getUserDonor()) {
+            $userDonor = $user->getUserDonor();
+            $isNew = false;
+        }
+
+        $form = $this->createForm(UserDonorSubscription::class, $userDonor);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $userDonor->setUser($user);
+            $userDonor->setIsMonthly(true);
+            $this->entityManager->persist($userDonor);
+            $this->entityManager->flush();
+
+            if ($isNew) {
+                $haveWaitingTransactions = $this->transactionRepository->count([
+                    'user' => $user,
+                    'status' => Transaction::STATUS_NEW,
                 ]);
-            }
 
-            if ($user->isEmailVerified()) {
-                $this->createTransactionService->create($userDonor, $userDonor->getAmount());
-                $userDonorRepository->sendSuccessEmail($user);
-
-                $this->addFlash('success', 'Kreirane su ti instrukcije za uplatu, ostalo je samo da ih uplatiš i potvrdiš uplatu.');
+                if (!$haveWaitingTransactions) {
+                    $this->createTransactionService->create($user, $userDonor->getAmount(), $userDonor->getSchoolType());
+                }
 
                 return $this->redirectToRoute('donor_transaction_list');
             }
 
-            return $this->redirectToRoute('donor_request_success');
+            $this->addFlash('success', 'Uspesno ste promenili podatke');
         }
 
-        return $this->render('donor/request/form.html.twig', [
-            'form' => $form->createView(),
+        return $this->render('donor/request/subscription.html.twig', [
+            'form' => $form,
+            'user' => $user,
         ]);
     }
 
     #[Route('/uspesna-registracija-donatora', name: 'success')]
-    public function messageSuccess(): Response
+    public function messageSuccess(Request $request): Response
     {
-        /** @var \App\Entity\User $user */
-        $user = $this->getUser();
-
-        if ($user && $user->isEmailVerified()) {
-            return $this->render('donor/request/success.html.twig');
+        $action = $request->query->get('action');
+        if ($action == 'donor_request_register') {
+            return $this->render('donor/request/success_need_verify.html.twig');
         }
 
-        return $this->render('donor/request/success_need_verify.html.twig');
+        if ($action == 'donor_request_subscription') {
+            return $this->render('donor/request/success_subscription.html.twig');
+        }
+
+        return $this->render('donor/request/success_onetime.html.twig');
     }
 
     #[IsGranted('ROLE_USER')]
@@ -128,8 +152,6 @@ class RequestController extends AbstractController
             $this->entityManager->flush();
         }
 
-        $this->addFlash('success', 'Uspešno ste se odjavili sa liste donora');
-
-        return $this->redirectToRoute('donor_request_form');
+        return $this->redirectToRoute('donor_request_donate');
     }
 }

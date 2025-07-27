@@ -10,13 +10,12 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TransactionCreateType extends AbstractType
+class UserDonorSubscription extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('amount', IntegerType::class, [
-                'disabled' => $options['haveWaitingTransactions'],
                 'label' => 'Iznos',
                 'attr' => [
                     'min' => 500,
@@ -24,23 +23,19 @@ class TransactionCreateType extends AbstractType
                 ],
             ])
             ->add('schoolType', ChoiceType::class, [
-                'disabled' => $options['haveWaitingTransactions'],
                 'choices' => array_flip(UserDonor::SCHOOL_TYPES),
                 'label' => 'Kome želiš da doniraš?',
-                'data' => ($options['user'] && $options['user']->getUserDonor()) ? $options['user']->getUserDonor()->getSchoolType() : null,
                 'placeholder' => '',
             ])
             ->add('submit', SubmitType::class, [
-                'disabled' => $options['haveWaitingTransactions'],
-                'label' => 'Kreiraj',
+                'label' => 'Sačuvaj',
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'user' => null,
-            'haveWaitingTransactions' => null,
+            'data_class' => UserDonor::class,
         ]);
     }
 }

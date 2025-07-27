@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Repository\UserDonorRepository;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
-use App\Service\CreateTransactionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +15,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    public function __construct(private EmailVerifier $emailVerifier, private CreateTransactionService $createTransactionService)
+    public function __construct(private EmailVerifier $emailVerifier)
     {
     }
 
@@ -44,7 +43,7 @@ class RegistrationController extends AbstractController
         }
 
         $session = $request->getSession();
-        $lastResendKey = 'last_verification_resend_'.$email;
+        $lastResendKey = 'last_verification_resend_' . $email;
         $lastResend = $session->get($lastResendKey);
         $now = new \DateTime();
 
@@ -98,12 +97,11 @@ class RegistrationController extends AbstractController
             $security->login($user, 'form_login');
 
             $action = $request->get('action');
-            if ('donor' == $action) {
+            if (in_array($action, ['donor_request_onetime', 'donor_request_subscription'])) {
                 $userDonorRepository->sendSuccessEmail($user);
-
-                $this->createTransactionService->create($user->getUserDonor(), $user->getUserDonor()->getAmount());
-
-                return $this->redirectToRoute('donor_request_success');
+                return $this->redirectToRoute('donor_request_success', [
+                    'action' => $action,
+                ]);
             }
 
             if ('delegate' == $action) {

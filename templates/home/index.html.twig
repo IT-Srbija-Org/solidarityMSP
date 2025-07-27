@@ -15,35 +15,26 @@
         {{ render(controller('App\\Controller\\HomeController::generalNumbers')) }}
 
         {% block supportButton %}
-            {% if not app.user or not app.user.userDonor %}
-                <div class="text-center">
-                    <a href="{{ path('donor_request_form') }}" class="btn btn-primary btn-xl transition duration-200 hover:scale-105">
-                        <span class="ti ti-heart text-2xl"></span>
-                        Postani donator
-                    </a>
-                </div>
-            {% else %}
-                <div class="text-center">
-                    <a href="{{ path('donor_transaction_create') }}" class="btn btn-primary btn-xl transition duration-200 hover:scale-105">
-                        <span class="ti ti-heart text-2xl"></span>
-                        Doniraj
-                    </a>
-                </div>
-            {% endif %}
+            <div class="text-center">
+                <a href="{{ path('donor_request_donate') }}" class="btn btn-primary btn-xl transition duration-200 hover:scale-105">
+                    <span class="ti ti-heart text-2xl"></span>
+                    Doniraj
+                </a>
+            </div>
         {% endblock %}
 
         <div class="py-10 flex gap-4 flex-col md:flex-row">
             <section class="rounded-lg bg-base-100 p-6 shadow-sm w-full md:w-1/2">
                 <h3 class="text-lg mb-2 font-bold">Kako da donirate?</h3>
                 <p class="text-sm text-gray-500">
-                    Da biste donirali, potrebno je da se prijavite kao donator na <a href="{{ path('donor_request_form') }}" class="link link-primary link-hover">ovoj</a> stranici.
+                    Da biste donirali, potrebno je da se prijavite kao donator na <a href="{{ path('donor_request_donate') }}" class="link link-primary link-hover">ovoj</a> stranici.
                     Nakon prijave, biće Vam napravljene instrukcije za uplatu koje možete da vidite na <a href="{{ path('donor_transaction_list') }}" class="link link-primary link-hover">ovoj</a> stranici.
                 </p>
             </section>
 
             <section class="rounded-lg bg-base-100 p-6 shadow-sm w-full md:w-1/2">
                 <h3 class="text-lg mb-2 font-bold">Želite da promenite iznos?</h3>
-                <p class="text-sm text-gray-500">U slučaju da želite da promenite iznos donacije, potrebno je da to uradite na <a href="{{ path('donor_request_form') }}" class="link link-primary link-hover">ovoj</a> stranici.</p>
+                <p class="text-sm text-gray-500">U slučaju da želite da promenite iznos donacije, potrebno je da to uradite na <a href="{{ path('donor_request_donate') }}" class="link link-primary link-hover">ovoj</a> stranici.</p>
             </section>
         </div>
 

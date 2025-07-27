@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="card card-lg bg-base-100 shadow m-4">
+        <div class="card-body">
+            <div class="text-center mb-14 mt-2">
+                <div class="text-gray-500 uppercase text-sm">
+                    {% if app.user %}
+                        Korak <span class="font-bold">1</span> od <span class="font-bold">2</span>
+                    {% else %}
+                        Korak <span class="font-bold">1</span> od <span class="font-bold">3</span>
+                    {% endif %}
+                </div>
+
+                <div class="text-3xl font-bold text-gray-700">
+                    Izaberi opciju koja ti najviše odgovara
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+                <div class="card border-2 border-primary/10 hover:border-primary transition-all duration-300 hover:shadow-xl">
+                    <div class="card-body p-4 md:p-10 text-center md:text-left">
+                        <div class="mb-6">
+                            <span class="ti ti-gift text-primary text-6xl block mb-4"></span>
+                            <h3 class="text-2xl font-bold text-primary mb-2">Jednokratna donacija</h3>
+                            <p class="text-base-content/70">Izaberi iznos, doniraj i pomozi nastavnicima koji su uskraćeni za platu.</p>
+                        </div>
+
+                        <a href="{{ path('donor_request_onetime') }}" class="btn btn-primary btn-lg w-full">
+                            Izaberi
+                        </a>
+                    </div>
+                </div>
+
+                <div class="indicator w-full">
+                    <span class="indicator-item badge badge-primary indicator-top indicator-center">
+                        <span class="ti ti-star-filled mr-1"></span> Najpopularnija opcija
+                    </span>
+
+                    <div class="card border-2 border-primary/30 hover:border-primary transition-all duration-300 hover:shadow-xl">
+                        <div class="card-body p-4 md:p-10 text-center md:text-left">
+                            <div class="mb-6">
+                                <span class="ti ti-repeat text-primary text-6xl block mb-4"></span>
+                                <h3 class="text-2xl font-bold text-primary mb-2">Mesečna donacija</h3>
+
+                                {% if app.user and app.user.userDonor %}
+                                    <div class="badge badge-success badge-lg mb-4">
+                                        <span class="ti ti-circle-check"></span>
+                                        Aktivno
+                                    </div>
+                                {% endif %}
+
+                                <p class="text-base-content/70">Izaberi iznos, doniraj i svaki mesec ti šaljemo nove instrukcije za uplatu.</p>
+                            </div>
+
+                            <a href="{{ path('donor_request_subscription') }}" class="btn btn-primary btn-lg w-full">
+                                Izaberi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

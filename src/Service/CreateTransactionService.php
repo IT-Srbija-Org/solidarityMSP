@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
+use App\Entity\User;
 use App\Entity\UserDonor;
 use App\Repository\DamagedEducatorRepository;
 use App\Repository\TransactionRepository;
@@ -156,7 +157,7 @@ class CreateTransactionService
         }
     }
 
-    public function sumTransactionsToEducator(UserDonor $userDonor, string $accountNumber): int
+    public function sumTransactionsToEducator(User $user, string $accountNumber): int
     {
         $transactionStatuses = [
             Transaction::STATUS_NEW,
@@ -173,21 +174,21 @@ class CreateTransactionService
              AND t.status IN ('.implode(',', $transactionStatuses).')
              AND t.created_at > DATE(NOW() - INTERVAL 1 YEAR)
             ', [
-            'userId' => $userDonor->getUser()->getId(),
+            'userId' => $user->getId(),
             'accountNumber' => $accountNumber,
         ]);
 
         return (int) $stmt->fetchOne();
     }
 
-    public function wontToDonateToSchool(UserDonor $userDonor, string $schoolType): bool
+    public function wontToDonateToSchool(int $donorSchoolType, string $schoolType): bool
     {
         $isUniversity = $this->isUniversity($schoolType);
-        if (UserDonor::SCHOOL_TYPE_UNIVERSITY == $userDonor->getSchoolType() && !$isUniversity) {
+        if (UserDonor::SCHOOL_TYPE_UNIVERSITY == $donorSchoolType && !$isUniversity) {
             return false;
         }
 
-        if (UserDonor::SCHOOL_TYPE_EDUCATION == $userDonor->getSchoolType() && $isUniversity) {
+        if (UserDonor::SCHOOL_TYPE_EDUCATION == $donorSchoolType && $isUniversity) {
             return false;
         }
 
@@ -203,7 +204,7 @@ class CreateTransactionService
         return false;
     }
 
-    public function create(UserDonor $userDonor, int $amount): bool
+    public function create(User $user, int $amount, int $donorSchoolType): bool
     {
         $minTransactionDonationAmount = $this->minTransactionDonationAmount;
         if ($amount > 100000) {
@@ -223,7 +224,7 @@ class CreateTransactionService
                 break;
             }
 
-            if (!$this->wontToDonateToSchool($userDonor, $damagedEducator['school_type'])) {
+            if (!$this->wontToDonateToSchool($donorSchoolType, $damagedEducator['school_type'])) {
                 continue;
             }
 
@@ -235,14 +236,14 @@ class CreateTransactionService
                 $damagedEducator['remainingAmount'] = $maxYearDonationAmount;
             }
 
-            $sumTransactionAmount = $this->sumTransactionsToEducator($userDonor, $damagedEducator['account_number']);
+            $sumTransactionAmount = $this->sumTransactionsToEducator($user, $damagedEducator['account_number']);
             $transactionAmount = $amount > $damagedEducator['remainingAmount'] ? $damagedEducator['remainingAmount'] : $amount;
             if (($sumTransactionAmount + $transactionAmount) >= $maxYearDonationAmount) {
                 continue;
             }
 
             $transaction = new Transaction();
-            $transaction->setUser($userDonor->getUser());
+            $transaction->setUser($user);
 
             $entity = $this->damagedEducatorRepository->find($damagedEducator['id']);
             $transaction->setDamagedEducator($entity);
