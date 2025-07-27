@@ -24,7 +24,7 @@ class UserDonorRepository extends ServiceEntityRepository
     {
         $message = (new TemplatedEmail())
             ->to($user->getEmail())
-            ->subject('Potvrda registracije donora na Mrežu solidarnosti')
+            ->subject('Potvrda registracije donatora na Mrežu solidarnosti')
             ->htmlTemplate('donor/request/success_email.html.twig');
 
         $this->mailer->send($message);

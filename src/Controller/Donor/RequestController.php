@@ -60,7 +60,7 @@ class RequestController extends AbstractController
             $this->userRepository->sendVerificationLink($user, $action);
 
             return $this->redirectToRoute('donor_request_success', [
-                'action' => $action,
+                'action' => 'donor_request_register',
             ]);
         }
 
