@@ -73,7 +73,14 @@ class RequestController extends AbstractController
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            if ($isNew && $user->isEmailVerified()) {
+            if (!$isNew) {
+                $this->addFlash('success', 'Uspešno si izmenio/la podatke.');
+                return $this->render('donor/request/form.html.twig', [
+                    'form' => $form->createView(),
+                ]);
+            }
+
+            if ($user->isEmailVerified()) {
                 $this->createTransactionService->create($userDonor, $userDonor->getAmount());
                 $userDonorRepository->sendSuccessEmail($user);
 
