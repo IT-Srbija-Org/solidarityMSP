@@ -75,6 +75,7 @@ class RequestController extends AbstractController
 
             if (!$isNew) {
                 $this->addFlash('success', 'Uspešno si izmenio/la podatke.');
+
                 return $this->render('donor/request/form.html.twig', [
                     'form' => $form->createView(),
                 ]);
