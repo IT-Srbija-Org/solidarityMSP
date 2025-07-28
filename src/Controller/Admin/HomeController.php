@@ -22,10 +22,7 @@ final class HomeController extends AbstractController
     {
         $totalDonors = $userDonorRepository->getTotal();
         $totalActiveDonors = $transactionRepository->getTotalActiveDonors(false);
-        $totalMonthlyDonors = $userDonorRepository->getTotalMonthly();
-        $totalNonMonthlyDonors = $userDonorRepository->getTotalNonMonthly();
         $sumAmountMonthlyDonors = $userDonorRepository->sumAmountMonthlyDonors();
-        $sumAmountNonMonthlyDonors = $userDonorRepository->sumAmountNonMonthlyDonors();
         $totalDelegates = $userRepository->getTotalDelegates();
         $totalAdmins = $userRepository->getTotalAdmins();
 
@@ -58,10 +55,7 @@ final class HomeController extends AbstractController
         return $this->render('admin/home/index.html.twig', [
             'totalDonors' => $totalDonors,
             'totalActiveDonors' => $totalActiveDonors,
-            'totalMonthlyDonors' => $totalMonthlyDonors,
-            'totalNonMonthlyDonors' => $totalNonMonthlyDonors,
             'sumAmountMonthlyDonors' => $sumAmountMonthlyDonors,
-            'sumAmountNonMonthlyDonors' => $sumAmountNonMonthlyDonors,
             'totalDelegate' => $totalDelegates,
             'totalAdmins' => $totalAdmins,
             'periodItems' => $periodItems,

@@ -4,7 +4,6 @@ namespace App\Form\Admin;
 
 use App\Entity\UserDonor;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -28,10 +27,6 @@ class DonorEditType extends AbstractType
                 'mapped' => false,
                 'label' => 'Email',
                 'data' => $options['user'] ? $options['user']->getEmail() : null,
-            ])
-            ->add('isMonthly', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Mesečna podrška',
             ])
             ->add('schoolType', ChoiceType::class, [
                 'choices' => array_flip(UserDonor::SCHOOL_TYPES),

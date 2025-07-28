@@ -91,16 +91,6 @@
                 </div>
 
                 <div>
-                    <div>
-                        Mesečna podrška:
-                        {% if user.userDonor.isMonthly %}
-                            <span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>
-                            Da
-                        {% else %}
-                            <span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>
-                            Ne
-                        {% endif %}
-                    </div>
                     <div>Donator želi da donira: {{ user.userDonor.schoolTypeName|trans }}</div>
                     <div>Iznos : {{ user.userDonor.amount|number_format }}</div>
                     <div>Datum registracije: {{ user.userDonor.createdAt|date('H:i d.m.Y') }}</div>

@@ -28,14 +28,6 @@ class DonorSearchType extends AbstractType
                 'required' => false,
                 'label' => 'Email',
             ])
-            ->add('isMonthly', ChoiceType::class, [
-                'required' => false,
-                'label' => 'Mesečna podrška',
-                'choices' => [
-                    'Da' => true,
-                    'Ne' => false,
-                ],
-            ])
             ->add('schoolType', ChoiceType::class, [
                 'required' => false,
                 'choices' => array_flip(UserDonor::SCHOOL_TYPES),

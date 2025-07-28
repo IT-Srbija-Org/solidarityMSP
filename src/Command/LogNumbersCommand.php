@@ -39,9 +39,7 @@ class LogNumbersCommand extends Command
 
         $totalDonors = $this->userDonorRepository->getTotal();
         $totalMonthlyDonors = $this->userDonorRepository->getTotalMonthly();
-        $totalNonMonthlyDonors = $this->userDonorRepository->getTotalNonMonthly();
         $sumAmountMonthlyDonors = $this->userDonorRepository->sumAmountMonthlyDonors();
-        $sumAmountNonMonthlyDonors = $this->userDonorRepository->sumAmountNonMonthlyDonors();
         $totalDelegates = $this->userRepository->getTotalDelegates();
         $totalActiveSchools = 0;
 
@@ -52,9 +50,7 @@ class LogNumbersCommand extends Command
 
         $entity->setTotalDonors($totalDonors);
         $entity->setTotalMonthlyDonors($totalMonthlyDonors);
-        $entity->setTotalNonMonthlyDonors($totalNonMonthlyDonors);
         $entity->setSumAmountMonthlyDonors($sumAmountMonthlyDonors);
-        $entity->setSumAmountNonMonthlyDonors($sumAmountNonMonthlyDonors);
         $entity->setTotalDelegates($totalDelegates);
         $entity->setTotalActiveSchools($totalActiveSchools);
         $this->entityManager->persist($entity);

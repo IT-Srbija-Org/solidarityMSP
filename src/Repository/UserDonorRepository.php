@@ -36,11 +36,6 @@ class UserDonorRepository extends ServiceEntityRepository
         $qb->innerJoin('ud.user', 'u')
             ->andWhere('u.isActive = 1');
 
-        if (isset($criteria['isMonthly'])) {
-            $qb->andWhere('ud.isMonthly = :isMonthly')
-                ->setParameter('isMonthly', $criteria['isMonthly']);
-        }
-
         if (!empty($criteria['schoolType'])) {
             $qb->andWhere('ud.schoolType = :schoolType')
                 ->setParameter('schoolType', $criteria['schoolType']);
@@ -118,21 +113,6 @@ class UserDonorRepository extends ServiceEntityRepository
         return (int) $qb->select('COUNT(ud.id)')
             ->from(UserDonor::class, 'ud')
             ->innerJoin('ud.user', 'u')
-            ->andWhere('ud.isMonthly = 1')
-            ->andWhere('u.isActive = 1')
-            ->andWhere('u.isEmailVerified = 1')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    public function getTotalNonMonthly(): int
-    {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-
-        return (int) $qb->select('COUNT(ud.id)')
-            ->from(UserDonor::class, 'ud')
-            ->innerJoin('ud.user', 'u')
-            ->andWhere('ud.isMonthly = 0')
             ->andWhere('u.isActive = 1')
             ->andWhere('u.isEmailVerified = 1')
             ->getQuery()
@@ -146,21 +126,6 @@ class UserDonorRepository extends ServiceEntityRepository
         return (int) $qb->select('SUM(ud.amount)')
             ->from(UserDonor::class, 'ud')
             ->innerJoin('ud.user', 'u')
-            ->andWhere('ud.isMonthly = 1')
-            ->andWhere('u.isActive = 1')
-            ->andWhere('u.isEmailVerified = 1')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    public function sumAmountNonMonthlyDonors(): int
-    {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-
-        return (int) $qb->select('SUM(ud.amount)')
-            ->from(UserDonor::class, 'ud')
-            ->innerJoin('ud.user', 'u')
-            ->andWhere('ud.isMonthly = 0')
             ->andWhere('u.isActive = 1')
             ->andWhere('u.isEmailVerified = 1')
             ->getQuery()

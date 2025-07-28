@@ -101,18 +101,15 @@ class CreateTransactionService
             ->from(Transaction::class, 't')
             ->where('t.user = :user')
             ->andWhere('t.status IN (:statuses)')
+            ->andWhere('t.createdAt > :dateLimit')
             ->setParameter('user', $userDonor->getUser())
             ->setParameter('statuses', [
                 Transaction::STATUS_NEW,
                 Transaction::STATUS_WAITING_CONFIRMATION,
                 Transaction::STATUS_CONFIRMED,
                 Transaction::STATUS_EXPIRED,
-            ]);
-
-        if ($userDonor->isMonthly()) {
-            $qb->andWhere('t.createdAt > :dateLimit')
-                ->setParameter('dateLimit', new \DateTime('-30 days'));
-        }
+            ])
+            ->setParameter('dateLimit', new \DateTime('-30 days'));
 
         $sum = (int) $qb->getQuery()->getSingleScalarResult();
         $sumNotPaidButConfirmed = $this->getSumNotPaidButConfirmedTransactions($userDonor);
@@ -129,13 +126,10 @@ class CreateTransactionService
             ->where('t.user = :user')
             ->andWhere('t.status = :status')
             ->andWhere('t.userDonorConfirmed = 1')
+            ->andWhere('t.createdAt > :dateLimit')
             ->setParameter('user', $userDonor->getUser())
-            ->setParameter('status', Transaction::STATUS_NOT_PAID);
-
-        if ($userDonor->isMonthly()) {
-            $qb->andWhere('t.createdAt > :dateLimit')
-                ->setParameter('dateLimit', new \DateTime('-30 days'));
-        }
+            ->setParameter('status', Transaction::STATUS_NOT_PAID)
+            ->setParameter('dateLimit', new \DateTime('-30 days'));
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }

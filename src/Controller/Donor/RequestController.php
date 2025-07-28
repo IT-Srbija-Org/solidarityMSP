@@ -100,7 +100,6 @@ class RequestController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $userDonor->setUser($user);
-            $userDonor->setIsMonthly(true);
             $this->entityManager->persist($userDonor);
             $this->entityManager->flush();
 
