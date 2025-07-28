@@ -17,6 +17,7 @@ class RedirectController extends AbstractController
     }
 
     #[Route('/obrazacDonatori')]
+    #[Route('/postani-donator')]
     public function redirectDonor(): Response
     {
         return $this->redirectToRoute('donor_request_donate', [], Response::HTTP_MOVED_PERMANENTLY);
