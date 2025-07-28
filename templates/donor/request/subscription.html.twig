@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="card card-lg bg-base-100 shadow m-4">
+        <div class="card-body">
+            <h2 class="card-title">
+                <span class="ti ti-repeat text-2xl"></span>
+                Podesavanje mesečne donacije
+            </h2>
+
+            <div class="text-gray-500 mb-6">
+                Nakon uspešno sačuvanih podataka svakog meseca će ti biti kreirane nove instrukcije za uplatu sa iznosom koji si odabrao/la. Javićemo ti na email svaki put kada ti kreiramo nove instrukcije za uplatu.
+            </div>
+
+            {{ include('flashes.html.twig') }}
+
+            {% form_theme form 'form.html.twig' %}
+            {{ form_start(form) }}
+                <div class="space-y-4">
+                    {{ form_errors(form) }}
+
+                    <div>
+                        {{ form_label(form.amount) }}
+                        {{ form_widget(form.amount, { 'attr': { 'class': 'input input-md input-bordered rounded-md' } }) }}
+                        {{ form_errors(form.amount) }}
+
+                        <div class="text-gray-500 text-sm">Iznos sa kojim sam spreman/a da pomognem u dinarima (RSD).</div>
+                    </div>
+
+                    <div>
+                        {{ form_label(form.schoolType) }}
+                        {{ form_widget(form.schoolType, { 'attr': { 'class': 'select select-md select-bordered rounded-md' } }) }}
+                        {{ form_errors(form.schoolType) }}
+                    </div>
+
+                    {{ form_row(form.submit, { 'attr': { 'class': 'btn btn-primary' } }) }}
+                </div>
+            {{ form_end(form) }}
+
+            <div class="mt-8 text-gray-500 text-sm text-right">
+                Ako želiš da se odjaviš sa liste mesečnih donatora to možeš uraditi klikom na sledeći link:
+                <a href="{{ path('donor_request_unsubscribe', { '_token': csrf_token('unsubscribe') }) }}" onclick="return confirm('Da li si siguran/a da želiš da se odjaviš sa liste mesečnih donatora?');" class="link link-primary link-hover test-link1">odjava</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

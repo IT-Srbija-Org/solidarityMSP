@@ -6,14 +6,14 @@ html, body, head {
 }
 
 :root:has(input.theme-controller[value=corporate]:checked),[data-theme=corporate] {
-    --color-primary: #2700ed;
+    --color-primary: #1900F3;
     --color-primary-content: #ffffff;
-    --color-secondary: #1a00a3;
+    --color-secondary: #1700d5;
     --color-secondary-content: #ffffff;
-    --color-accent: #5533ff;
+    --color-accent: #7130d1;
     --color-accent-content: #ffffff;
-    --color-warning: #FFD533;
-    --color-info: #4d33ff;
+    --color-warning: #ecc730;
+    --color-info: #7130d1;
     --color-info-content: #ffffff;
 }
 

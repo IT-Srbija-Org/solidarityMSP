@@ -2,8 +2,18 @@
 
 namespace App\Tests\Controller\Donor;
 
+use App\DataFixtures\CityFixtures;
+use App\DataFixtures\DamagedEducatorFixtures;
+use App\DataFixtures\DamagedEducatorPeriodFixtures;
+use App\DataFixtures\SchoolFixtures;
+use App\DataFixtures\SchoolTypeFixtures;
+use App\DataFixtures\TransactionFixtures;
+use App\DataFixtures\UserDelegateRequestFixtures;
+use App\DataFixtures\UserDelegateSchoolFixtures;
+use App\DataFixtures\UserDonorFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Entity\User;
+use App\Entity\UserDonor;
 use App\Repository\UserDonorRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,6 +50,15 @@ class RequestControllerTest extends WebTestCase
     {
         $this->databaseTool->loadFixtures([
             UserFixtures::class,
+            CityFixtures::class,
+            DamagedEducatorPeriodFixtures::class,
+            SchoolTypeFixtures::class,
+            SchoolFixtures::class,
+            UserDelegateRequestFixtures::class,
+            UserDelegateSchoolFixtures::class,
+            UserDonorFixtures::class,
+            DamagedEducatorFixtures::class,
+            TransactionFixtures::class,
         ]);
     }
 
@@ -68,10 +87,22 @@ class RequestControllerTest extends WebTestCase
         }
     }
 
-    public function testNonAuthenticatedAccess(): void
+    public function testDonatePageAccess(): void
     {
-        $this->client->request('GET', '/postani-donator');
+        $this->client->request('GET', '/doniraj');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testDonateOnetimePageAccess(): void
+    {
+        $this->client->request('GET', '/jednokratna-donacija');
+        $this->assertResponseRedirects('/registracija-donatora?action=donor_request_onetime', Response::HTTP_FOUND);
+    }
+
+    public function testSubscribePageAccess(): void
+    {
+        $this->client->request('GET', '/mesecna-donacija');
+        $this->assertResponseRedirects('/registracija-donatora?action=donor_request_subscription', Response::HTTP_FOUND);
     }
 
     public function testNewUserSubscribeAndRegistrationAndVerification(): void
@@ -79,19 +110,16 @@ class RequestControllerTest extends WebTestCase
         $email = 'korisnik@gmail.com';
         $this->removeUser($email);
 
-        $crawler = $this->client->request('GET', '/postani-donator');
+        $crawler = $this->client->request('GET', '/registracija-donatora?action=donor_request_subscription');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorExists('form[name="user_donor"]');
+        $this->assertSelectorExists('form[name="user_donor_register"]');
 
-        // Subscribe
-        $form = $crawler->filter('form[name="user_donor"]')->form([
-            'user_donor[firstName]' => 'Marko',
-            'user_donor[lastName]' => 'Markovic',
-            'user_donor[email]' => $email,
-            'user_donor[isMonthly]' => 1,
-            'user_donor[amount]' => 10000,
-            'user_donor[comment]' => 'Test donation comment',
+        // Populate form
+        $form = $crawler->filter('form[name="user_donor_register"]')->form([
+            'user_donor_register[firstName]' => 'Marko',
+            'user_donor_register[lastName]' => 'Markovic',
+            'user_donor_register[email]' => $email,
         ]);
 
         $this->client->submit($form);
@@ -101,22 +129,11 @@ class RequestControllerTest extends WebTestCase
         $mailerMessage = $this->getMailerMessage();
         $this->assertEmailSubjectContains($mailerMessage, 'Link za potvrdu email adrese');
 
-        // Check redirect
-        $this->client->followRedirect();
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertStringContainsString('/uspesna-registracija-donatora', $this->client->getRequest()->getUri());
-
         // Check are user registered
         $user = $this->getUser($email);
         $this->assertEquals('Marko', $user->getFirstName());
         $this->assertEquals('Markovic', $user->getLastName());
         $this->assertFalse($user->isEmailVerified());
-
-        // Check are donor data saved
-        $userDonor = $this->userDonorRepository->findOneBy(['user' => $user]);
-        $this->assertTrue($userDonor->isMonthly());
-        $this->assertEquals(10000, $userDonor->getAmount());
-        $this->assertEquals('Test donation comment', $userDonor->getComment());
 
         // Extract verified link
         $crawler = new Crawler($mailerMessage->getHtmlBody());
@@ -128,7 +145,7 @@ class RequestControllerTest extends WebTestCase
         // Check are donor success email send
         $this->assertEmailCount(1);
         $mailerMessage = $this->getMailerMessage();
-        $this->assertEmailSubjectContains($mailerMessage, 'Potvrda registracije donora na Mrežu solidarnosti');
+        $this->assertEmailSubjectContains($mailerMessage, 'Potvrda registracije donatora na Mrežu solidarnosti');
 
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
@@ -138,8 +155,41 @@ class RequestControllerTest extends WebTestCase
         $this->assertNotNull($user);
         $this->assertTrue($user->isEmailVerified());
 
-        // Check success message
-        $crawler = $this->client->request('GET', '/postani-donator');
+        // Check are user redirected to success page
+        $this->assertStringContainsString('/uspesna-registracija-donatora?action=donor_request_subscription', $this->client->getRequest()->getUri());
+
+        // Get action link from page
+        $crawler = new Crawler($this->client->getResponse()->getContent());
+        $link = $crawler->filter('#link')->attr('href');
+        $this->assertEquals('/mesecna-donacija', $link);
+
+        // Click on action link
+        $crawler = $this->client->request('GET', $link);
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+
+        // Populate form
+        $form = $crawler->filter('form[name="user_donor_subscription"]')->form([
+            'user_donor_subscription[amount]' => 10000,
+            'user_donor_subscription[schoolType]' => UserDonor::SCHOOL_TYPE_ALL,
+        ]);
+
+        // Submit form
+        $this->client->submit($form);
+
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        // Check are user donor saved
+        $userDonor = $this->userDonorRepository->findOneBy(['user' => $user]);
+        $this->assertEquals(10000, $userDonor->getAmount());
+        $this->assertEquals(UserDonor::SCHOOL_TYPE_ALL, $userDonor->getSchoolType());
+
+        // Check are user redirected to right page
+        $this->assertStringContainsString('/instrukcije-za-uplatu', $this->client->getRequest()->getUri());
+
+        // Try to unsubscribe
+        $this->client->request('GET', '/mesecna-donacija');
+        $crawler = new Crawler($this->client->getResponse()->getContent());
 
         // Unsubscribe
         $unsubscribeLink = $crawler->filter('.test-link1')->attr('href');
@@ -151,21 +201,117 @@ class RequestControllerTest extends WebTestCase
         $this->assertNull($userDonor);
     }
 
-    public function testSuccessMessageRoute(): void
+    public function testNewUserOnetimeAndRegistrationAndVerification(): void
     {
-        $this->loginAsUser('korisnik@gmail.com');
-        $this->client->request('GET', '/uspesna-registracija-donatora');
+        $email = 'korisnik@gmail.com';
+        $this->removeUser($email);
+
+        $crawler = $this->client->request('GET', '/registracija-donatora?action=donor_request_onetime');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('h2', 'Uspešno ste se registrovali kao donator!');
+        $this->assertSelectorExists('form[name="user_donor_register"]');
+
+        // Populate form
+        $form = $crawler->filter('form[name="user_donor_register"]')->form([
+            'user_donor_register[firstName]' => 'Marko',
+            'user_donor_register[lastName]' => 'Markovic',
+            'user_donor_register[email]' => $email,
+        ]);
+
+        $this->client->submit($form);
+
+        // Check are register verification email sent
+        $this->assertEmailCount(1);
+        $mailerMessage = $this->getMailerMessage();
+        $this->assertEmailSubjectContains($mailerMessage, 'Link za potvrdu email adrese');
+
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        // Check are user redirected to success page
+        $this->assertStringContainsString('/uspesna-registracija-donatora?action=donor_request_register', $this->client->getRequest()->getUri());
+
+        // Check are user registered
+        $user = $this->getUser($email);
+        $this->assertEquals('Marko', $user->getFirstName());
+        $this->assertEquals('Markovic', $user->getLastName());
+        $this->assertFalse($user->isEmailVerified());
+
+        // Extract verified link
+        $crawler = new Crawler($mailerMessage->getHtmlBody());
+        $verifiedLink = $crawler->filter('#link')->attr('href');
+
+        // Click on verified link from email
+        $this->client->request('GET', $verifiedLink);
+
+        // Check are donor success email send
+        $this->assertEmailCount(1);
+        $mailerMessage = $this->getMailerMessage();
+        $this->assertEmailSubjectContains($mailerMessage, 'Potvrda registracije donatora na Mrežu solidarnosti');
+
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        // Check are user now login and verified
+        $user = $this->getLoginUser();
+        $this->assertNotNull($user);
+        $this->assertTrue($user->isEmailVerified());
+
+        // Check are user redirected to success page
+        $this->assertStringContainsString('/uspesna-registracija-donatora?action=donor_request_onetime', $this->client->getRequest()->getUri());
+
+        // Get action link from page
+        $crawler = new Crawler($this->client->getResponse()->getContent());
+        $link = $crawler->filter('#link')->attr('href');
+        $this->assertEquals('/kreiraj-instrukcije-za-uplatu', $link);
+
+        // Click on action link
+        $crawler = $this->client->request('GET', $link);
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+
+        // Populate form
+        $form = $crawler->filter('form[name="transaction_create"]')->form([
+            'transaction_create[amount]' => 10000,
+            'transaction_create[schoolType]' => UserDonor::SCHOOL_TYPE_ALL,
+        ]);
+
+        // Submit form
+        $this->client->submit($form);
+
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        // Check are user redirected to right page
+        $this->assertStringContainsString('/instrukcije-za-uplatu', $this->client->getRequest()->getUri());
+
+        $userDonor = $this->userDonorRepository->findOneBy(['user' => $user]);
+        $this->assertNull($userDonor);
     }
 
-    public function testNotAuthenticatedSuccessMessageRoute(): void
+    public function testSuccessPageRegister(): void
     {
-        $this->client->request('GET', '/uspesna-registracija-donatora');
+        $this->client->request('GET', '/uspesna-registracija-donatora?action=donor_request_register');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('h2', 'Potvrdite svoj email kako bi donacija bila uspešna');
+        $this->assertSelectorTextContains('h2', 'Potvrdi svoj email');
+    }
+
+    public function testSuccessPageSubscription(): void
+    {
+        $this->client->request('GET', '/uspesna-registracija-donatora?action=donor_request_subscription');
+
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('h2', 'Uspešno si se registrovao/la kao donator!');
+        $this->assertSelectorTextContains('a.btn-primary', 'Podešavanje mesečne donacije');
+    }
+
+    public function testSuccessPageOnetime(): void
+    {
+        $this->client->request('GET', '/uspesna-registracija-donatora?action=donor_request_onetime');
+
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('h2', 'Uspešno si se registrovao/la kao donator!');
+        $this->assertSelectorTextContains('a.btn-primary', 'Kreiraj instrukcije za uplatu');
     }
 
     public function testUnsubscribeWithoutToken(): void
@@ -177,7 +323,7 @@ class RequestControllerTest extends WebTestCase
 
         try {
             // This should throw an access denied exception
-            $this->client->request('GET', '/odjava-donatora');
+            $this->client->request('GET', '/odjava-mesecnog-donatora');
 
             // If we get here (no exception), still check for HTTP 403
             $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
@@ -202,7 +348,7 @@ class RequestControllerTest extends WebTestCase
 
         try {
             // This should throw an access denied exception
-            $this->client->request('GET', '/odjava-donatora?_token=invalid');
+            $this->client->request('GET', '/odjava-mesecnog-donatora?_token=invalid');
 
             // If we get here (no exception), still check for HTTP 403
             $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());

@@ -3,13 +3,13 @@
 {% block body %}
     <div class="card card-lg bg-base-100 shadow m-4">
         <div class="card-body">
-            <h2 class="card-title mb-4">
-                <span class="ti ti-credit-card-pay text-xl"></span>
+            <h2 class="card-title">
+                <span class="ti ti-credit-card-pay text-2xl"></span>
                 Kreiraj instrukcije za uplatu
             </h2>
 
             {% if haveWaitingTransactions %}
-                <div class="alert alert-info alert-soft mb-4">
+                <div class="alert alert-info alert-soft">
                     <span class="ti ti-info-circle text-2xl"></span>
 
                     <span>
@@ -18,7 +18,7 @@
                 </div>
             {% endif %}
 
-            <div class="text-gray-500 mb-4">
+            <div class="text-gray-500 mb-6">
                 Kada potvrdiš iznos koji želiš da doniraš biće ti kreirane instrukcije za uplatu ka oštećenim nastavnicima.
             </div>
 

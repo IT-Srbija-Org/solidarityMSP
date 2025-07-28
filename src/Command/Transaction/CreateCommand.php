@@ -60,7 +60,7 @@ class CreateCommand extends Command
                 $sumTransactions = $this->createTransactionService->getSumTransactions($userDonor);
                 $donorRemainingAmount = $userDonor->getAmount() - $sumTransactions;
 
-                $transactionCreated = $this->createTransactionService->create($userDonor, $donorRemainingAmount);
+                $transactionCreated = $this->createTransactionService->create($userDonor->getUser(), $donorRemainingAmount, $userDonor->getSchoolType());
                 $output->writeln(' | Is transaction created: '.($transactionCreated ? 'Yes' : 'No'));
 
                 if ($transactionCreated) {
