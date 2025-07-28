@@ -6,9 +6,9 @@ html, body, head {
 }
 
 :root:has(input.theme-controller[value=corporate]:checked),[data-theme=corporate] {
-    --color-primary: #1900F3;
+    --color-primary: #1a00f3;
     --color-primary-content: #ffffff;
-    --color-secondary: #1700d5;
+    --color-secondary: #262185;
     --color-secondary-content: #ffffff;
     --color-accent: #7130d1;
     --color-accent-content: #ffffff;
