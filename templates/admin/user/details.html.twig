@@ -30,7 +30,7 @@
                 <div>Privilegija: {{ user.roles|roleTranslate }}</div>
                 <div>Registrovan: {{ user.createdAt|date('H:i d.m.Y') }}</div>
                 <div>
-                    Poslednji put vidjen:
+                    Poslednji put viđen:
                     {% if user.lastVisit %}
                         {{ user.lastVisit|date('H:i d.m.Y') }}
                     {% else %}
