@@ -21,7 +21,7 @@
     {% if totalPages > 1 %}
         <div class="join flex justify-center my-5">
             <a href="{{ path(routeName, app.request.query.all|merge({ page: currentPage - 1 })) }}" class="join-item btn {% if currentPage == 1 %}btn-disabled{% endif %}">
-                <span class="ti ti-chevron-left text-2xl"></span> Predhodna
+                <span class="ti ti-chevron-left text-2xl"></span> Prethodna
             </a>
 
             <a href="{{ path(routeName, app.request.query.all|merge({ page: currentPage + 1 })) }}" class="join-item btn {% if currentPage >= totalPages %}btn-disabled{% endif %}">
