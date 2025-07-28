@@ -13,6 +13,6 @@ class HomeControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h2', 'Mreža solidarnosti');
-        $this->assertSelectorTextContains('a.btn-primary', 'Postani donator');
+        $this->assertSelectorTextContains('a.btn-primary', 'Doniraj');
     }
 }

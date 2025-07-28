@@ -301,7 +301,7 @@ class RequestControllerTest extends WebTestCase
         $this->client->request('GET', '/uspesna-registracija-donatora?action=donor_request_subscription');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('h2', 'Uspešno si se registrovo/la kao donator!');
+        $this->assertSelectorTextContains('h2', 'Uspešno si se registrovao/la kao donator!');
         $this->assertSelectorTextContains('a.btn-primary', 'Podešavanje mesečne donacije');
     }
 
@@ -310,7 +310,7 @@ class RequestControllerTest extends WebTestCase
         $this->client->request('GET', '/uspesna-registracija-donatora?action=donor_request_onetime');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('h2', 'Uspešno si se registrovo/la kao donator!');
+        $this->assertSelectorTextContains('h2', 'Uspešno si se registrovao/la kao donator!');
         $this->assertSelectorTextContains('a.btn-primary', 'Kreiraj instrukcije za uplatu');
     }
 
