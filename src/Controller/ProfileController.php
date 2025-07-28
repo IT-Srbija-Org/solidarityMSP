@@ -18,6 +18,24 @@ class ProfileController extends AbstractController
     {
     }
 
+    #[Route(name: 'details')]
+    public function details(): Response
+    {
+        $transactions = $this->getUser()->getTransactions();
+        $totalTransactionsAmount = 0;
+
+        foreach ($transactions as $transaction) {
+            if ($transaction->isUserDonorConfirmed() || $transaction->isStatusConfirmed()) {
+                $totalTransactionsAmount += $transaction->getAmount();
+            }
+        }
+
+        return $this->render('profile/details.html.twig', [
+            'totalTransactions' => count($transactions),
+            'totalTransactionsAmount' => $totalTransactionsAmount,
+        ]);
+    }
+
     #[Route('/izmena-podataka', name: 'edit')]
     public function edit(Request $request): Response
     {
