@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\ProfileEditType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +17,27 @@ class ProfileController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
+    }
+
+    #[Route(name: 'details')]
+    public function details(): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $transactions = $user->getTransactions();
+        $totalTransactionsAmount = 0;
+
+        foreach ($transactions as $transaction) {
+            if ($transaction->isUserDonorConfirmed() || $transaction->isStatusConfirmed()) {
+                $totalTransactionsAmount += $transaction->getAmount();
+            }
+        }
+
+        return $this->render('profile/details.html.twig', [
+            'totalTransactions' => count($transactions),
+            'totalTransactionsAmount' => $totalTransactionsAmount,
+        ]);
     }
 
     #[Route('/izmena-podataka', name: 'edit')]

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="card card-lg bg-base-100 shadow m-4 mb-0">
+        <div class="card-body">
+            <h2 class="card-title mb-4">
+                <span class="ti ti-user text-2xl"></span>
+                Profil
+            </h2>
+
+            <div>
+                <div>
+                    Ime:
+                    {% if app.user.firstName is empty %}
+                        <span class="font-bold">-</span>
+                    {% else %}
+                        <span class="font-bold">{{ app.user.firstName }} {{ app.user.lastName }}</span>
+                    {% endif %}
+                </div>
+
+                <div>Email: <span class="font-bold">{{ app.user.email }}</span></div>
+            </div>
+
+            <div class="mt-4">
+                <a href="{{ path('profile_edit') }}" class="btn btn-primary btn-sm">
+                    <span class="ti ti-edit text-xl"></span>
+                    Izmeni
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats stats-vertical lg:stats-horizontal shadow bg-base-100 m-4 mt-2">
+        <div class="stat">
+            <div class="stat-title">Ukupno donirano</div>
+            <div class="stat-value">{{ totalTransactionsAmount|number_format }}</div>
+            <div class="stat-desc">dinara</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-title">Ukupno transakcija</div>
+            <div class="stat-value">{{ totalTransactions|number_format }}</div>
+            <div class="stat-desc"></div>
+        </div>
+    </div>
+{% endblock %}
