@@ -31,9 +31,6 @@ class UserDonor
     private ?User $user = null;
 
     #[ORM\Column]
-    private ?bool $isMonthly = null;
-
-    #[ORM\Column]
     private ?int $amount = null;
 
     #[ORM\Column(nullable: true)]
@@ -61,18 +58,6 @@ class UserDonor
     public function setUser(User $user): static
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function isMonthly(): ?bool
-    {
-        return $this->isMonthly;
-    }
-
-    public function setIsMonthly(bool $isMonthly): static
-    {
-        $this->isMonthly = $isMonthly;
 
         return $this;
     }

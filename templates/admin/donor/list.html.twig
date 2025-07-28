@@ -19,10 +19,6 @@
                         <span class="ti ti-user text-xl"></span>
                         Ime
                     </th>
-                    <th>
-                        <span class="ti ti-repeat text-xl"></span>
-                        Mesečna podrška
-                    </th>
                     <th>Želi da donira?</th>
                     <th>
                         <span class="ti ti-cash text-xl"></span>
@@ -44,15 +40,6 @@
                         <a href="{{ path('admin_user_details', { 'id': donor.user.id }) }}" class="link link-primary link-hover">
                             {{ donor.user.email }}
                         </a>
-                    </td>
-                    <td>
-                        {% if donor.isMonthly %}
-                            <span class="ti ti-circle-check text-xl text-success relative top-0.5"></span>
-                            Da
-                        {% else %}
-                            <span class="ti ti-circle-x text-xl text-error relative top-0.5"></span>
-                            Ne
-                        {% endif %}
                     </td>
                     <td>{{ donor.schoolTypeName|trans }}</td>
                     <td>{{ donor.amount|number_format }}</td>

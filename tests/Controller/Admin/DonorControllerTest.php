@@ -83,7 +83,6 @@ class DonorControllerTest extends WebTestCase
         $this->assertSelectorExists('input[name="firstName"]');
         $this->assertSelectorExists('input[name="lastName"]');
         $this->assertSelectorExists('input[name="email"]');
-        $this->assertSelectorExists('select[name="isMonthly"]');
     }
 
     public function testListDonorsWithSearchCriteria(): void
@@ -91,9 +90,7 @@ class DonorControllerTest extends WebTestCase
         $this->loginAsAdmin();
         $crawler = $this->client->request('GET', '/admin/donor/list');
 
-        $form = $crawler->selectButton('Pretraži')->form([
-            'isMonthly' => '1',
-        ]);
+        $form = $crawler->selectButton('Pretraži')->form([]);
 
         $this->client->submit($form);
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
