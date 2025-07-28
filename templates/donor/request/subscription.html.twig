@@ -37,10 +37,12 @@
                 </div>
             {{ form_end(form) }}
 
-            <div class="mt-8 text-gray-500 text-sm text-right">
-                Ako želiš da se odjaviš sa liste mesečnih donatora to možeš uraditi klikom na sledeći link:
-                <a href="{{ path('donor_request_unsubscribe', { '_token': csrf_token('unsubscribe') }) }}" onclick="return confirm('Da li si siguran/a da želiš da se odjaviš sa liste mesečnih donatora?');" class="link link-primary link-hover test-link1">odjava</a>
-            </div>
+            {% if app.user and app.user.userDonor %}
+                <div class="mt-8 text-gray-500 text-sm text-right">
+                    Ako želiš da se odjaviš sa liste mesečnih donatora to možeš uraditi klikom na sledeći link:
+                    <a href="{{ path('donor_request_unsubscribe', { '_token': csrf_token('unsubscribe') }) }}" onclick="return confirm('Da li si siguran/a da želiš da se odjaviš sa liste mesečnih donatora?');" class="link link-primary link-hover test-link1">odjava</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
