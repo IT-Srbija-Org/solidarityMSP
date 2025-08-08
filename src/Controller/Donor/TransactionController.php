@@ -65,7 +65,7 @@ class TransactionController extends AbstractController
     {
         /* @var User $user */
         $user = $this->getUser();
-        if ($transaction->getUser() !== $user) {
+        if ($transaction->getUser() !== $user && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException();
         }
 
