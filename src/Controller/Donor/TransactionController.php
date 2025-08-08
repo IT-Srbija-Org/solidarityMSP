@@ -74,7 +74,7 @@ class TransactionController extends AbstractController
         }
 
         // Prepare slip data and background info using the service
-        $data = $this->invoiceSlipService->prepareSlipData($transaction, $user);
+        $data = $this->invoiceSlipService->prepareSlipData($transaction, $transaction->getUser());
         $bgInfo = $this->invoiceSlipService->getSlipBackgroundInfo();
 
         // Render Twig template
