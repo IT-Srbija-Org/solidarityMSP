@@ -176,16 +176,12 @@ class RequestControllerTest extends WebTestCase
         // Submit form
         $this->client->submit($form);
 
-        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
         // Check are user donor saved
         $userDonor = $this->userDonorRepository->findOneBy(['user' => $user]);
         $this->assertEquals(10000, $userDonor->getAmount());
         $this->assertEquals(UserDonor::SCHOOL_TYPE_ALL, $userDonor->getSchoolType());
-
-        // Check are user redirected to right page
-        $this->assertStringContainsString('/instrukcije-za-uplatu', $this->client->getRequest()->getUri());
 
         // Try to unsubscribe
         $this->client->request('GET', '/mesecna-donacija');
@@ -277,12 +273,6 @@ class RequestControllerTest extends WebTestCase
 
         // Submit form
         $this->client->submit($form);
-
-        $this->client->followRedirect();
-        $this->assertResponseIsSuccessful();
-
-        // Check are user redirected to right page
-        $this->assertStringContainsString('/instrukcije-za-uplatu', $this->client->getRequest()->getUri());
 
         $userDonor = $this->userDonorRepository->findOneBy(['user' => $user]);
         $this->assertNull($userDonor);

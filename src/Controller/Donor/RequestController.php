@@ -110,10 +110,16 @@ class RequestController extends AbstractController
                 ]);
 
                 if (!$haveWaitingTransactions) {
-                    $this->createTransactionService->create($user, $userDonor->getAmount(), $userDonor->getSchoolType());
-                }
+                    $isCreated = $this->createTransactionService->create($user, $userDonor->getAmount(), $userDonor->getSchoolType());
 
-                return $this->redirectToRoute('donor_transaction_list');
+                    if ($isCreated) {
+                        $this->addFlash('success', 'Kreirane su ti instrukcije za uplatu, ostalo je samo da ih uplatiš i potvrdiš uplatu.');
+
+                        return $this->redirectToRoute('donor_transaction_list');
+                    }
+
+                    $this->addFlash('info', 'Trenutno nema nastavnika kojima je potrebno uplatiti novac. Čim bude bilo potrebe biće ti napravljene instrukcije za uplatu i dobićeš obaveštenje na email.');
+                }
             }
 
             $this->addFlash('success', 'Uspesno ste promenili podatke');

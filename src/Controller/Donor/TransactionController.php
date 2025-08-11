@@ -198,10 +198,14 @@ class TransactionController extends AbstractController
             $amount = $form->get('amount')->getData();
             $schoolType = $form->get('schoolType')->getData();
 
-            $this->createTransactionService->create($user, $amount, $schoolType);
-            $this->addFlash('success', 'Kreirane su ti instrukcije za uplatu, ostalo je samo da ih uplatiš i potvrdiš uplatu.');
+            $isCreated = $this->createTransactionService->create($user, $amount, $schoolType);
+            if ($isCreated) {
+                $this->addFlash('success', 'Kreirane su ti instrukcije za uplatu, ostalo je samo da ih uplatiš i potvrdiš uplatu.');
 
-            return $this->redirectToRoute('donor_transaction_list');
+                return $this->redirectToRoute('donor_transaction_list');
+            }
+
+            $this->addFlash('info', 'Trenutno nema nastavnika kojima je potrebno uplatiti novac. Pokušaj kasnije kada se prijave novi nastavnici.');
         }
 
         return $this->render('donor/transaction/create.html.twig', [
