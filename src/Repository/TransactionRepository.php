@@ -122,10 +122,14 @@ class TransactionRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('t');
         $qb = $qb->select('SUM(t.amount)')
             ->innerJoin('t.damagedEducator', 'de')
+            ->innerJoin('de.school', 's')
             ->andWhere('de.period = :period')
             ->setParameter('period', $period)
+            ->andWhere('de.status = :status')
+            ->setParameter('status', DamagedEducator::STATUS_NEW)
             ->andWhere('t.status IN (:statuses)')
-            ->setParameter('statuses', $statuses);
+            ->setParameter('statuses', $statuses)
+            ->andWhere('s.processing = 1');
 
         if ($school) {
             $qb->andWhere('de.school = :school')
