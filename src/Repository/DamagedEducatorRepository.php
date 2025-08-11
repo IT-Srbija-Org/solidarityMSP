@@ -123,8 +123,12 @@ class DamagedEducatorRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('e');
         $qb = $qb->select('SUM(e.amount)')
+            ->innerJoin('e.school', 's')
             ->andWhere('e.period = :period')
-            ->setParameter('period', $period);
+            ->andWhere('e.status = :status')
+            ->andWhere('s.processing = 1')
+            ->setParameter('period', $period)
+            ->setParameter('status', DamagedEducator::STATUS_NEW);
 
         if ($school) {
             $qb->andWhere('e.school = :school')
@@ -171,8 +175,12 @@ class DamagedEducatorRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('de');
         $qb = $qb->select('COUNT(DISTINCT de.accountNumber)')
+            ->innerJoin('de.school', 's')
             ->andWhere('de.period = :period')
-            ->setParameter('period', $period);
+            ->setParameter('period', $period)
+            ->andWhere('de.status = :status')
+            ->setParameter('status', DamagedEducator::STATUS_NEW)
+            ->andWhere('s.processing = 1');
 
         if ($school) {
             $qb->andWhere('de.school = :school')
