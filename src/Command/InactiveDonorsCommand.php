@@ -95,7 +95,7 @@ class InactiveDonorsCommand extends Command
             }
 
             $dates[$transaction->getCreatedAt()->format('Y-m-d')] = true;
-            if (3 == count($dates)) {
+            if (5 == count($dates)) {
                 return true;
             }
         }
