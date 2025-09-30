@@ -51,6 +51,7 @@ class NotifyDelegatesCommand extends Command
             foreach ($schools as $school) {
                 $damagedEducators = $this->entityManager->getRepository(DamagedEducator::class)->findBy([
                     'school' => $school->getSchool(),
+                    'status' => DamagedEducator::STATUS_NEW,
                 ]);
 
                 foreach ($damagedEducators as $damagedEducator) {
