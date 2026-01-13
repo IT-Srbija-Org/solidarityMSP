@@ -44,6 +44,9 @@ class CreateCommand extends Command
             return Command::SUCCESS;
         }
 
+        $lastUserDonor = $this->entityManager->getRepository(UserDonor::class)->findOneBy([], ['id' => 'DESC']);
+        $this->userDonorLastId = $lastUserDonor->getId();
+
         while (true) {
             $userDonors = $this->getUserDonors();
             if (empty($userDonors)) {
@@ -85,9 +88,9 @@ class CreateCommand extends Command
             ->innerJoin('ud.user', 'u')
             ->andWhere('u.isActive = 1')
             ->andWhere('u.isEmailVerified = 1')
-            ->andWhere('ud.id > :lastId')
+            ->andWhere('ud.id < :lastId')
             ->setParameter('lastId', $this->userDonorLastId)
-            ->orderBy('ud.id', 'ASC')
+            ->orderBy('ud.id', 'DESC')
             ->setMaxResults(100);
 
         $results = $qb->getQuery()->getResult();
