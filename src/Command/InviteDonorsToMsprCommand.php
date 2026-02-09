@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-use App\Entity\Transaction;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -79,7 +78,7 @@ class InviteDonorsToMsprCommand extends Command
             WHERE u.id > :lastId
             ORDER BY u.id ASC
             ', [
-            'lastId' => $this->lastId
+            'lastId' => $this->lastId,
         ]);
 
         $items = [];
