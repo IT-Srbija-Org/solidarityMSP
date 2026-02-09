@@ -47,12 +47,8 @@ class InviteDonorsToMsprCommand extends Command
             }
 
             foreach ($donorEmails as $donorEmail) {
-                $donorEmail = 'djavolak@mail.ru';
-
                 $output->writeln('Send email to '.$donorEmail);
                 $this->sendEmail($donorEmail);
-
-                die('done');
             }
         }
 
