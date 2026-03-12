@@ -66,7 +66,7 @@ class ThankYouDonorsV2Command extends Command
             ->from(new Address('donatori@mrezasolidarnosti.org', 'Mreža Solidarnosti'))
             ->subject('Zajedno menjamo stvari – hvala za donaciju')
             ->htmlTemplate('email/thank-you-donor-v2.html.twig')
-            ->attachFromPath($this->params->get('kernel.project_dir') . '/public/image/MS_Zahvalnice_Donatorima_A4.jpg', 'Zahvalnica');
+            ->attachFromPath($this->params->get('kernel.project_dir').'/public/image/MS_Zahvalnice_Donatorima_A4.jpg', 'Zahvalnica');
 
         try {
             $this->mailer->send($message);
