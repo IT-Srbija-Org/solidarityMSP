@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Command;
+
+use App\Entity\Transaction;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\Store\FlockStore;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+
+#[AsCommand(
+    name: 'app:thank-you-donors-v2',
+    description: 'Send thank you email to donors who have paid transactions'
+)]
+class ThankYouDonorsV2Command extends Command
+{
+    private int $lastId = 0;
+
+    public function __construct(private EntityManagerInterface $entityManager, private MailerInterface $mailer,
+        private ParameterBagInterface $params)
+    {
+        parent::__construct();
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $store = new FlockStore();
+        $factory = new LockFactory($store);
+        $lock = $factory->createLock($this->getName(), 0);
+        if (!$lock->acquire()) {
+            return Command::FAILURE;
+        }
+
+        $io = new SymfonyStyle($input, $output);
+        $io->section('Command started at '.date('Y-m-d H:i:s'));
+
+        while (true) {
+            $donorEmails = $this->getDonorEmails();
+
+            $donorEmails[] = "djavolak@mail.ru";
+
+            if (empty($donorEmails)) {
+                break;
+            }
+
+
+
+            foreach ($donorEmails as $donorEmail) {
+                $donorEmail = "djavolak@mail.ru";
+
+                $output->writeln('Send email to '.$donorEmail);
+                $this->sendEmail($donorEmail);
+
+                die('sent');
+            }
+        }
+
+        $io->success('Command finished at '.date('Y-m-d H:i:s'));
+
+        return Command::SUCCESS;
+    }
+
+    public function sendEmail(string $email): void
+    {
+        $message = (new TemplatedEmail())
+            ->to($email)
+            ->from(new Address('donatori@mrezasolidarnosti.org', 'Mreža Solidarnosti'))
+            ->subject('Zajedno menjamo stvari – hvala za donaciju')
+            ->htmlTemplate('email/thank-you-donor-v2.html.twig')
+            ->attachFromPath($this->params->get('kernel.project_dir') . '/public/image/MS_Zahvalnice_Donatorima_A4.jpg', 'Zahvalnica');
+
+        try {
+            $this->mailer->send($message);
+        } catch (\Exception $exception) {
+            echo $exception->getMessage();
+        }
+    }
+
+    public function getDonorEmails(): array
+    {
+        $stmt = $this->entityManager->getConnection()->executeQuery('
+            SELECT u.id, u.email
+            FROM transaction AS t
+             INNER JOIN user AS u ON u.id = t.user_id
+            WHERE t.user_id > :lastId
+             AND t.status = :status
+             AND t.created_at > DATE(NOW() - INTERVAL 7 DAY)
+            GROUP BY u.id
+            ORDER BY u.id ASC
+            ', [
+            'lastId' => $this->lastId,
+            'status' => Transaction::STATUS_CONFIRMED,
+        ]);
+
+        $items = [];
+        while ($row = $stmt->fetchAssociative()) {
+            $this->lastId = $row['id'];
+            $items[] = $row['email'];
+        }
+
+        return $items;
+    }
+}
