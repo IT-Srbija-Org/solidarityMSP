@@ -83,7 +83,7 @@ class ThankYouDonorsV2Command extends Command
              INNER JOIN user AS u ON u.id = t.user_id
             WHERE t.user_id > :lastId
              AND t.status = :status
-             AND t.created_at > DATE(NOW() - INTERVAL 7 DAY)
+             AND t.created_at > DATE(NOW() - INTERVAL 365 DAY)
             GROUP BY u.id
             ORDER BY u.id ASC
             ', [
