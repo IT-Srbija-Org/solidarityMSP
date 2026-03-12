@@ -44,22 +44,13 @@ class ThankYouDonorsV2Command extends Command
 
         while (true) {
             $donorEmails = $this->getDonorEmails();
-
-            $donorEmails[] = "djavolak@mail.ru";
-
             if (empty($donorEmails)) {
                 break;
             }
 
-
-
             foreach ($donorEmails as $donorEmail) {
-                $donorEmail = "djavolak@mail.ru";
-
                 $output->writeln('Send email to '.$donorEmail);
                 $this->sendEmail($donorEmail);
-
-                die('sent');
             }
         }
 
